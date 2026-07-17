@@ -1,0 +1,80 @@
+[
+  {
+    "business": "PipHouse LLC",
+    "type": "lead_management",
+    "pain": "Active wholesaler handling pre-foreclosure, probate, tax delinquent leads manually",
+    "evidence": "Active on BiggerPockets, manually searching for deals",
+    "solution": "AI Lead Generation Engine + Email Automation",
+    "contact": "PipHousellc@gmail.com",
+    "phone": "469-658-4582",
+    "potential_deal": "$3,500-5,000"
+  },
+  {
+    "business": "Swift Home Solutions",
+    "type": "customer_outreach",
+    "pain": "DFW + San Antonio coverage, likely struggling with lead follow-up at scale",
+    "evidence": "Multiple markets, LinkedIn 1.5K followers suggests growth phase",
+    "solution": "AI Email Outreach + Customer Support Bot",
+    "contact": "investments@swifthomesolutions.com",
+    "phone": "469-273-1235",
+    "potential_deal": "$4,000-6,000"
+  },
+  {
+    "business": "New Western",
+    "type": "platform_scaling",
+    "pain": "250K+ investors, likely needs automation for lead matching and communication",
+    "evidence": "Largest wholesale marketplace, high volume operations",
+    "solution": "AI Data Entry + Email Automation + Customer Support",
+    "contact": "sales@newwestern.com",
+    "phone": "(972) 734-1612",
+    "potential_deal": "$10,000-20,000"
+  },
+  {
+    "business": "DFW REI Club",
+    "type": "member_management",
+    "pain": "Club with Robin Carriger, needs automated member communication and deal distribution",
+    "evidence": "Always needs wholesale deals, 817-300-1132",
+    "solution": "AI Email Automation + Social Media Manager",
+    "contact": "robin@dfwrei.com",
+    "phone": "817-300-1132",
+    "potential_deal": "$2,500-4,000"
+  },
+  {
+    "business": "Diamond Acquisitions",
+    "type": "lead_qualification",
+    "pain": "Cash buyer needing consistent deal flow, manual outreach is slow",
+    "evidence": "Dallas Pkwy office, active buyer",
+    "solution": "AI Lead Generation + Email Automation",
+    "contact": "diamondacquisitions@outlook.com",
+    "phone": "469-436-4884",
+    "potential_deal": "$3,000-5,000"
+  },
+  {
+    "business": "Turner & Partners LLC",
+    "type": "scaling_operations",
+    "pain": "100+ assignments since 2020, likely hitting manual process limits",
+    "evidence": "High volume wholesaler on RealEstateBees",
+    "solution": "AI Data Entry + CRM Automation + Email",
+    "contact": "info@turnerandpartners.com",
+    "potential_deal": "$5,000-8,000"
+  },
+  {
+    "business": "We Buy Houses Fast Dallas",
+    "type": "lead_response",
+    "pain": "Residential, multi-family, commercial - multiple property types need different responses",
+    "evidence": "Multiple property types, high volume",
+    "solution": "AI Customer Support Bot + Email Automation",
+    "contact": "info@sellmyhousefastindallas.com",
+    "phone": "469-461-4209",
+    "potential_deal": "$4,000-6,000"
+  },
+  {
+    "business": "No Worries Home Sale",
+    "type": "empathetic_outreach",
+    "pain": "Foreclosure, divorce, inherited - sensitive situations need careful communication",
+    "evidence": "Specializes in distressed situations",
+    "solution": "AI Email Automation + Content Factory",
+    "contact": "info@noworrieshomesale.com",
+    "potential_deal": "$3,000-5,000"
+  }
+]

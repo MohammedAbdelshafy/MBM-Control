@@ -1,0 +1,19 @@
+{
+  "date": "2026-07-07",
+  "targets": 8,
+  "sent": 8,
+  "companies": [
+    "PipHouse LLC",
+    "Swift Home Solutions",
+    "New Western",
+    "DFW REI Club",
+    "Diamond Acquisitions",
+    "Turner & Partners LLC",
+    "We Buy Houses Fast Dallas",
+    "No Worries Home Sale"
+  ],
+  "potential_revenue": {
+    "min": 35000,
+    "max": 59000
+  }
+}

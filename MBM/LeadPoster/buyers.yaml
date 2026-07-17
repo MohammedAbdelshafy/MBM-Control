@@ -1,0 +1,91 @@
+# MBM LeadPoster — buyer strategy + pricing ladder
+#
+# Source: lead-selling strategy brief. Leads are scored into price tiers
+# ($70 / $150 / $300) and matched to the buyer lane most likely to pay.
+# Everything here is config — add a buyer lane or adjust tiers with no code changes.
+
+recommended_lane: "real_estate_motivated_seller -> investors_and_wholesalers"
+
+# Minimum traits a lead must have to clear each price tier.
+# A lead qualifies for the highest tier whose requirements it meets.
+tiers:
+  base:
+    price_usd: 70
+    requires: ["any_mappable_field"]
+  mid:
+    price_usd: 150
+    requires: ["verified_contact", "confidence_ge_60"]
+  premium:
+    price_usd: 300
+    requires: ["verified_contact", "confidence_ge_60", "property_signal", "distress_or_intent"]
+
+# How a lead is checked against `requires` (see poster.tier_for_lead).
+signals:
+  verified_contact: "has Phone or Email"
+  confidence_ge_60: "Confidence column >= 60"
+  property_signal: "Property_Address or City or State present"
+  distress_or_intent: "Distress_Signal set, or Notes mentions probate/foreclosure/vacant/pre-foreclosure/eviction/tired landlord/high-equity"
+  any_mappable_field: "at least one field_map column is non-empty"
+
+# Buyer lanes — who pays, where to reach them, what they want.
+buyer_lanes:
+  investors_and_wholesalers:
+    pays: "highest for verified, exclusive, recent motivated-seller leads"
+    want: ["distressed property", "vacant", "absentee owner", "pre-foreclosure", "high-equity", "probate", "tired landlord"]
+    channels: ["investor marketplaces", "wholesaler Facebook groups", "investor forums", "direct outreach to investment firms", "agencies that buy seller leads"]
+    lead_types: ["Wholesaler/Buyer", "Investor"]
+  agents_and_teams:
+    pays: "exclusive local verified seller leads"
+    want: ["local", "verified", "seller intent"]
+    channels: ["high-performing agents", "listing-focused teams", "brokerages with paid lead budgets", "LinkedIn outreach", "cold email"]
+    lead_types: ["Seller", "Homeowner"]
+  mortgage_and_lenders:
+    pays: "well for refi/purchase/investment/distressed owner leads"
+    want: ["property", "equity", "timeline data"]
+    channels: ["hard-money lenders", "mortgage brokers", "direct outreach"]
+    lead_types: ["Distressed", "Investor"]
+  home_services:
+    pays: "high for homeowner-owned, high-income, urgent, exclusive"
+    want: ["roof", "solar", "HVAC", "foundation", "plumbing", "remodel", "urgent"]
+    channels: ["roofers", "solar", "HVAC", "foundation repair", "remodelers", "Upwork/Fiverr lead-gen"]
+    lead_types: ["Homeowner", "Repair"]
+  legal:
+    pays: "premium, compliance-sensitive"
+    want: ["probate", "eviction", "debt", "foreclosure defense", "personal injury"]
+    channels: ["probate attorneys", "foreclosure defense", "PI firms", "agency directories"]
+    lead_types: ["Probate", "Distressed"]
+  insurance:
+    pays: "clean verified location-specific leads"
+    want: ["homeowner", "landlord", "commercial", "life"]
+    channels: ["insurance agencies", "white-label lead vendors"]
+    lead_types: ["Homeowner", "Landlord"]
+  b2b_saas:
+    pays: "if lead is a business owner / decision-maker"
+    want: ["contractor", "property manager", "developer", "business owner"]
+    channels: ["CRM vendors", "marketing agencies", "payroll/EOR", "accounting", "software co"]
+    lead_types: ["Business", "Contractor"]
+
+# Highest-paying lead types (luxury lane) — used to flag premium inventory.
+premium_lead_types:
+  - "probate seller"
+  - "pre-foreclosure"
+  - "absentee owner"
+  - "vacant property"
+  - "high-equity motivated seller"
+  - "tired landlord"
+  - "commercial property owner"
+  - "homeowner repair (urgent)"
+  - "business acquisition"
+  - "B2B decision-maker"
+
+# Acquisition connectors (from Lead Acquisition Monitor) — the SOURCE side
+# of the Base44 SuperAgent stack, kept here for reference.
+acquisition_connectors_priority:
+  1: "NPI Registry (clinic/public provider discovery)"
+  2: "Apollo.io (enrichment, waterfall, trigger-based, AI scoring)"
+  3: "Shovels.ai (permits)"
+  4: "Hunter (email verification)"
+  5: "PropStream (property intelligence, dialing, skip-tracing)"
+  6: "Construction permit sources"
+  7: "BuildZoom"
+  8: "PropertyRadar"

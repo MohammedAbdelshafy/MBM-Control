@@ -1,0 +1,31 @@
+# LeadPoster site config — TEMPLATE
+#
+# This is a config-only template. To target a real marketplace:
+#   1. Set `post_url` and `login_url` to the real site.
+#   2. Inspect the site's "sell a lead" form and set each `field_map`
+#      selector to the real input/textarea CSS selector.
+#   3. Set `submit_selector` and `success_selector`.
+#   4. Run export_marketplace_session.py to capture your logged-in session.
+# No code changes are needed to add a new marketplace — just drop a new
+# sites/<name>.yaml and pass --site <name>.
+
+site:
+  name: "REAL_ESTATE_LEAD_MARKETPLACE"   # <-- replace with the real marketplace name
+  post_url: "https://SELLER_MARKETPLACE_URL/sell-lead"   # <-- set real URL
+  login_url: "https://SELLER_MARKETPLACE_URL/login"       # <-- set real URL
+  lead_value_usd: 80
+
+# Map MBM lead CSV columns -> the marketplace form's CSS selectors.
+# Only columns present in the CSV and with a non-empty value are submitted.
+field_map:
+  Company: "input[name='company']"
+  Contact_Name: "input[name='contact_name']"
+  Phone: "input[name='phone']"
+  Email: "input[name='email']"
+  Website: "input[name='website']"
+  City: "input[name='city']"
+  State: "input[name='state']"
+  Notes: "textarea[name='notes']"
+
+submit_selector: "button[type='submit']"
+success_selector: ".alert-success, .submission-id"

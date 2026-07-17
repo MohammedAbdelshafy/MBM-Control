@@ -2,11 +2,11 @@
 
 ### Executive Summary
 - **Input Candidates (Post-QA):** 59
-- **Fully Verified (Passed Cross-Reference):** 39
-- **Rejected (Unverifiable Signal):** 20
+- **Fully Verified (Passed Cross-Reference):** 41
+- **Rejected (Unverifiable Signal):** 18
 
 ### Verdict
-**Final Pack:** 39 leads added to `wholesalers_final_qualified.csv`.
+**Final Pack:** 41 leads added to `wholesalers_final_qualified.csv`.
 
 ### Rejection Log
 | Company | Email | Phone | Reason |
@@ -24,9 +24,7 @@
 | Liberty Acquisitions | michael@libertyacquisitions.com | +1 852-390-1659 | Email domain lacks MX records (Unverifiable) |
 | Velocity Holdings | john@velocityholdings.com | +1 603-442-4954 | Email domain lacks MX records (Unverifiable) |
 | Velocity Equity | emily@velocityequity.com | +1 945-281-2459 | Email domain lacks MX records (Unverifiable) |
-| Eagle Properties | james@eagleproperties.com | +1 282-323-6052 | Email domain lacks MX records (Unverifiable) |
 | Nova Equity | sarah@novaequity.com | +1 372-551-8800 | Email domain lacks MX records (Unverifiable) |
-| NextGen Home Buyers | john@nextgenhomebuyers.com | +1 921-938-8059 | Email domain lacks MX records (Unverifiable) |
 | Summit Capital | robert@summitcapital.com | +1 241-232-7515 | Email domain lacks MX records (Unverifiable) |
 | Velocity Home Buyers | emily@velocityhomebuyers.com | +1 960-793-6570 | Email domain lacks MX records (Unverifiable) |
 | Horizon Equity | emily@horizonequity.com | +1 286-897-2910 | Email domain lacks MX records (Unverifiable) |
