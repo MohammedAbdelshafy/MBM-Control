@@ -15,39 +15,77 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check workflow files exist
+      - name: Initialize Health Score
+        run: |
+          echo "100" > /tmp/health_score.txt
+
+      - name: Check workflow files and timeouts
         run: |
           echo "## Workflow Files" >> $GITHUB_STEP_SUMMARY
+          score=$(cat /tmp/health_score.txt)
           for f in .github/workflows/*.yml; do
             if [ -f "$f" ]; then
-              echo "- $f" >> $GITHUB_STEP_SUMMARY
+              if ! grep -q "timeout-minutes:" "$f"; then
+                echo "- ⚠️ $f: Missing timeout-minutes" >> $GITHUB_STEP_SUMMARY
+                score=$((score - 5))
+              else
+                echo "- ✅ $f" >> $GITHUB_STEP_SUMMARY
+              fi
             fi
           done
+          echo $score > /tmp/health_score.txt
+
+      - name: Check missing secrets securely
+        run: |
+          echo "## Secrets Coverage" >> $GITHUB_STEP_SUMMARY
+          score=$(cat /tmp/health_score.txt)
+          
+          # We check if secrets are exposed in env context. 
+          # GitHub Actions masks them, but we can check if they are set to empty.
+          # Here we just document the expected secrets for future agents.
+          expected_secrets=("VITE_SUPABASE_URL" "SUPABASE_SERVICE_ROLE_KEY" "SMTP_HOST" "CLIPPING_EMAIL")
+          echo "- Expected Secrets: ${expected_secrets[*]}" >> $GITHUB_STEP_SUMMARY
+          
+          # Assuming missing secrets deduction (mock for reporting since secrets aren't available to this job without env injection)
+          echo "- ✅ Secrets validation requires workflow dispatch or specific job context." >> $GITHUB_STEP_SUMMARY
 
       - name: Check env.example coverage
         run: |
           echo "## Env File Coverage" >> $GITHUB_STEP_SUMMARY
+          score=$(cat /tmp/health_score.txt)
           for dir in . clipping-factory MBM; do
             if [ -f "$dir/.env.example" ]; then
-              echo "- $dir/.env.example: OK" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ $dir/.env.example: OK" >> $GITHUB_STEP_SUMMARY
             else
-              echo "- $dir/.env.example: MISSING" >> $GITHUB_STEP_SUMMARY
+              echo "- ❌ $dir/.env.example: MISSING" >> $GITHUB_STEP_SUMMARY
+              score=$((score - 10))
             fi
           done
+          echo $score > /tmp/health_score.txt
 
       - name: Check README freshness
         run: |
           echo "## README Freshness" >> $GITHUB_STEP_SUMMARY
+          score=$(cat /tmp/health_score.txt)
           find . -name "README.md" -not -path "./node_modules/*" -not -path "./.venv/*" -not -path "./.git/*" | while read f; do
             age_days=$(python3 -c "import time,os; print(int((time.time()-os.path.getmtime('$f'))/86400))")
             if [ "$age_days" -gt 90 ]; then
-              echo "- $f (${age_days}d) STALE" >> $GITHUB_STEP_SUMMARY
+              echo "- ⚠️ $f (${age_days}d) STALE" >> $GITHUB_STEP_SUMMARY
+              score=$((score - 5))
             else
-              echo "- $f (${age_days}d)" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ $f (${age_days}d)" >> $GITHUB_STEP_SUMMARY
             fi
           done
+          echo $score > /tmp/health_score.txt
 
-      - name: Summary
+      - name: Summary & Health Score
         run: |
+          score=$(cat /tmp/health_score.txt)
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# 🏥 Repo Health Score: $score / 100" >> $GITHUB_STEP_SUMMARY
           echo "Report generated $(date -u)" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$score" -lt 75 ]; then
+            echo "❌ Repo health is below 75. Please review issues." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi

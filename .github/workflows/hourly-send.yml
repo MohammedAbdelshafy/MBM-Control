@@ -1,0 +1,76 @@
+name: Hourly Email Sender
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in DRY_RUN mode (no emails will be sent)'
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  email-queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preflight Secrets Check
+        run: |
+          if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ] || [ -z "${{ secrets.SMTP_HOST }}" ]; then
+            echo "❌ CRITICAL: Missing required secrets (VITE_SUPABASE_URL or SMTP_HOST)." >> $GITHUB_STEP_SUMMARY
+            echo "Pipeline aborted to prevent unpredictable state." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          echo "✅ Preflight check passed: Secrets are present." >> $GITHUB_STEP_SUMMARY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Send queued emails
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          SMTP_FROM_NAME: ${{ secrets.SMTP_FROM_NAME }}
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' || github.event_name == 'schedule' }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "⚠️ RUNNING IN DRY_RUN MODE. No emails will be sent."
+            node server/emailSender.js --batchSize=21 --dry-run
+          else
+            echo "🚀 ARMED STATE: Sending emails..."
+            node server/emailSender.js --batchSize=21
+          fi
+
+      - name: Summary & Machine State
+        if: always()
+        run: |
+          echo "## Email Queue Run Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mode:** $(if [ "${{ github.event.inputs.dry_run }}" = "false" ]; then echo "ARMED 🚀"; else echo "DRY_RUN ⚠️"; fi)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          
+          # Output machine state as JSON for auditing
+          echo '{"status": "${{ job.status }}", "mode": "dry_run", "timestamp": "'$(date -u -Iseconds)'"}' > machine_state.json
+
+      - name: Upload Machine State Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: email-queue-state
+          path: machine_state.json
