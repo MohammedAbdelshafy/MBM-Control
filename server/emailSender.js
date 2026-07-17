@@ -59,8 +59,8 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
   }
 
   const transporter = getTransporter();
-  const fromAddress = process.env.SMTP_FROM || 'noreply@dawrix.com';
-  const fromName = process.env.SMTP_FROM_NAME || 'Dawrix';
+  const fromAddress = process.env.SMTP_FROM || 'noreply@contechai.com';
+  const fromName = process.env.SMTP_FROM_NAME || 'Contech AI Agentic teamz';
   const sendDelay = parseInt(process.env.EMAIL_SEND_DELAY_MS || '100');
   const concurrency = parseInt(process.env.EMAIL_CONCURRENCY || '5');
 

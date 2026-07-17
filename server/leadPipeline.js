@@ -269,7 +269,7 @@ Results my clients are seeing:
 - 40% lower operational costs
 - 25% increase in closed deals
 
-First month free setup + 30-day money-back guarantee.
+First week free setup + 30-day money-back guarantee.
 
 Want to see a 5-min demo of what this would look like for ${lead.company || 'your business'}?
 
