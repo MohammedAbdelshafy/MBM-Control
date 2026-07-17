@@ -442,3 +442,11 @@ verify_jwt = false
 [functions.add-to-email-queue]
 enabled = true
 verify_jwt = false
+
+[functions.scan-clipping-campaigns]
+enabled = true
+verify_jwt = false
+
+[functions.run-lead-pipeline]
+enabled = true
+verify_jwt = false
