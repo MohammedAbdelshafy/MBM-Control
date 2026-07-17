@@ -29,6 +29,7 @@ class CollectedReel:
     caption: str = ""
     date_saved: str = ""
     metrics: dict = None
+    video_url: str = ""
     thumbnail_url: str = ""
     source: str = "saved"
 
@@ -143,29 +144,73 @@ class InstagramCollector:
                 caption=it.get("caption", ""),
                 date_saved=it.get("date_saved", ""),
                 metrics=it.get("metrics", {}),
+                video_url=it.get("video_url", ""),
                 thumbnail_url=it.get("thumbnail_url", ""),
                 source=source,
             ))
         time.sleep(self.config.rate_limit_seconds)
 
     def _playwright_scrape(self, source: str) -> list[dict]:
-        """Best-effort scrape using Playwright. Returns list of reel dicts."""
+        """Collect reel grid URLs, then per-reel detail (caption/creator/video)."""
         browser = self._playwright
         page = browser.new_page()
         url = self._source_url(source)
         page.goto(url, wait_until="networkidle", timeout=30000)
         page.wait_for_timeout(2000)
-        # Instagram renders reels as <a href="/reel/..."> with surrounding cards.
         cards = page.query_selector_all("a[href*='/reel/'], a[href*='/p/']")
-        out: list[dict] = []
+        urls: list[str] = []
         for c in cards:
             href = c.get_attribute("href") or ""
             if "/reel/" not in href and "/p/" not in href:
                 continue
             full = f"https://www.instagram.com{href}" if href.startswith("/") else href
-            out.append({"url": full})
+            if full not in urls:
+                urls.append(full)
         page.close()
+
+        out: list[dict] = []
+        for u in urls:
+            out.append(self._playwright_detail(browser, u))
+            time.sleep(self.config.rate_limit_seconds)
         return out
+
+    def _playwright_detail(self, browser, reel_url: str) -> dict:
+        """Open a single reel and extract creator, caption, video src, thumbnail."""
+        page = browser.new_page()
+        try:
+            page.goto(reel_url, wait_until="networkidle", timeout=30000)
+            page.wait_for_timeout(1500)
+            # creator handle from the profile link near the top of the reel
+            creator = ""
+            handle_el = page.query_selector("article a[href*='/']:not([href*='/reel/'])")
+            if handle_el:
+                h = handle_el.get_attribute("href") or ""
+                creator = "@" + h.strip("/").split("/")[0].lstrip("@")
+            # caption
+            caption = ""
+            cap_el = page.query_selector("article div[role='button'] span")
+            if cap_el:
+                caption = cap_el.inner_text() or ""
+            # video source
+            video_url = ""
+            vid = page.query_selector("article video")
+            if vid:
+                video_url = vid.get_attribute("src") or ""
+            # thumbnail (poster) as fallback media
+            thumb = page.query_selector("article video[poster]")
+            thumb_url = thumb.get_attribute("poster") if thumb else ""
+            return {
+                "url": reel_url,
+                "creator": creator,
+                "caption": caption,
+                "video_url": video_url,
+                "thumbnail_url": thumb_url,
+            }
+        except Exception as e:  # noqa: BLE001
+            self.log(f"[playwright] detail failed for {reel_url}: {e}")
+            return {"url": reel_url}
+        finally:
+            page.close()
 
     @staticmethod
     def _source_url(source: str) -> str:

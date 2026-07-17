@@ -71,11 +71,12 @@ def run(config_path: str | Path, log: Callable[[str], None] = print) -> RunResul
                 date_saved=item.date_saved,
                 raw=dict(item.metrics or {}),
             )
-            # 2. media (optional; needs direct video url)
+            # 2. media (optional; needs a downloadable video/thumbnail url)
             video = None
-            if item.thumbnail_url:
-                video = download_video(item.thumbnail_url, Path(cfg.media_dir) / f"{item.reel_id}.mp4",
-                                       cfg.ffmpeg_path, log)
+            media_url = item.video_url or item.thumbnail_url
+            if media_url:
+                video = download_video(media_url, Path(cfg.media_dir) / f"{item.reel_id}.mp4",
+                                        cfg.ffmpeg_path, log)
             if video:
                 frames = sample_frames(video, Path(cfg.cache_dir) / item.reel_id,
                                         cfg.sample_frames_every_sec, cfg.ffmpeg_path)
@@ -93,6 +94,7 @@ def run(config_path: str | Path, log: Callable[[str], None] = print) -> RunResul
 
             # 4. store
             changed = db.upsert_reel(reel)
+            db.store_details(reel)
             if changed:
                 res.new_reels += 1
             else:

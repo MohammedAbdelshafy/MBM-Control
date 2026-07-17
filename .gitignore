@@ -88,3 +88,9 @@ MBM/Scripts/lead-pipeline/
 MBM/Scripts/leadhunter-pro/
 MBM/Scripts/leadhunter/
 MBM/Scripts/wholesaile/
+
+# Local runtime config (contains secrets/paths)
+MBM/Instagram/config.local.yaml
+# Generated runtime outputs (rebuilt by run)
+MBM/Instagram/Knowledge/
+MBM/Instagram/data/

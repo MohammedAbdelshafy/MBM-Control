@@ -72,6 +72,48 @@ class DB:
         conn.commit()
         return True
 
+    def store_details(self, reel: "Reel"):
+        """Populate the detail tables (hooks/offers/psychology/editing/business_models)."""
+        # hooks
+        if reel.hook_type:
+            self.insert_rows(
+                "hooks", "hooks",
+                ("reel_id", "hook_type", "hook_text", "hook_score", "niche"),
+                [(reel.reel_id, reel.hook_type, reel.primary_hook, reel.hook_score, reel.niche)],
+            )
+        # offers
+        self.insert_rows(
+            "offers", "offers",
+            ("reel_id", "creator", "lead_magnet", "tripwire", "core_offer",
+             "upsell", "monetization_method", "price_anchoring"),
+            [(reel.reel_id, reel.creator, getattr(reel, "lead_magnet", ""),
+              getattr(reel, "tripwire", ""), reel.offer, getattr(reel, "upsell", ""),
+              reel.monetization_method, getattr(reel, "price_anchoring", ""))],
+        )
+        # psychology (one row per trigger)
+        triggers = [t.strip() for t in (reel.psychology_used or "").split(",") if t.strip()]
+        if triggers:
+            self.insert_rows(
+                "psychology", "psychology", ("reel_id", "trigger", "note"),
+                [(reel.reel_id, t, "") for t in triggers],
+            )
+        # editing
+        self.insert_rows(
+            "editing", "editing",
+            ("reel_id", "editing_style", "subtitle_style", "color_palette",
+             "hook_timing", "cta_timing"),
+            [(reel.reel_id, reel.editing_style, getattr(reel, "subtitle_style", ""),
+              getattr(reel, "color_palette", ""), getattr(reel, "hook_timing", ""),
+              getattr(reel, "cta_timing", ""))],
+        )
+        # business models
+        if reel.business_model:
+            self.insert_rows(
+                "business_models", "business_models",
+                ("reel_id", "business_model", "niche", "revenue_potential"),
+                [(reel.reel_id, reel.business_model, reel.niche, reel.mbm_relevance_score)],
+            )
+
     def get_reel(self, reel_id: str) -> dict | None:
         row = self._conns["knowledge"].execute(
             "SELECT * FROM reels WHERE reel_id=?", (reel_id,)
