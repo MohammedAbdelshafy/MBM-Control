@@ -1,0 +1,52 @@
+# MBM Instagram Intelligence — Runtime Config
+# Copy to config.local.yaml and fill in. Values here are safe defaults.
+
+browser:
+  # How the collector reaches the authenticated session.
+  # Options: chrome-devtools-mcp | playwright
+  mode: chrome-devtools-mcp
+  # Required when using chrome-devtools-mcp (Chrome launched with --remote-debugging-port)
+  devtools_url: "http://127.0.0.1:9222"
+  # Playwright fallback profile path (must already contain logged-in cookies)
+  playwright_profile: ""
+  headless: false
+  rate_limit_seconds: 2
+  max_reels_per_run: 200
+
+sources:
+  saved: true
+  liked: true
+  collections: true
+  following: false
+  explore: false
+  bookmarks: true
+  creators: []          # explicit handles to scan, e.g. ["@somecreator"]
+  collection_names: []  # explicit collections to scan
+
+analysis:
+  local_first: true
+  speech_engine: whisper        # whisper | ollama
+  ocr_engine: paddleocr         # paddleocr | ollama-vl
+  vision_model: qwen2.5-vl      # Ollama model tag
+  llm_model: qwen3              # Ollama model tag for classification
+  ffmpeg_path: ffmpeg
+  sample_frames_every_sec: 2
+  whisper_model: base
+
+storage:
+  base_dir: "."
+  media_dir: "data/media"
+  knowledge_dir: "Knowledge/Instagram"
+  db_dir: "data/db"
+  cache_dir: "data/cache"
+
+git:
+  auto_commit: true
+  auto_push: false             # push only after human approval
+  commit_prefix: "instagram"
+
+constraints:
+  respect_tos: true
+  auth_only: true
+  cache_aggressively: true
+  incremental_sync: true

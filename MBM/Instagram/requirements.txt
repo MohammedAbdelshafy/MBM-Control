@@ -1,0 +1,16 @@
+# MBM Instagram Intelligence — Python deps
+# Local-first: whisper + PaddleOCR + Ollama (local) + FFmpeg (system).
+# Browser transport: chrome-devtools-mcp (external) or playwright (fallback).
+
+pyyaml>=6.0
+# speech
+openai-whisper>=20231117
+# ocr
+paddleocr>=2.7
+paddlepaddle>=2.6
+# vision / llm (local via Ollama python client)
+ollama>=0.1.0
+# browser fallback
+playwright>=1.40
+# devtools CDP websocket
+websocket-client>=1.7
