@@ -16,6 +16,7 @@ from pathlib import Path
 from .run import run
 from .schema import Reel, render_markdown, HOOK_TYPES
 from .config import Config
+from . import dashboard as dashboard_mod
 
 
 def _demo():
@@ -50,6 +51,10 @@ def main(argv=None):
     runp = sub.add_parser("run", help="collect + analyze (needs authenticated browser)")
     runp.add_argument("--config", default="config.example.yaml")
     sub.add_parser("demo", help="offline self-test")
+    dashp = sub.add_parser("dashboard", help="build + serve local dashboard")
+    dashp.add_argument("--config", default="config.example.yaml")
+    dashp.add_argument("--port", type=int, default=8787)
+    dashp.add_argument("--no-serve", action="store_true")
     args = p.parse_args(argv)
 
     if args.cmd == "demo":
@@ -60,6 +65,12 @@ def main(argv=None):
         import json
         print(json.dumps(res.to_dict(), indent=2))
         return 0 if res.status == "success" else 1
+    if args.cmd == "dashboard":
+        if args.no_serve:
+            dashboard_mod.main(["--config", args.config, "--no-serve"])
+        else:
+            dashboard_mod.main(["--config", args.config, "--port", str(args.port)])
+        return 0
     p.print_help()
     return 0
 
