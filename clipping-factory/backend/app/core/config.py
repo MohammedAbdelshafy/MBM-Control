@@ -52,8 +52,8 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     gemini_api_key: str = ""
     runware_api_key: str = ""
-    ai_primary_model: str = "claude-fable-5"
-    ai_fast_model: str = "claude-opus-4-8"
+    ai_primary_model: str = "qwen2.5-coder:7b"
+    ai_fast_model: str = "qwen2.5-coder:7b"
     ai_max_tokens: int = 16000
     ai_temperature: float = 0.3
     ai_cost_cap_per_campaign: float = 2.00
@@ -216,7 +216,7 @@ class Settings(BaseSettings):
     enhancement_denoise_spatial_chroma: float = 2.0     # was 1.5
     enhancement_denoise_temp_luma: float = 4.0          # was 3.0 — smoother motion
     enhancement_denoise_temp_chroma: float = 4.0        # was 3.0
-    enhancement_upscale: bool = True                    # was False — auto-upscale low-res
+    enhancement_upscale: bool = False                   # upscale only when campaign explicitly requires it
     enhancement_upscale_model: str = "realesrgan-x4plus"
     enhancement_upscale_scale: int = 2
     enhancement_crf: int = 16                           # was 18 — near-lossless
