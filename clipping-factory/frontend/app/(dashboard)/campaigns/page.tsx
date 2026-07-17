@@ -120,7 +120,7 @@ export default function CampaignsPage() {
                 <th className="text-left px-6 py-3 text-gray-400 font-medium">Campaign</th>
                 <th className="text-left px-4 py-3 text-gray-400 font-medium">Status</th>
                 <th className="text-left px-4 py-3 text-gray-400 font-medium">Score</th>
-                <th className="text-left px-4 py-3 text-gray-400 font-medium">Pay / clip</th>
+                <th className="text-left px-4 py-3 text-gray-400 font-medium">Payout Rate</th>
                 <th className="text-left px-4 py-3 text-gray-400 font-medium">Clips</th>
                 <th className="text-left px-4 py-3 text-gray-400 font-medium">Earnings</th>
                 <th className="text-left px-4 py-3 text-gray-400 font-medium">Due</th>
@@ -134,9 +134,15 @@ export default function CampaignsPage() {
                     <div className="font-medium text-gray-100 truncate max-w-xs">
                       {c.title}
                     </div>
-                    {c.brand_name && (
-                      <div className="text-xs text-gray-500">{c.brand_name}</div>
-                    )}
+                    <div className="flex items-center gap-1.5 mt-1">
+                      {c.brand_name && (
+                        <span className="text-xs text-gray-500">{c.brand_name}</span>
+                      )}
+                      {c.brand_name && c.platform_name && <span className="text-gray-700 text-xs">•</span>}
+                      {c.platform_name && (
+                        <span className="text-xs text-brand-400 font-semibold">{c.platform_name}</span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-4">
                     <span className={STATUS_COLORS[c.status] ?? "badge-gray"}>
@@ -157,7 +163,13 @@ export default function CampaignsPage() {
                     </div>
                   </td>
                   <td className="px-4 py-4 text-gray-300">
-                    {c.payment ? `$${c.payment}` : "—"}
+                    {c.payment ? (
+                      <span>${c.payment} <span className="text-gray-500 text-xs">/ clip</span></span>
+                    ) : c.payout_per_1k_views ? (
+                      <span>${c.payout_per_1k_views} <span className="text-gray-500 text-xs">/ 1k views</span></span>
+                    ) : (
+                      "—"
+                    )}
                   </td>
                   <td className="px-4 py-4 text-gray-400">
                     <span className="text-green-400">{c.clips_accepted}</span>

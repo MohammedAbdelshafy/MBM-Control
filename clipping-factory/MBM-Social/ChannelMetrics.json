@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "updated": "2026-07-15",
+  "note": "Per-channel rolling metrics. Populated by analytics.py from YouTube + clipping-factory SocialPost data. Zeroed until first publish.",
+  "channels": {
+    "UC_DONTWATCHTHIS1": {"brand": "dontwatchthis", "views_30d": 0, "ctr": 0.0, "avg_view_pct": 0.0, "subs_gain": 0, "posts": 0, "best_hook_style": null},
+    "UC_Goalmachinez": {"brand": "goalmachinez", "views_30d": 0, "ctr": 0.0, "avg_view_pct": 0.0, "subs_gain": 0, "posts": 0, "best_hook_style": null},
+    "UC_CuteDosage": {"brand": "cutedosage", "views_30d": 0, "ctr": 0.0, "avg_view_pct": 0.0, "subs_gain": 0, "posts": 0, "best_hook_style": null},
+    "UC_ClippingFactoryMBM": {"brand": "clippingfactorymbm", "views_30d": 0, "ctr": 0.0, "avg_view_pct": 0.0, "subs_gain": 0, "posts": 0, "best_hook_style": null},
+    "UC_TwistsRevealed": {"brand": "twistsrevealed", "views_30d": 0, "ctr": 0.0, "avg_view_pct": 0.0, "subs_gain": 0, "posts": 0, "best_hook_style": null}
+  },
+  "network_rollup": {"total_views_30d": 0, "total_posts": 0, "total_subs_gain": 0}
+}

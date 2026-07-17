@@ -98,6 +98,8 @@ export interface Campaign {
   status: CampaignStatus;
   opportunity_score: number;
   payment: number | null;
+  payout_per_1k_views: number | null;
+  platform_name: string;
   clips_generated: number;
   clips_submitted: number;
   clips_accepted: number;

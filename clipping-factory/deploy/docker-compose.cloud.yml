@@ -1,0 +1,150 @@
+# Clipping Factory — Cloud Deployment (runs 24/7 on a VPS)
+# Usage:
+#   docker compose -f deploy/docker-compose.cloud.yml up -d
+#
+# Requires a VPS with:
+#   - Docker + Compose
+#   - NVIDIA GPU + CUDA drivers (optional, for Real-ESRGAN / Whisper GPU)
+#   - Ports 8000 (API) + 5555 (Flower) open
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: clipuser
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-clippass}
+      POSTGRES_DB: clipping_factory
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clipuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - miniodata:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  api:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+asyncpg://clipuser:${DB_PASSWORD:-clippass}@postgres:5432/clipping_factory
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      STORAGE_ENDPOINT: http://minio:9000
+      STORAGE_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      STORAGE_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      CLIPPING_EMAIL: ${CLIPPING_EMAIL}
+      CLIPPING_PASSWORD: ${CLIPPING_PASSWORD}
+      CLIPPING_DEMO_MODE: "false"
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
+      ENHANCEMENT_ENABLED: "true"
+      ENHANCEMENT_UPSCALE: "false"
+      LOG_LEVEL: INFO
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+
+  celery-worker:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    command: celery -A app.core.celery_app worker -Q health,video,campaigns,acquisition,analysis,delivery,publish --loglevel=info --concurrency=2
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+asyncpg://clipuser:${DB_PASSWORD:-clippass}@postgres:5432/clipping_factory
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      STORAGE_ENDPOINT: http://minio:9000
+      STORAGE_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      STORAGE_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      CLIPPING_EMAIL: ${CLIPPING_EMAIL}
+      CLIPPING_PASSWORD: ${CLIPPING_PASSWORD}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
+      ENHANCEMENT_ENABLED: "true"
+      LOG_LEVEL: INFO
+    depends_on:
+      - api
+    restart: unless-stopped
+    # Uncomment for GPU acceleration:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  celery-beat:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    command: celery -A app.core.celery_app beat --loglevel=info
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+asyncpg://clipuser:${DB_PASSWORD:-clippass}@postgres:5432/clipping_factory
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      STORAGE_ENDPOINT: http://minio:9000
+      STORAGE_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      STORAGE_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      CLIPPING_EMAIL: ${CLIPPING_EMAIL}
+      CLIPPING_PASSWORD: ${CLIPPING_PASSWORD}
+      ENHANCEMENT_ENABLED: "true"
+      LOG_LEVEL: INFO
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  miniodata:

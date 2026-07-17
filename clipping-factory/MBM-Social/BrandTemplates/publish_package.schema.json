@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PublishReadyPackage",
+  "description": "Brand-aware publish-ready package produced by mbm_social.publish_package.",
+  "type": "object",
+  "required": ["brand", "target_channel", "title", "description", "hashtags", "clip_file_path", "publish_time", "source_reference"],
+  "properties": {
+    "brand": {"type": "string"},
+    "target_channel": {"type": "string", "description": "YouTube channel id"},
+    "handle": {"type": "string"},
+    "title": {"type": "string", "maxLength": 100},
+    "description": {"type": "string"},
+    "hashtags": {"type": "array", "items": {"type": "string"}},
+    "thumbnail_prompt": {"type": "string"},
+    "thumbnail_text": {"type": "string"},
+    "hook_text": {"type": "string"},
+    "publish_time": {"type": "string", "format": "date-time"},
+    "source_reference": {"type": "string"},
+    "clip_file_path": {"type": "string"},
+    "brand_fit_score": {"type": "number"},
+    "quality_gate": {"type": "object"},
+    "status": {"type": "string", "enum": ["draft", "queued", "published", "failed"]},
+    "generated_by": {"type": "string"},
+    "models_used": {"type": "object"}
+  }
+}

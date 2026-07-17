@@ -1,0 +1,5 @@
+target_views_30d: 500000
+target_ctr: 0.06
+target_avg_view_pct: 0.45
+target_subs_per_post: 300
+priority_metric: watch_time

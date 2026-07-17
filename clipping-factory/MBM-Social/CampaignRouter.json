@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "updated": "2026-07-15",
+  "selection_model": "brand_fit_scoring",
+  "scoring_weights": {
+    "topic_match": 0.40,
+    "hook_style_match": 0.20,
+    "visual_fit": 0.15,
+    "keyword_overlap": 0.15,
+    "past_performance": 0.10
+  },
+  "llm_for_routing": "gemma4:latest",
+  "embeddings_model": "nomic-embed-text:latest",
+  "rules": [
+    {
+      "brand": "dontwatchthis",
+      "eligible_topics": ["mystery", "suspense", "dark", "chilling", "crime lite", "paranormal"],
+      "exclude_topics": ["sports", "cute", "wholesome", "baby", "pet", "tutorial"],
+      "min_hook_score": 0.6
+    },
+    {
+      "brand": "goalmachinez",
+      "eligible_topics": ["football", "soccer", "sports", "goal", "match", "tactic", "athlete"],
+      "exclude_topics": ["mystery", "cute", "baby"],
+      "min_hook_score": 0.6
+    },
+    {
+      "brand": "cutedosage",
+      "eligible_topics": ["cute", "wholesome", "pet", "baby", "family", "feel good", "animal"],
+      "exclude_topics": ["dark", "crime", "suspense", "sports"],
+      "min_hook_score": 0.55
+    },
+    {
+      "brand": "clippingfactorymbm",
+      "eligible_topics": ["automation", "ai", "pipeline", "build in public", "clipping", "case study"],
+      "exclude_topics": ["sports", "cute", "mystery"],
+      "min_hook_score": 0.5
+    },
+    {
+      "brand": "twistsrevealed",
+      "eligible_topics": ["plot twist", "reveal", "shocking", "story", "suspense", "narrative"],
+      "exclude_topics": ["sports", "cute", "baby", "tutorial"],
+      "min_hook_score": 0.6
+    }
+  ],
+  "fallback": "If no brand clears min_hook_score, route to the highest-scoring eligible brand and flag for manual review.",
+  "review_gate": "Any clip below 0.65 best-brand score requires manual approval before publish."
+}
