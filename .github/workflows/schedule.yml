@@ -71,11 +71,4 @@ jobs:
         if: always()
         run: echo "scan_complete=true" >> $GITHUB_STEP_SUMMARY
 
-  nightly-health-report:
-    if: ${{ github.event_name == 'workflow_dispatch' || vars.RUN_DAILY != '' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: [hourly-email-queue, hourly-lead-pipeline, hourly-clipping-scan]
-    steps:
-      - run: echo "## Nightly Health Report" >> $GITHUB_STEP_SUMMARY
-      - run: echo "All hourly jobs completed. See individual job logs for details." >> $GITHUB_STEP_SUMMARY
+
