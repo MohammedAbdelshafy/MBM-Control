@@ -1,0 +1,80 @@
+{
+  "name": "ClientOrder",
+  "type": "object",
+  "properties": {
+    "customer_name": {
+      "type": "string",
+      "title": "Customer Name"
+    },
+    "customer_email": {
+      "type": "string",
+      "format": "email",
+      "title": "Customer Email"
+    },
+    "customer_phone": {
+      "type": "string",
+      "title": "Customer Phone"
+    },
+    "company": {
+      "type": "string",
+      "title": "Company"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "lead_pack_daily",
+        "lead_pack_monthly",
+        "ai_email",
+        "ai_full_stack",
+        "ai_enterprise",
+        "custom"
+      ],
+      "title": "Plan"
+    },
+    "amount": {
+      "type": "number",
+      "title": "Amount (USD)"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "title": "Currency"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "failed",
+        "refunded",
+        "cancelled"
+      ],
+      "default": "pending",
+      "title": "Payment Status"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "bank_transfer",
+        "cash",
+        "crypto"
+      ],
+      "title": "Payment Method"
+    },
+    "stripe_payment_id": {
+      "type": "string",
+      "title": "Stripe Payment ID"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "customer_email",
+    "plan",
+    "amount",
+    "status"
+  ]
+}
