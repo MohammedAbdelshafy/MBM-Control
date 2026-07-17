@@ -7,32 +7,72 @@ on:
     branches: [master]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  check:
+  lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-
       - run: npm ci
-
       - name: Lint
         run: npm run lint
+      - name: Summary
+        if: always()
+        run: echo "## Lint ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
+  typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - name: Typecheck
         run: npm run typecheck
+      - name: Summary
+        if: always()
+        run: echo "## Typecheck ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lint, typecheck]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - name: Build
         run: npm run build
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-logs
+          path: /tmp/*.log
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Build ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "All checks: lint=${{ needs.lint.result }} typecheck=${{ needs.typecheck.result }} build=${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
   lint-fix:
-    if: github.ref == 'refs/heads/master'
-    needs: check
+    if: github.ref == 'refs/heads/master' && failure()
+    needs: [lint]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
@@ -40,17 +80,13 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-
       - run: npm ci
-
       - name: Auto-fix lint
         run: npm run lint:fix
-
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore: auto-fix lint issues'

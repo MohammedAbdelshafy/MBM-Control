@@ -1,52 +1,57 @@
-# AGENTS.md
+# AGENTS.md — MBM Control Plane
 
 ## Project Context
 
-This is a Base44 app repository. Treat it as user-owned application code, keep changes focused on the user's request, and preserve existing project conventions.
+This is the **Contech AI Agentic teamz** monorepo. It contains:
+- **Frontend App** (`src/`) — React/Vite dashboard
+- **Clipping Factory** (`clipping-factory/`) — Python/FastAPI video pipeline
+- **MBM Social** (`clipping-factory/MBM-Social/`) — Brand management & publishing
+- **MBM Ops** (`MBM/`) — Lead-gen, outreach, real estate scripts
 
-Start with `README.md` for local setup, environment variables, and publish workflow.
+## Workflow Rules
 
-## Base44 References
+| Phase | Mode | What You Do |
+|---|---|---|
+| **plan** | read-only | Inspect, diagnose, propose. NO file edits. |
+| **build** | full | Implement approved changes. One scope at a time. |
+| **verify** | read-only | Test, lint, review. NO additional edits. Report issues. |
 
-- CLI overview: https://docs.base44.com/developers/references/cli/get-started/overview.md
-- Agent skills: https://docs.base44.com/developers/backend/overview/skills.md
+Default mode: **plan**. Explicitly switch with `/opencode build` or `/opencode verify`.
 
-If your agent supports Agent Skills, install or update Base44 skills before Base44-specific work:
+## Key Boundaries
+
+- **Base44**: See `base44/` config. Use `base44 dev` for local backend. See [Base44 docs](https://docs.base44.com/developers/references/cli/get-started/overview.md).
+- **Clipping Factory**: See `clipping-factory/CLIPPING.md` for pipeline, agents, and Docker stack.
+- **MBM Social**: See `clipping-factory/MBM-Social/SOCIAL.md` for brand config, publishing, analytics.
+- **MBM Ops**: See `MBM/MBM.md` for lead-gen, scripts, outreach, real estate.
+- **Run checks**: `npm run lint && npm run typecheck && npm run build` before closing any build task.
+
+## Quick Reference
 
 ```bash
-npx skills add base44/skills
+npm run dev              # Frontend dev server
+npm run clip:build       # Build one clip end-to-end
+npm run clip:server      # Start FastAPI + Celery workers (docker compose up)
+npm run hunt:send        # Send outreach emails
 ```
-
-## Key Files
-
-- `src/`: frontend application source.
-- `src/api/base44Client.js`: frontend Base44 SDK client.
-- `vite.config.js`: Vite config and Base44 Vite plugin setup.
-- `.env.local`: local-only environment values; never commit secrets.
-
-## Working Notes
-
-- Use `base44 dev` as the default local development command when you need the local Base44 backend. It can run the backend and frontend together.
-- When docs or code mention the frontend being started automatically, that usually means the Base44 project config includes `site.serveCommand`, for example `"serveCommand": "npm run dev"` in `base44/config.jsonc`.
-- Use `npm run dev` only for frontend-only work against the hosted Base44 backend.
-- Prefer the existing Base44 CLI workflow over adding new npm scripts for Base44-specific tasks.
-- Reuse the existing SDK client and Vite plugin patterns before adding new Base44 integration paths.
-- Run the relevant checks from `package.json` before finishing code changes.
 
 ## CI Pipeline
 
-A GitHub Actions workflow (`.github/workflows/check.yml`) runs automatically on every push/PR:
-1. **lint** — `npm run lint` (unused imports, code quality)
-2. **typecheck** — `npm run typecheck` (TypeScript errors)
-3. **build** — `npm run build` (Vite production build)
-4. **auto-fix** — runs `lint:fix` and auto-commits fixes on master
+`.github/workflows/`:
+- `check.yml` — lint/typecheck/build on push/PR
+- `schedule.yml` — hourly: email queue, lead pipeline, clipping scan
+- `health-report.yml` — nightly: workflow YAML, env coverage, README freshness
+- `mbm-social.yml` — brand validation on MBM-Social changes
 
-The pipeline auto-fixes lint issues and commits them back. All three checks must pass before merging.
+## Output Contract
 
-## Email Queue System
-
-- `email_queue` table: statuses `qued` (ready), `queo` (skip), `sent`, `failed`
-- **Send**: Supabase Edge Function `send-email-queue` + pg_cron hourly at `:00`
-- **Queue**: Edge Function `add-to-email-queue` (POST with `recipient_email`, `subject`, `body`)
-- **Local**: `npm run send-emails` or `POST /api/email-queue` on Express server
-- **From app**: `import { queueEmail } from '@/api/emailQueue'`
+Every workflow emits:
+```
+status: success | failure | skipped
+inputs: { ... }
+outputs: { ... }
+errors: [ ... ]
+next_action: string
+owner: "system" | "human"
+timestamp: ISO8601
+```

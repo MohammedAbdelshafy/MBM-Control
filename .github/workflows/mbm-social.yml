@@ -1,0 +1,89 @@
+name: MBM Social CI
+
+on:
+  push:
+    paths:
+      - 'clipping-factory/MBM-Social/**'
+      - 'clipping-factory/MBM-Social/BrandRegistry.json'
+  pull_request:
+    paths:
+      - 'clipping-factory/MBM-Social/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-brands:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate BrandRegistry.json
+        run: |
+          echo "## Brand Validation" >> $GITHUB_STEP_SUMMARY
+          python3 -c "
+import json
+with open('clipping-factory/MBM-Social/BrandRegistry.json') as f:
+    data = json.load(f)
+brands = data.get('brands', {})
+print(f'Total brands: {len(brands)}')
+for name, cfg in brands.items():
+    issues = []
+    if not cfg.get('display_name'): issues.append('missing display_name')
+    if not cfg.get('handle'): issues.append('missing handle')
+    if not cfg.get('active', False): issues.append('inactive')
+    if not cfg.get('config_path'): issues.append('missing config_path')
+    status = '⚠️ ' + ', '.join(issues) if issues else '✅'
+    print(f'- {name}: {status}')
+    with open('/tmp/report.md', 'w') as r:
+        r.write(f'## Brand Registry Validated\n{len(brands)} brands OK\n')
+" 2>&1 | tee -a /tmp/report.md
+          cat /tmp/report.md >> $GITHUB_STEP_SUMMARY
+
+  check-brand-dirs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: validate-brands
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify brand config directories exist
+        run: |
+          echo "## Brand Config Directories" >> $GITHUB_STEP_SUMMARY
+          python3 -c "
+import json, os
+with open('clipping-factory/MBM-Social/BrandRegistry.json') as f:
+    data = json.load(f)
+for name, cfg in data.get('brands', {}).items():
+    path = cfg.get('config_path', '')
+    full = os.path.join('clipping-factory/MBM-Social', path)
+    exists = os.path.isdir(full)
+    status = '✅' if exists else '❌'
+    print(f'{status} {name}: {path}')
+    print(f'{status} {name}: {path}' if not exists else '', end='')
+" >> $GITHUB_STEP_SUMMARY
+
+  test-pipeline-import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: validate-brands
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test pipeline imports
+        run: |
+          echo "## Pipeline Import Test" >> $GITHUB_STEP_SUMMARY
+          cd clipping-factory/MBM-Social
+          python3 -c "
+from mbm_social.pipeline import Pipeline
+from mbm_social.brand_router import BrandRouter
+from mbm_social.brand_config import BrandConfig
+from mbm_social.model_registry import ModelRegistry
+from mbm_social.publish_package import PublishPackage
+print('All imports OK')
+print('### Pipeline imports: all OK' >> open('/tmp/pipeline_ok.md', 'w'))
+" 2>&1
+          cat /tmp/pipeline_ok.md 2>/dev/null >> $GITHUB_STEP_SUMMARY

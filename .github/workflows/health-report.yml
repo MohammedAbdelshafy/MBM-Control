@@ -1,0 +1,56 @@
+name: Nightly Health Report
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  health-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check workflow YAML syntax
+        run: |
+          echo "## Workflow Validation" >> $GITHUB_STEP_SUMMARY
+          for f in .github/workflows/*.yml; do
+            python3 -c "import yaml; yaml.safe_load(open('$f')); print(f'- ✅ {f}')" 2>> /tmp/yaml_errors.txt || echo "- ❌ $f" >> $GITHUB_STEP_SUMMARY
+          done
+          if [ -f /tmp/yaml_errors.txt ]; then
+            echo "### Errors" >> $GITHUB_STEP_SUMMARY
+            cat /tmp/yaml_errors.txt >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Check for missing env.example coverage
+        run: |
+          echo "## Env File Coverage" >> $GITHUB_STEP_SUMMARY
+          for dir in . clipping-factory MBM MBM/Scripts/leadhunter MBM/Scripts/leadhunter-pro MBM/Scripts/keelead; do
+            if [ -f "$dir/.env.example" ]; then
+              echo "- ✅ $dir/.env.example" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "- ⚠️ $dir/.env.example MISSING" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+      - name: Check for stale README files
+        run: |
+          echo "## README Freshness" >> $GITHUB_STEP_SUMMARY
+          for f in $(find . -name "README.md" -not -path "./node_modules/*" -not -path "./.venv/*"); do
+            age_days=$(python3 -c "import time,os; print(int((time.time()-os.path.getmtime('$f'))/86400))")
+            if [ "$age_days" -gt 90 ]; then
+              echo "- ⚠️ $f ($age_days days old)" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "- ✅ $f ($age_days days)" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+      - name: Summary
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Report generated $(date -u)" >> $GITHUB_STEP_SUMMARY

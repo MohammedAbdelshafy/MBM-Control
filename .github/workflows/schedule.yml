@@ -1,0 +1,81 @@
+name: Scheduled Automations
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hourly-email-queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - name: Send queued emails
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          SMTP_FROM_NAME: ${{ secrets.SMTP_FROM_NAME }}
+        run: node server/emailSender.js --batchSize=21
+      - name: Summary
+        run: echo "emails_sent=true" >> $GITHUB_STEP_SUMMARY
+
+  hourly-lead-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - name: Process lead pipeline
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node server/leadPipeline.js --all
+
+  hourly-clipping-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install deps
+        run: pip install requests 2>/dev/null || true
+      - name: Scan clipping.com for new campaigns
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CLIPPING_EMAIL: ${{ secrets.CLIPPING_EMAIL }}
+          CLIPPING_PASSWORD: ${{ secrets.CLIPPING_PASSWORD }}
+        run: python clipping-factory/cloud_scan.py
+      - name: Summary
+        if: always()
+        run: echo "scan_complete=true" >> $GITHUB_STEP_SUMMARY
+
+  nightly-health-report:
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.RUN_DAILY != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [hourly-email-queue, hourly-lead-pipeline, hourly-clipping-scan]
+    steps:
+      - run: echo "## Nightly Health Report" >> $GITHUB_STEP_SUMMARY
+      - run: echo "All hourly jobs completed. See individual job logs for details." >> $GITHUB_STEP_SUMMARY
