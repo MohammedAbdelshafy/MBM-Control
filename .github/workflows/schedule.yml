@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in DRY_RUN mode (no emails sent)'
+        type: boolean
+        required: true
+        default: true
 
 permissions:
   contents: read
@@ -14,6 +20,15 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+
+      - name: Preflight secrets check
+        run: |
+          if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ] || [ -z "${{ secrets.SMTP_HOST }}" ]; then
+            echo "Missing required secrets (VITE_SUPABASE_URL or SMTP_HOST)." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          echo "Preflight check passed." >> $GITHUB_STEP_SUMMARY
+
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -29,9 +44,19 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           SMTP_FROM: ${{ secrets.SMTP_FROM }}
           SMTP_FROM_NAME: ${{ secrets.SMTP_FROM_NAME }}
-        run: node server/emailSender.js --batchSize=21
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' || github.event_name == 'schedule' }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "DRY_RUN mode. No emails sent."
+            node server/emailSender.js --batchSize=21 --dry-run
+          else
+            node server/emailSender.js --batchSize=21
+          fi
       - name: Summary
-        run: echo "emails_sent=true" >> $GITHUB_STEP_SUMMARY
+        if: always()
+        run: |
+          echo "## Email Queue" >> $GITHUB_STEP_SUMMARY
+          echo "status=${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
   hourly-lead-pipeline:
     runs-on: ubuntu-latest
