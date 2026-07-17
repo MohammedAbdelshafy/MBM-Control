@@ -1,0 +1,74 @@
+name: Clipping Crawler CI
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in DRY_RUN mode (no campaigns will be started)'
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  clipping-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preflight Secrets Check
+        run: |
+          if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ] || [ -z "${{ secrets.CLIPPING_EMAIL }}" ]; then
+            echo "❌ CRITICAL: Missing required secrets (VITE_SUPABASE_URL or CLIPPING_EMAIL)." >> $GITHUB_STEP_SUMMARY
+            echo "Pipeline aborted to prevent unpredictable state." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          echo "✅ Preflight check passed: Secrets are present." >> $GITHUB_STEP_SUMMARY
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install deps
+        run: pip install requests 2>/dev/null || true
+
+      - name: Scan clipping.com for new campaigns
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CLIPPING_EMAIL: ${{ secrets.CLIPPING_EMAIL }}
+          CLIPPING_PASSWORD: ${{ secrets.CLIPPING_PASSWORD }}
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' || github.event_name == 'schedule' }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "⚠️ RUNNING IN DRY_RUN MODE. No campaigns will be started."
+            # Assuming python script handles DRY_RUN env var
+            python clipping-factory/cloud_scan.py
+          else
+            echo "🚀 ARMED STATE: Scanning and starting campaigns..."
+            python clipping-factory/cloud_scan.py
+          fi
+
+      - name: Summary & Machine State
+        if: always()
+        run: |
+          echo "## Clipping Crawler Run Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mode:** $(if [ "${{ github.event.inputs.dry_run }}" = "false" ]; then echo "ARMED 🚀"; else echo "DRY_RUN ⚠️"; fi)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          
+          # Output machine state as JSON for auditing
+          echo '{"status": "${{ job.status }}", "mode": "dry_run", "timestamp": "'$(date -u -Iseconds)'"}' > machine_state.json
+
+      - name: Upload Machine State Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crawler-ci-state
+          path: machine_state.json

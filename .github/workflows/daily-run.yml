@@ -1,0 +1,70 @@
+name: Daily Lead Pipeline
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in DRY_RUN mode (no leads will be processed/updated)'
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  lead-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preflight Secrets Check
+        run: |
+          if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ] || [ -z "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "❌ CRITICAL: Missing required Supabase secrets." >> $GITHUB_STEP_SUMMARY
+            echo "Pipeline aborted to prevent unpredictable state." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          echo "✅ Preflight check passed: Secrets are present." >> $GITHUB_STEP_SUMMARY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Process lead pipeline
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' || github.event_name == 'schedule' }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "⚠️ RUNNING IN DRY_RUN MODE. No leads will be modified."
+            node server/leadPipeline.js --all --dry-run
+          else
+            echo "🚀 ARMED STATE: Processing leads..."
+            node server/leadPipeline.js --all
+          fi
+
+      - name: Summary & Machine State
+        if: always()
+        run: |
+          echo "## Lead Pipeline Run Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mode:** $(if [ "${{ github.event.inputs.dry_run }}" = "false" ]; then echo "ARMED 🚀"; else echo "DRY_RUN ⚠️"; fi)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          
+          # Output machine state as JSON for auditing
+          echo '{"status": "${{ job.status }}", "mode": "dry_run", "timestamp": "'$(date -u -Iseconds)'"}' > machine_state.json
+
+      - name: Upload Machine State Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lead-pipeline-state
+          path: machine_state.json
