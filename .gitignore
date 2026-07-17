@@ -81,3 +81,10 @@ build_log.txt
 gateway_launch*.log
 *.pyc
 __pycache__/
+
+# Embedded sub-repositories (vendored, not tracked directly)
+MBM/Scripts/keelead/
+MBM/Scripts/lead-pipeline/
+MBM/Scripts/leadhunter-pro/
+MBM/Scripts/leadhunter/
+MBM/Scripts/wholesaile/
