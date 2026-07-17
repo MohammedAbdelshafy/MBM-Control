@@ -111,6 +111,14 @@ class DeliveryAgent(BaseAgent):
             f"Clip {clip_id} submitted. Status: {submission_result.get('status', 'unknown')}"
         )
 
+        # Telegram: notify + send clip with submission info
+        try:
+            from app.services.telegram_notifier import TelegramNotifier
+            tg = TelegramNotifier(self.settings)
+            tg.notify_delivery_submitted(clip, deliverable, submission)
+        except Exception as exc:
+            self.logger.debug(f"Telegram delivery notification skipped: {exc}")
+
         return AgentResult.ok({
             "deliverable_id": deliverable.id,
             "submission_result": submission_result,
@@ -267,6 +275,13 @@ class OutcomePollerAgent(BaseAgent):
                     campaign = clip.campaign
                     campaign.clips_accepted += 1
                     campaign.actual_earnings += submission.earnings_usd
+                    # Telegram: notify earnings
+                    try:
+                        from app.services.telegram_notifier import TelegramNotifier
+                        tg = TelegramNotifier(self.settings)
+                        tg.notify_clip_accepted(clip, submission.earnings_usd)
+                    except Exception as exc:
+                        self.logger.debug(f"Telegram accepted notification skipped: {exc}")
                 elif outcome["status"] == "rejected":
                     clip.status = ClipStatus.REJECTED_PLATFORM
 
@@ -302,17 +317,36 @@ class OutcomePollerAgent(BaseAgent):
             pw_page = ctx.new_page()
 
             try:
-                # Clipping.com typically shows submission statuses in /submissions or /earnings
-                history_url = f"{self.settings.clipping_base_url}/submissions"
+                base_url = (page_record.settings or {}).get("platform_base_url") or self.settings.clipping_base_url
+                history_url = f"{base_url}/submissions"
                 pw_page.goto(history_url, wait_until="networkidle", timeout=20000)
+
+                # Check if session expired (redirected to login)
+                if "login" in pw_page.url.lower():
+                    self.logger.warning("Session expired during outcome poll — attempting re-auth")
+                    from app.agents.campaign_hunter import CampaignHunterAgent
+                    hunter = CampaignHunterAgent(self.db)
+                    if hasattr(hunter, "_login"):
+                        hunter._login(pw_page)
+                        cookies = ctx.cookies()
+                        if cookies:
+                            page_record.session_cookie = json.dumps(cookies)
+                            self.db.flush()
+                        pw_page.goto(history_url, wait_until="networkidle", timeout=20000)
+                        if "login" in pw_page.url.lower():
+                            self.logger.error("Re-auth failed for outcome poll")
+                            browser.close()
+                            return None
 
                 # Search for this submission's platform ID
                 sid = submission.platform_submission_id or ""
                 submission_el = None
 
                 if sid:
+                    # Escape single quotes to prevent CSS selector injection
+                    safe_sid = sid.replace("'", "\\'").replace('"', '\\"')
                     submission_el = pw_page.query_selector(
-                        f"[data-submission-id='{sid}'], [data-id='{sid}']"
+                        f"[data-submission-id='{safe_sid}'], [data-id='{safe_sid}']"
                     )
 
                 if not submission_el:
@@ -339,8 +373,8 @@ class OutcomePollerAgent(BaseAgent):
                 if any(w in status_text for w in ("accepted", "approved", "earned", "paid")):
                     # Try to extract earning amount
                     import re
-                    amount_match = re.search(r"\$\s*([\d.]+)", status_text)
-                    earnings = float(amount_match.group(1)) if amount_match else (
+                    amount_match = re.search(r"\$\s*([\d,]+(?:\.[\d]+)?)", status_text)
+                    earnings = float(amount_match.group(1).replace(",", "")) if amount_match else (
                         campaign.payment_per_accepted_clip or 0.0
                     )
                     browser.close()

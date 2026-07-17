@@ -3,13 +3,15 @@ ContentAcquisitionAgent — downloads source material from any supported provide
 
 Supported: YouTube, TikTok, Instagram (all via yt-dlp), Google Drive,
 Dropbox, Direct URLs.
-All downloads are verified with MD5 checksums and uploaded to MinIO.
+All downloads are verified with MD5 checksums, size-limited, and uploaded to MinIO.
 Credentials for cloud providers stored in env / settings only.
 """
 import hashlib
 import os
+import re as _re
 import shutil
 import tempfile
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -17,6 +19,14 @@ from sqlalchemy.orm import Session
 
 from app.agents.base_agent import AgentResult, BaseAgent
 from app.core.config import get_settings
+
+SUPPORTED_DOMAINS = {
+    "youtube.com", "youtu.be", "tiktok.com", "instagram.com", "instagr.am",
+    "drive.google.com", "dropbox.com", "dropboxusercontent.com",
+}
+MAX_FILE_SIZE_BYTES = 2 * 1024 ** 3  # 2 GB
+DOWNLOAD_RETRIES = 3
+DOWNLOAD_RETRY_DELAY_SECS = 5
 
 settings = get_settings()
 
@@ -37,6 +47,9 @@ class ContentAcquisitionAgent(BaseAgent):
 
         self.logger.info(f"Acquiring content for campaign {campaign_id}: {campaign.source_url}")
 
+        if not self._is_supported_url(campaign.source_url):
+            return AgentResult.fail(f"Unsupported URL: {campaign.source_url}")
+
         source_type = self._detect_source_type(campaign.source_url)
         campaign.source_type = source_type
         self.db.flush()
@@ -51,21 +64,35 @@ class ContentAcquisitionAgent(BaseAgent):
         self.db.add(source)
         self.db.flush()
 
-        # Download to temp dir
+        # Download to temp dir with retries
         with tempfile.TemporaryDirectory(prefix="clip_acquire_") as tmpdir:
-            try:
-                local_path = self._download(campaign.source_url, source_type, tmpdir)
-            except Exception as exc:
-                source.status = "failed"
-                source.error_message = str(exc)
-                self.db.flush()
-                return AgentResult.fail(f"Download failed: {exc}")
+            local_path = None
+            for attempt in range(1, DOWNLOAD_RETRIES + 1):
+                try:
+                    local_path = self._download(campaign.source_url, source_type, tmpdir)
+                    break
+                except Exception as exc:
+                    self.logger.warning(f"Download attempt {attempt}/{DOWNLOAD_RETRIES} failed: {exc}")
+                    if attempt < DOWNLOAD_RETRIES:
+                        time.sleep(DOWNLOAD_RETRY_DELAY_SECS)
+                    else:
+                        source.status = "failed"
+                        source.error_message = str(exc)
+                        self.db.flush()
+                        return AgentResult.fail(f"Download failed after {DOWNLOAD_RETRIES} attempts: {exc}")
 
             if not local_path or not local_path.exists():
                 source.status = "failed"
                 source.error_message = "Downloaded file not found"
                 self.db.flush()
                 return AgentResult.fail("File not found after download")
+
+            file_size = local_path.stat().st_size
+            if file_size > MAX_FILE_SIZE_BYTES:
+                source.status = "failed"
+                source.error_message = f"File too large: {file_size / (1024**3):.2f} GB (limit: {MAX_FILE_SIZE_BYTES / (1024**3):.1f} GB)"
+                self.db.flush()
+                return AgentResult.fail(f"File exceeds size limit ({file_size / (1024**3):.2f} GB)")
 
             # Verify and extract metadata
             checksum = self._md5(local_path)
@@ -121,6 +148,20 @@ class ContentAcquisitionAgent(BaseAgent):
     # ------------------------------------------------------------------
     # Source detection
     # ------------------------------------------------------------------
+
+    def _is_supported_url(self, url: str) -> bool:
+        """Check if URL is from a supported provider."""
+        from urllib.parse import urlparse
+        parsed = urlparse(url)
+        domain = parsed.netloc.lower()
+        domain = _re.sub(r"^www\.", "", domain)
+        if domain in SUPPORTED_DOMAINS:
+            return True
+        # Check for direct video file extensions
+        if url.lower().endswith((".mp4", ".mov", ".avi", ".mkv", ".webm")):
+            return True
+        self.logger.warning(f"Unsupported URL domain: {domain}")
+        return False
 
     def _detect_source_type(self, url: str) -> str:
         url_lower = url.lower()

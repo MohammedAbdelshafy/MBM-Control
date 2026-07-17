@@ -61,7 +61,9 @@ class ContentAnalysisAgent(BaseAgent):
 
             # Step 4: Generate clip candidates
             campaign = source.campaign
-            requirements = campaign.requirements if campaign else {}
+            requirements = dict(campaign.requirements or {}) if campaign else {}
+            if campaign and campaign.brand_name:
+                requirements["brand"] = campaign.brand_name
             candidates = self._generate_candidates(
                 transcript_data, viral_moments, requirements, source.duration_seconds or 0
             )
@@ -108,115 +110,167 @@ class ContentAnalysisAgent(BaseAgent):
     # ------------------------------------------------------------------
 
     def _transcribe(self, local_path) -> dict:
-        """Run faster-whisper locally.
+        """Run transcription with WhisperX (GPU) or faster-whisper (CPU).
 
-        Degrades gracefully: a source with no detectable speech (e.g. a
-        music-only or stock clip) returns an empty transcript instead of
-        crashing the pipeline, so downstream candidate generation can fall
-        back to time-based windows.
+        WhisperX provides better word-level timestamps via wav2vec2 alignment.
+        Falls back gracefully through faster-whisper → empty (no paid API fallback).
         """
         import time
 
         t0 = time.time()
-        try:
-            from faster_whisper import WhisperModel
-        except ImportError:
-            self.logger.warning("faster-whisper not installed — using OpenAI Whisper API fallback")
-            return self._transcribe_via_api(local_path)
-
         empty = {"text": "", "language": "en", "segments": [], "processing_time": 0.0}
+
+        # Try WhisperX first if GPU available
+        if self.settings.whisper_device != "cpu":
+            try:
+                return self._transcribe_whisperx(local_path, t0)
+            except ImportError:
+                self.logger.debug("whisperx not installed; falling back to faster-whisper")
+            except ValueError as exc:
+                if "Language" in str(exc) and "is not supported" in str(exc):
+                    self.logger.warning(f"Unsupported language for WhisperX alignment ({exc}); falling back to faster-whisper")
+                else:
+                    self.logger.warning(f"WhisperX failed ({exc}); falling back to faster-whisper")
+            except Exception as exc:
+                self.logger.warning(f"WhisperX failed ({exc}); falling back to faster-whisper")
+
+        # Fallback to faster-whisper (free, CPU)
         try:
-            model = WhisperModel(
-                self.settings.whisper_model,
-                device=self.settings.whisper_device,
-                compute_type=self.settings.whisper_compute_type,
-            )
-
-            segments_raw, info = model.transcribe(
-                str(local_path),
-                beam_size=5,
-                word_timestamps=True,
-                vad_filter=True,
-            )
-
-            segments = []
-            full_words = []
-
-            for seg in segments_raw:
-                words = []
-                if seg.words:
-                    for w in seg.words:
-                        words.append({
-                            "word": w.word,
-                            "start": round(w.start, 3),
-                            "end": round(w.end, 3),
-                            "probability": round(w.probability, 3),
-                        })
-                        full_words.append(w.word)
-
-                segments.append({
-                    "id": seg.id,
-                    "start": round(seg.start, 3),
-                    "end": round(seg.end, 3),
-                    "text": seg.text.strip(),
-                    "words": words,
-                    "avg_logprob": round(seg.avg_logprob, 4),
-                    "no_speech_prob": round(seg.no_speech_prob, 4),
-                })
-
-            return {
-                "text": " ".join(full_words),
-                "language": info.language,
-                "duration": info.duration,
-                "segments": segments,
-                "processing_time": time.time() - t0,
-            }
-
+            return self._transcribe_faster_whisper(local_path, t0)
+        except ImportError:
+            self.logger.warning("faster-whisper not installed — no transcription available")
         except Exception as exc:
-            # faster-whisper raises "max() iterable argument is empty" during
-            # language detection when VAD filters out all audio (no speech).
-            # Any transcription failure here is non-fatal — return an empty
-            # transcript and let the pipeline continue with fallback windows.
-            self.logger.warning(
-                f"Transcription produced no usable speech ({exc}); "
-                "continuing with an empty transcript"
-            )
+            self.logger.warning(f"faster-whisper failed ({exc})")
             empty["processing_time"] = time.time() - t0
-            return empty
 
-    def _transcribe_via_api(self, local_path) -> dict:
-        """Fallback: OpenAI Whisper API."""
-        try:
-            import openai
-            client = openai.OpenAI(api_key=self.settings.openai_api_key)
-            with open(local_path, "rb") as f:
-                response = client.audio.transcriptions.create(
-                    model="whisper-1",
-                    file=f,
-                    response_format="verbose_json",
-                    timestamp_granularities=["word", "segment"],
-                )
-            return {
-                "text": response.text,
-                "language": response.language,
-                "segments": [s.model_dump() for s in (response.segments or [])],
-                "processing_time": 0,
-            }
-        except Exception as exc:
-            self.logger.error(f"Whisper API fallback failed: {exc}")
-            return {"text": "", "language": "en", "segments": [], "processing_time": 0}
+        self.logger.error("All free transcription methods failed")
+        return empty
+
+    def _transcribe_whisperx(self, local_path, t0: float) -> dict:
+        """Transcribe using WhisperX for better word-level alignment."""
+        import time
+        import whisperx
+
+        device = self.settings.whisper_device or "cuda"
+        model = whisperx.load_model(
+            self.settings.whisper_model,
+            device=device,
+            compute_type=self.settings.whisper_compute_type,
+            asr_options={"word_timestamps": True},
+        )
+
+        # Transcribe
+        result = model.transcribe(str(local_path), batch_size=16, print_progress=False)
+        language = result.get("language", "en")
+
+        # Align with wav2vec2 for better word timestamps
+        align_model, metadata = whisperx.load_align_model(language_code=language, device=device)
+        result = whisperx.align(
+            result["segments"],
+            align_model,
+            metadata,
+            str(local_path),
+            device=device,
+        )
+
+        segments = []
+        full_words = []
+
+        for seg in result.get("segments", []):
+            words = []
+            for w in seg.get("words", []):
+                words.append({
+                    "word": w.get("word", ""),
+                    "start": round(w.get("start", 0), 3),
+                    "end": round(w.get("end", 0), 3),
+                    "probability": round(w.get("probability", 1.0), 3),
+                })
+                full_words.append(w.get("word", ""))
+
+            segments.append({
+                "id": seg.get("id", 0),
+                "start": round(seg.get("start", 0), 3),
+                "end": round(seg.get("end", 0), 3),
+                "text": seg.get("text", "").strip(),
+                "words": words,
+                "avg_logprob": round(seg.get("avg_logprob", 0), 4),
+                "no_speech_prob": round(seg.get("no_speech_prob", 0), 4),
+            })
+
+        return {
+            "text": " ".join(full_words),
+            "language": language,
+            "duration": result.get("duration", 0),
+            "segments": segments,
+            "processing_time": time.time() - t0,
+        }
+
+    def _transcribe_faster_whisper(self, local_path, t0: float) -> dict:
+        """Transcribe using faster-whisper."""
+        import time
+        from faster_whisper import WhisperModel
+
+        model = WhisperModel(
+            self.settings.whisper_model,
+            device=self.settings.whisper_device,
+            compute_type=self.settings.whisper_compute_type,
+        )
+
+        segments_raw, info = model.transcribe(
+            str(local_path),
+            beam_size=5,
+            word_timestamps=True,
+            vad_filter=True,
+        )
+
+        segments = []
+        full_words = []
+
+        for seg in segments_raw:
+            words = []
+            if seg.words:
+                for w in seg.words:
+                    words.append({
+                        "word": w.word,
+                        "start": round(w.start, 3),
+                        "end": round(w.end, 3),
+                        "probability": round(w.probability, 3),
+                    })
+                    full_words.append(w.word)
+
+            segments.append({
+                "id": seg.id,
+                "start": round(seg.start, 3),
+                "end": round(seg.end, 3),
+                "text": seg.text.strip(),
+                "words": words,
+                "avg_logprob": round(seg.avg_logprob, 4),
+                "no_speech_prob": round(seg.no_speech_prob, 4),
+            })
+
+        return {
+            "text": " ".join(full_words),
+            "language": info.language,
+            "duration": info.duration,
+            "segments": segments,
+            "processing_time": time.time() - t0,
+        }
 
     # ------------------------------------------------------------------
     # Speaker diarization
     # ------------------------------------------------------------------
 
     def _diarize(self, local_path) -> list[dict]:
-        """Detect speaker turns using Pyannote."""
+        """Detect speaker turns using Pyannote (free, GPU-only)."""
+        import os
+        hf_token = os.environ.get("HF_TOKEN")
+        if not hf_token:
+            return []
         try:
             from pyannote.audio import Pipeline
             pipeline = Pipeline.from_pretrained(
                 "pyannote/speaker-diarization-3.1",
-                use_auth_token=self.settings.openai_api_key,  # HF token reuse or add separate field
+                use_auth_token=hf_token,
             )
             diarization = pipeline(str(local_path))
             speakers = []
@@ -489,7 +543,7 @@ class ContentAnalysisAgent(BaseAgent):
             f"Requirements: duration {requirements.get('duration_min', 15)}-{requirements.get('duration_max', 60)} seconds, "
             f"aspect ratio {requirements.get('aspect_ratio', '9:16')}, "
             f"platform {requirements.get('platform', 'TikTok/Instagram')}. "
-            f"Campaign brand: {requirements.get('brand', 'Unknown')}. "
+             f"Campaign brand: {requirements.get('brand', 'Unknown')}. "
             f"Hook required: {requirements.get('hook_required', True)}. "
         )
 

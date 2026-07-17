@@ -9,6 +9,7 @@ from app.agents.delivery_agent import DeliveryAgent, OutcomePollerAgent
 from app.agents.health_monitor import HealthMonitorAgent
 from app.agents.publishing import PublishingAgent
 from app.agents.lead_ingestion import LeadIngestionAgent
+from app.agents.enhancement_agent import EnhancementAgent
 
 __all__ = [
     "CampaignHunterAgent",
@@ -23,4 +24,5 @@ __all__ = [
     "HealthMonitorAgent",
     "PublishingAgent",
     "LeadIngestionAgent",
+    "EnhancementAgent",
 ]

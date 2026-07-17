@@ -152,19 +152,8 @@ class AIService:
         return result, None
 
     def embed(self, text: str) -> list[float] | None:
-        """Generate text embeddings. Tries OpenAI → Gemini (free) → None."""
-        # OpenAI first (best quality, 1536-dim)
-        if self._has_openai():
-            try:
-                response = self._get_openai().embeddings.create(
-                    model="text-embedding-3-small",
-                    input=text[:8000],
-                )
-                return response.data[0].embedding
-            except Exception as exc:
-                logger.warning(f"[openai/embed] failed: {exc} — trying Gemini")
-
-        # Gemini free-tier embeddings (768-dim, text-embedding-004)
+        """Generate text embeddings. Tries Gemini (free) → OpenAI (paid) → None."""
+        # Gemini free-tier embeddings first (768-dim, text-embedding-004, no cost)
         if self._has_gemini():
             try:
                 response = self._get_gemini().embeddings.create(
@@ -173,7 +162,18 @@ class AIService:
                 )
                 return response.data[0].embedding
             except Exception as exc:
-                logger.warning(f"[gemini/embed] failed: {exc}")
+                logger.warning(f"[gemini/embed] failed: {exc} — trying OpenAI")
+
+        # OpenAI fallback (1536-dim, paid)
+        if self._has_openai():
+            try:
+                response = self._get_openai().embeddings.create(
+                    model="text-embedding-3-small",
+                    input=text[:8000],
+                )
+                return response.data[0].embedding
+            except Exception as exc:
+                logger.warning(f"[openai/embed] failed: {exc}")
 
         logger.error("All embedding providers failed")
         return None
@@ -357,13 +357,16 @@ class AIService:
     # ------------------------------------------------------------------
 
     def _provider_order(self) -> list[str]:
-        """Return providers to try in priority order based on configured keys."""
+        """
+        Return providers to try in priority order.
+        Free providers (Gemini, Ollama) preferred over paid (Anthropic, OpenAI).
+        """
         order: list[str] = []
-        if self._has_anthropic():
-            order.append("anthropic")
         if self._has_gemini():
             order.append("gemini")
         order.append("ollama")   # always include — fails fast (ConnectionRefused) if not running
+        if self._has_anthropic():
+            order.append("anthropic")
         if self._has_openai():
             order.append("openai")
         return order

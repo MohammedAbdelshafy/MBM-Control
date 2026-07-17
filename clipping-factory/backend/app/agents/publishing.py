@@ -141,13 +141,23 @@ class PublishingAgent(BaseAgent):
 
         published = [p for p, o in results.items() if o["status"] in
                      (SocialPostStatus.PUBLISHED, SocialPostStatus.SIMULATED)]
+
+        # Send Telegram notification for published clips
+        for platform, outcome in results.items():
+            if outcome["status"] == SocialPostStatus.PUBLISHED and outcome.get("post_url"):
+                self._notify_telegram(platform, clip_id, outcome["post_url"], campaign)
+
         return AgentResult.ok({"clip_id": clip_id, "results": results, "published": published})
 
     # ------------------------------------------------------------------
 
     def _build_caption(self, clip, campaign) -> tuple[str, str]:
         """Compose a caption/title from the clip hook and campaign metadata."""
+        hooks = (clip.scores or {}).get("hook_variants", [])
         hook = (clip.hook_text or "").strip()
+        if not hook and hooks:
+            hook = hooks[0]
+
         brand = (campaign.brand_name if campaign and campaign.brand_name else "").strip()
         title = hook or (campaign.title if campaign else "New clip")
         parts = [hook] if hook else []
@@ -161,6 +171,12 @@ class PublishingAgent(BaseAgent):
         """Publish to one platform; simulate when Playwright/session unavailable."""
         flow = _PLATFORM_FLOWS[platform]
         session_state = self.settings.social_session_state(platform)
+
+        # YouTube: try Data API first (no session needed), then Playwright
+        if platform == SocialPlatform.YOUTUBE:
+            api_result = self._publish_youtube_api(video_path, caption, title)
+            if api_result:
+                return api_result
 
         try:
             from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
@@ -186,7 +202,13 @@ class PublishingAgent(BaseAgent):
                 args=["--no-sandbox"],
             )
             try:
-                context = browser.new_context(storage_state=storage_state)
+                context = browser.new_context(
+                    storage_state=storage_state,
+                    locale="en-US",
+                    timezone_id="America/New_York",
+                    geolocation={"longitude": -74.006, "latitude": 40.7128},
+                    permissions=["geolocation"]
+                )
                 pw_page = context.new_page()
                 timeout = self.settings.publish_timeout_ms
 
@@ -235,6 +257,80 @@ class PublishingAgent(BaseAgent):
             self.logger.warning(f"[{platform}] publish failed: {result['error']}")
         return result
 
+    def _publish_youtube_api(self, video_path: Path, caption: str, title: str) -> dict | None:
+        """Try YouTube Data API upload using stored OAuth tokens. Returns None if no tokens."""
+        tokens_path = Path(__file__).parent.parent.parent.parent / "youtube_tokens.json"
+        if not tokens_path.exists():
+            return None
+
+        try:
+            import json as _json
+            tokens = _json.loads(tokens_path.read_text())
+            if not tokens:
+                return None
+
+            # Use first configured channel
+            cid = next(iter(tokens))
+            info = tokens[cid]
+
+            from google.oauth2.credentials import Credentials
+            from google.auth.transport.requests import Request
+            from googleapiclient.discovery import build
+            from googleapiclient.http import MediaFileUpload
+
+            creds = Credentials(
+                token=info.get("access_token"),
+                refresh_token=info["refresh_token"],
+                token_uri=info.get("token_uri", "https://oauth2.googleapis.com/token"),
+                client_id=info["client_id"],
+                client_secret=info["client_secret"],
+                scopes=["https://www.googleapis.com/auth/youtube.upload"],
+            )
+            if creds.expired or not creds.token:
+                creds.refresh(Request())
+                tokens[cid]["access_token"] = creds.token
+                tokens_path.write_text(_json.dumps(tokens, indent=2))
+
+            youtube = build("youtube", "v3", credentials=creds)
+
+            body = {
+                "snippet": {
+                    "title": title[:100],
+                    "description": caption[:5000],
+                    "tags": ["shorts", "viral", "fyp"],
+                    "categoryId": "28",
+                },
+                "status": {
+                    "privacyStatus": "public",
+                    "selfDeclaredMadeForKids": False,
+                    "embeddable": True,
+                    "publicStatsViewable": True,
+                },
+            }
+
+            media = MediaFileUpload(str(video_path), mimetype="video/mp4", resumable=True)
+            request = youtube.videos().insert(part="snippet,status", body=body, media_body=media)
+
+            response = None
+            while response is None:
+                status, response = request.next_chunk()
+
+            video_id = response.get("id", "")
+            self.logger.info(f"[youtube] API upload success: {video_id}")
+
+            return {
+                "status": SocialPostStatus.PUBLISHED,
+                "platform": "youtube",
+                "platform_post_id": video_id,
+                "post_url": f"https://youtube.com/watch?v={video_id}",
+                "error": None,
+                "method": "youtube_data_api",
+            }
+
+        except Exception as exc:
+            self.logger.warning(f"[youtube] API upload failed: {exc}")
+            return None
+
     def _simulated(self, platform: str, reason: str) -> dict:
         """Mock result so the pipeline stays runnable without creds/Playwright."""
         self.logger.info(f"[{platform}] simulated publish ({reason})")
@@ -246,3 +342,27 @@ class PublishingAgent(BaseAgent):
             "error": None,
             "simulated_reason": reason,
         }
+
+    def _notify_telegram(self, platform: str, clip_id: str, post_url: str, campaign) -> None:
+        """Send Telegram notification with the published clip video + link."""
+        try:
+            from app.services.telegram_notifier import TelegramNotifier
+            from app.models.clip import Clip
+            db = self.db
+            clip = db.query(Clip).filter(Clip.id == clip_id).first() if db else None
+            tg = TelegramNotifier(self.settings)
+
+            if clip:
+                tg.notify_clip_published(platform, clip, post_url)
+            else:
+                brand = (campaign.brand_name if campaign and campaign.brand_name else "").strip()
+                title = (campaign.title if campaign else "")[:50] or "New clip"
+                tg.send_message(
+                    f"🌐 *Clip Published*\n"
+                    f"Platform: {platform.title()}\n"
+                    f"Campaign: {brand or title}\n"
+                    f"URL: {post_url}"
+                )
+            self.logger.info(f"Telegram notified: {platform} clip {clip_id[:8]}")
+        except Exception as exc:
+            self.logger.error(f"Telegram notification failed: {exc}")

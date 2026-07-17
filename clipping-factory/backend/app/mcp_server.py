@@ -127,6 +127,17 @@ def edit_clip(clip_id: str) -> dict:
 
 
 @mcp.tool()
+def enhance_clip(clip_id: str) -> dict:
+    """
+    Apply quality enhancement to a clip: sharpen, color grade, denoise,
+    and optional Real-ESRGAN upscaling. Uses campaign requirements config.
+    """
+    from app.agents.enhancement_agent import EnhancementAgent
+    with _db() as db:
+        return _wrap(EnhancementAgent(db)._safe_run(clip_id=clip_id))
+
+
+@mcp.tool()
 def quality_check(clip_id: str) -> dict:
     """
     Run automated QC: technical specs, campaign requirement compliance,
@@ -419,6 +430,7 @@ def _validate_startup() -> tuple[bool, str]:
         "content_analysis",
         "clip_generation",
         "editing_agent",
+        "enhancement_agent",
         "quality_control",
         "delivery_agent",
         "health_monitor",

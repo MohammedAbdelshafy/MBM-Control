@@ -24,26 +24,13 @@ class CampaignIntelligenceAgent(BaseAgent):
             return AgentResult.fail(f"Campaign {campaign_id} not found")
 
         self.logger.info(f"Analyzing requirements for campaign: {campaign.title[:60]}")
+        old_status = campaign.status
 
         # Try extracting requirements directly from raw_requirements JSON first
         parsed = self._extract_requirements_from_raw(campaign.raw_requirements)
         if parsed:
             self.logger.info("Requirements extracted directly from raw data (no AI needed)")
-            campaign.requirements = parsed
-            campaign.status = CampaignStatus.READY
-            campaign.opportunity_score = self._score_opportunity(parsed)
-            self.db.flush()
-            self._audit("campaign", campaign.id, "requirements_parsed", CampaignStatus.DISCOVERED, CampaignStatus.READY)
-            if parsed.get("payment_per_clip"):
-                campaign.payment_per_accepted_clip = float(parsed["payment_per_clip"])
-            if parsed.get("due_date"):
-                campaign.due_at = parsed["due_date"]
-            if parsed.get("source_url") and not campaign.source_url:
-                campaign.source_url = parsed["source_url"]
-            if campaign.source_url:
-                from app.workers.video_tasks import acquire_content
-                acquire_content.apply_async(args=[campaign.id], queue="acquisition")
-            return AgentResult.ok({"requirements": parsed, "opportunity_score": campaign.opportunity_score})
+            return self._process_parsed_requirements(campaign, parsed, old_status)
 
         # Fetch requirements: campaign page + any linked docs file
         raw_text = campaign.raw_requirements or ""
@@ -64,30 +51,45 @@ class CampaignIntelligenceAgent(BaseAgent):
         if not parsed:
             return AgentResult.fail("Failed to parse requirements")
 
-        # Score the opportunity
-        opportunity_score = self._score_opportunity(parsed)
+        return self._process_parsed_requirements(campaign, parsed, old_status)
 
-        # Update campaign
-        old_status = campaign.status
+    def _process_parsed_requirements(self, campaign, parsed: dict, old_status: str) -> AgentResult:
+        from app.models.campaign import CampaignStatus
+
         campaign.requirements = parsed
-        campaign.status = CampaignStatus.READY
+        campaign.opportunity_score = self._score_opportunity(parsed)
         campaign.intelligence_notes = parsed.get("notes", "")
-        campaign.opportunity_score = opportunity_score
 
-        # Apply parsed fields
-        if parsed.get("payment_per_clip"):
+        # Map payout and caps
+        if parsed.get("payment_per_clip") is not None:
             campaign.payment_per_accepted_clip = float(parsed["payment_per_clip"])
+        if parsed.get("payout_per_1k_views") is not None:
+            campaign.payout_per_1k_views = float(parsed["payout_per_1k_views"])
+        if parsed.get("max_payout_cap") is not None:
+            campaign.max_payout_cap = float(parsed["max_payout_cap"])
         if parsed.get("due_date"):
             campaign.due_at = parsed["due_date"]
         if parsed.get("source_url") and not campaign.source_url:
             campaign.source_url = parsed["source_url"]
 
+        # Check payout threshold (skip if below limit)
+        payout = campaign.payout_per_1k_views
+        if payout is not None and payout < self.settings.min_payout_per_1k_views:
+            campaign.status = CampaignStatus.FAILED
+            campaign.error_message = f"Skipped: payout per 1k views (${payout:.2f}) is below the minimum threshold (${self.settings.min_payout_per_1k_views:.2f})"
+            self.db.flush()
+            self._audit("campaign", campaign.id, "rejected_low_payout", old_status, CampaignStatus.FAILED)
+            self.logger.info(f"Campaign {campaign.id} rejected due to low payout: ${payout:.2f}/1k views (min ${self.settings.min_payout_per_1k_views:.2f})")
+            return AgentResult.ok({"status": "skipped_low_payout", "payout": payout})
+
+        # Otherwise, transition to READY
+        campaign.status = CampaignStatus.READY
         self.db.flush()
         self._audit("campaign", campaign.id, "requirements_parsed", old_status, CampaignStatus.READY)
 
         self.logger.info(
-            f"Campaign {campaign_id} ready. Score: {opportunity_score:.2f} | "
-            f"Pay: ${parsed.get('payment_per_clip', '?')} | "
+            f"Campaign {campaign.id} ready. Score: {campaign.opportunity_score:.2f} | "
+            f"Pay rate: ${campaign.payout_per_1k_views or 0.0}/1k views | "
             f"Platform: {parsed.get('platform', 'unknown')}"
         )
 
@@ -96,7 +98,7 @@ class CampaignIntelligenceAgent(BaseAgent):
             from app.workers.video_tasks import acquire_content
             acquire_content.apply_async(args=[campaign.id], queue="acquisition")
 
-        return AgentResult.ok({"requirements": parsed, "opportunity_score": opportunity_score})
+        return AgentResult.ok({"requirements": parsed, "opportunity_score": campaign.opportunity_score})
 
     # ------------------------------------------------------------------
 
@@ -310,6 +312,26 @@ class CampaignIntelligenceAgent(BaseAgent):
             pass
         return None
 
+    # Niche RPM multipliers (from 2026 clipping economy research)
+    # Finance, Tech/SaaS, and Streaming/IRL have the highest CPMs
+    _NICHE_RPM = {
+        "finance":          5.0,   # $3-5 CPM, high conversion
+        "tech":             4.0,   # $3-5 CPM, SaaS audience
+        "saas":             4.0,
+        "crypto":           4.5,   # $3-6 CPM, volatile but high
+        "streaming":        3.5,   # $100-300 RPM for IRL
+        "irl":              3.0,
+        "gaming":           2.5,   # $2-3 CPM
+        "real_estate":      3.0,   # $2-4 CPM
+        "health":           3.0,   # $2-4 CPM
+        "fitness":          2.5,   # $2-3 CPM
+        "education":        2.0,   # $1-3 CPM
+        "entertainment":    1.5,   # $1-2 CPM
+        "general":          1.0,   # baseline
+    }
+
+    _DEFAULT_NICHE = "general"
+
     _REQUIREMENTS_SCHEMA = {
         "type": "object",
         "properties": {
@@ -324,6 +346,8 @@ class CampaignIntelligenceAgent(BaseAgent):
             "hook_required":      {"type": ["boolean", "null"]},
             "hook_style":         {"type": ["string", "null"]},
             "payment_per_clip":   {"type": ["number", "null"]},
+            "payout_per_1k_views": {"type": ["number", "null"]},
+            "max_payout_cap":      {"type": ["number", "null"]},
             "currency":           {"type": ["string", "null"]},
             "max_submissions":    {"type": ["integer", "null"]},
             "due_date":           {"type": ["string", "null"]},
@@ -335,7 +359,7 @@ class CampaignIntelligenceAgent(BaseAgent):
             "difficulty":         {"type": ["string", "null"], "enum": ["easy", "medium", "hard", None]},
             "notes":              {"type": ["string", "null"]},
         },
-        "required": ["platform", "duration_min", "duration_max", "payment_per_clip"],
+        "required": ["platform", "duration_min", "duration_max"],
     }
 
     _SYSTEM_PROMPT = (
@@ -370,11 +394,11 @@ class CampaignIntelligenceAgent(BaseAgent):
     def _score_opportunity(self, requirements: dict) -> float:
         """
         Score 0.0 to 1.0 based on how attractive the campaign is.
-        Higher payment, simpler requirements, known platform = higher score.
+        Factors: payment, niche RPM, difficulty, platform, duration, urgency.
         """
         score = 0.5  # baseline
 
-        # Payment
+        # Payment per clip
         pay = requirements.get("payment_per_clip") or 0
         if pay >= 50:
             score += 0.2
@@ -382,6 +406,17 @@ class CampaignIntelligenceAgent(BaseAgent):
             score += 0.1
         elif pay >= 10:
             score += 0.05
+
+        # Niche RPM multiplier (high-CPM niches score higher)
+        niche = (requirements.get("content_category") or "").lower()
+        rpm = self._NICHE_RPM.get(niche, self._NICHE_RPM.get(self._DEFAULT_NICHE, 1.0))
+        if rpm >= 4.0:
+            score += 0.25   # finance, crypto, tech
+        elif rpm >= 3.0:
+            score += 0.15   # real estate, health, streaming
+        elif rpm >= 2.0:
+            score += 0.05   # gaming, fitness, education
+        # general/baseline gets no bonus
 
         # Difficulty
         difficulty = requirements.get("difficulty", "medium")
@@ -413,3 +448,14 @@ class CampaignIntelligenceAgent(BaseAgent):
                 pass
 
         return max(0.0, min(1.0, score))
+
+    def projected_rpm(self, requirements: dict) -> float:
+        """Return estimated RPM for this campaign based on niche."""
+        niche = (requirements.get("content_category") or "").lower()
+        return self._NICHE_RPM.get(niche, self._NICHE_RPM.get(self._DEFAULT_NICHE, 1.0))
+
+    def projected_cpm(self, requirements: dict) -> float:
+        """Return estimated CPM for the platform."""
+        platform = requirements.get("platform", "TikTok")
+        from app.models.social_post import SocialPlatform
+        return SocialPlatform.estimated_cpm(platform.lower().replace(" ", "_"))

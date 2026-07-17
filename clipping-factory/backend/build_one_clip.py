@@ -37,13 +37,31 @@ def main():
 
     db = SyncSessionLocal()
 
-    # ---- Pick a demo campaign with a source URL -------------------------
+    # ---- Pick a campaign with a DIRECTLY DOWNLOADABLE source URL --------
+    # Prefer the seeded demo clips (Pixabay .mp4) so the build is reliable;
+    # fall back to any direct-video, then to the most recent campaign.
     campaign = (
         db.query(Campaign)
         .filter(Campaign.source_url.isnot(None))
+        .filter(Campaign.source_url.like("%pixabay%"))
         .order_by(Campaign.created_at.desc())
         .first()
     )
+    if not campaign:
+        campaign = (
+            db.query(Campaign)
+            .filter(Campaign.source_url.isnot(None))
+            .filter(Campaign.source_url.like("%.mp4"))
+            .order_by(Campaign.created_at.desc())
+            .first()
+        )
+    if not campaign:
+        campaign = (
+            db.query(Campaign)
+            .filter(Campaign.source_url.isnot(None))
+            .order_by(Campaign.created_at.desc())
+            .first()
+        )
     if not campaign:
         print("No campaign with a source URL found. Run 'seed demo' first.")
         return 1
@@ -57,6 +75,14 @@ def main():
         "platform": "TikTok",
         "caption_required": True,
         "hook_required": True,
+        "caption_style": "bold_white",
+        "voiceover_required": True,
+        "voiceover_voice": "en-US-JennyNeural",
+        "voiceover_rate": "+0%",
+        "fade_in": 0.5,
+        "fade_out": 0.5,
+        "remove_silence": True,
+        "sidecar_captions": True,
     }
     db.commit()
     log("TARGET", f"Campaign: {campaign.title}\n  id={campaign.id}\n  source={campaign.source_url}")
@@ -85,8 +111,8 @@ def main():
     from app.models.source_content import SourceContent
     src = db.query(SourceContent).filter(SourceContent.id == src_id).first()
     transcript = src.transcript
+    dur = src.duration_seconds or 60
     if not transcript.clip_candidates:
-        dur = src.duration_seconds or 60
         start = min(10.0, max(0.0, dur * 0.2))
         end = min(start + 30, dur)
         transcript.clip_candidates = [{
@@ -99,6 +125,29 @@ def main():
         db.commit()
         print(f"  -> AI returned no candidates; injected fallback window {start:.0f}-{end:.0f}s")
 
+    # Robustness: the demo Pixabay clip is silent, so Whisper yields 0 words.
+    # Inject a real transcript (words + in-window timing) so caption/voiceover
+    # generation has content and the edit stage never loops on an empty list.
+    if not transcript.segments or not (transcript.full_text or "").strip():
+        window = transcript.clip_candidates[0]
+        ws, we = float(window["start"]), float(window["end"])
+        words = ("This is an AI generated demo clip built by the autonomous "
+                 "clipping factory. We turn long videos into short viral "
+                 "shorts with captions hooks and voiceover. Watch to the end "
+                 "and follow for more daily clips.").split()
+        n = len(words)
+        step = max((we - ws) / max(n, 1), 0.4)
+        segs = []
+        t = ws
+        for w in words:
+            segs.append({"start": round(t, 3), "end": round(t + step, 3), "text": w})
+            t += step
+        transcript.segments = segs
+        transcript.full_text = " ".join(words)
+        transcript.status = "completed"
+        db.commit()
+        print(f"  -> injected {n}-word transcript for silent source")
+
     # ---- Stage 3: Generate raw clips (ffmpeg cut) ----------------------
     log("3/5 GENERATE", "Cutting raw clip segment(s) with ffmpeg...")
     r3 = ClipGenerationAgent(db).run(source_content_id=src_id)
@@ -108,6 +157,19 @@ def main():
         return 1
     clip_id = r3.data["clips_created"][0]
     print(f"  -> built {len(r3.data['clips_created'])} raw clip(s); editing first: {clip_id}")
+
+    # Anchor the clip to the transcript window so editing lands in-window
+    # (build_one_clip always edits the first generated clip).
+    from app.models.clip import Clip as _Clip
+    _clip = db.query(_Clip).filter(_Clip.id == clip_id).first()
+    if _clip and _clip.source_content and _clip.source_content.transcript:
+        _cands = _clip.source_content.transcript.clip_candidates or []
+        if _cands:
+            _w = _cands[0]
+            _clip.source_start_seconds = float(_w.get("start", 0.0))
+            _clip.source_end_seconds = float(_w.get("end", _clip.duration_seconds or 30.0))
+            db.commit()
+            print(f"  -> clip window set {_clip.source_start_seconds:.1f}-{_clip.source_end_seconds:.1f}s")
 
     # ---- Stage 4: Edit (aspect ratio, audio, captions, hook) -----------
     log("4/5 EDIT", "Applying 9:16 crop, audio normalize, burn captions, AI hook...")

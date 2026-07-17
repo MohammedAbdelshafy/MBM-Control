@@ -142,6 +142,40 @@ def edit_clip(self, clip_id: str):
 
 
 @celery_app.task(
+    name="app.workers.video_tasks.enhance_clip",
+    base=JobTrackedTask,
+    bind=True,
+    max_retries=2,
+    default_retry_delay=60,
+    queue="video",
+    soft_time_limit=3600,
+)
+def enhance_clip(self, clip_id: str):
+    """Apply quality enhancement (sharpen, color grade, denoise, upscale) to a clip."""
+    from app.core.database import SyncSessionLocal
+    from app.agents.enhancement_agent import EnhancementAgent
+
+    db = SyncSessionLocal()
+    try:
+        agent = EnhancementAgent(db=db)
+        result = agent._safe_run(clip_id=clip_id)
+        if not result.success:
+            raise ValueError(result.error)
+        db.commit()
+        return result.data
+    except Exception as exc:
+        db.rollback()
+        logger.error(f"Enhancement failed for clip {clip_id}: {exc}")
+        try:
+            raise self.retry(exc=exc)
+        except MaxRetriesExceededError:
+            _mark_clip_failed(clip_id, str(exc))
+            return {"error": str(exc)}
+    finally:
+        db.close()
+
+
+@celery_app.task(
     name="app.workers.video_tasks.quality_check_clip",
     base=JobTrackedTask,
     bind=True,
@@ -163,6 +197,35 @@ def quality_check_clip(self, clip_id: str):
     except Exception as exc:
         db.rollback()
         logger.error(f"QC failed for clip {clip_id}: {exc}")
+        return {"error": str(exc)}
+    finally:
+        db.close()
+
+
+@celery_app.task(
+    name="app.workers.video_tasks.editor_quality_check",
+    base=JobTrackedTask,
+    bind=True,
+    max_retries=1,
+    queue="video",
+    soft_time_limit=600,
+)
+def editor_quality_check(self, clip_id: str, auto_fix: bool = False):
+    """Run the professional clip editor quality agent — validates every detail."""
+    from app.core.database import SyncSessionLocal
+    from app.agents.clip_editor_quality import ClipEditorQualityAgent
+
+    db = SyncSessionLocal()
+    try:
+        agent = ClipEditorQualityAgent(db=db)
+        result = agent._safe_run(clip_id=clip_id, auto_fix=auto_fix)
+        if not result.success:
+            raise ValueError(result.error)
+        db.commit()
+        return result.data
+    except Exception as exc:
+        db.rollback()
+        logger.error(f"Editor QA failed for clip {clip_id}: {exc}")
         return {"error": str(exc)}
     finally:
         db.close()
@@ -193,6 +256,49 @@ def cleanup_temp_files():
 
     logger.info(f"Cleanup: removed {cleaned} temp directories")
     return {"cleaned": cleaned}
+
+
+@celery_app.task(
+    name="app.workers.video_tasks.requeue_stuck_clips",
+    queue="default",
+    soft_time_limit=120,
+)
+def requeue_stuck_clips():
+    """Detect clips stuck in editing/generating for >30 min and re-queue them."""
+    from datetime import datetime, timezone, timedelta
+    from app.core.database import SyncSessionLocal
+    from app.models.clip import Clip, ClipStatus
+
+    db = SyncSessionLocal()
+    try:
+        cutoff = datetime.now(timezone.utc) - timedelta(minutes=30)
+        stuck = db.query(Clip).filter(
+            Clip.status.in_([ClipStatus.EDITING, ClipStatus.GENERATING]),
+            Clip.created_at < cutoff,
+        ).all()
+
+        if not stuck:
+            return {"requeued": 0}
+
+        requeued = 0
+        for clip in stuck:
+            if clip.status == ClipStatus.EDITING and (clip.edits_applied and len(clip.edits_applied) > 0):
+                clip.status = ClipStatus.QC_PENDING
+                editor_quality_check.apply_async(args=[clip.id, True], queue="video")
+            else:
+                clip.status = ClipStatus.GENERATING
+                edit_clip.apply_async(args=[clip.id], queue="video")
+            requeued += 1
+
+        db.commit()
+        logger.warning(f"Requeued {requeued} stuck clips")
+        return {"requeued": requeued}
+    except Exception as exc:
+        db.rollback()
+        logger.error(f"Requeue stuck clips failed: {exc}")
+        return {"error": str(exc)}
+    finally:
+        db.close()
 
 
 # ------------------------------------------------------------------

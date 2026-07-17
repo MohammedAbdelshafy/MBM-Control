@@ -24,6 +24,8 @@ async_engine = create_async_engine(
     settings.database_url,
     pool_size=settings.database_pool_size,
     max_overflow=settings.database_max_overflow,
+    pool_timeout=settings.database_pool_timeout,
+    connect_args={"statement_cache_size": 0, "timeout": settings.database_statement_timeout},
     echo=not settings.is_production,
     future=True,
 )

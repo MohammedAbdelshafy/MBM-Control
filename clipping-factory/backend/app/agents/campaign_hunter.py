@@ -24,6 +24,7 @@ class CampaignHunterAgent(BaseAgent):
         super().__init__(db)
         self._browser = None
         self._page = None
+        self._base_url = self.settings.clipping_base_url
 
     # ------------------------------------------------------------------
     # Public entry point
@@ -73,7 +74,8 @@ class CampaignHunterAgent(BaseAgent):
 
     def _scan_page(self, page) -> dict:
         """Authenticate and scrape available campaigns for one page."""
-        self.logger.info(f"Scanning page: {page.name} ({page.id})")
+        self._base_url = (page.settings or {}).get("platform_base_url") or self.settings.clipping_base_url
+        self.logger.info(f"Scanning page: {page.name} ({page.id}) using base URL: {self._base_url}")
 
         raw_campaigns = self._fetch_campaigns_with_playwright(page)
         new_count = 0
@@ -145,59 +147,67 @@ class CampaignHunterAgent(BaseAgent):
                 except Exception:
                     pass
 
-            pw_page = context.new_page()
+            max_retries = 2
+            for attempt in range(1, max_retries + 1):
+                try:
+                    pw_page.goto(
+                        f"{self._base_url}/campaigns",
+                        wait_until="networkidle",
+                        timeout=30000,
+                    )
 
-            try:
-                # Navigate to campaigns dashboard
-                pw_page.goto(
-                    f"{self.settings.clipping_base_url}/campaigns",
-                    wait_until="networkidle",
-                    timeout=30000,
-                )
+                    if self._needs_login(pw_page):
+                        logged_in = self._login(pw_page)
+                        if not logged_in:
+                            if attempt < max_retries:
+                                self.logger.warning(f"Login failed, retrying ({attempt}/{max_retries})...")
+                                continue
+                            self.logger.error(f"Skipping page {page_id} — login failed after {max_retries} attempts")
+                            browser.close()
+                            return []
+                        cookies = context.cookies()
+                        page.session_cookie = json.dumps(cookies)
+                        page.session_expires_at = datetime.now(timezone.utc).isoformat()
+                        self.db.flush()
 
-                # Check if we need to log in
-                if self._needs_login(pw_page):
-                    self._login(pw_page)
-                    # Save fresh session cookie
+                    if self._has_captcha(pw_page):
+                        self.logger.error("CAPTCHA detected — human intervention required")
+                        from app.core.redis_client import publish_event
+                        publish_event("alerts", {
+                            "type": "captcha_required",
+                            "page_id": page.id,
+                            "ts": datetime.now(timezone.utc).isoformat(),
+                        })
+                        browser.close()
+                        return []
+
+                    campaigns = self._parse_campaign_list(pw_page)
+
                     cookies = context.cookies()
                     page.session_cookie = json.dumps(cookies)
-                    page.session_expires_at = datetime.now(timezone.utc).isoformat()
                     self.db.flush()
+                    break  # success — exit retry loop
 
-                # Check for CAPTCHA
-                if self._has_captcha(pw_page):
-                    self.logger.error("CAPTCHA detected — human intervention required")
-                    from app.core.redis_client import publish_event
-                    publish_event("alerts", {
-                        "type": "captcha_required",
-                        "page_id": page.id,
-                        "ts": datetime.now(timezone.utc).isoformat(),
-                    })
-                    return []
-
-                # Scrape campaign cards
-                campaigns = self._parse_campaign_list(pw_page)
-
-                # Persist fresh cookies
-                cookies = context.cookies()
-                page.session_cookie = json.dumps(cookies)
-                self.db.flush()
-
-            except PWTimeout as exc:
-                self.logger.error(f"Playwright timeout: {exc}")
-            finally:
-                browser.close()
+                except PWTimeout as exc:
+                    self.logger.error(f"Playwright timeout (attempt {attempt}/{max_retries}): {exc}")
+                    if attempt == max_retries:
+                        raise
+                    continue
+                finally:
+                    if attempt == max_retries:
+                        browser.close()
 
         return campaigns
 
     def _needs_login(self, pw_page) -> bool:
-        return pw_page.url.startswith(f"{self.settings.clipping_base_url}/login") or \
+        return pw_page.url.startswith(f"{self._base_url}/login") or \
                pw_page.query_selector("[data-testid='login-form']") is not None
 
-    def _login(self, pw_page) -> None:
+    def _login(self, pw_page, max_attempts: int = 2) -> bool:
+        """Log in and verify success. Returns True if login was successful."""
         method = self.settings.clipping_auth_method
-        self.logger.info(f"Logging in to Clipping.com via {method}")
-        pw_page.goto(f"{self.settings.clipping_base_url}/login", wait_until="networkidle")
+        self.logger.info(f"Logging in to {self._base_url} via {method}")
+        pw_page.goto(f"{self._base_url}/login", wait_until="networkidle")
 
         if method == "discord":
             self._login_discord(pw_page)
@@ -207,7 +217,14 @@ class CampaignHunterAgent(BaseAgent):
             pw_page.fill("[name='email']", self.settings.clipping_email)
             pw_page.fill("[name='password']", self.settings.clipping_password)
             pw_page.click("[type='submit']")
-            pw_page.wait_for_url(f"{self.settings.clipping_base_url}/**", timeout=15000)
+            pw_page.wait_for_url(f"{self._base_url}/**", timeout=15000)
+
+        # Verify login succeeded
+        if self._needs_login(pw_page):
+            self.logger.error(f"Login via {method} failed — still on login page")
+            return False
+        self.logger.info(f"Login via {method} successful")
+        return True
 
     def _login_discord(self, pw_page) -> None:
         """Complete the Discord OAuth flow for Clipping.com."""
@@ -242,7 +259,7 @@ class CampaignHunterAgent(BaseAgent):
             pass  # already authorized — goes straight back to Clipping.com
 
         # Wait for redirect back to Clipping.com
-        pw_page.wait_for_url(f"{self.settings.clipping_base_url}/**", timeout=20000)
+        pw_page.wait_for_url(f"{self._base_url}/**", timeout=20000)
         self.logger.info("Discord OAuth login successful")
 
     def _login_google(self, pw_page) -> None:
@@ -255,11 +272,24 @@ class CampaignHunterAgent(BaseAgent):
         pw_page.wait_for_selector("input[type='password']", timeout=8000)
         pw_page.fill("input[type='password']", self.settings.clipping_password)
         pw_page.click("#passwordNext, button:has-text('Next')")
-        pw_page.wait_for_url(f"{self.settings.clipping_base_url}/**", timeout=20000)
+        pw_page.wait_for_url(f"{self._base_url}/**", timeout=20000)
         self.logger.info("Google OAuth login successful")
 
     def _has_captcha(self, pw_page) -> bool:
-        return pw_page.query_selector(".captcha, iframe[src*='recaptcha']") is not None
+        """Detect CAPTCHA challenges including reCAPTCHA, hCaptcha, Cloudflare Turnstile, and image/text CAPTCHAs."""
+        selectors = [
+            ".captcha", "iframe[src*='recaptcha']", "iframe[src*='hcaptcha']",
+            "iframe[src*='turnstile']", "[class*='cf-turnstile']", "[id*='turnstile']",
+            "[class*='h-captcha']", "div[data-sitekey]", "img[src*='captcha']",
+            "input[name*='captcha']", "[aria-label*='captcha']",
+        ]
+        for sel in selectors:
+            if pw_page.query_selector(sel):
+                return True
+        # Check page text for CAPTCHA keywords
+        body_text = pw_page.inner_text("body")
+        captcha_keywords = ["captcha", "verify you are human", "security check", "are you human"]
+        return any(kw in body_text.lower() for kw in captcha_keywords)
 
     def _parse_campaign_list(self, pw_page) -> list[dict]:
         """Extract campaign data from the page DOM."""
@@ -277,7 +307,11 @@ class CampaignHunterAgent(BaseAgent):
         return campaigns
 
     def _extract_card_data(self, card, pw_page) -> dict:
-        """Extract structured data from a single campaign card element."""
+        """
+        Extract structured data from a single campaign card element.
+        Important: extract ALL card-level data BEFORE navigating away,
+        because the card element handle becomes detached after page navigation.
+        """
         def text(selector: str) -> str:
             el = card.query_selector(selector)
             return el.inner_text().strip() if el else ""
@@ -286,24 +320,39 @@ class CampaignHunterAgent(BaseAgent):
             el = card.query_selector(selector)
             return el.get_attribute(attribute) or "" if el else ""
 
+        import re as _re
+
+        # Extract all card-level data before any page navigation
         campaign_id = attr("[data-campaign-id]", "data-campaign-id") or \
                       attr("a", "href").split("/")[-1]
+        campaign_url = f"{self._base_url}/campaigns/{campaign_id}"
 
-        campaign_url = f"{self.settings.clipping_base_url}/campaigns/{campaign_id}"
+        card_title = text("[data-testid='campaign-title'], .campaign-title, h3")
+        card_brand = text("[data-testid='brand-name'], .brand-name")
+        pay_text = text(".pay-rate, [data-testid='pay-rate']")
+        card_due = text(".due-date, [data-testid='due-date']")
+        card_source = attr("a[data-source]", "data-source")
 
-        # Navigate into the campaign detail page to get docs URL and source URL
+        payout_per_1k_views = None
+        if pay_text:
+            match = _re.search(r'\$\s*([0-9]+(?:\.[0-9]+)?)\s*(?:per\s*1k|/1k|\/1000|per\s*1000)', pay_text, _re.IGNORECASE)
+            if match:
+                payout_per_1k_views = float(match.group(1))
+
+        # Navigate into the campaign detail page (this detaches the card handle)
         docs_url, source_url, raw_requirements = self._fetch_campaign_detail(
             campaign_url, pw_page
         )
 
         return {
             "id": campaign_id,
-            "title": text("[data-testid='campaign-title'], .campaign-title, h3"),
-            "brand": text("[data-testid='brand-name'], .brand-name"),
+            "title": card_title,
+            "brand": card_brand,
             "url": campaign_url,
-            "pay": text(".pay-rate, [data-testid='pay-rate']"),
-            "due_date": text(".due-date, [data-testid='due-date']"),
-            "source_url": source_url or attr("a[data-source]", "data-source"),
+            "pay": pay_text,
+            "payout_per_1k_views": payout_per_1k_views,
+            "due_date": card_due,
+            "source_url": source_url or card_source,
             "docs_url": docs_url,
             "raw_requirements": raw_requirements,
         }
@@ -350,7 +399,7 @@ class CampaignHunterAgent(BaseAgent):
                 if pdf:
                     href = pdf.group(1)
                     docs_url = href if href.startswith("http") else (
-                        self.settings.clipping_base_url.rstrip("/") + "/" + href.lstrip("/")
+                        self._base_url.rstrip("/") + "/" + href.lstrip("/")
                     )
 
             # ── Source video URL ───────────────────────────────────────
@@ -429,22 +478,24 @@ class CampaignHunterAgent(BaseAgent):
         from langchain_anthropic import ChatAnthropic
         from browser_use import Agent as BrowserAgent
 
+        base_url = (page.settings or {}).get("platform_base_url") or self.settings.clipping_base_url
+
         auth_method = self.settings.clipping_auth_method
         if auth_method == "discord":
             login_instruction = (
-                f"Go to {self.settings.clipping_base_url}/login, click the 'Login with Discord' button, "
+                f"Go to {base_url}/login, click the 'Login with Discord' button, "
                 f"then on the Discord page enter email '{self.settings.clipping_email}' and "
                 f"password '{self.settings.clipping_password}', click Login, then click Authorize if prompted."
             )
         else:
             login_instruction = (
-                f"Go to {self.settings.clipping_base_url}/login and log in with "
+                f"Go to {base_url}/login and log in with "
                 f"email '{self.settings.clipping_email}' and password '{self.settings.clipping_password}'."
             )
 
         task = (
             f"{login_instruction} "
-            f"Then navigate to {self.settings.clipping_base_url}/campaigns and return a JSON list "
+            f"Then navigate to {base_url}/campaigns and return a JSON list "
             "of all available campaign cards. Each item must have: id, title, brand, url, pay, due_date. "
             f"Return at most {self.settings.clipping_max_campaigns_per_scan} campaigns."
         )
@@ -472,7 +523,7 @@ class CampaignHunterAgent(BaseAgent):
     def _run_demo_mode(self) -> "AgentResult":
         """
         Seed realistic demo campaigns without hitting Clipping.com.
-        Ensures a demo Page exists, then upserts demo campaigns onto it.
+        Ensures demo Pages exist, then upserts demo campaigns onto them.
         """
         from app.models.page import Page
         import uuid as _uuid
@@ -491,11 +542,28 @@ class CampaignHunterAgent(BaseAgent):
             self.db.flush()
             self.logger.info(f"Created demo page: {demo_page.id}")
 
+        # Get or create the Muslim Clipping demo page
+        muslim_page = self.db.query(Page).filter(Page.platform_id == "muslim-clipping-page").first()
+        if not muslim_page:
+            muslim_page = Page(
+                id=str(_uuid.uuid4()),
+                name="Muslim Clipping Profile",
+                platform_id="muslim-clipping-page",
+                email="muslimsclipping@example.com",
+                is_active=True,
+                settings={"platform_base_url": "https://muslimsclipping.com"}
+            )
+            self.db.add(muslim_page)
+            self.db.flush()
+            self.logger.info(f"Created Muslim Clipping page: {muslim_page.id}")
+
         raw_campaigns = self._demo_campaigns()
         new_count = 0
         for raw in raw_campaigns:
             try:
-                created = self._upsert_campaign(raw, demo_page.id)
+                # Route campaign to the corresponding page based on platform name
+                target_page_id = muslim_page.id if raw.get("platform_name") == "MuslimsClipping.com" else demo_page.id
+                created = self._upsert_campaign(raw, target_page_id)
                 if created:
                     new_count += 1
             except Exception as exc:
@@ -508,7 +576,7 @@ class CampaignHunterAgent(BaseAgent):
         })
 
     def _demo_campaigns(self) -> list[dict]:
-        """Realistic demo campaigns representing Whop Content Rewards ($4-$5 CPM)."""
+        """Realistic demo campaigns representing multiple platforms ($2.50 to $6.50 CPM)."""
         ts = int(time.time())
         return [
             {
@@ -562,6 +630,60 @@ class CampaignHunterAgent(BaseAgent):
                     "duration_min": 20, "duration_max": 45,
                     "aspect_ratio": "9:16", "platform": "Instagram",
                     "caption_required": True, "hook_required": True,
+                    "resolution": "1080x1920", "fps": 30,
+                },
+            },
+            {
+                "id": f"muslimsclipping-lectures-{ts}",
+                "title": "Islamic Lectures & Reminders short edits (Strictly Halal)",
+                "brand": "FaithFirst",
+                "platform_name": "MuslimsClipping.com",
+                "url": "https://muslimsclipping.com/campaigns/lectures",
+                "pay": "$6.50 per 1k views",
+                "payout_per_1k_views": 6.50,
+                "max_payout_cap": 3000.00,
+                "due_date": "2026-08-15",
+                "source_url": "https://cdn.pixabay.com/video/2020/02/17/32511-392669641_large.mp4",
+                "requirements": {
+                    "duration_min": 20, "duration_max": 45,
+                    "aspect_ratio": "9:16", "platform": "TikTok",
+                    "caption_required": True, "hook_required": True,
+                    "resolution": "1080x1920", "fps": 30,
+                },
+            },
+            {
+                "id": f"clipping-techreview-{ts}",
+                "title": "Tech Review Short Clips — YouTube Shorts",
+                "brand": "GadgetVerse",
+                "platform_name": "Clipping.com",
+                "url": "https://clipping.com/campaigns/tech-review",
+                "pay": "$4.20 per 1k views",
+                "payout_per_1k_views": 4.20,
+                "max_payout_cap": 4000.00,
+                "due_date": "2026-07-28",
+                "source_url": "https://cdn.pixabay.com/video/2020/02/17/32511-392669641_large.mp4",
+                "requirements": {
+                    "duration_min": 15, "duration_max": 50,
+                    "aspect_ratio": "9:16", "platform": "YouTube",
+                    "caption_required": True, "hook_required": True,
+                    "resolution": "1080x1920", "fps": 30,
+                },
+            },
+            {
+                "id": f"clipping-cooking-lowpay-{ts}",
+                "title": "Generic Cooking Clips — Low Pay Rate",
+                "brand": "EasyBake",
+                "platform_name": "Clipping.com",
+                "url": "https://clipping.com/campaigns/cooking",
+                "pay": "$2.50 per 1k views",
+                "payout_per_1k_views": 2.50,
+                "max_payout_cap": 500.00,
+                "due_date": "2026-07-28",
+                "source_url": "https://cdn.pixabay.com/video/2020/02/17/32511-392669641_large.mp4",
+                "requirements": {
+                    "duration_min": 30, "duration_max": 60,
+                    "aspect_ratio": "9:16", "platform": "Instagram",
+                    "caption_required": True, "hook_required": False,
                     "resolution": "1080x1920", "fps": 30,
                 },
             },

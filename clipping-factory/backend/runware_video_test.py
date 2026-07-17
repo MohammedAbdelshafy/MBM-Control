@@ -1,22 +1,26 @@
 import asyncio
 import os
+from dotenv import load_dotenv
 from runware import Runware
 
-# Using the key found in the .env file
-API_KEY = 'NzHPVQQbLDYyXDm7w5kSilCrQ5cQD0uO'
+load_dotenv()
+API_KEY = os.environ.get("RUNWARE_API_KEY")
 
 async def main():
+    if not API_KEY:
+        print("RUNWARE_API_KEY not set")
+        return
     print("Connecting to Runware...")
-    async with Runware(api_key=API_KEY) as client:
-        print("Connected. Requesting video generation...")
+    async with Runware(api_key=API_KEY, transport="rest") as client:
+        print("Connected. Requesting image generation...")
         try:
             images = await client.run({
                 "taskType": "imageInference",
-                "model": "runware:100@1",
+                "model": "runware:101@1",
                 "positivePrompt": "A cinematic, highly detailed shot of a futuristic sports car driving through a neon-lit cyberpunk city, 4k, photorealistic",
                 "width": 854,
                 "height": 480,
-                "numberResults": 1
+                "numberResults": 1,
             })
             for i in images:
                 print(f"Generated Image URL: {i.imageURL}")

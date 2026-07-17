@@ -40,6 +40,8 @@ celery_app = Celery(
         "app.workers.publish_tasks",
         "app.workers.health_tasks",
         "app.workers.ingestion_tasks",
+        "app.workers.monetization_tasks",
+        "app.workers.analytics_tasks",
     ],
 )
 
@@ -94,6 +96,11 @@ celery_app.conf.update(
             "schedule": 3600,
             "options": {"queue": "default"},
         },
+        "requeue-stuck-clips": {
+            "task": "app.workers.video_tasks.requeue_stuck_clips",
+            "schedule": 600,  # Every 10 minutes
+            "options": {"queue": "default"},
+        },
         "ingest-lead-packs": {
             "task": "app.workers.ingestion_tasks.ingest_lead_packs",
             "schedule": 21600,
@@ -104,6 +111,16 @@ celery_app.conf.update(
             "schedule": 43200,
             "options": {"queue": "campaigns"},
         },
+        "monetization-check": {
+            "task": "app.workers.monetization_tasks.run_monetization_check",
+            "schedule": settings.monetization_check_interval_seconds,
+            "options": {"queue": "health"},
+        },
+        "sync-analytics": {
+            "task": "app.workers.analytics_tasks.sync_post_metrics",
+            "schedule": 3600,
+            "options": {"queue": "default"},
+        },
     },
 
     # Task routing
@@ -112,11 +129,15 @@ celery_app.conf.update(
         "app.workers.video_tasks.acquire_content": {"queue": "acquisition"},
         "app.workers.video_tasks.analyze_content": {"queue": "analysis"},
         "app.workers.video_tasks.generate_clips": {"queue": "video"},
-        "app.workers.video_tasks.edit_clips": {"queue": "video"},
+        "app.workers.video_tasks.edit_clip": {"queue": "video"},
+        "app.workers.video_tasks.enhance_clip": {"queue": "video"},
+        "app.workers.video_tasks.editor_quality_check": {"queue": "video"},
         "app.workers.delivery_tasks.*": {"queue": "delivery"},
         "app.workers.publish_tasks.*": {"queue": "publish"},
         "app.workers.health_tasks.*": {"queue": "health"},
+        "app.workers.monetization_tasks.*": {"queue": "health"},
         "app.workers.ingestion_tasks.*": {"queue": "campaigns"},
+        "app.workers.analytics_tasks.*": {"queue": "default"},
     },
 )
 
