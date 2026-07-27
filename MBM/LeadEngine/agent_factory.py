@@ -41,20 +41,10 @@ DEPLOYED_FILE = LOGS_DIR / "deployed_agents.json"
 
 RETELL_API_KEY = os.getenv("RETELL_API_KEY")
 
-# Voice IDs for variety (Retell native voices)
+# Voice IDs for variety (Retell native voices — only verified working IDs)
 VOICE_IDS = [
-    "retell-Willa",       # Female, warm
-    "retell-Nathan",      # Male, professional
-    "retell-Ava",         # Female, clear
-    "retell-Hailey",      # Female, friendly
-    "retell-Jason",       # Male, confident
-    "retell-Sofia",       # Female, elegant
-    "retell-Callum",      # Male, British
-    "retell-Alice",       # Female, precise
-    "retell-Kimi",        # Female, energetic
-    "retell-James",       # Male, calm
-    "retell-Lily",        # Female, gentle
-    "retell-Josh",        # Male, casual
+    "retell-Willa",
+    "retell-Cimo",
 ]
 
 # Industry niches with scripts
