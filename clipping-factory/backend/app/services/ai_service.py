@@ -357,31 +357,29 @@ class AIService:
     # ------------------------------------------------------------------
 
     def _provider_order(self) -> list[str]:
-        """
-        Return providers to try in priority order.
-        Free providers (Gemini, Ollama) preferred over paid (Anthropic, OpenAI).
-        """
+        """Return providers to try in priority order (fastest/cheapest first)."""
         order: list[str] = []
+        order.append("ollama")   # local & free, fails fast if not running
         if self._has_gemini():
             order.append("gemini")
-        order.append("ollama")   # always include — fails fast (ConnectionRefused) if not running
         if self._has_anthropic():
             order.append("anthropic")
         if self._has_openai():
             order.append("openai")
         return order
 
+    @staticmethod
+    def _key_valid(k: str) -> bool:
+        return bool(k) and k != "" and "your-" not in k and "..." not in k and "placeholder" not in k.lower()
+
     def _has_anthropic(self) -> bool:
-        k = settings.anthropic_api_key
-        return bool(k) and "sk-ant-..." not in k and k != ""
+        return self._key_valid(settings.anthropic_api_key)
 
     def _has_gemini(self) -> bool:
-        k = settings.gemini_api_key
-        return bool(k) and k != ""
+        return self._key_valid(settings.gemini_api_key)
 
     def _has_openai(self) -> bool:
-        k = settings.openai_api_key
-        return bool(k) and "sk-..." not in k and k != ""
+        return self._key_valid(settings.openai_api_key)
 
     # ------------------------------------------------------------------
     # Client factories

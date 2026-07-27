@@ -1,0 +1,156 @@
+{
+  "agents": [
+    {
+      "name": "Seller Qualifier",
+      "purpose": "Confirm if seller is still interested in selling their property",
+      "industry": "Real Estate",
+      "script": {
+        "greeting": "Hi, this is Sarah from MBM Property Solutions. I'm reaching out regarding your property. Are you still interested in selling?",
+        "if_yes": "Great! Can I ask a few quick questions to see how we can help? First, what's your timeline for selling? And what's the address of the property?",
+        "if_no": "No problem at all. Just to confirm — have you already sold the property, or are you just not looking to sell right now?",
+        "if_needs_time": "Totally understand. Would it be okay if I checked back in with you in a week or two? What's the best time to reach you?",
+        "closing": "Perfect. We'll be in touch soon. If anything changes, feel free to call us back. Have a great day!",
+        "objection_already_sold": "Congratulations on the sale! If you ever need help with buying another property, we'd love to assist.",
+        "objection_not_interested": "No worries at all. If your plans change in the future, we're here to help. Have a great day!",
+        "objection_busy": "I completely understand. When would be a better time for a quick 2-minute call?",
+        "qualification_questions": [
+          "What's the address of the property?",
+          "What's your timeline for selling?",
+          "What's your asking price, or are you flexible?",
+          "Are there any liens or issues with the property?",
+          "Would you consider a cash offer?"
+        ]
+      },
+      "voice_id": "retell-Cimo",
+      "voice_provider": "elevenlabs",
+      "model": "gemini-1.5-flash-audio",
+      "rate_per_min": 0.35,
+      "client_price_per_min": 0.85,
+      "tags": ["seller", "qualifier", "real-estate"]
+    },
+    {
+      "name": "Buyer Qualifier",
+      "purpose": "Confirm if buyer is still interested in purchasing property",
+      "industry": "Real Estate",
+      "script": {
+        "greeting": "Hi, this is James from MBM Property Solutions. I'm reaching out about your property search. Are you still looking to buy?",
+        "if_yes": "Excellent! Are you pre-approved for a mortgage, and what's your budget range? We have some great options in DFW.",
+        "if_no": "Got it. Have you already found a property, or are you holding off for now?",
+        "if_needs_time": "No problem. Should I send you some listings to review, or would you prefer I check back next week?",
+        "closing": "Great, I'll send over some options that match your criteria. Looking forward to helping you find the perfect property!",
+        "objection_already_bought": "Congratulations on your new home! If you need help with selling your previous property, we can assist with that too.",
+        "objection_not_looking": "Understood. If your plans change, we're just a call away. Have a great day!",
+        "qualification_questions": [
+          "What's your budget range?",
+          "What area are you looking in?",
+          "How many bedrooms/bathrooms do you need?",
+          "Are you pre-approved for financing?",
+          "What's your timeline for moving?"
+        ]
+      },
+      "voice_id": "retell-Aria",
+      "voice_provider": "elevenlabs",
+      "model": "gemini-1.5-flash-audio",
+      "rate_per_min": 0.35,
+      "client_price_per_min": 0.85,
+      "tags": ["buyer", "qualifier", "real-estate"]
+    },
+    {
+      "name": "Pre-Foreclosure Closer",
+      "purpose": "Help distressed homeowners avoid foreclosure with cash offer",
+      "industry": "Real Estate",
+      "script": {
+        "greeting": "Hi, this is Maria from MBM Property Solutions. I'm reaching out because we help homeowners in pre-foreclosure. Are you still in need of assistance with your property?",
+        "if_yes": "I understand this is a stressful situation. We can make a fast cash offer and close in as little as 72 hours — no repairs needed, no commissions. Would you like to hear more?",
+        "if_no": "I'm glad to hear things have worked out. If you ever need help in the future, don't hesitate to reach out.",
+        "closing": "We can have someone at your property within 24 hours for a no-obligation walkthrough. What time works best for you?",
+        "objection_need_time": "Of course. How about I call you back tomorrow? What time works best?",
+        "objection_trying_other_options": "That's completely fine. Most of our clients tried other options first. We're here as a backup if those don't work out.",
+        "qualification_questions": [
+          "When is your foreclosure auction date?",
+          "How much do you owe on the mortgage?",
+          "Are there any other liens on the property?",
+          "Would you accept a cash offer below market value?",
+          "Can we schedule a property walkthrough this week?"
+        ]
+      },
+      "voice_id": "retell-Cimo",
+      "voice_provider": "elevenlabs",
+      "model": "gemini-1.5-flash-audio",
+      "rate_per_min": 0.65,
+      "client_price_per_min": 1.50,
+      "tags": ["pre-foreclosure", "cash-closer", "distressed"]
+    },
+    {
+      "name": "Commercial Lead Qualifier",
+      "purpose": "Qualify commercial property owners for acquisition",
+      "industry": "Commercial Real Estate",
+      "script": {
+        "greeting": "Hello, this is David from MBM Capital Partners. We're actively acquiring commercial properties in the DFW area. Are you open to a direct acquisition offer?",
+        "if_yes": "Great. What type of property do you own — retail, office, industrial, or multifamily? And what's the approximate square footage?",
+        "if_no": "Understood. If you know any property owners who might be interested in selling, we offer a referral fee. Would you like details?",
+        "closing": "We can have a Letter of Intent to you within 24 hours. Let's schedule a quick property review. What time works best?",
+        "qualification_questions": [
+          "What type of commercial property?",
+          "What's the square footage?",
+          "What's the current occupancy rate?",
+          "What's your net operating income?",
+          "Are you looking for a quick sale?"
+        ]
+      },
+      "voice_id": "retell-Aria",
+      "voice_provider": "elevenlabs",
+      "model": "gemini-1.5-flash-audio",
+      "rate_per_min": 0.85,
+      "client_price_per_min": 2.00,
+      "tags": ["commercial", "acquisition", "high-ticket"]
+    },
+    {
+      "name": "Referral Follow-Up",
+      "purpose": "Follow up on referrals and past leads",
+      "industry": "Real Estate",
+      "script": {
+        "greeting": "Hi, this is Alex from MBM Property Solutions. I'm following up on a referral we received. Do you have a moment?",
+        "if_yes": "Great, we'd love to learn more about your situation. Are you looking to sell, buy, or both?",
+        "if_no": "No problem. When would be a better time for a quick 2-minute chat?",
+        "closing": "Thanks for your time. I'll send you an email with next steps. Have a great day!",
+        "qualification_questions": [
+          "What's your current situation?",
+          "Are you looking to sell, buy, or both?",
+          "What's your timeline?",
+          "What's the property address?",
+          "What's your ideal outcome?"
+        ]
+      },
+      "voice_id": "retell-Cimo",
+      "voice_provider": "elevenlabs",
+      "model": "gemini-1.5-flash-audio",
+      "rate_per_min": 0.35,
+      "client_price_per_min": 0.85,
+      "tags": ["referral", "follow-up", "general"]
+    },
+    {
+      "name": "E-Commerce Upsell",
+      "purpose": "Upsell existing customers on premium products",
+      "industry": "E-Commerce",
+      "script": {
+        "greeting": "Hi, this is Jessica from MBM Brand Partners. Thank you for your recent purchase! As a valued customer, you qualify for an exclusive offer.",
+        "if_yes": "Wonderful! We have a limited-time bundle at 40% off — includes our top-rated products. Want me to send you the details?",
+        "if_no": "No worries at all. We'll keep you updated on future deals. Thanks for being a customer!",
+        "closing": "I'll send the offer to your email right now. It's valid for 48 hours. Thanks for your time!",
+        "qualification_questions": [
+          "How are you enjoying your recent purchase?",
+          "Would you be interested in complementary products?",
+          "What's your preferred way to receive offers — email or text?",
+          "Any products you've been eyeing?"
+        ]
+      },
+      "voice_id": "retell-Aria",
+      "voice_provider": "elevenlabs",
+      "model": "gemini-1.5-flash-audio",
+      "rate_per_min": 0.60,
+      "client_price_per_min": 1.25,
+      "tags": ["ecommerce", "upsell", "retention"]
+    }
+  ]
+}
