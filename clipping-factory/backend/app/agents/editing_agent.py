@@ -357,29 +357,34 @@ class EditingAgent(BaseAgent):
                 edits.append("enhanced_sharpen_color_denoise")
 
         # 10. Upscale (Real-ESRGAN or fallback lanczos)
-        #     Skip when an explicit target resolution is set and upscaling
-        #     would overshoot it (QC requires the exact target dimensions).
+        #     Skip when an explicit target resolution is set and current
+        #     dimensions already meet or exceed it.
+        target_res = requirements.get("resolution")
+        _should_upscale = True
+        if target_res:
+            try:
+                parts = target_res.lower().replace("x", "x").split("x")
+                if len(parts) == 2:
+                    tw, th = int(parts[0]), int(parts[1])
+                    from app.services.video_processor import VideoProcessor as _VP
+                    _w, _h = _VP.get_video_dimensions(str(current))
+                    if _w and _h and _w >= tw and _h >= th:
+                        _should_upscale = False
+                        self.logger.info(
+                            f"Upscale skipped: {_w}x{_h} already >= {tw}x{th}"
+                        )
+            except Exception:
+                pass
         upscale_req = requirements.get("upscale", {})
-        upscale_active = self.settings.enhancement_upscale or upscale_req.get("enabled", False)
+        upscale_active = (_should_upscale
+                          and (self.settings.enhancement_upscale
+                               or upscale_req.get("enabled", False)))
         if upscale_active:
             from app.services.video_processor import VideoProcessor
             upscaled = Path(tmpdir) / "upscaled.mp4"
             model = upscale_req.get("model", "realesrgan-x4plus")
             scale = upscale_req.get("scale", 2)
-            _overshoot = False
-            if res:
-                try:
-                    from app.services.video_processor import VideoProcessor as _VP
-                    _w, _h = _VP.get_video_dimensions(str(current))
-                    if _w and _h and (_w * scale > w or _h * scale > h):
-                        _overshoot = True
-                        self.logger.info(
-                            f"Upscale skipped: {_w}x{_h} *{scale} would exceed "
-                            f"target {w}x{h}"
-                        )
-                except Exception:
-                    pass
-            if not _overshoot and VideoProcessor.real_esrgan_upscale(
+            if VideoProcessor.real_esrgan_upscale(
                 current, upscaled,
                 model=model, scale=scale,
                 crf=enhance_req.get("crf", 18) if enhance_req.get("enabled", False) else 18,

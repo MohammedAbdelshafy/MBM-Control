@@ -67,9 +67,12 @@ def main():
         return 1
 
     # Give it concrete clip requirements so editing produces a polished 9:16 clip
+    # Use the source duration to set a realistic duration_min so QC doesn't
+    # reject short sources (Pixabay clips are often 10-15s).
+    src_dur = campaign.source_duration_seconds or 0
     campaign.requirements = {
-        "duration_min": 20,
-        "duration_max": 40,
+        "duration_min": max(10, int(src_dur * 0.6)) if src_dur else 15,
+        "duration_max": max(30, int(src_dur * 1.0)) if src_dur else 40,
         "aspect_ratio": "9:16",
         "resolution": "1080x1920",
         "platform": "TikTok",
