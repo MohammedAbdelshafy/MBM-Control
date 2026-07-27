@@ -1,0 +1,53 @@
+[
+  {
+    "name": "Seller Qualifier",
+    "retell_agent_id": "agent_00bb14caed46feaddd75526ce2",
+    "llm_id": "llm_9cd6768697e4a92610c8c0be743c",
+    "status": "deployed"
+  },
+  {
+    "name": "Buyer Qualifier",
+    "status": "failed",
+    "error": "{\"status\":\"error\",\"message\":\"Not Found\"}"
+  },
+  {
+    "name": "Pre-Foreclosure Closer",
+    "retell_agent_id": "agent_3404c7c4a6f7b1448145fbbdd9",
+    "llm_id": "llm_6b70ac5661cb2c0a97fdd3ed40f5",
+    "status": "deployed"
+  },
+  {
+    "name": "Commercial Lead Qualifier",
+    "status": "failed",
+    "error": "{\"status\":\"error\",\"message\":\"Not Found\"}"
+  },
+  {
+    "name": "Referral Follow-Up",
+    "retell_agent_id": "agent_8e178801707abe5236c469cc00",
+    "llm_id": "llm_d7de88fbe8b3132563ab6fa3201a",
+    "status": "deployed"
+  },
+  {
+    "name": "E-Commerce Upsell",
+    "status": "failed",
+    "error": "{\"status\":\"error\",\"message\":\"Not Found\"}"
+  },
+  {
+    "name": "Buyer Qualifier",
+    "retell_agent_id": "agent_1cf38b194ed2d0cf9842ba82ee",
+    "llm_id": "llm_68a3584fedd27d03c7ea28b0496b",
+    "status": "deployed"
+  },
+  {
+    "name": "Commercial Lead Qualifier",
+    "retell_agent_id": "agent_ec2545ec4ba59441a07608623b",
+    "llm_id": "llm_41182fa81416d1658670ddbc9ff0",
+    "status": "deployed"
+  },
+  {
+    "name": "E-Commerce Upsell",
+    "retell_agent_id": "agent_43b5f21d2663151d439c3c699d",
+    "llm_id": "llm_7f2fc113e5391223e784b102c745",
+    "status": "deployed"
+  }
+]

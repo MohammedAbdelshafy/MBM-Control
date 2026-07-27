@@ -1,0 +1,25 @@
+name: Agent Factory - Create Voice Agent Every 15 Min
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Every 15 minutes
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  create-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install requests python-dotenv
+      
+      - name: Create new voice agent
+        env:
+          RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
+        run: python MBM/LeadEngine/agent_factory.py --once
