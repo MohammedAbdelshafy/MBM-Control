@@ -41,20 +41,20 @@ DEPLOYED_FILE = LOGS_DIR / "deployed_agents.json"
 
 RETELL_API_KEY = os.getenv("RETELL_API_KEY")
 
-# Voice IDs for variety (ElevenLabs)
+# Voice IDs for variety (Retell native voices)
 VOICE_IDS = [
-    "21m00Tcm4TlvDq8ikWAM",  # Rachel
-    "JBFqnCBsd6RMkjVDRZzb",  # Adam
-    "EXAVITQu4vr4xnSDxMaL",  # Bella
-    "ErXwobaYiN019PkySvjV",  # Antoni
-    "MF3mGyEYCl7XYWbV9V6O",  # Elli
-    "TxGEqnHWrfWFTfGW9XjX",  # Josh
-    "VR6AewLTigWG4xSOukaG",  # Arnold
-    "pNInz6obpgDQGcFmaJgB",  # Adam
-    "yoZ06aMxZJJ28mfd3POQ",  # Sam
-    "AZnzlk1XvdvUeBnXmlld",  # Domi
-    "EXAVITQu4vr4xnSDxMaL",  # Grace
-    "JBFqnCBsd6RMkjVDRZzb",  # Callum
+    "retell-Willa",       # Female, warm
+    "retell-Nathan",      # Male, professional
+    "retell-Ava",         # Female, clear
+    "retell-Hailey",      # Female, friendly
+    "retell-Jason",       # Male, confident
+    "retell-Sofia",       # Female, elegant
+    "retell-Callum",      # Male, British
+    "retell-Alice",       # Female, precise
+    "retell-Kimi",        # Female, energetic
+    "retell-James",       # Male, calm
+    "retell-Lily",        # Female, gentle
+    "retell-Josh",        # Male, casual
 ]
 
 # Industry niches with scripts
