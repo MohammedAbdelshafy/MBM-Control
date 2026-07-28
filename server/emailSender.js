@@ -6,15 +6,34 @@ const nodemailer = await import('nodemailer').then(m => m.default);
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://prgmwljhbjtcjmwnjaao.supabase.co';
 
-function getTransporter() {
-  const pass = (process.env.SMTP_PASS || '').replace(/\s+/g, '');
+// Parse sender pool: "email:password,email:password,..."
+// Falls back to single-account mode with SMTP_USER/SMTP_PASS
+const senderPoolRaw = process.env.SMTP_SENDER_POOL || '';
+const senderAccounts = [];
+
+if (senderPoolRaw.includes(':')) {
+  // Multi-account mode: email:password pairs
+  for (const entry of senderPoolRaw.split(',').map(e => e.trim()).filter(Boolean)) {
+    const [email, ...passParts] = entry.split(':');
+    senderAccounts.push({ email: email.trim(), pass: passParts.join(':').trim() });
+  }
+} else {
+  // Single-account fallback
+  senderAccounts.push({
+    email: process.env.SMTP_USER || 'abdelshafyclapps@gmail.com',
+    pass: (process.env.SMTP_PASS || '').replace(/\s+/g, '')
+  });
+}
+
+function getTransporter(email, pass) {
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
   const port = parseInt(process.env.SMTP_PORT || '587');
+
   return nodemailer.createTransport({
     host,
     port,
     secure: port === 465,
-    auth: { user: process.env.SMTP_USER, pass },
+    auth: { user: email, pass },
     pool: true,
     maxConnections: parseInt(process.env.MAX_SMTP_CONNECTIONS || '10'),
     rateDelta: parseInt(process.env.SMTP_RATE_DELTA || '1000'),
@@ -39,7 +58,7 @@ async function sendOne(transporter, supabase, email, fromAddress, fromName) {
       .from('email_queue')
       .update({ status: 'sent', sent_at: new Date().toISOString(), updated_at: new Date().toISOString() })
       .eq('id', email.id);
-    return { id: email.id, status: 'sent' };
+    return { id: email.id, status: 'sent', sender: fromAddress };
   } catch (err) {
     await supabase
       .from('email_queue')
@@ -58,9 +77,16 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
     supabase = createClient(supabaseUrl, serviceRoleKey);
   }
 
-  const transporter = getTransporter();
-  const fromAddress = process.env.SMTP_FROM || 'noreply@contechai.com';
-  const fromName = process.env.SMTP_FROM_NAME || 'Contech AI Agentic teamz';
+  // Build transporter pool with per-account credentials
+  const poolTransporters = senderAccounts.map(acct => ({
+    address: acct.email,
+    transporter: getTransporter(acct.email, acct.pass)
+  }));
+
+  console.log(`[emailSender] Multi-Account Pool: ${poolTransporters.length} accounts`);
+  poolTransporters.forEach(p => console.log(`  - ${p.address}`));
+
+  const fromName = process.env.SMTP_FROM_NAME || 'Contech AI Agentic Teamz';
   const sendDelay = parseInt(process.env.EMAIL_SEND_DELAY_MS || '100');
   const concurrency = parseInt(process.env.EMAIL_CONCURRENCY || '5');
 
@@ -89,11 +115,14 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
     let sent = 0;
     let failed = 0;
 
-    // Send in parallel batches with concurrency limit
+    // Send in parallel batches with round-robin pool rotation
     for (let i = 0; i < emails.length; i += concurrency) {
       const batch = emails.slice(i, i + concurrency);
       const results = await Promise.allSettled(
-        batch.map(email => sendOne(transporter, supabase, email, fromAddress, fromName))
+        batch.map((email, idx) => {
+          const poolObj = poolTransporters[(i + idx) % poolTransporters.length];
+          return sendOne(poolObj.transporter, supabase, email, poolObj.address, fromName);
+        })
       );
 
       for (const r of results) {
