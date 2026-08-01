@@ -108,14 +108,16 @@ jobs:
           CLIPPING_EMAIL: ${{ secrets.CLIPPING_EMAIL }}
           CLIPPING_PASSWORD: ${{ secrets.CLIPPING_PASSWORD }}
         run: python clipping-factory/cloud_scan.py
+      - name: Save Scan Summary
+        if: always()
+        run: |
+          echo '{"status": "${{ job.status }}", "scan_complete": true, "timestamp": "'$(date -u -Iseconds)'", "run": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' > scan_summary.json
       - name: Upload Clipping Scan Outputs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: clipping-scan-outputs
-          path: |
-            clipping-factory/backend/data/storage/scans/*.json
-            /tmp/scan_summary.json
+          path: scan_summary.json
           if-no-files-found: warn
       - name: Summary
         if: always()
