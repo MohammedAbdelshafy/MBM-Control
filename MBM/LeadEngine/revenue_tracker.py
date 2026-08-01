@@ -205,7 +205,10 @@ class RevenueTracker:
 
         signals = self.collect_signals()
         score = self.compute_score(signals)
-        made_money = score >= YES_THRESHOLD
+        # THE REAL MONEY GATE: only a won/closed/signed deal counts as money.
+        # Meetings, replies, verified contacts, and outreach volume are pipeline
+        # activity — they feed the score for tracking but never flip the verdict.
+        made_money = signals["deals_won"] >= 1
 
         self.state["total_hours_run"] += 1
         hour_number = self.state["total_hours_run"]
@@ -215,7 +218,8 @@ class RevenueTracker:
 
         if made_money:
             # ─── YES ───
-            log(f"✅ HOUR {hour_number} — YES, we made money. Score: {score}")
+            log(f"✅ HOUR {hour_number} — YES, we made money. "
+                f"Deals won: {signals['deals_won']}. Pipeline score: {score}")
             self.state["consecutive_no_hours"] = 0
             self.state["last_yes_timestamp"] = datetime.now(timezone.utc).isoformat()
             # Clear any pending adjustments since things are working
@@ -224,8 +228,8 @@ class RevenueTracker:
             # ─── NO ───
             self.state["consecutive_no_hours"] += 1
             no_hours = self.state["consecutive_no_hours"]
-            log(f"❌ HOUR {hour_number} — NO revenue. Score: {score}. "
-                f"Consecutive NO hours: {no_hours}")
+            log(f"❌ HOUR {hour_number} — NO revenue. Deals won: {signals['deals_won']}. "
+                f"Pipeline score: {score}. Consecutive NO hours: {no_hours}")
 
             adjustments = self._generate_adjustments(no_hours, signals)
             self.state["pending_adjustments"] = {
@@ -469,8 +473,9 @@ def _run_self_test():
 
     print("\n2. Computing score...")
     score = tracker.compute_score(signals)
-    print(f"   Score: {score} (threshold: {YES_THRESHOLD})")
-    print(f"   Answer: {'YES' if score >= YES_THRESHOLD else 'NO'}")
+    print(f"   Score: {score} (pipeline health, threshold: {YES_THRESHOLD})")
+    print(f"   Answer: {'YES' if signals['deals_won'] >= 1 else 'NO'} "
+          f"(money gate = deals_won >= 1, current: {signals['deals_won']})")
 
     print("\n3. Running full revenue check...")
     verdict = tracker.hourly_revenue_check()
