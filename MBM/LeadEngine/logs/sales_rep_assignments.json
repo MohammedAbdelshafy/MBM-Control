@@ -1,0 +1,46 @@
+[
+  {
+    "assignment_id": "sa-87683445",
+    "deal_address": "Gorton Lane, Manchester, Greater Manchester, M18 8EH",
+    "asking_price": "\u00a31,000,000",
+    "expected_commission": "$25,000.00",
+    "assigned_sales_rep": "Omar A.",
+    "rep_role": "Senior Deal Director",
+    "rep_commission_fee": "$875.00 (3.5%)",
+    "dealing_room_status": "Active Pipeline",
+    "assigned_at": "2026-07-27T12:28:37.060028+00:00"
+  },
+  {
+    "assignment_id": "sa-148711487",
+    "deal_address": "Lancaster Gate, Kensington",
+    "asking_price": "\u00a323,000,000",
+    "expected_commission": "$575,000.00",
+    "assigned_sales_rep": "Sarah Miller",
+    "rep_role": "US Acquisitions Director",
+    "rep_commission_fee": "$20,125.00 (3.5%)",
+    "dealing_room_status": "Active Pipeline",
+    "assigned_at": "2026-07-27T12:28:37.069806+00:00"
+  },
+  {
+    "assignment_id": "sa-174730580",
+    "deal_address": "Canterbury Close, Birmingham, West Midlands, B23",
+    "asking_price": "\u00a3240,000",
+    "expected_commission": "$6,000.00",
+    "assigned_sales_rep": "Alex Vance",
+    "rep_role": "B2B Sales Specialist",
+    "rep_commission_fee": "$210.00 (3.5%)",
+    "dealing_room_status": "Active Pipeline",
+    "assigned_at": "2026-07-27T12:28:37.078545+00:00"
+  },
+  {
+    "assignment_id": "sa-zillow_new york_1",
+    "deal_address": "123 Main St, New York, NY",
+    "asking_price": "$450,000",
+    "expected_commission": "$11,250.00",
+    "assigned_sales_rep": "Omar A.",
+    "rep_role": "Senior Deal Director",
+    "rep_commission_fee": "$393.75 (3.5%)",
+    "dealing_room_status": "Active Pipeline",
+    "assigned_at": "2026-07-27T12:28:37.088487+00:00"
+  }
+]

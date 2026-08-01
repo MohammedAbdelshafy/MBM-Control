@@ -1,0 +1,7 @@
+cadence: 2x daily
+timezone: America/Chicago
+windows:
+- 09:00
+- '17:00'
+approval_gate: true
+brand_aware: true

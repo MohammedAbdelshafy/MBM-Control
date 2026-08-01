@@ -11,28 +11,26 @@ const MBM = join(ROOT, 'MBM');
 
 const TEMPLATES = {
   initial: (lead) => ({
-    subject: `AI Automation for ${lead.company || 'Your Business'} — Free Demo & ROI Analysis`,
+    subject: `40% Cost Reduction for ${lead.company || 'Your Business'} via AI Automation`,
     body: `Hi${lead.name ? ' ' + lead.name : ''},
 
-I've been analyzing how AI can transform operations for companies like ${lead.company || 'yours'} in the ${lead.market || 'real estate'} space.
+I've been analyzing operations for companies like ${lead.company || 'yours'} in the ${lead.market || 'real estate'} space. 
 
-${lead.pain ? `I noticed a key challenge: ${lead.pain}. ` : ''}Here's how MBM AI can help:
-• Automated email outreach & follow-ups — save 20+ hrs/week
-• AI lead qualification & scoring — stop manual filtering
-• Smart deal matching — connect sellers to buyers instantly
-• CRM pipeline automation — predictive analytics built in
-${lead.solution ? `• ${lead.solution}\n` : ''}
-Results my clients are seeing:
-✓ 60% reduction in manual data entry
-✓ 3x faster lead response times
-✓ 40% lower operational costs
-✓ 25% increase in closed deals
+${lead.pain ? `I noticed a key challenge: ${lead.pain}. ` : ''}We've built an AI lead generation and automation engine specifically designed to solve this.
 
-I put together a personalized demo page for ${lead.company || 'your business'}: ${ROOT}/demo?ref=${encodeURIComponent(lead.email || 'prospect')}
+Our clients are currently seeing:
+📉 40% reduction in operational costs within 30 days
+⚙️ 60% reduction in manual workload & data entry
+⚡ 3x faster lead response times
+📈 25% increase in deal flow through automated follow-ups
 
-First week free + 30-day money-back guarantee. Setup in 48 hours.
+The MBM AI package handles your outreach, lead qualification, and CRM pipeline completely on autopilot.
 
-Worth a 10-min call this week?
+I put together a personalized 2-minute demo showing exactly how this would look for ${lead.company || 'your business'}: https://mbm-ai.com/demo?ref=${encodeURIComponent(lead.email || 'prospect')}
+
+We offer a 7-day free trial with a 30-day ROI guarantee. Setup takes just 48 hours.
+
+Are you open to a quick 10-minute call this week to see if it's a fit?
 
 Best,
 Mohammed Abdelshafy
@@ -101,7 +99,8 @@ function loadAllTargets() {
   }
 
   // MultiMarket targets (44 entries)
-  const mmPath = join(MBM, 'MultiMarket', 'ALL_TARGETS_2026-07-07.json');
+  const todayStr = new Date().toISOString().split('T')[0];
+  const mmPath = join(MBM, 'MultiMarket', `ALL_TARGETS_${todayStr}.json`);
   if (existsSync(mmPath)) {
     const mm = JSON.parse(readFileSync(mmPath, 'utf8'));
     for (const r of mm) {
@@ -119,7 +118,8 @@ function loadAllTargets() {
   }
 
   // NEW_TARGETS (22 entries)
-  const ntPath = join(MBM, 'Targets', 'NEW_TARGETS_2026-07-07.json');
+  const todayStr2 = new Date().toISOString().split('T')[0];
+  const ntPath = join(MBM, 'Targets', `NEW_TARGETS_${todayStr2}.json`);
   if (existsSync(ntPath)) {
     const nt = JSON.parse(readFileSync(ntPath, 'utf8'));
     for (const r of nt) {
@@ -419,4 +419,7 @@ SOURCES:
 `);
 }
 
-main().catch(err => { console.error('FATAL:', err); process.exit(1); });
+const isMain = process.argv[1] && (process.argv[1].endsWith('clientHunter.js') || process.argv[1].endsWith('clientHunter'));
+if (isMain) {
+  main().catch(err => { console.error('FATAL:', err); process.exit(1); });
+}

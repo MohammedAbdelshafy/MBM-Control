@@ -139,11 +139,15 @@ class CampaignHunterAgent(BaseAgent):
                 ),
             )
 
-            # Restore session if available
+            # Restore session if available.
+            # Supports both a raw cookie list AND a full Playwright storage_state
+            # JSON ({cookies:[...], origins:[...]}) exported by the session scripts.
             if page.session_cookie:
                 try:
-                    cookies = json.loads(page.session_cookie)
-                    context.add_cookies(cookies)
+                    data = json.loads(page.session_cookie)
+                    cookies = data.get("cookies", data) if isinstance(data, dict) else data
+                    if isinstance(cookies, list):
+                        context.add_cookies(cookies)
                 except Exception:
                     pass
 

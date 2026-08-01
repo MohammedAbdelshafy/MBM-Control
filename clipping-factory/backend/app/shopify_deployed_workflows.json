@@ -1,0 +1,68 @@
+[
+  {
+    "product": "AI Notion & Productivity Vault",
+    "type": "Digital Product",
+    "target_aov": "$29.00 USD",
+    "margin": "98%",
+    "ad_hooks": [
+      "Stop scrolling! This 1 tool changed how I sell ai notion & productivity vault...",
+      "The $29 Shopify secret that saves 15 hours every week...",
+      "If you're still doing this manually in 2026, watch this video now."
+    ],
+    "render_specs": {
+      "aspect_ratio": "9:16",
+      "resolution": "1080x1920",
+      "captions": "burned_in_kinetic",
+      "target_platforms": [
+        "tiktok",
+        "youtube_shorts",
+        "instagram_reels"
+      ]
+    },
+    "status": "DEPLOYED_AUTONOMOUS"
+  },
+  {
+    "product": "Niche AI Print-on-Demand Apparel",
+    "type": "Print-on-Demand 2.0",
+    "target_aov": "$45.00 USD",
+    "margin": "55%",
+    "ad_hooks": [
+      "Stop scrolling! This 1 tool changed how I sell niche ai print-on-demand apparel...",
+      "The $29 Shopify secret that saves 15 hours every week...",
+      "If you're still doing this manually in 2026, watch this video now."
+    ],
+    "render_specs": {
+      "aspect_ratio": "9:16",
+      "resolution": "1080x1920",
+      "captions": "burned_in_kinetic",
+      "target_platforms": [
+        "tiktok",
+        "youtube_shorts",
+        "instagram_reels"
+      ]
+    },
+    "status": "DEPLOYED_AUTONOMOUS"
+  },
+  {
+    "product": "Creator Video Asset Pack & LUTs",
+    "type": "Digital Download",
+    "target_aov": "$39.00 USD",
+    "margin": "95%",
+    "ad_hooks": [
+      "Stop scrolling! This 1 tool changed how I sell creator video asset pack & luts...",
+      "The $29 Shopify secret that saves 15 hours every week...",
+      "If you're still doing this manually in 2026, watch this video now."
+    ],
+    "render_specs": {
+      "aspect_ratio": "9:16",
+      "resolution": "1080x1920",
+      "captions": "burned_in_kinetic",
+      "target_platforms": [
+        "tiktok",
+        "youtube_shorts",
+        "instagram_reels"
+      ]
+    },
+    "status": "DEPLOYED_AUTONOMOUS"
+  }
+]

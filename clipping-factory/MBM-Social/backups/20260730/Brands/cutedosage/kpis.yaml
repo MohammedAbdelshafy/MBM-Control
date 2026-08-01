@@ -1,0 +1,5 @@
+target_views_30d: 600000
+target_ctr: 0.08
+target_avg_view_pct: 0.55
+target_subs_per_post: 500
+priority_metric: likes

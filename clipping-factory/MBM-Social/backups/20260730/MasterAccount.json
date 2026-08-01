@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "updated": "2026-07-15",
+  "email": "abdelshafyclapps@gmail.com",
+  "role": "master_control_account",
+  "owns": [
+    "UC_DONTWATCHTHIS1",
+    "UC_Goalmachinez",
+    "UC_CuteDosage",
+    "UC_ClippingFactoryMBM",
+    "UC_TwistsRevealed"
+  ],
+  "auth": {
+    "method": "google_oauth_youtube_session",
+    "session_file": "backend/sessions/youtube.json",
+    "env_override": "YOUTUBE_SESSION_STATE",
+    "export_script": "backend/scripts/export_youtube_session.py",
+    "never_hardcode": true
+  },
+  "brand_structure": "Google brand-account / channel-manager ownership preserved. The master Gmail is the source of truth; each YouTube channel is a brand account under it.",
+  "secrets_policy": "No credentials in this repo. Session state lives in local session files / env only."
+}

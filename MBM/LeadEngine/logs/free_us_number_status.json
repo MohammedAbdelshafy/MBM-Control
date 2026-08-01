@@ -1,0 +1,15 @@
+{
+  "status": "active",
+  "us_phone_number": "+16619909068",
+  "formatted_number": "+1 (661) 990-9068",
+  "country": "United States (California, US)",
+  "free_calling_minutes_remaining": 1000,
+  "free_trial_credit_usd": 15.5,
+  "features": [
+    "Outbound US Cold Calling",
+    "International Calling Minutes",
+    "Inbound Call Forwarding",
+    "WebRTC Browser Dialer"
+  ],
+  "web_dialer_url": "http://localhost:5173/voice-agents"
+}

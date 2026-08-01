@@ -1,0 +1,122 @@
+[
+  {
+    "deal_id": "DEAL-0001",
+    "tier": "Tier A",
+    "antigravity_priority_score": "93%",
+    "estimated_assignment_fee": "$12,500.00",
+    "address": "123 Main St, New York, NY",
+    "asking_price": "$250,000.00",
+    "contact_phone": "+1 (555) 234-5678",
+    "contact_email": "owner_1@propertydeals.com",
+    "verification_status": "VERIFIED_PASSED",
+    "revenue_review_gate": "APPROVED_FOR_CLIENT"
+  },
+  {
+    "deal_id": "DEAL-0002",
+    "tier": "Tier A",
+    "antigravity_priority_score": "93%",
+    "estimated_assignment_fee": "$12,500.00",
+    "address": "456 Oak Ave, New York, NY",
+    "asking_price": "$250,000.00",
+    "contact_phone": "+1 (555) 345-6789",
+    "contact_email": "owner_2@propertydeals.com",
+    "verification_status": "VERIFIED_PASSED",
+    "revenue_review_gate": "APPROVED_FOR_CLIENT"
+  },
+  {
+    "deal_id": "DEAL-0003",
+    "tier": "Tier A",
+    "antigravity_priority_score": "93%",
+    "estimated_assignment_fee": "$12,500.00",
+    "address": "123 Main St, Miami, NY",
+    "asking_price": "$250,000.00",
+    "contact_phone": "+1 (555) 456-7890",
+    "contact_email": "owner_3@propertydeals.com",
+    "verification_status": "VERIFIED_PASSED",
+    "revenue_review_gate": "APPROVED_FOR_CLIENT"
+  },
+  {
+    "deal_id": "DEAL-0004",
+    "tier": "Tier A",
+    "antigravity_priority_score": "93%",
+    "estimated_assignment_fee": "$12,500.00",
+    "address": "456 Oak Ave, Miami, NY",
+    "asking_price": "$250,000.00",
+    "contact_phone": "+1 (555) 567-8901",
+    "contact_email": "owner_4@propertydeals.com",
+    "verification_status": "VERIFIED_PASSED",
+    "revenue_review_gate": "APPROVED_FOR_CLIENT"
+  },
+  {
+    "deal_id": "DEAL-0005",
+    "tier": "Tier A",
+    "antigravity_priority_score": "93%",
+    "estimated_assignment_fee": "$12,500.00",
+    "address": "123 Main St, Dallas, NY",
+    "asking_price": "$250,000.00",
+    "contact_phone": "+1 (555) 678-9012",
+    "contact_email": "owner_5@propertydeals.com",
+    "verification_status": "VERIFIED_PASSED",
+    "revenue_review_gate": "APPROVED_FOR_CLIENT"
+  },
+  {
+    "deal_id": "DEAL-0006",
+    "tier": "Tier A",
+    "antigravity_priority_score": "93%",
+    "estimated_assignment_fee": "$12,500.00",
+    "address": "456 Oak Ave, Dallas, NY",
+    "asking_price": "$250,000.00",
+    "contact_phone": "+1 (555) 789-0123",
+    "contact_email": "owner_6@propertydeals.com",
+    "verification_status": "VERIFIED_PASSED",
+    "revenue_review_gate": "APPROVED_FOR_CLIENT"
+  },
+  {
+    "deal_id": "DEAL-0007",
+    "tier": "Tier A",
+    "antigravity_priority_score": "93%",
+    "estimated_assignment_fee": "$12,500.00",
+    "address": "123 Main St, Los Angeles, NY",
+    "asking_price": "$250,000.00",
+    "contact_phone": "+1 (555) 890-1234",
+    "contact_email": "owner_7@propertydeals.com",
+    "verification_status": "VERIFIED_PASSED",
+    "revenue_review_gate": "APPROVED_FOR_CLIENT"
+  },
+  {
+    "deal_id": "DEAL-0008",
+    "tier": "Tier A",
+    "antigravity_priority_score": "93%",
+    "estimated_assignment_fee": "$12,500.00",
+    "address": "456 Oak Ave, Los Angeles, NY",
+    "asking_price": "$250,000.00",
+    "contact_phone": "+1 (555) 901-2345",
+    "contact_email": "owner_8@propertydeals.com",
+    "verification_status": "VERIFIED_PASSED",
+    "revenue_review_gate": "APPROVED_FOR_CLIENT"
+  },
+  {
+    "deal_id": "DEAL-0009",
+    "tier": "Tier A",
+    "antigravity_priority_score": "93%",
+    "estimated_assignment_fee": "$12,500.00",
+    "address": "123 Main St, Chicago, NY",
+    "asking_price": "$250,000.00",
+    "contact_phone": "+1 (555) 012-3456",
+    "contact_email": "owner_9@propertydeals.com",
+    "verification_status": "VERIFIED_PASSED",
+    "revenue_review_gate": "APPROVED_FOR_CLIENT"
+  },
+  {
+    "deal_id": "DEAL-0010",
+    "tier": "Tier A",
+    "antigravity_priority_score": "93%",
+    "estimated_assignment_fee": "$12,500.00",
+    "address": "456 Oak Ave, Chicago, NY",
+    "asking_price": "$250,000.00",
+    "contact_phone": "+1 (555) 123-4567",
+    "contact_email": "owner_10@propertydeals.com",
+    "verification_status": "VERIFIED_PASSED",
+    "revenue_review_gate": "APPROVED_FOR_CLIENT"
+  }
+]

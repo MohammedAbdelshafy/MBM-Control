@@ -1,0 +1,98 @@
+[
+  {
+    "company": "New Western",
+    "sector": "Real Estate Wholesale Marketplace",
+    "budget_range": "$100,000 - $500,000 USD",
+    "system_interest": "Real Estate Off-Market Lead Engine & Deal Matching",
+    "decision_maker_roles": [
+      "Head of Acquisitions",
+      "VP of Operations",
+      "Chief Technology Officer"
+    ],
+    "domain": "newwestern.com",
+    "status": "qualified_tier_a",
+    "pitch_proposal": "Custom Enterprise White-Label Deployment of Real Estate Off-Market Lead Engine & Deal Matching",
+    "contact_email": "procurement@newwestern.com",
+    "contact_phone": "+1 800-555-0199"
+  },
+  {
+    "company": "Compass Real Estate",
+    "sector": "Residential Brokerage & Property Tech",
+    "budget_range": "$250,000 - $1,000,000 USD",
+    "system_interest": "Contech AI Autonomous Voice Calling Swarm",
+    "decision_maker_roles": [
+      "Chief Technology Officer",
+      "VP of Agent Experience",
+      "Head of Sales Ops"
+    ],
+    "domain": "compass.com",
+    "status": "qualified_tier_a",
+    "pitch_proposal": "Custom Enterprise White-Label Deployment of Contech AI Autonomous Voice Calling Swarm",
+    "contact_email": "procurement@compass.com",
+    "contact_phone": "+1 800-555-0199"
+  },
+  {
+    "company": "CBRE Group",
+    "sector": "Commercial Property & Asset Management",
+    "budget_range": "$500,000+ USD",
+    "system_interest": "Enterprise Property Intelligence & Valuation Engine",
+    "decision_maker_roles": [
+      "Global Head of AI",
+      "VP of Asset Automation",
+      "Director of Technology"
+    ],
+    "domain": "cbre.com",
+    "status": "qualified_tier_a",
+    "pitch_proposal": "Custom Enterprise White-Label Deployment of Enterprise Property Intelligence & Valuation Engine",
+    "contact_email": "procurement@cbre.com",
+    "contact_phone": "+1 800-555-0199"
+  },
+  {
+    "company": "Rocket Mortgage",
+    "sector": "High-Volume Consumer Financial Lending",
+    "budget_range": "$500,000 - $2,000,000 USD",
+    "system_interest": "24/7 AI Voice Bot Intake & Qualification Swarm",
+    "decision_maker_roles": [
+      "Chief Information Officer",
+      "VP of Inside Sales",
+      "Head of AI Engineering"
+    ],
+    "domain": "rocketmortgage.com",
+    "status": "qualified_tier_a",
+    "pitch_proposal": "Custom Enterprise White-Label Deployment of 24/7 AI Voice Bot Intake & Qualification Swarm",
+    "contact_email": "procurement@rocketmortgage.com",
+    "contact_phone": "+1 800-555-0199"
+  },
+  {
+    "company": "Publicis Media",
+    "sector": "Global Media & Digital Ad Agency",
+    "budget_range": "$150,000 - $500,000 USD",
+    "system_interest": "Clipping Factory & Automated Viral Video Engine",
+    "decision_maker_roles": [
+      "Chief Creative Officer",
+      "VP of Content Production",
+      "Head of Digital Media"
+    ],
+    "domain": "publicisgroupe.com",
+    "status": "qualified_tier_a",
+    "pitch_proposal": "Custom Enterprise White-Label Deployment of Clipping Factory & Automated Viral Video Engine",
+    "contact_email": "procurement@publicisgroupe.com",
+    "contact_phone": "+1 800-555-0199"
+  },
+  {
+    "company": "Waste Management Inc (WM)",
+    "sector": "Industrial Environmental & Scrap Services",
+    "budget_range": "$200,000 - $750,000 USD",
+    "system_interest": "Industrial Waste Exchange & Recycler Match Engine",
+    "decision_maker_roles": [
+      "VP of Sustainability",
+      "Director of Procurement",
+      "Head of Digital Supply Chain"
+    ],
+    "domain": "wm.com",
+    "status": "qualified_tier_a",
+    "pitch_proposal": "Custom Enterprise White-Label Deployment of Industrial Waste Exchange & Recycler Match Engine",
+    "contact_email": "procurement@wm.com",
+    "contact_phone": "+1 800-555-0199"
+  }
+]

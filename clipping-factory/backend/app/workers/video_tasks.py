@@ -296,9 +296,37 @@ def requeue_stuck_clips():
     except Exception as exc:
         db.rollback()
         logger.error(f"Requeue stuck clips failed: {exc}")
-        return {"error": str(exc)}
+@celery_app.task(
+    name="app.workers.video_tasks.run_viral_benchmark",
+    base=JobTrackedTask,
+    bind=True,
+    max_retries=2,
+    default_retry_delay=30,
+    queue="video",
+    soft_time_limit=300,
+)
+def run_viral_benchmark(self, clip_id: str, niche: str | None = None):
+    from app.core.database import SyncSessionLocal
+    from app.agents.viral_benchmark_agent import ViralBenchmarkAgent
+
+    db = SyncSessionLocal()
+    try:
+        agent = ViralBenchmarkAgent(db=db)
+        result = agent._safe_run(clip_id=clip_id, niche=niche)
+        if not result.success:
+            raise ValueError(result.error)
+        db.commit()
+        return result.data
+    except Exception as exc:
+        db.rollback()
+        logger.error(f"Viral benchmark task failed for clip {clip_id}: {exc}")
+        try:
+            raise self.retry(exc=exc)
+        except MaxRetriesExceededError:
+            return {"error": str(exc)}
     finally:
         db.close()
+
 
 
 # ------------------------------------------------------------------

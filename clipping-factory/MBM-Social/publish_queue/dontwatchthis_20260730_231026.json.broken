@@ -1,0 +1,34 @@
+{
+  "brand": "dontwatchthis",
+  "display_name": "Don't Watch This",
+  "target_channel": "UC_DONTWATCHTHIS1",
+  "handle": "@DONTWATCHTHIS1",
+  "title": "Don't Watch This: The Unexplained Disappearance That Haunts Your Sleep",
+  "description": "Dive into a spine-chilling tale of darkness and mystery that will leave you questioning everything. Follow the chilling truth as it unravels in this gripping story that will keep you up at night. Don't miss out on this eerie adventure!",
+  "hashtags": [
+    "#mystery",
+    "#suspense",
+    "#darkstory",
+    "#truecrimelite"
+  ],
+  "thumbnail_text": "SHOCKED FACE  \nMYSTERY UNRAVELED",
+  "thumbnail_prompt": "# Thumbnail Rules — Don't Watch This\n\nDark, desaturated background. One shocked/ominous face or silhouette. Max 3 words, white bold, slight red accent. No bright colors.\n Text overlay: 'SHOCKED FACE  \nMYSTERY UNRAVELED'.",
+  "hook_text": "dark mystery story",
+  "publish_time": "2026-07-31T20:00:00",
+  "source_reference": "demo-001",
+  "clip_file_path": "clips/demo/raw_clip.mp4",
+  "brand_fit_score": 0.62,
+  "quality_gate": {
+    "passed": true,
+    "note": "pending QC"
+  },
+  "status": "draft",
+  "generated_by": "mbm_social.publish_package",
+  "models_used": {
+    "title": "qwen2.5-coder:7b",
+    "caption": "qwen2.5-coder:7b",
+    "hashtags": "template-fallback",
+    "thumbnail": "qwen2.5-coder:7b",
+    "routing": "qwen2.5-coder:7b"
+  }
+}

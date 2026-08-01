@@ -98,10 +98,13 @@ class ClipGenerationAgent(BaseAgent):
 
         self.logger.info(f"Generated {len(clips_created)} raw clips (plan had {len(plan)} variants)")
 
-        # Trigger editing for each clip (with hook variant metadata)
-        for idx, clip_id in enumerate(clips_created):
-            from app.workers.video_tasks import edit_clip
-            edit_clip.apply_async(args=[clip_id], queue="video")
+        # Trigger editing for each clip (async Celery queue when active)
+        try:
+            for idx, clip_id in enumerate(clips_created):
+                from app.workers.video_tasks import edit_clip
+                edit_clip.apply_async(args=[clip_id], queue="video")
+        except Exception as exc:
+            self.logger.debug(f"Celery dispatch skipped in sync mode: {exc}")
 
         return AgentResult.ok({
             "clips_created": clips_created,

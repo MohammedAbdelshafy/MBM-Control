@@ -46,7 +46,10 @@ class LeadIngestionAgent(BaseAgent):
     def _ingest_all(self, date_str: Optional[str], max_campaigns: int) -> AgentResult:
         results = {}
         for src in ["mbm_leadpacks", "mbm_social_leads"]:
-            res = dispatch[src](date_str, max_campaigns)
+            if src == "mbm_leadpacks":
+                res = self._ingest_mbm_leadpacks(date_str, max_campaigns)
+            elif src == "mbm_social_leads":
+                res = self._ingest_mbm_social_leads(date_str, max_campaigns)
             results[src] = res.data if res.success else {"error": res.error}
         return AgentResult.ok(results)
 
@@ -64,32 +67,54 @@ class LeadIngestionAgent(BaseAgent):
             manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
 
         campaigns_created = 0
-        for csv_name, source_label in [
-            ("FULL_PACK.csv", "full_pack"),
-            ("DISTRESSED_SELLERS.csv", "distressed"),
-            ("WHOLESALERS.csv", "wholesaler"),
-        ]:
-            csv_path = pack_dir / csv_name
-            if not csv_path.exists():
+        total_rows_processed = 0
+        
+        # Process all CSV files found in the pack directory
+        csv_files = list(pack_dir.glob("*.csv"))
+        self.logger.info(f"Found {len(csv_files)} CSV files in {pack_dir}: {[f.name for f in csv_files]}")
+        
+        for csv_file in csv_files:
+            # Determine source label based on filename
+            if "FULL_PACK" in csv_file.name:
+                source_label = "full_pack"
+            elif "DISTRESSED_SELLERS" in csv_file.name:
+                source_label = "distressed"
+            elif "WHOLESALERS" in csv_file.name:
+                source_label = "wholesaler"
+            else:
+                # For any other CSV files, use the filename as source label
+                source_label = csv_file.stem.lower()
+            
+            self.logger.info(f"Processing file: {csv_file.name} (source: {source_label})")
+            
+            try:
+                with open(csv_file, newline="", encoding="utf-8-sig") as f:
+                    reader = csv.DictReader(f)
+                    rows = list(reader)
+                    self.logger.info(f"Found {len(rows)} rows in {csv_file.name}")
+                    
+                    for row in rows:
+                        total_rows_processed += 1
+                        if campaigns_created >= max_campaigns:
+                            break
+                        campaign = self._lead_row_to_campaign(row, source_label, pack_dir)
+                        if campaign:
+                            self.db.add(campaign)
+                            self.db.flush()
+                            campaigns_created += 1
+                            self._audit("campaign", campaign.id, "from_lead", metadata={
+                                "source": source_label,
+                                "lead_pack_date": dt,
+                                "file_name": csv_file.name,
+                            })
+                            
+            except Exception as e:
+                self.logger.error(f"Failed to process {csv_file}: {e}")
                 continue
 
-            with open(csv_path, newline="", encoding="utf-8-sig") as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    if campaigns_created >= max_campaigns:
-                        break
-                    campaign = self._lead_row_to_campaign(row, source_label, pack_dir)
-                    if campaign:
-                        self.db.add(campaign)
-                        self.db.flush()
-                        campaigns_created += 1
-                        self._audit("campaign", campaign.id, "from_lead", metadata={
-                            "source": source_label,
-                            "lead_pack_date": dt,
-                        })
-
         self.db.commit()
-        return AgentResult.ok({"date": dt, "campaigns_created": campaigns_created, "source": "mbm_leadpacks"})
+        self.logger.info(f"Lead pack ingestion completed: {campaigns_created} campaigns created from {total_rows_processed} total rows across {len(csv_files)} files")
+        return AgentResult.ok({"date": dt, "campaigns_created": campaigns_created, "rows_processed": total_rows_processed, "files_processed": len(csv_files), "source": "mbm_leadpacks"})
 
     def _ingest_mbm_social_leads(self, date_str: Optional[str], max_campaigns: int) -> AgentResult:
         from app.models.campaign import Campaign, CampaignStatus
@@ -99,7 +124,9 @@ class LeadIngestionAgent(BaseAgent):
             return AgentResult.fail(f"MBM-Social leads directory not found: {leads_dir}")
 
         campaigns_created = 0
-        for lead_file in sorted(leads_dir.glob("*.json"))[:max_campaigns]:
+        total_files_processed = 0
+        for lead_file in sorted(leads_dir.glob("*.json")):
+            total_files_processed += 1
             try:
                 lead = json.loads(lead_file.read_text(encoding="utf-8"))
             except Exception as e:
@@ -110,12 +137,16 @@ class LeadIngestionAgent(BaseAgent):
                 Campaign.source_url == lead.get("lead_id", "")
             ).first()
             if existing:
+                self.logger.info(f"Lead already exists in campaigns: {lead_file.name}")
                 continue
 
             campaign = Campaign(
+                platform_campaign_id=lead.get("lead_id", ""),
+                page_id=1,  # Default page for social leads
                 title=f"Lead: {lead.get('contact', {}).get('name', lead.get('lead_id', 'Unknown'))}",
                 brand_name=lead.get("campaign", "LeadGenerated"),
                 status=CampaignStatus.DISCOVERED,
+                is_active=True,
                 source_url=lead.get("lead_id", ""),
                 source_type="lead",
                 requirements={
@@ -126,7 +157,6 @@ class LeadIngestionAgent(BaseAgent):
                     "purpose": lead.get("criteria", {}).get("purpose", "unknown"),
                 },
                 opportunity_score=lead.get("score", {}).get("overall", 5) / 10,
-                is_active=True,
             )
             self.db.add(campaign)
             self.db.flush()
@@ -137,7 +167,8 @@ class LeadIngestionAgent(BaseAgent):
             })
 
         self.db.commit()
-        return AgentResult.ok({"campaigns_created": campaigns_created, "source": "mbm_social_leads"})
+        self.logger.info(f"MBM-Social leads ingestion completed: {campaigns_created} campaigns created from {total_files_processed} files")
+        return AgentResult.ok({"campaigns_created": campaigns_created, "files_processed": total_files_processed, "source": "mbm_social_leads"})
 
     def _lead_row_to_campaign(self, row: dict, source_label: str, pack_dir: Path) -> Optional[object]:
         from app.models.campaign import Campaign, CampaignStatus
@@ -151,15 +182,19 @@ class LeadIngestionAgent(BaseAgent):
         source_id = f"{source_label}_{pack_dir.name}_{re.sub(r'[^a-zA-Z0-9]', '_', name)[:20]}"
 
         existing = self.db.query(Campaign).filter(
-            Campaign.source_url == source_id
+            Campaign.platform_campaign_id == source_id
         ).first()
         if existing:
+            self.logger.info(f"Campaign already exists: {source_id}")
             return None
 
         campaign = Campaign(
+            platform_campaign_id=source_id,
+            page_id=1,  # Default page for leads
             title=f"Lead: {name}",
             brand_name="MBM-Leads",
             status=CampaignStatus.DISCOVERED,
+            is_active=True,
             source_url=source_id,
             source_type=source_label,
             requirements={
@@ -172,7 +207,6 @@ class LeadIngestionAgent(BaseAgent):
                 "source_label": source_label,
             },
             opportunity_score=0.5,
-            is_active=True,
         )
         return campaign
 

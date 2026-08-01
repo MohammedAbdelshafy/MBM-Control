@@ -1,0 +1,8 @@
+cadence: 3x daily
+timezone: Europe/London
+windows:
+- '12:00'
+- '18:00'
+- '22:30'
+approval_gate: true
+brand_aware: true

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { clipsApi, publishApi, type Clip } from "@/lib/api";
 import { toast } from "sonner";
-import { CheckCircle2, XCircle, Download, RefreshCw, Send } from "lucide-react";
+import { CheckCircle2, XCircle, Download, RefreshCw, Send, Sparkles, Flame } from "lucide-react";
 import { clsx } from "clsx";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -41,6 +41,15 @@ export default function ClipsPage() {
     queryFn: () =>
       clipsApi.list({ status: statusFilter === "all" ? undefined : statusFilter, page }),
     refetchInterval: 10000,
+  });
+
+  const enhanceViral = useMutation({
+    mutationFn: (id: string) => clipsApi.enhanceViral(id),
+    onSuccess: () => {
+      toast.success("Viral video comparison & tag enhancement completed!");
+      qc.invalidateQueries({ queryKey: ["clips"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const approve = useMutation({
@@ -112,10 +121,16 @@ export default function ClipsPage() {
                 <span className="text-gray-600 text-xs">
                   {clip.width && clip.height ? `${clip.width}×${clip.height}` : "Video"}
                 </span>
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">
                   <span className={STATUS_COLORS[clip.status] ?? "badge-gray"}>
                     {clip.status.replace(/_/g, " ")}
                   </span>
+                  {clip.viral_benchmark?.tier && (
+                    <span className="inline-flex items-center gap-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] px-2 py-0.5 rounded-full font-semibold">
+                      <Flame className="w-3 h-3 text-amber-400 fill-amber-400" />
+                      {clip.viral_benchmark.tier} ({clip.viral_benchmark.overall_viral_score}%)
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -147,11 +162,30 @@ export default function ClipsPage() {
                 {clip.hook_text && (
                   <p className="text-gray-400 italic">"{clip.hook_text}"</p>
                 )}
+                {clip.enhanced_tags && clip.enhanced_tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {clip.enhanced_tags.slice(0, 4).map((tag, idx) => (
+                      <span key={idx} className="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 {clip.qc_notes && <p className="text-red-400">{clip.qc_notes.slice(0, 60)}</p>}
               </div>
 
               {/* Actions */}
-              <div className="flex gap-1 pt-1">
+              <div className="flex flex-wrap gap-1 pt-1">
+                <button
+                  type="button"
+                  onClick={() => enhanceViral.mutate(clip.id)}
+                  disabled={enhanceViral.isPending}
+                  className="flex-1 flex items-center justify-center gap-1 btn-ghost text-amber-400 hover:text-amber-300 text-xs py-1.5"
+                  title="Compare with viral video benchmarks & enhance tags"
+                >
+                  <Sparkles className="w-3 h-3 text-amber-400" />
+                  {enhanceViral.isPending ? "Enhancing..." : "Enhance Viral"}
+                </button>
                 {(APPROVABLE.has(clip.status) || clip.status === "approved") && (
                   <button
                     type="button"

@@ -1,0 +1,55 @@
+[
+  {
+    "job_id": "~022081443579209529517",
+    "url": "https://www.upwork.com/jobs/~022081443579209529517",
+    "title": "Build AI Voice Cold Calling & Real Estate Lead Generation Bot",
+    "client_budget": "$5,000.00 Fixed Price",
+    "budget_numeric": 5000.0,
+    "category": "AI Voice & Telephony Automation",
+    "skills": [
+      "Twilio",
+      "ElevenLabs",
+      "FastAPI",
+      "React",
+      "Cold Calling"
+    ],
+    "proposal_pitch": "Hi there! I am Big Moe Shafy, Lead Engineer at Contech AI Agentic Teamz. We have a turnkey, production-ready AI Voice Agent Cold Calling Swarm built on Twilio & WebRTC with automated skip-tracing, custom voice cloning, and live browser dialers. We can deploy your full custom AI Voice Lead Generation bot within 24 hours. Let's jump on a quick call to demonstrate a live call!",
+    "estimated_profit": "$5,000.00",
+    "status": "Proposal Queued & Pitch Ready"
+  },
+  {
+    "job_id": "~019948231049281048",
+    "url": "https://www.upwork.com/jobs/~019948231049281048",
+    "title": "White-Label AI Voice Agency Portal & Retainer Billing System",
+    "client_budget": "$7,500.00 Fixed Price",
+    "budget_numeric": 7500.0,
+    "category": "Full Stack AI SaaS",
+    "skills": [
+      "Node.js",
+      "React",
+      "Stripe",
+      "Twilio",
+      "Python"
+    ],
+    "proposal_pitch": "Hello! Contech AI Agentic Teamz specializes in building white-label AI Voice Agency portals with custom domain support, wholesale call markup billing ($0.10 -> $0.50/min), and multi-tier subscription retainers. We have this exact architecture tested and ready to deploy.",
+    "estimated_profit": "$7,500.00",
+    "status": "Proposal Queued"
+  },
+  {
+    "job_id": "~084729104812398471",
+    "url": "https://www.upwork.com/jobs/~084729104812398471",
+    "title": "Outbound Real Estate Skip Tracing & Automated Cash Offer Swarm",
+    "client_budget": "$3,500.00 Fixed Price",
+    "budget_numeric": 3500.0,
+    "category": "Real Estate Automation",
+    "skills": [
+      "Python",
+      "Skip Tracing",
+      "CRM Integration",
+      "SMS/Email Blaster"
+    ],
+    "proposal_pitch": "Greetings! We have a proprietary Lead Engine that extracts 50+ US phone numbers per batch, attaches deep motivation profiles (Probate, Pre-Foreclosure, Absentee Landlords), and automates 2-page cash offer agreements.",
+    "estimated_profit": "$3,500.00",
+    "status": "Proposal Queued"
+  }
+]

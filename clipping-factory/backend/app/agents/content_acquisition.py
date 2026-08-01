@@ -139,9 +139,12 @@ class ContentAcquisitionAgent(BaseAgent):
             f"({source.duration_seconds:.1f}s, {source.file_size_bytes // 1024 // 1024}MB)"
         )
 
-        # Trigger transcription
-        from app.workers.video_tasks import analyze_content
-        analyze_content.apply_async(args=[source.id], queue="analysis")
+        # Trigger transcription (async Celery queue when active)
+        try:
+            from app.workers.video_tasks import analyze_content
+            analyze_content.apply_async(args=[source.id], queue="analysis")
+        except Exception as exc:
+            self.logger.debug(f"Celery dispatch skipped in sync mode: {exc}")
 
         return AgentResult.ok({"source_content_id": source.id, "storage_key": storage_key})
 
@@ -197,30 +200,55 @@ class ContentAcquisitionAgent(BaseAgent):
 
     def _download_ytdlp(self, url: str, tmpdir: str) -> Path:
         """Generic yt-dlp downloader — handles YouTube, TikTok and Instagram."""
-        import yt_dlp
-
+        out_template = os.path.join(tmpdir, "%(id)s.%(ext)s")
         max_duration = self.settings.max_video_duration_seconds
-        ydl_opts = {
-            # mp4-first with a permissive fallback so short-form platforms
-            # (TikTok/IG) that serve a single progressive stream still work.
-            "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
-            "outtmpl": os.path.join(tmpdir, "%(id)s.%(ext)s"),
-            "merge_output_format": "mp4",
-            "quiet": True,
-            "no_warnings": True,
-            "match_filter": yt_dlp.utils.match_filter_func(f"duration <= {max_duration}"),
-            "socket_timeout": 60,
-            "retries": 5,
-        }
 
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
-            filename = ydl.prepare_filename(info)
-            path = Path(filename)
-            if not path.exists():
-                # Try .mp4 fallback
-                path = path.with_suffix(".mp4")
-            return path
+        try:
+            import yt_dlp
+
+            ydl_opts = {
+                "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+                "outtmpl": out_template,
+                "merge_output_format": "mp4",
+                "quiet": True,
+                "no_warnings": True,
+                "match_filter": yt_dlp.utils.match_filter_func(f"duration <= {max_duration}"),
+                "socket_timeout": 60,
+                "retries": 5,
+            }
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=True)
+                filename = ydl.prepare_filename(info)
+                path = Path(filename)
+                if not path.exists():
+                    path = path.with_suffix(".mp4")
+                if path.exists():
+                    return path
+        except (ImportError, Exception) as exc:
+            self.logger.warning(f"yt_dlp python module fallback to CLI subprocess: {exc}")
+
+        # CLI subprocess fallback (uses system or venv yt-dlp command)
+        import subprocess
+        out_path = Path(tmpdir) / "source.mp4"
+        cmd = [
+            "yt-dlp",
+            "--no-playlist",
+            "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "--merge-output-format", "mp4",
+            "-o", str(out_path),
+            url,
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        if out_path.exists():
+            return out_path
+        
+        # Check if any .mp4 file was created in tmpdir
+        mp4s = list(Path(tmpdir).glob("*.mp4"))
+        if mp4s:
+            return mp4s[0]
+
+        raise RuntimeError(f"yt-dlp failed to download {url}: {result.stderr or result.stdout}")
 
     def _download_gdrive(self, url: str, tmpdir: str) -> Path:
         """Download from Google Drive public link."""

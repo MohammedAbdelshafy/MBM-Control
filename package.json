@@ -1,5 +1,5 @@
 {
-  "name": "contech-ai-agentic-teamz",
+  "name": "base44-ai-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -16,6 +16,14 @@
     "hunt": "node server/clientHunter.js",
     "hunt:send": "node server/clientHunter.js --send",
     "hunt:report": "node server/clientHunter.js --report",
+    "hunter:send": "node server/hunterSend.js --send",
+    "hunter:dry-run": "node server/hunterSend.js --dry-run",
+    "hunter:daemon": "node server/hunterSend.js --daemon",
+    "hunter:schedule": "powershell -ExecutionPolicy Bypass -File MBM/Scripts/install_hunter_scheduler.ps1",
+    "agent:hourly": "python MBM/LeadEngine/hourly_outreach_agent.py",
+    "whatsapp:generate": "python MBM/LeadEngine/whatsapp_sms_blaster.py",
+    "cutedosage:pipeline": "python MBM/Scripts/cutedosage_pipeline.py",
+    "publish:all": "python MBM/Scripts/master_publisher.py",
     "demo:quality": "python scripts/quality_enhance_and_send.py",
     "demo:build": "node server/demoBuilder.js --batch",
     "demo:page": "node server/demoBuilder.js",
@@ -77,9 +85,11 @@
     "embla-carousel-react": "^8.5.2",
     "express": "^4.21.0",
     "framer-motion": "^11.16.4",
+    "groq": "^6.5.0",
     "html2canvas": "^1.4.1",
     "input-otp": "^1.4.2",
     "jspdf": "^4.2.1",
+    "kimi": "^6.0.2",
     "lodash": "^4.17.21",
     "lucide-react": "^0.475.0",
     "moment": "^2.30.1",
@@ -105,7 +115,9 @@
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.171.0",
+    "twilio": "^6.0.2",
     "vaul": "^1.1.2",
+    "vercel": "^55.0.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -130,6 +142,8 @@
   },
   "allowScripts": {
     "core-js@3.48.0": true,
-    "esbuild@0.25.12": true
+    "esbuild@0.25.12": true,
+    "esbuild@0.27.0": true,
+    "esbuild@0.27.7": true
   }
 }

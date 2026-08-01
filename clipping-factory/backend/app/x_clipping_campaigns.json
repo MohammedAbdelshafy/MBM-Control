@@ -1,0 +1,76 @@
+[
+  {
+    "id": "X-CAMP-001",
+    "name": "X Tech & AI Video Drops",
+    "platform": "X (Twitter) Creator Revenue",
+    "profile": "tech_automation",
+    "target_rpm": "$2.80 USD",
+    "target_views": "500k",
+    "hashtags": [
+      "#AI",
+      "#Tech",
+      "#BuildInPublic",
+      "#Innovation"
+    ],
+    "status": "ACTIVE_X_PIPELINE"
+  },
+  {
+    "id": "X-CAMP-002",
+    "name": "X Sports & Football Goals Clips",
+    "platform": "X (Twitter) Creator Revenue",
+    "profile": "football_highlights",
+    "target_rpm": "$2.50 USD",
+    "target_views": "1M+",
+    "hashtags": [
+      "#Football",
+      "#Goals",
+      "#MatchDay",
+      "#Highlight"
+    ],
+    "status": "ACTIVE_X_PIPELINE"
+  },
+  {
+    "id": "X-CAMP-003",
+    "name": "X Business & Finance Insights",
+    "platform": "X (Twitter) Creator Revenue",
+    "profile": "business_finance",
+    "target_rpm": "$3.20 USD",
+    "target_views": "300k",
+    "hashtags": [
+      "#Business",
+      "#Finance",
+      "#Stocks",
+      "#Crypto"
+    ],
+    "status": "ACTIVE_X_PIPELINE"
+  },
+  {
+    "id": "X-CAMP-004",
+    "name": "X Plot Twists & Viral Stories",
+    "platform": "X (Twitter) Creator Revenue",
+    "profile": "plot_twists",
+    "target_rpm": "$2.10 USD",
+    "target_views": "400k",
+    "hashtags": [
+      "#PlotTwist",
+      "#Viral",
+      "#Story",
+      "#MustWatch"
+    ],
+    "status": "ACTIVE_X_PIPELINE"
+  },
+  {
+    "id": "X-CAMP-005",
+    "name": "X Real Estate & Wholesaling Deals",
+    "platform": "X (Twitter) Creator Revenue",
+    "profile": "construction_real_estate",
+    "target_rpm": "$3.50 USD",
+    "target_views": "250k",
+    "hashtags": [
+      "#RealEstate",
+      "#Wholesaling",
+      "#HousingMarket"
+    ],
+    "status": "ACTIVE_X_PIPELINE"
+  }
+]

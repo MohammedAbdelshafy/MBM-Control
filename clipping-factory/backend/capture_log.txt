@@ -1,0 +1,14 @@
+============================================================
+YouTube Session Capture (persistent profile)
+============================================================
+Profile : C:\Users\omare\OneDrive\Desktop\AI\clipping-factory\backend\youtube_profile
+Output  : C:\Users\omare\OneDrive\Desktop\AI\clipping-factory\backend\scripts\sessions\youtube.json
+Timeout : 300s
+
+A browser will open now.
+1. Log in with your Google account (abdelshafyclapps@gmail.com)
+2. Choose the channel you want to publish from
+3. Wait until the YouTube Studio dashboard is visible
+4. Session is saved automatically once logged in.
+
+[CAPTURE] Timed out waiting for login.

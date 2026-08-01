@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-07-30T01:48:08.647045",
+  "active_agents": 5,
+  "swarm_status": "READY",
+  "agents": [
+    {
+      "id": "agent_cold_calling_sdr",
+      "name": "Sarah - B2B Outreach SDR",
+      "prompt": "Hi, I am Sarah calling from Clipping Factory. We deploy autonomous AI video and voice agents.",
+      "voice_model": "eleven_labs_eleanor",
+      "calls_per_min": 1000,
+      "status": "active"
+    },
+    {
+      "id": "agent_real_estate_ai",
+      "name": "Marcus - Real Estate & Property Intelligence Agent",
+      "prompt": "Hello! I am calling regarding your property listing. Are you accepting cash offers today?",
+      "voice_model": "azure_guy_neural",
+      "calls_per_min": 500,
+      "status": "active"
+    },
+    {
+      "id": "agent_make_money_online",
+      "name": "Alex - Make Money Online & SaaS Monetization Agent",
+      "prompt": "Hi! We help creators and businesses monetize AI short-form content and voice swarms. Want a demo?",
+      "voice_model": "en-US-BrianNeural",
+      "calls_per_min": 500,
+      "status": "active"
+    }
+  ]
+}

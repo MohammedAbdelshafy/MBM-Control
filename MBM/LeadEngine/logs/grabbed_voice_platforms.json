@@ -1,0 +1,32 @@
+[
+  {
+    "platform": "ElevenLabs Voice Library",
+    "url": "https://elevenlabs.io/voice-library",
+    "payout_model": "Stripe Connect PVC Royalties",
+    "how_you_get_paid": "Usage-based passive income when users generate audio with your voice."
+  },
+  {
+    "platform": "Quora Poe Creator Monetization",
+    "url": "https://poe.com/creators",
+    "payout_model": "Price Per Message + Subscription Revenue Share",
+    "how_you_get_paid": "Set custom compute points per message for your AI voice bot. Monthly Stripe payouts."
+  },
+  {
+    "platform": "Synthflow AI Reseller Agency",
+    "url": "https://synthflow.ai",
+    "payout_model": "White-Label Agency Retainers & Usage Markup",
+    "how_you_get_paid": "$297-$997/mo retainers + $0.25/min usage markup on Stripe."
+  },
+  {
+    "platform": "Retell AI + ChatDash Wrapper",
+    "url": "https://retellai.com",
+    "payout_model": "Client Dashboard Wrapper & Usage Markup",
+    "how_you_get_paid": "Wholesale $0.09/min \u2192 bill client $0.35/min + $1,500 setup fees."
+  },
+  {
+    "platform": "Vapi AI Ecosystem",
+    "url": "https://vapi.ai",
+    "payout_model": "Enterprise Voice Agency Reselling",
+    "how_you_get_paid": "White-label client portals, custom setup fees, and per-minute usage margins."
+  }
+]

@@ -1,0 +1,71 @@
+[
+  {
+    "contact_name": "PipHouse LLC",
+    "phone": "+14696584582",
+    "type": "wholesaler",
+    "source": "pipeline",
+    "notes": "Wholesale buyer — acquisition target"
+  },
+  {
+    "contact_name": "Swift Home Solutions",
+    "phone": "+14692731235",
+    "type": "wholesaler",
+    "source": "pipeline"
+  },
+  {
+    "contact_name": "New Western",
+    "phone": "+19727341612",
+    "type": "wholesaler",
+    "source": "pipeline"
+  },
+  {
+    "contact_name": "DFW REI Club",
+    "phone": "+18173001132",
+    "type": "wholesaler",
+    "source": "pipeline",
+    "notes": "REI networking club"
+  },
+  {
+    "contact_name": "Diamond Acquisitions",
+    "phone": "+14694364884",
+    "type": "wholesaler",
+    "source": "whatsapp"
+  },
+  {
+    "contact_name": "Joel - RE agent/investor",
+    "phone": "+18179888547",
+    "type": "wholesaler",
+    "source": "whatsapp"
+  },
+  {
+    "contact_name": "Calvin - Turner & Partners",
+    "phone": "+15124004457",
+    "type": "wholesaler",
+    "source": "whatsapp"
+  },
+  {
+    "contact_name": "DFW investor",
+    "phone": "+14694614209",
+    "type": "wholesaler",
+    "source": "whatsapp"
+  },
+  {
+    "contact_name": "ULR Properties Dallas",
+    "phone": "+12142336158",
+    "type": "wholesaler",
+    "source": "painpoints"
+  },
+  {
+    "contact_name": "Steve Hendry Homes",
+    "phone": "+12149089188",
+    "type": "wholesaler",
+    "source": "painpoints"
+  },
+  {
+    "contact_name": "Rylie - Altura Homes",
+    "phone": "+12142841222",
+    "type": "wholesaler",
+    "source": "whatsapp",
+    "notes": "Home builder / buyer"
+  }
+]

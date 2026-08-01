@@ -1,0 +1,15 @@
+{
+  "status": "completed",
+  "paused": false,
+  "index": 4,
+  "total_dialed": 4,
+  "outcomes": {
+    "failed": 4
+  },
+  "campaign_limit": 4,
+  "delay": 5,
+  "started_at": "2026-07-28T21:00:27.720853+00:00",
+  "last_call_at": "2026-07-28T21:00:44.707133+00:00",
+  "bridge_mode": true,
+  "agent_type": null
+}

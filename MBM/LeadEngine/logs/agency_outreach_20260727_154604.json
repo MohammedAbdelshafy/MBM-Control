@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-07-27T15:46:04.625583",
+  "agencies_contacted": 14,
+  "emails_sent": 0,
+  "errors": 19,
+  "packs": [
+    {
+      "name": "Dallas Distressed Seller Pack",
+      "tier": "Premium",
+      "price": 300,
+      "count": 209,
+      "total_value": 62700,
+      "description": "Pre-foreclosure & code violation properties in Dallas, TX with verified equity"
+    },
+    {
+      "name": "DFW Wholesale Deal Pack",
+      "tier": "Premium",
+      "price": 300,
+      "count": 20,
+      "total_value": 6000,
+      "description": "20 verified wholesale properties with $20K-$447K equity, auction dates confirmed"
+    },
+    {
+      "name": "Multi-Market Qualified Lead Pack",
+      "tier": "Mid",
+      "price": 150,
+      "count": 40,
+      "total_value": 6000,
+      "description": "40 verified real estate contacts across Houston, Dallas, Austin with emails and phones"
+    },
+    {
+      "name": "Cash Buyer Contact Pack",
+      "tier": "Base",
+      "price": 70,
+      "count": 202,
+      "total_value": 14140,
+      "description": "Real estate investor & wholesale buyer contacts with emails and phones"
+    }
+  ]
+}

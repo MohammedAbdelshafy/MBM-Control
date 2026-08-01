@@ -15,15 +15,22 @@ For each platform a Chromium browser opens at the sign-in page. You:
   4. Return to this terminal and press Enter to capture the session
      (or just wait — it auto-captures after 15 min as a safety net)
 
-The logged-in storage state is saved to backend/sessions/<platform>.json
-and printed as an env var value. Paste those lines into backend/.env, e.g.:
+The logged-in storage state is saved to backend/sessions/<platform>.json.
+The API auto-loads these files (see config.clipping_session_state), so you
+do NOT need to paste them into .env — just restart the API / workers after
+exporting. If you prefer env vars, the printed lines go into backend/.env, e.g.:
     VYRO_SESSION_STATE=<json>
     REACHCAT_SESSION_STATE=<json>
     CLIPAFFILIATES_SESSION_STATE=<json>
     CLIPPINGCOM_SESSION_STATE=<json>
 then restart the API / workers.
+
+Note: muslimsclipping.com does not resolve (no DNS). The real halal-clipping
+platforms are muslimclippers.com (Muslim Clippers / Whop program) and
+halalclipping.com — both included above.
 """
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -36,6 +43,8 @@ PLATFORMS = [
     ("vyro", "Vyro", "https://vyro.ai"),
     ("reach_cat", "Reach.cat", "https://reach.cat"),
     ("clip_affiliates", "ClipAffiliates", "https://clipaffiliates.com"),
+    ("muslim_clippers", "Muslim Clippers", "https://muslimclippers.com"),
+    ("halalclipping", "HalalClipping.com", "https://halalclipping.com"),
 ]
 
 ENV_NAMES = {
@@ -45,9 +54,11 @@ ENV_NAMES = {
     "vyro": "VYRO_SESSION_STATE",
     "reach_cat": "REACHCAT_SESSION_STATE",
     "clip_affiliates": "CLIPAFFILIATES_SESSION_STATE",
+    "muslim_clippers": "MUSLIM_CLIPPERS_SESSION_STATE",
+    "halalclipping": "HALALCLIPPING_SESSION_STATE",
 }
 
-AUTO_CAPTURE_SECONDS = 15 * 60
+AUTO_CAPTURE_SECONDS = int(os.environ.get("AUTO_CAPTURE_SECONDS", 15 * 60))
 
 
 def main():
@@ -91,13 +102,23 @@ def main():
                 print(f"    [warn] could not load {url}: {exc}")
                 print(f"    Navigate manually in the opened browser, then continue.")
             print(f"    -> Log in to {label} with your gmail, then return here.")
+            print(
+                f"    Capture happens when backend/sessions/early_{pid} exists"
+                f" (or automatically after {AUTO_CAPTURE_SECONDS}s).",
+                flush=True,
+            )
             deadline = time.time() + AUTO_CAPTURE_SECONDS
-            remaining = int(deadline - time.time())
-            try:
-                input(f"    Press Enter to capture {label} session (auto in {remaining}s): ")
-            except EOFError:
-                pass
+            marker = out_dir / f"early_{pid}"
+            marker.unlink(missing_ok=True)
+            # Never rely on stdin: wait for the marker file or the auto-capture
+            # deadline. This works interactively, under an agent, and via
+            # Start-Process (where isatty()/input() are unreliable).
+            while time.time() < deadline and not marker.exists():
+                time.sleep(2)
+                if int(time.time()) % 30 == 0:
+                    print(f"    ...waiting for {pid} (marker or deadline)", flush=True)
             storage = context.storage_state()
+            marker.unlink(missing_ok=True)
             browser.close()
 
         out_path = out_dir / f"{pid}.json"
