@@ -142,6 +142,10 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
     if (!continuous) break;
   }
 
+  for (const p of poolTransporters) {
+    try { p.transporter.close(); } catch (_) {}
+  }
+
   return { sent: totalSent, failed: totalFailed, total: totalSent + totalFailed };
 }
 
@@ -151,4 +155,5 @@ if (process.argv[1]?.endsWith('emailSender.js')) {
   const batchSize = batchSizeArg ? parseInt(batchSizeArg.split('=')[1], 10) : 5000;
   const result = await sendEmailQueue({ batchSize, continuous });
   console.log('FINAL:', JSON.stringify(result));
+  process.exit(0);
 }
