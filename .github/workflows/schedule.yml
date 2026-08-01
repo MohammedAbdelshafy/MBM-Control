@@ -108,6 +108,15 @@ jobs:
           CLIPPING_EMAIL: ${{ secrets.CLIPPING_EMAIL }}
           CLIPPING_PASSWORD: ${{ secrets.CLIPPING_PASSWORD }}
         run: python clipping-factory/cloud_scan.py
+      - name: Upload Clipping Scan Outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clipping-scan-outputs
+          path: |
+            clipping-factory/backend/data/storage/scans/*.json
+            /tmp/scan_summary.json
+          if-no-files-found: warn
       - name: Summary
         if: always()
         run: echo "scan_complete=true" >> $GITHUB_STEP_SUMMARY
@@ -130,6 +139,15 @@ jobs:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python MBM/Scripts/master_publisher.py
+      - name: Upload Video Posting Outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-posting-outputs
+          path: |
+            MBM/LeadEngine/logs/*.json
+            MBM/LeadEngine/*.json
+          if-no-files-found: warn
       - name: Summary
         if: always()
         run: echo "video_posting_complete=true" >> $GITHUB_STEP_SUMMARY
@@ -191,3 +209,14 @@ jobs:
             SEEK_FOUND=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/seeker_opportunities.json')); print(d.get('total_found',0))" 2>/dev/null || echo "0")
             echo "- **Seeker Deals Found:** ${SEEK_FOUND}" >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Upload Revenue Gate Outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: revenue-gate-outputs
+          path: |
+            /tmp/revenue_verdict.json
+            MBM/LeadEngine/logs/*.json
+            MBM/LeadEngine/logs/*.md
+          if-no-files-found: warn

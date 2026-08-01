@@ -19,6 +19,7 @@ jobs:
   # ═══════════════════════════════════════════════════════
   create-agents:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       matrix:
         # Create 4 agents per run (different niches)
@@ -39,6 +40,7 @@ jobs:
   # ═══════════════════════════════════════════════════════
   enrich-leads:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs: create-agents
     steps:
       - uses: actions/checkout@v4
@@ -62,6 +64,7 @@ jobs:
   # ═══════════════════════════════════════════════════════
   deploy-agents:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs: create-agents
     steps:
       - uses: actions/checkout@v4
@@ -81,6 +84,7 @@ jobs:
   # ═══════════════════════════════════════════════════════
   send-emails:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs: enrich-leads
     continue-on-error: true
     steps:
@@ -107,6 +111,7 @@ jobs:
   # ═══════════════════════════════════════════════════════
   revenue-gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs: [create-agents, enrich-leads, deploy-agents, send-emails]
     if: always()
     steps:
@@ -127,6 +132,15 @@ jobs:
           python voice_agency_enhancer.py 2>&1 | tail -5
           python revenue_seeker.py seek 2>&1 | tail -5
           python revenue_tracker.py check 2>&1 | tail -5
+      - name: Upload Overnight Revenue Outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: overnight-revenue-gate-outputs
+          path: |
+            MBM/LeadEngine/logs/*.json
+            MBM/LeadEngine/logs/*.md
+          if-no-files-found: warn
 
   # ═══════════════════════════════════════════════════════
   # PHASE 6: Summary report
