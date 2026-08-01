@@ -84,8 +84,25 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "# 🏥 Repo Health Score: $score / 100" >> $GITHUB_STEP_SUMMARY
           echo "Report generated $(date -u)" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "# 🏥 Repo Health Report"
+            echo ""
+            echo "Score: $score / 100"
+            echo "Generated: $(date -u)"
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > health_report.md
           
           if [ "$score" -lt 75 ]; then
             echo "❌ Repo health is below 75. Please review issues." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
+
+      - name: Upload Health Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-report
+          path: |
+            health_report.md
+            /tmp/health_score.txt
+          if-no-files-found: warn
