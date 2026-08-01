@@ -1,0 +1,47 @@
+{
+  "platform": "ElevenLabs Voice Library",
+  "status": "MANUAL_SETUP_REQUIRED",
+  "steps": [
+    "1. Go to https://elevenlabs.io/voice-library",
+    "2. Sign up / Login to your account",
+    "3. Go to Profile Settings > API Keys",
+    "4. Generate an API key",
+    "5. Add to .env as ELEVENLABS_API_KEY=your_key",
+    "6. Go to Voice Library > My Voices",
+    "7. Click 'Add Generative or Cloned Voice'",
+    "8. Upload voice samples or use Voice Designer",
+    "9. Set visibility to 'Public' for marketplace royalties",
+    "10. Each voice used by others earns you passive income"
+  ],
+  "agents_to_publish": [
+    {
+      "name": "US Commercial Real Estate Acquisition Director ($0.85/min)",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "rate": "$0.85/min",
+      "tags": [
+        "USA Market",
+        "Commercial Real Estate",
+        "Private Equity",
+        "High-Ticket"
+      ]
+    },
+    {
+      "name": "US Tax Lien & Pre-Foreclosure Cash Closer ($0.65/min)",
+      "voice_id": "21m00Tcm4TlvDq8ikWAM",
+      "rate": "$0.65/min",
+      "tags": [
+        "USA Market",
+        "Pre-Foreclosure",
+        "Tax Lien",
+        "Fast Cash Close"
+      ]
+    }
+  ],
+  "revenue_model": {
+    "type": "Usage-based passive royalties",
+    "payout": "Stripe Connect",
+    "when": "Every time someone uses your voice in their generation",
+    "typical_earnings": "$0.01-$0.10 per 1K characters generated"
+  },
+  "setup_url": "https://elevenlabs.io/voice-library"
+}

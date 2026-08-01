@@ -67,14 +67,16 @@ class InstagramCollector:
         """Probe the chrome-devtools MCP endpoint. Returns a thin wrapper or None."""
         try:
             import urllib.request
+            import urllib.error
 
             url = self.config.devtools_url.rstrip("/") + "/json/version"
-            with urllib.request.urlopen(url, timeout=3) as r:
+            req = urllib.request.Request(url, headers={"User-Agent": "Antigravity-MCP/1.0"})
+            with urllib.request.urlopen(req, timeout=2) as r:
                 data = json.loads(r.read().decode())
             self.log(f"[devtools] connected: {data.get('Browser', 'Chrome')}")
             return _DevToolsMCP(self.config.devtools_url, self.log)
         except Exception as e:  # noqa: BLE001
-            self.log(f"[devtools] not available: {e}")
+            self.log(f"[devtools-mcp] Endpoint not reachable ({e}). Falling back to Playwright transport.")
             return None
 
     def _connect_playwright(self):
@@ -276,15 +278,15 @@ class _DevToolsMCP:
             self.log(f"[devtools] scroll_reels failed: {e}")
             return []
 
-    def _cdp_extract(self, ws_url: str, source: str) -> list[dict]:
-        """Open a CDP WebSocket, navigate, and evaluate a scraper in-page."""
+    def _cdp_extract(self, ws_url: str, source: str, scrolls: int = 8) -> list[dict]:
+        """Open a CDP WebSocket, navigate, scroll to lazy-load, and scrape reels."""
         try:
             import websocket  # type: ignore
         except ImportError:
             self.log("[devtools] 'websocket' package missing; install websocket-client")
             return []
         try:
-            ws = websocket.create_connection(ws_url, timeout=10)
+            ws = websocket.create_connection(ws_url, timeout=30)
             _id = 0
 
             def send(method, params):
@@ -303,18 +305,76 @@ class _DevToolsMCP:
             send("Runtime.enable", {})
             send("Page.navigate", {"url": InstagramCollector._source_url(source)})
             recv()
-            time.sleep(3)
+            time.sleep(4)
+            # scroll to trigger lazy-loading of reels
+            scroll_expr = (
+                "for(let i=0;i<arguments[0];i++){window.scrollBy(0,2000);}"
+            )
+            for _ in range(scrolls):
+                send("Runtime.evaluate",
+                     {"expression": f"window.scrollBy(0,2000)", "returnByValue": True})
+                recv()
+                time.sleep(self.config.rate_limit_seconds)
             expr = (
                 "Array.from(document.querySelectorAll('a[href*=\"/reel/\"],"
                 "a[href*=\"/p/\"]')).map(a=>{const h=a.getAttribute('href')||'';"
-                "return h.includes('/reel/')||h.includes('/p/')"
+                "return (h.includes('/reel/')||h.includes('/p/'))"
                 "?('https://www.instagram.com'+h):null}).filter(Boolean)"
             )
             send("Runtime.evaluate", {"expression": expr, "returnByValue": True})
             res = recv()
             ws.close()
-            values = (res.get("result", {}).get("result", {}) or {}).get("value", []) or []
+            root = (res.get("result", {}) or {}).get("result", {}) or {}
+            values = root.get("value", []) or []
             return [{"url": u} for u in values]
         except Exception as e:  # noqa: BLE001
             self.log(f"[devtools] cdp_extract failed: {e}")
             return []
+
+    # --- reusable CDP primitives (used by live run + diagnostics) ---
+    def cdp_send(self, ws_url: str, method: str, params: dict) -> int:
+        import websocket  # type: ignore
+
+        ws = websocket.create_connection(ws_url, timeout=10)
+        self._ws = ws
+        self._cid = 0
+        return self._ws_send(method, params)
+
+    def _ws_send(self, method, params):
+        self._cid += 1
+        self._ws.send(json.dumps({"id": self._cid, "method": method, "params": params}))
+        return self._cid
+
+    def cdp_recv(self) -> dict:
+        while True:
+            msg = json.loads(self._ws.recv())
+            if "id" in msg:
+                return msg
+
+    def cdp_eval(self, ws_url: str, expression: str) -> dict:
+        """Navigate-free evaluate against an existing tab websocket."""
+        try:
+            import websocket  # type: ignore
+
+            ws = websocket.create_connection(ws_url, timeout=30)
+            cid = 0
+
+            def _send(method, params):
+                nonlocal cid
+                cid += 1
+                ws.send(json.dumps({"id": cid, "method": method, "params": params}))
+                return cid
+
+            _send("Runtime.enable", {})
+            _send("Runtime.evaluate", {"expression": expression, "returnByValue": True})
+            res = None
+            while True:
+                m = json.loads(ws.recv())
+                if "id" in m:
+                    res = m
+                    break
+            ws.close()
+            return res or {}
+        except Exception as e:  # noqa: BLE001
+            self.log(f"[devtools] cdp_eval failed: {e}")
+            return {}

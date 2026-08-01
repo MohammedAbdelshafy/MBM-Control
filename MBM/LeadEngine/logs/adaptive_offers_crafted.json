@@ -1,0 +1,72 @@
+[
+  {
+    "offer_id": "off-3717",
+    "prospect_name": "Apex Real Estate Equity Fund",
+    "email": "acquisitions@apexrealtyfund.com",
+    "phone": "+12125550198",
+    "persona_type": "ANALYTICAL_ROI_INVESTOR",
+    "product_offered": "US Off-Market Distressed Real Estate Lead Pack",
+    "price_usd": 499.0,
+    "subject": "Verified Off-Market Cap Rate Preview: US Off-Market Distressed Real Estate Lead Pack",
+    "email_body": "Hi Mark,\n\nI analyzed Apex Real Estate Equity Fund's acquisition profile. We know MLS listings offer squeezed cap rates and heavy broker fees.\n\nWe compiled a verified off-market dataset of 27 US residential properties ($5.5M total commission potential) with average 30%+ equity margins.\n\nDeal Metric Sample:\n\u2022 123 Main St, New York, NY ($450k asking, $11,250 expected comm)\n\nWould you like to review the complete financial audit CSV?",
+    "cta_button": "Review Financial CSV ($499.0 Pack)",
+    "stripe_checkout_url": "https://checkout.stripe.com/pay/off_3717",
+    "created_at": "2026-07-27T21:09:19.904741+00:00"
+  },
+  {
+    "offer_id": "off-6236",
+    "prospect_name": "Lone Star Polymer Recyclers",
+    "email": "procurement@lonestarpolymers.com",
+    "phone": "+17135550172",
+    "persona_type": "PROCUREMENT_SPEC_DIRECTOR",
+    "product_offered": "US Industrial Plastic Scrap Broker Pack",
+    "price_usd": 999.0,
+    "subject": "Monthly Scrap Tonnage Allocation: Direct Factory Contacts (Houston, TX)",
+    "email_body": "Hi Robert,\n\nUnderstanding Lone Star Polymer Recyclers's monthly reprocess demand, middleman markups and supply gaps cut into your margin.\n\nWe have direct plant manager contacts generating monthly PET, HDPE, and PP runner scrap in top US manufacturing hubs.\n\nTonnage Allocation Sample:\n\u2022 Midwest Polymer Mfg (Chicago, IL) \u2014 45 Tons/Mo HDPE Regrind\n\nWould you like direct access to the procurement contact list?",
+    "cta_button": "Claim Tonnage Contact List ($999.0 Pack)",
+    "stripe_checkout_url": "https://checkout.stripe.com/pay/off_6236",
+    "created_at": "2026-07-27T21:09:20.017109+00:00"
+  },
+  {
+    "offer_id": "off-5497",
+    "prospect_name": "Sunbelt Off-Market Wholesalers",
+    "email": "deals@sunbeltwholesalers.com",
+    "phone": "+13055550143",
+    "persona_type": "SPEED_SCALER",
+    "product_offered": "US Off-Market Distressed Real Estate Lead Pack",
+    "price_usd": 499.0,
+    "subject": "7-Day Turnkey Lead Pack: Instant Download for Sunbelt Off-Market Wholesalers",
+    "email_body": "Hi Jessica,\n\nIf you need fresh deal flow without wasting hours on dead numbers, our automated run just finished skip-tracing 27 off-market US deals with verified phone & domain email.\n\nInstant Lead Sample:\n\u2022 123 Main St, New York, NY ($450k asking, $11,250 expected comm)\n\nYou can download the full turnkey CSV pack in under 60 seconds:",
+    "cta_button": "Instant Download CSV ($499.0)",
+    "stripe_checkout_url": "https://checkout.stripe.com/pay/off_5497",
+    "created_at": "2026-07-27T21:09:20.033824+00:00"
+  },
+  {
+    "offer_id": "off-1701",
+    "prospect_name": "Outbound Growth Tele-Sales Agency",
+    "email": "sales@outboundgrowthagency.com",
+    "phone": "+13125550189",
+    "persona_type": "AI_AUTOMATION_BUYER",
+    "product_offered": "Turnkey AI Cold Calling Voice Agent Bot",
+    "price_usd": 2500.0,
+    "subject": "Automate Outbound Calls with 140ms AI Voice Bots for Outbound Growth Tele-Sales Agency",
+    "email_body": "Hi David,\n\nScaling outbound call volume without ballooning rep payroll is a bottleneck.\n\nWe deploy custom-trained AI Voice Agents running @ $0.75/min with 140ms voice latency and automated cash offer scripts.\n\nLive Demo Agent:\n\u2022 US Distressed Property Cash Closer (@ $0.75/min usage or $2,500 build)\n\nWould you like to test a 2-minute live call simulation?",
+    "cta_button": "Test Live Voice Bot Simulation",
+    "stripe_checkout_url": "https://checkout.stripe.com/pay/off_1701",
+    "created_at": "2026-07-27T21:09:20.048838+00:00"
+  },
+  {
+    "offer_id": "off-4918",
+    "prospect_name": "NextGen Digital Media Agency",
+    "email": "sarah@nextgenmedagencies.com",
+    "phone": "+13055550199",
+    "persona_type": "MARKETING_AGENCY_OWNER",
+    "product_offered": "White-Label Marketing Agency AI Voice & Lead Engine Suite",
+    "price_usd": 1500.0,
+    "subject": "Automate Outbound Calls with 140ms AI Voice Bots for NextGen Digital Media Agency",
+    "email_body": "Hi Sarah,\n\nScaling outbound call volume without ballooning rep payroll is a bottleneck.\n\nWe deploy custom-trained AI Voice Agents running @ $0.75/min with 140ms voice latency and automated cash offer scripts.\n\nLive Demo Agent:\n\u2022 Agency Client Portal + $1,500 setup fee + $997/mo retainer + $0.50/min margin\n\nWould you like to test a 2-minute live call simulation?",
+    "cta_button": "Test Live Voice Bot Simulation",
+    "stripe_checkout_url": "https://checkout.stripe.com/pay/off_4918",
+    "created_at": "2026-07-27T21:09:20.075726+00:00"
+  }
+]

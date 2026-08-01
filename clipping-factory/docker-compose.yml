@@ -107,7 +107,7 @@ services:
       - ./backend:/app
     command: >
       celery -A app.core.celery_app worker
-      -Q campaigns,default
+      -Q campaigns,default,acquisition
       -c 1
       -n worker-campaigns@%h
       --loglevel=INFO
@@ -131,7 +131,7 @@ services:
       - /tmp/clips:/tmp/clips
     command: >
       celery -A app.core.celery_app worker
-      -Q acquisition,analysis,video
+      -Q analysis,video
       -c 1
       -n worker-video@%h
       --loglevel=INFO
@@ -193,6 +193,8 @@ services:
     environment:
       DATABASE_URL: postgresql://clipuser:clippass@postgres:5432/clipping_factory
       REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
       STORAGE_ENDPOINT: http://minio:9000
     ports:
       - "8001:8001"
@@ -205,9 +207,9 @@ services:
       - ./backend:/app
     command: python -m app.mcp_server --transport sse --port 8001
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/sse"]
-      interval: 30s
-      timeout: 10s
+      test: ["CMD-SHELL", "curl -sf http://localhost:8001/health || exit 1"]
+      interval: 15s
+      timeout: 5s
       retries: 3
       start_period: 10s
 

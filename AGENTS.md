@@ -1,12 +1,13 @@
-# AGENTS.md — MBM Control Plane
+# AGENTS.md — Base44 Control Plane
 
 ## Project Context
 
-This is the **Contech AI Agentic teamz** monorepo. It contains:
-- **Frontend App** (`src/`) — React/Vite dashboard
-- **Clipping Factory** (`clipping-factory/`) — Python/FastAPI video pipeline
-- **MBM Social** (`clipping-factory/MBM-Social/`) — Brand management & publishing
+Monorepo with four subsystems:
+- **Frontend** (`src/`) — React 18 + Vite 6 + Tailwind dashboard with shadcn/ui (Radix primitives)
+- **Clipping Factory** (`clipping-factory/`) — Python/FastAPI video pipeline + Celery + Docker
+- **MBM Social** (`clipping-factory/MBM-Social/`) — Brand management & multi-channel YouTube publishing
 - **MBM Ops** (`MBM/`) — Lead-gen, outreach, real estate scripts
+- **Lead Engine** (`MBM/LeadEngine/`) — Property intelligence & lead gen platform (TypeScript/Fastify/BullMQ)
 
 ## Workflow Rules
 
@@ -16,32 +17,96 @@ This is the **Contech AI Agentic teamz** monorepo. It contains:
 | **build** | full | Implement approved changes. One scope at a time. |
 | **verify** | read-only | Test, lint, review. NO additional edits. Report issues. |
 
-Default mode: **plan**. Explicitly switch with `/opencode build` or `/opencode verify`.
+Default: **plan**. Switch with `/opencode build` or `/opencode verify`.
 
 ## Key Boundaries
 
-- **Base44**: See `base44/` config. Use `base44 dev` for local backend. See [Base44 docs](https://docs.base44.com/developers/references/cli/get-started/overview.md).
-- **Clipping Factory**: See `clipping-factory/CLIPPING.md` for pipeline, agents, and Docker stack.
+- **Base44**: See `base44/` config. Use `base44 dev` for local backend.
+- **Clipping Factory**: See `clipping-factory/CLIPPING.md` for pipeline, agents, Docker stack.
 - **MBM Social**: See `clipping-factory/MBM-Social/SOCIAL.md` for brand config, publishing, analytics.
 - **MBM Ops**: See `MBM/MBM.md` for lead-gen, scripts, outreach, real estate.
-- **Run checks**: `npm run lint && npm run typecheck && npm run build` before closing any build task.
+- **Lead Engine**: See `MBM/LeadEngine/` — TypeScript/Fastify, Prisma/PostgreSQL, BullMQ/Redis.
 
 ## Quick Reference
 
 ```bash
-npm run dev              # Frontend dev server
-npm run clip:build       # Build one clip end-to-end
-npm run clip:server      # Start FastAPI + Celery workers (docker compose up)
-npm run hunt:send        # Send outreach emails
+npm run dev              # Frontend dev server (port 5173, proxies /api to :3002)
+npm run lint && npm run typecheck && npm run build   # Pre-commit gate
+npm run clip:build       # Build one clip (uses .venv\Scripts\python.exe — Windows)
+npm run clip:server      # docker compose up (Full stack: api/workers/beat/redis/postgres/minio)
+npm run clip:seed        # Seed demo campaigns
+npm run hunt:send        # Send outreach emails (clientHunter.js)
+npm run send-emails      # Drain email queue (emailSender.js)
+npm run demo:campaign    # Generate demo campaign data
 ```
+
+## CLI Quirks
+
+- **`clip:*` scripts** hardcode `.venv\Scripts\python.exe` (Windows). They also force `DATABASE_URL` to localhost in `build_one_clip.py` — overriding Neon/Supabase.
+- **`npm run server`** starts the Express server (index.js) — also starts email/lead pipeline daemons.
+- **`npm run start`** runs `start.cjs` (separate entry from `server`).
+- **jsconfig.json** typechecks only `src/components/**/*.js`, `src/pages/**/*.jsx`, `src/Layout.jsx` — high `maxNodeModuleJsDepth: 0` means no auto-typing.
+- **vite.config.js** proxies `/api/*` → `http://localhost:3002`. The Express server must be running for API calls.
+- **`.gitignore`** is structured as `/*` (ignore all) then `!/path/` (un-ignore selectively). New root-level directories must be explicitly added to `.gitignore`.
 
 ## CI Pipeline
 
 `.github/workflows/`:
-- `check.yml` — lint/typecheck/build on push/PR
-- `schedule.yml` — hourly: email queue, lead pipeline, clipping scan
-- `health-report.yml` — nightly: workflow YAML, env coverage, README freshness
-- `mbm-social.yml` — brand validation on MBM-Social changes
+- `check.yml` — lint → typecheck → build (concurrent lint/typecheck, serial build). Auto-fix on master.
+- `schedule.yml` — Hourly: email queue (with dry-run support) + lead pipeline + clipping.com scan
+- `health-report.yml` — Nightly (06:00 UTC): workflow file check, env.example coverage, README freshness
+- `mbm-social.yml` — Brand validation + dir verification + pipeline import test on MBM-Social changes
+
+## Subsystem Docs
+
+Each subsystem has a dedicated `.md` at its root:
+- `clipping-factory/CLIPPING.md` — 12-container Docker stack, 15 agents, beat schedule, API routes
+- `clipping-factory/MBM-Social/SOCIAL.md` — 5 brands, 10 campaign profiles, autonomous runtime, learning engine, night operations
+- `MBM/MBM.md` — 20+ directory structure, 50+ scripts, lead pipeline flow
+
+## MBM-Social Modules
+
+`clipping-factory/MBM-Social/mbm_social/` contains:
+| Module | Purpose |
+|---|---|
+| `brand_config.py` | Registry + brand YAML loader |
+| `brand_router.py` | Brand-fit scoring and channel selection |
+| `model_registry.py` | Local LLM routing (Ollama) |
+| `pipeline.py` | End-to-end publish flow (manual trigger) |
+| `autonomous_runtime.py` | Full 14-stage autonomous campaign lifecycle |
+| `learning_engine.py` | Self-improving analytics memory + auto weight adjustment |
+| `night_operations.py` | 10 automated overnight maintenance missions |
+| `publish_package.py` | Build brand-aware title/desc/hashtags/thumb text |
+| `publisher.py` | Playwright YouTube Studio publisher |
+| `youtube_api_publisher.py` | YouTube Data API v3 publisher |
+
+## Mission Registry
+
+| Mission | Status | Description |
+|---|---|---|
+| M-021 | COMPLETE | MBM Social Production Launch — multi-brand, autonomous runtime, learning engine, night ops |
+| M-022 | PLANNED | Production Activation — first real campaigns, OAuth setup, multi-platform publishing |
+
+## Server Scripts (Node.js)
+
+`server/` contains Express-based micro-services:
+| Script | Function |
+|---|---|
+| `index.js` | Express server + email queue daemon |
+| `emailSender.js` | Drains `email_queue` (qued→sent) via SMTP |
+| `leadPipeline.js` | Lead pipeline processor |
+| `clientHunter.js` | Client outreach + email campaign |
+| `demoCampaign.js` | Demo data generator (--generate, --campaign, --once, --daemon) |
+| `demoBuilder.js` | Demo clip builder |
+
+## Supabase
+
+`supabase/` contains Edge Functions and migrations:
+- `functions/run-lead-pipeline/` — Triggered lead pipeline
+- `functions/scan-clipping-campaigns/` — Campaign scan Edge Function
+- `functions/send-email-queue/` — Email queue sender
+- `functions/add-to-email-queue/` — Queue email endpoint
+- `migrations/0000*` — DB schema: email_queue, client_orders, employees, lead_pipeline_logs, pg_cron schedules
 
 ## Output Contract
 

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "clipping_session",
+    "value": "pub_session_active_2026_mbm_master",
+    "domain": ".clipping.net",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "clipping_token",
+    "value": "token_public_bounty_reader_2026",
+    "domain": ".clipping.net",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "guest_access",
+    "value": "true",
+    "domain": ".clipping.net",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  }
+]

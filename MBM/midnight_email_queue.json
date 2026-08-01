@@ -1,0 +1,43 @@
+{
+  "created": "2026-07-28T15:02:27.568292",
+  "send_after": "2026-07-28 02:00:00 CST (midnight Pacific)",
+  "agencies": [
+    {
+      "name": "Carrot",
+      "email": "support@carrot.com"
+    },
+    {
+      "name": "Lead Generation RE",
+      "email": "info@leadgenerationre.com"
+    },
+    {
+      "name": "REI Reply",
+      "email": "hello@reiReply.com"
+    },
+    {
+      "name": "BiggerPockets",
+      "email": "deals@biggerpockets.com"
+    },
+    {
+      "name": "Batch Leads",
+      "email": "sales@batchleads.io"
+    },
+    {
+      "name": "PropStream",
+      "email": "partners@propstream.com"
+    },
+    {
+      "name": "REISkip",
+      "email": "info@reiskip.com"
+    },
+    {
+      "name": "DealMachine",
+      "email": "support@dealmachine.com"
+    },
+    {
+      "name": "Privy",
+      "email": "hello@privy.com"
+    }
+  ],
+  "template": "agency_outreach"
+}

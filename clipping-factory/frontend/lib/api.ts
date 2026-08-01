@@ -159,6 +159,9 @@ export interface Clip {
   qc_notes: string | null;
   rejection_reason: string | null;
   edits_applied: string[];
+  viral_benchmark?: Record<string, any>;
+  enhanced_tags?: string[];
+  platform_metadata?: Record<string, any>;
   version: number;
   created_at: string;
 }
@@ -168,10 +171,21 @@ export const clipsApi = {
     const q = new URLSearchParams(params as Record<string, string>).toString();
     return apiFetch<{ items: Clip[]; total: number }>(`/clips${q ? `?${q}` : ""}`);
   },
-  getDownloadUrl: (id: string) => apiFetch<{ url: string }>(`/clips/${id}/download-url`),
+  getDownloadUrl: (id: string) =>
+    apiFetch<{ url: string; expires_in: number }>(`/clips/${id}/download-url`),
   approve: (id: string) => apiFetch(`/clips/${id}/approve`, { method: "POST" }),
-  reject: (id: string, reason?: string) =>
-    apiFetch(`/clips/${id}/reject?reason=${encodeURIComponent(reason || "")}`, { method: "POST" }),
+  reject: (id: string, reason: string) =>
+    apiFetch(`/clips/${id}/reject?reason=${encodeURIComponent(reason)}`, {
+      method: "POST",
+    }),
+  getViralReport: (id: string) =>
+    apiFetch<{ clip_id: string; viral_benchmark: Record<string, any>; enhanced_tags: string[]; platform_metadata: Record<string, any> }>(
+      `/clips/${id}/viral-report`
+    ),
+  enhanceViral: (id: string, niche?: string) =>
+    apiFetch(`/clips/${id}/enhance-viral${niche ? `?niche=${encodeURIComponent(niche)}` : ""}`, {
+      method: "POST",
+    }),
 };
 
 // ──────────────────────────────────────────────

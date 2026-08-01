@@ -72,6 +72,11 @@ class Clip(Base, UUIDPrimaryKey, TimestampMixin):
     edits_applied: Mapped[list] = mapped_column(JSON, default=list)
     # ["captions", "zoom", "silence_removal", "aspect_ratio_crop"]
 
+    # Viral Benchmark & Enhancement Analysis
+    viral_benchmark: Mapped[dict] = mapped_column(JSON, default=dict)
+    enhanced_tags: Mapped[list] = mapped_column(JSON, default=list)
+    platform_metadata: Mapped[dict] = mapped_column(JSON, default=dict)
+
     # Status
     status: Mapped[str] = mapped_column(String(50), default=ClipStatus.GENERATING)
     qc_notes: Mapped[str | None] = mapped_column(Text, nullable=True)

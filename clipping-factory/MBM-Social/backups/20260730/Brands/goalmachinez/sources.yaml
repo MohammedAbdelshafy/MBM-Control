@@ -1,0 +1,10 @@
+long_form_sources:
+- type: youtube_channel
+  value: '@Goalmachinez'
+  role: primary
+  notes: Pull next approved long-form upload from this channel.
+ingest:
+  strategy: next_approved
+  min_duration_sec: 60
+  max_duration_sec: 7200
+approval_required: true

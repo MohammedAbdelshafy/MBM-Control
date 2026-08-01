@@ -15,8 +15,8 @@ TRACKING_FILE = os.path.join(ARTIFACTS_DIR, "sales_tracking.csv")
 # Gmail SMTP Configuration
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-EMAIL_ADDRESS = "abdelshafyclapps@gmail.com"
-EMAIL_PASSWORD = "ffcd pjvx cmdf zbxg"
+EMAIL_ADDRESS = os.environ.get("SMTP_USER", "abdelshafyclapps@gmail.com")
+EMAIL_PASSWORD = os.environ.get("SMTP_PASS", "")
 
 TODAY = datetime.now().strftime('%Y-%m-%d')
 

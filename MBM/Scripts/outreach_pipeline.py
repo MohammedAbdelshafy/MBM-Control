@@ -17,7 +17,7 @@ OUTREACH_LOG.mkdir(parents=True, exist_ok=True)
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 SENDER_EMAIL = "abdelshafyclapps@gmail.com"
-SENDER_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "")
+SENDER_PASSWORD = os.environ.get("SMTP_PASS", "")
 
 RECIPIENTS = [
     {"name": "PipHouse LLC", "email": "PipHousellc@gmail.com"},

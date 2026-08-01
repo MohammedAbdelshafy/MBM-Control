@@ -9,9 +9,15 @@ import time
 from pathlib import Path
 from typing import BinaryIO
 
-import boto3
-from botocore.client import Config
-from botocore.exceptions import ClientError, EndpointConnectionError
+try:
+    import boto3
+    from botocore.client import Config
+    from botocore.exceptions import ClientError, EndpointConnectionError
+    _BOTO3_AVAILABLE = True
+except ImportError:
+    _BOTO3_AVAILABLE = False
+    class ClientError(Exception): pass
+    class EndpointConnectionError(Exception): pass
 
 from app.core.config import get_settings
 
@@ -27,30 +33,33 @@ _storage_available = True
 
 
 def _make_client():
-    return boto3.client(
-        "s3",
-        endpoint_url=settings.storage_endpoint if not settings.is_production else None,
-        aws_access_key_id=settings.storage_access_key,
-        aws_secret_access_key=settings.storage_secret_key,
-        region_name=settings.storage_region,
-        config=Config(
-            signature_version="s3v4",
-            connect_timeout=10,
-            read_timeout=300,
-            retries={"max_attempts": 3, "mode": "adaptive"},
-            # Keep parts small + aligned so MinIO multipart uploads don't fail
-            # with IncompleteBody (Content-Length mismatch on large files).
-            multipart_threshold=8 * 1024 * 1024,
-            multipart_chunksize=8 * 1024 * 1024,
-        ),
-        use_ssl=settings.storage_use_ssl,
-    )
+    if not _BOTO3_AVAILABLE:
+        return None
+    try:
+        return boto3.client(
+            "s3",
+            endpoint_url=settings.storage_endpoint if not settings.is_production else None,
+            aws_access_key_id=settings.storage_access_key,
+            aws_secret_access_key=settings.storage_secret_key,
+            region_name=settings.storage_region,
+            config=Config(
+                signature_version="s3v4",
+                connect_timeout=10,
+                read_timeout=300,
+                retries={"max_attempts": 3, "mode": "adaptive"},
+                multipart_threshold=8 * 1024 * 1024,
+                multipart_chunksize=8 * 1024 * 1024,
+            ),
+            use_ssl=settings.storage_use_ssl,
+        )
+    except Exception:
+        return None
 
 
 def _refresh_client():
     global _client, _storage_available
     _client = _make_client()
-    _storage_available = True
+    _storage_available = _client is not None
 
 
 def get_storage_client():

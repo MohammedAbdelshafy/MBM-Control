@@ -1,0 +1,47 @@
+[
+  {
+    "job_id": "up-api-01",
+    "query_tag": "API Keys",
+    "search_url": "https://www.upwork.com/nx/search/jobs/?nbs=1&q=API%20Keys",
+    "title": "Twilio & ElevenLabs API Key Integration for Voice Bot",
+    "client_budget": "$2,500.00 Fixed Price",
+    "skills": [
+      "Twilio API",
+      "ElevenLabs API",
+      "Python",
+      "Node.js"
+    ],
+    "proposal_pitch": "Hi! I am Big Moe Shafy from Contech AI Agentic Teamz. We specialize in seamless API Key integrations for Twilio Voice/SMS, ElevenLabs AI voices, OpenAI, and Stripe. We can configure your API credentials, WebRTC dialer, and webhook listeners in under 4 hours.",
+    "status": "Winning Proposal Ready"
+  },
+  {
+    "job_id": "up-api-02",
+    "query_tag": "API Keys",
+    "search_url": "https://www.upwork.com/nx/search/jobs/?nbs=1&q=API%20Keys",
+    "title": "Stripe & Neteller API Payment Gateway Setup",
+    "client_budget": "$3,000.00 Fixed Price",
+    "skills": [
+      "Stripe API",
+      "Neteller API",
+      "Express.js",
+      "Webhooks"
+    ],
+    "proposal_pitch": "Hello! We have pre-built API integration scripts for Stripe Connect and Neteller payout ledgers. We guarantee 100% secure webhook verification, instant payouts, and zero data leakage.",
+    "status": "Winning Proposal Ready"
+  },
+  {
+    "job_id": "up-api-03",
+    "query_tag": "API Keys",
+    "search_url": "https://www.upwork.com/nx/search/jobs/?nbs=1&q=API%20Keys",
+    "title": "RapidAPI & Google Maps Lead Enrichment Pipeline",
+    "client_budget": "$1,800.00 Fixed Price",
+    "skills": [
+      "RapidAPI",
+      "Google Maps API",
+      "Python",
+      "FastAPI"
+    ],
+    "proposal_pitch": "Hey there! We run a Lead Engine powered by RapidAPI (Realtor, Skip Tracing, Local Business Data). We can deliver a fully automated lead enrichment pipeline that extracts verified contacts in under 5 minutes.",
+    "status": "Winning Proposal Ready"
+  }
+]

@@ -12,9 +12,9 @@ ARTIFACTS_DIR = os.path.join(MBM_ROOT, "Artifacts")
 CONFIG_DIR = os.path.join(MBM_ROOT, "Config")
 
 # Hardcoded for the user's specific Telegram bot
-TELEGRAM_TOKEN = "TELEGRAM_BOT_TOKEN_REDACTED"
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 # Security: only respond to the user's specific chat ID
-AUTHORIZED_CHAT_ID = 6617518949
+AUTHORIZED_CHAT_ID = int(os.environ.get("TELEGRAM_CHAT_ID", "0"))
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     print(f"[DEBUG] Received /start from Chat ID: {update.effective_chat.id}")
@@ -92,15 +92,63 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     if update.effective_chat.id != AUTHORIZED_CHAT_ID:
         return
         
-    await update.message.reply_text(f"✨ *Vibe Coding Initiated!*\nI have forwarded your request to Opencode to start building.", parse_mode='Markdown')
+    user_order = update.message.text.strip()
+    await update.message.reply_text(f"🧠 *Processing Order with Gemini AI...*\n`{user_order}`", parse_mode='Markdown')
     
-    # Run opencode with the user's natural language prompt
-    subprocess.Popen(
-        ["opencode", "run", "--auto", update.message.text],
-        cwd=MBM_ROOT,
-        creationflags=subprocess.CREATE_NEW_CONSOLE,
-        shell=True
+    gemini_key = os.getenv("GEMINI_API_KEY", "")
+    
+    # Process order via Gemini
+    system_prompt = (
+        "You are the Antigravity Master Command Bridge. You control an automated AI infrastructure.\n"
+        "Available Actions:\n"
+        "- 'run_publisher': Runs master publisher (video generation, lead outreach, email cadences).\n"
+        "- 'purge_videos': Deletes old videos and renders fresh 1080p Shorts.\n"
+        "- 'check_emails': Runs AI Ops Agent to check email replies and log errors.\n"
+        "- 'wolf_closer': Triggers the Wolf of Wall Street Closer Agent.\n"
+        "- 'answer': Just answer the question or query directly.\n\n"
+        "Return a strict JSON object:\n"
+        '{"action": "run_publisher"|"purge_videos"|"check_emails"|"wolf_closer"|"answer", "response_text": "Detailed explanation/answer to send back to user"}'
     )
+    
+    action = "answer"
+    answer_text = "Order received and processed."
+    
+    if gemini_key:
+        import requests, json
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_key}"
+        payload = {
+            "system_instruction": {"parts": [{"text": system_prompt}]},
+            "contents": [{"parts": [{"text": user_order}]}],
+            "generationConfig": {"response_mime_type": "application/json"}
+        }
+        try:
+            res = requests.post(url, json=payload, timeout=15)
+            if res.status_code == 200:
+                data = res.json()["candidates"][0]["content"]["parts"][0]["text"]
+                parsed = json.loads(data)
+                action = parsed.get("action", "answer")
+                answer_text = parsed.get("response_text", "")
+        except Exception as e:
+            print(f"[WARN] Gemini processing error: {e}")
+
+    # Execute action if matched
+    if action == "run_publisher":
+        subprocess.Popen([sys.executable, os.path.join(SCRIPTS_DIR, "master_publisher.py")])
+        answer_text += "\n\n🚀 *Master Publisher Launched in Background!*"
+    elif action == "purge_videos":
+        purger_script = os.path.join(MBM_ROOT, "..", "clipping-factory", "MBM-Social", "niche_channel_purger_and_renderer.py")
+        subprocess.Popen([sys.executable, purger_script])
+        answer_text += "\n\n🎬 *Video Purger & Renderer Launched!*"
+    elif action == "check_emails":
+        ops_script = os.path.join(SCRIPTS_DIR, "ai_ops_agent.py")
+        subprocess.Popen([sys.executable, ops_script])
+        answer_text += "\n\n📬 *AI Ops Email & Log Inspector Launched!*"
+    elif action == "wolf_closer":
+        closer_script = os.path.join(MBM_ROOT, "LeadEngine", "wolf_closer_agent.py")
+        subprocess.Popen([sys.executable, closer_script, "--once"])
+        answer_text += "\n\n🐺 *Wolf Closer Agent Triggered!*"
+        
+    await update.message.reply_text(answer_text, parse_mode='Markdown')
 
 def main():
     print("Starting MBM Telegram Listener...")

@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-07-30T23:10:27.142554",
+  "file_checks": {
+    "brands_dir": true,
+    "brand_registry": true,
+    "channel_registry": true,
+    "campaign_router": true,
+    "channel_metrics": true,
+    "master_account": true,
+    "mbm_social_package": true,
+    "pipeline": true,
+    "autonomous_runtime": true,
+    "learning_engine": true,
+    "night_operations": true,
+    "backend_exists": true
+  },
+  "brands_complete": 5,
+  "brands_total": 5,
+  "brand_details": {
+    "clippingfactorymbm": {
+      "complete": true,
+      "missing": []
+    },
+    "cutedosage": {
+      "complete": true,
+      "missing": []
+    },
+    "dontwatchthis": {
+      "complete": true,
+      "missing": []
+    },
+    "goalmachinez": {
+      "complete": true,
+      "missing": []
+    },
+    "twistsrevealed": {
+      "complete": true,
+      "missing": []
+    }
+  },
+  "failed_checks": [],
+  "status": "healthy"
+}

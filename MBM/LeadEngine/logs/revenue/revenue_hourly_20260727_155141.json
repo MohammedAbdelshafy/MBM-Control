@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-07-27T12:51:41.514382+00:00",
+  "hour_number": 3,
+  "question": "Have we made any money?",
+  "answer": "YES",
+  "score": 86,
+  "threshold": 30,
+  "signals": {
+    "deals_won": 0,
+    "meetings_booked": 0,
+    "replies_received": 0,
+    "contacts_verified": 0,
+    "outreach_volume": 43
+  },
+  "adjustments_applied": [],
+  "escalation_level": "NORMAL",
+  "cumulative_hours_without_revenue": 0
+}

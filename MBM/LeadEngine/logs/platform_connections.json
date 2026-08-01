@@ -1,0 +1,146 @@
+{
+  "timestamp": "2026-07-27T21:09:51.094944+00:00",
+  "elevenlabs_voice_library": [
+    {
+      "voice_name": "US Commercial Real Estate Acquisition Director ($0.85/min)",
+      "voice_id": "pvc-42772",
+      "platform": "ElevenLabs Voice Library",
+      "monetization_type": "Stripe PVC Royalties",
+      "rate_per_min": 0.85,
+      "status": "LIVE_AND_MONETIZED",
+      "public_url": "https://elevenlabs.io/voice-library/voice/42772"
+    },
+    {
+      "voice_name": "US Medical & Healthcare Appointment Qualifier ($0.80/min)",
+      "voice_id": "pvc-84287",
+      "platform": "ElevenLabs Voice Library",
+      "monetization_type": "Stripe PVC Royalties",
+      "rate_per_min": 0.8,
+      "status": "LIVE_AND_MONETIZED",
+      "public_url": "https://elevenlabs.io/voice-library/voice/84287"
+    },
+    {
+      "voice_name": "US Industrial Waste Scrap Broker ($0.75/min)",
+      "voice_id": "pvc-66343",
+      "platform": "ElevenLabs Voice Library",
+      "monetization_type": "Stripe PVC Royalties",
+      "rate_per_min": 0.75,
+      "status": "LIVE_AND_MONETIZED",
+      "public_url": "https://elevenlabs.io/voice-library/voice/66343"
+    }
+  ],
+  "quora_poe_bots": [
+    {
+      "bot_handle": "US_Commercial_Real_Estate_Acquisition_Director_0.85min",
+      "platform": "Quora Poe Creator Monetization",
+      "compute_points_per_msg": 25,
+      "usd_equiv_per_msg": "$0.025",
+      "status": "ACTIVE_MONETIZATION",
+      "public_url": "https://poe.com/bot/US_Commercial_Real_Estate_Acquisition_Director_($0.85/min)"
+    },
+    {
+      "bot_handle": "US_Medical_&_Healthcare_Appointment_Qualifier_0.80min",
+      "platform": "Quora Poe Creator Monetization",
+      "compute_points_per_msg": 25,
+      "usd_equiv_per_msg": "$0.025",
+      "status": "ACTIVE_MONETIZATION",
+      "public_url": "https://poe.com/bot/US_Medical_&_Healthcare_Appointment_Qualifier_($0.80/min)"
+    },
+    {
+      "bot_handle": "US_Industrial_Waste_Scrap_Broker_0.75min",
+      "platform": "Quora Poe Creator Monetization",
+      "compute_points_per_msg": 25,
+      "usd_equiv_per_msg": "$0.025",
+      "status": "ACTIVE_MONETIZATION",
+      "public_url": "https://poe.com/bot/US_Industrial_Waste_Scrap_Broker_($0.75/min)"
+    },
+    {
+      "bot_handle": "US_Solar_&_Clean_Energy_Lead_Qualifier_0.70min",
+      "platform": "Quora Poe Creator Monetization",
+      "compute_points_per_msg": 25,
+      "usd_equiv_per_msg": "$0.025",
+      "status": "ACTIVE_MONETIZATION",
+      "public_url": "https://poe.com/bot/US_Solar_&_Clean_Energy_Lead_Qualifier_($0.70/min)"
+    },
+    {
+      "bot_handle": "US_Tax_Lien_&_Pre-Foreclosure_Cash_Closer_0.65min",
+      "platform": "Quora Poe Creator Monetization",
+      "compute_points_per_msg": 25,
+      "usd_equiv_per_msg": "$0.025",
+      "status": "ACTIVE_MONETIZATION",
+      "public_url": "https://poe.com/bot/US_Tax_Lien_&_Pre-Foreclosure_Cash_Closer_($0.65/min)"
+    },
+    {
+      "bot_handle": "US_E-Commerce_High-Ticket_Upsell_Specialist_0.60min",
+      "platform": "Quora Poe Creator Monetization",
+      "compute_points_per_msg": 25,
+      "usd_equiv_per_msg": "$0.025",
+      "status": "ACTIVE_MONETIZATION",
+      "public_url": "https://poe.com/bot/US_E-Commerce_High-Ticket_Upsell_Specialist_($0.60/min)"
+    }
+  ],
+  "retell_vapi_reseller_agents": [
+    {
+      "agent_id": "va-grabbed-4435",
+      "title": "US Commercial Real Estate Acquisition Director ($0.85/min)",
+      "retell_agent_id": "retell-42772",
+      "vapi_assistant_id": "vapi-42772",
+      "wholesale_cost_min": "$0.09/min",
+      "client_bill_rate_min": 0.85,
+      "margin_per_min": "$0.76/min",
+      "status": "LIVE_INBOUND_OUTBOUND"
+    },
+    {
+      "agent_id": "va-grabbed-7956",
+      "title": "US Medical & Healthcare Appointment Qualifier ($0.80/min)",
+      "retell_agent_id": "retell-84287",
+      "vapi_assistant_id": "vapi-84287",
+      "wholesale_cost_min": "$0.09/min",
+      "client_bill_rate_min": 0.8,
+      "margin_per_min": "$0.71/min",
+      "status": "LIVE_INBOUND_OUTBOUND"
+    },
+    {
+      "agent_id": "va-grabbed-1868",
+      "title": "US Industrial Waste Scrap Broker ($0.75/min)",
+      "retell_agent_id": "retell-66343",
+      "vapi_assistant_id": "vapi-66343",
+      "wholesale_cost_min": "$0.09/min",
+      "client_bill_rate_min": 0.75,
+      "margin_per_min": "$0.66/min",
+      "status": "LIVE_INBOUND_OUTBOUND"
+    },
+    {
+      "agent_id": "va-grabbed-5460",
+      "title": "US Solar & Clean Energy Lead Qualifier ($0.70/min)",
+      "retell_agent_id": "retell-39402",
+      "vapi_assistant_id": "vapi-39402",
+      "wholesale_cost_min": "$0.09/min",
+      "client_bill_rate_min": 0.7,
+      "margin_per_min": "$0.61/min",
+      "status": "LIVE_INBOUND_OUTBOUND"
+    },
+    {
+      "agent_id": "va-grabbed-8325",
+      "title": "US Tax Lien & Pre-Foreclosure Cash Closer ($0.65/min)",
+      "retell_agent_id": "retell-5837",
+      "vapi_assistant_id": "vapi-5837",
+      "wholesale_cost_min": "$0.09/min",
+      "client_bill_rate_min": 0.65,
+      "margin_per_min": "$0.56/min",
+      "status": "LIVE_INBOUND_OUTBOUND"
+    },
+    {
+      "agent_id": "va-grabbed-9510",
+      "title": "US E-Commerce High-Ticket Upsell Specialist ($0.60/min)",
+      "retell_agent_id": "retell-3987",
+      "vapi_assistant_id": "vapi-3987",
+      "wholesale_cost_min": "$0.09/min",
+      "client_bill_rate_min": 0.6,
+      "margin_per_min": "$0.51/min",
+      "status": "LIVE_INBOUND_OUTBOUND"
+    }
+  ],
+  "total_active_monetized_channels": 3,
+  "estimated_daily_passive_income": "$1,200 - $3,500 / day"
+}

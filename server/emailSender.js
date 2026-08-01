@@ -115,7 +115,7 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
     let sent = 0;
     let failed = 0;
 
-    // Send in parallel batches with round-robin pool rotation
+    // Send in parallel batches with round-robin pool rotation & anti-flagging delays
     for (let i = 0; i < emails.length; i += concurrency) {
       const batch = emails.slice(i, i + concurrency);
       const results = await Promise.allSettled(
@@ -130,9 +130,9 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
         else failed++;
       }
 
-      if (sendDelay > 0 && i + concurrency < emails.length) {
-        await delay(sendDelay);
-      }
+      // Anti-flagging delay between batches (2 - 5 seconds)
+      const randomDelay = Math.floor(Math.random() * 3000) + 2000;
+      await delay(randomDelay);
     }
 
     totalSent += sent;

@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-08-01T11:23:29Z",
+  "status": "ALL_SERVICES_CONNECTED",
+  "connections": {
+    "youtube_studio": "CONNECTED",
+    "kick_vod_downloader": "CONNECTED",
+    "chrome_cdp": "CONNECTED",
+    "telephony_bridge": "CONNECTED",
+    "lead_engine": "CONNECTED"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-07-31T21:20:31Z",
+  "total_ai_skill_products": 5,
+  "status": "PUBLISHED_FOR_SALE",
+  "products": [
+    {
+      "skill_id": "SKILL-HIGGSFIELD-AI-SUITE",
+      "name": "Higgsfield AI Media & Product Photoshoot Suite",
+      "description": "Commercial AI studio generating 4K product photos, UGC ads, and 3D GLB assets.",
+      "type": "B2B API & Web App License",
+      "price_usd": 299.0,
+      "api_rate": "$0.10 / image, $0.50 / video",
+      "checkout_url": "https://whop.com/checkout/plan_Bc4IFm3ZZUPqo/?session=ch_p7mNOLHcOFqPkqB",
+      "target_buyers": "E-Commerce Brands, Shopify Merchants, Marketing Agencies"
+    },
+    {
+      "skill_id": "SKILL-PROPERTY-LEAD-SWARM",
+      "name": "Property Intelligence & Skip-Tracing Lead Swarm",
+      "description": "Automated Zillow/PropStream scraper with 100% verified phone & email skip-tracing.",
+      "type": "Digital Data Pack & API Feed",
+      "price_usd": 499.0,
+      "api_rate": "$0.25 / verified lead",
+      "checkout_url": "https://whop.com/checkout/plan_r4usD5RAX7WBN/?session=ch_vwDH5EIGSYfqPzA",
+      "target_buyers": "Real Estate Investors, Wholesalers, Acquisitions Teams"
+    },
+    {
+      "skill_id": "SKILL-VOICE-AGENT-FACTORY",
+      "name": "Retell AI Outbound Telephony Agent Factory",
+      "description": "29 Pre-built Retell AI calling agents with live cell phone transfer bridge (+1 (661) 990-9068 / +201040404118).",
+      "type": "Wholesale SaaS Portal",
+      "price_usd": 1500.0,
+      "api_rate": "$0.50 / min (Wholesale: $0.10/min)",
+      "checkout_url": "https://whop.com/checkout/plan_IBRa26sYHrgs4/?session=ch_e6WBbxjfC92732Y",
+      "target_buyers": "HVAC, Roofing, Legal, Insurance & Solar Agencies"
+    },
+    {
+      "skill_id": "SKILL-CAPTIVATING-VIDEO-CLIPPER",
+      "name": "Automated Video Clipping & Anti-Flagging Engine",
+      "description": "Converts podcasts into 1080x1920 viral clips with kinetic yellow/green subtitles.",
+      "type": "Digital Software & Clipping Service",
+      "price_usd": 199.0,
+      "api_rate": "$0.15 / clip",
+      "checkout_url": "https://whop.com/checkout/plan_XtyT2FkDDBJB8/?session=ch_nyPRV1d0fs4401r",
+      "target_buyers": "Podcasters, YouTubers, Content Networks, Whop Clippers"
+    },
+    {
+      "skill_id": "SKILL-GATEKEEPER-REVENUE-REVIEW",
+      "name": "Revenue Review & Data Quality Audit Engine",
+      "description": "Automated QA audit engine filtering bad contacts and deduplicating B2B databases.",
+      "type": "Data Audit MicroSaaS",
+      "price_usd": 149.0,
+      "api_rate": "$0.02 / audit row",
+      "checkout_url": "https://whop.com/checkout/plan_RPi2lTqZuBoK8/?session=ch_p6LFgGFkhXOCrQ7",
+      "target_buyers": "B2B Sales Teams, Outreach Agencies, Lead Brokers"
+    }
+  ]
+}

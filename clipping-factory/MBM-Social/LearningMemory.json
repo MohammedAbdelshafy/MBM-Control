@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "updated": "2026-07-30T23:10:27.040357",
+  "campaigns": [
+    {
+      "clip_id": "TEST-001",
+      "brand": "dontwatchthis",
+      "profile": "dark_stories",
+      "hook_text": "This chilling mystery will keep you up at night...",
+      "title": "The Dark Secret Nobody Expected",
+      "caption": "A mystery that unfolds in unexpected ways",
+      "thumbnail_text": "DARK SECRET",
+      "posting_time": "2026-07-30T20:00:00",
+      "source_url": "https://youtube.com/watch?v=test",
+      "platform": "youtube_shorts",
+      "timestamp": "2026-07-30T21:39:20.228704",
+      "views": 0,
+      "ctr": 0.0,
+      "watch_time_sec": 0.0,
+      "subs_gain": 0,
+      "revenue_usd": 0.0,
+      "status": "published"
+    },
+    {
+      "clip_id": "demo-001",
+      "brand": "dontwatchthis",
+      "profile": "dark_stories",
+      "hook_text": "dark mystery story",
+      "title": "Don't Watch This: The Unexplained Disappearance That Haunts Your Sleep",
+      "caption": "Dive into a spine-chilling tale of darkness and mystery that will leave you questioning everything. Follow the chilling truth as it unravels in this gripping story that will keep you up at night. Don't miss out on this eerie adventure!",
+      "thumbnail_text": "SHOCKED FACE  \nMYSTERY UNRAVELED",
+      "posting_time": "2026-07-31T20:00:00",
+      "source_url": "",
+      "platform": "youtube_shorts",
+      "timestamp": "2026-07-30T23:10:27.039329",
+      "views": 0,
+      "ctr": 0.0,
+      "watch_time_sec": 0.0,
+      "subs_gain": 0,
+      "revenue_usd": 0.0,
+      "status": "published"
+    }
+  ],
+  "winning_hooks": {
+    "dontwatchthis": {
+      "This chilling mystery will keep you up at night...": 1,
+      "dark mystery story": 1
+    }
+  },
+  "winning_titles": {
+    "dontwatchthis": {
+      "The Dark Secret Nobody Expected": 1,
+      "Don't Watch This: The Unexplained Disappearance That Haunts Your Sleep": 1
+    }
+  },
+  "winning_captions": {
+    "dontwatchthis": {
+      "A mystery that unfolds in unexpected ways": 1,
+      "Dive into a spine-chilling tale of darkness and mystery that will leave you questioning everything. Follow the chilling truth as it unravels in this gripping story that will keep you up at night. Don't miss out on this eerie adventure!": 1
+    }
+  },
+  "winning_thumbnails": {
+    "dontwatchthis": {
+      "DARK SECRET": 1,
+      "SHOCKED FACE  \nMYSTERY UNRAVELED": 1
+    }
+  },
+  "winning_posting_times": {
+    "dontwatchthis": {
+      "20": 2
+    }
+  },
+  "winning_sources": {
+    "dontwatchthis": {
+      "https://youtube.com/watch?v=test": 1
+    }
+  },
+  "brand_performance": {
+    "dontwatchthis": {
+      "total_campaigns": 2,
+      "total_views": 0,
+      "avg_ctr": 0.0,
+      "total_revenue": 0.0,
+      "best_hook": "",
+      "best_title": ""
+    }
+  },
+  "profile_performance": {
+    "dark_stories": {
+      "total_campaigns": 2,
+      "total_views": 0,
+      "avg_ctr": 0.0
+    }
+  },
+  "platform_performance": {}
+}

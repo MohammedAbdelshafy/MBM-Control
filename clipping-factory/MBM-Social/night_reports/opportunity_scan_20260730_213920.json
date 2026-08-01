@@ -1,0 +1,142 @@
+{
+  "timestamp": "2026-07-30T21:39:20.485357",
+  "opportunities_found": 10,
+  "opportunities": [
+    {
+      "profile": "dark_stories",
+      "description": "Mystery, true crime lite, paranormal, chilling stories",
+      "target_brands": [
+        "dontwatchthis",
+        "twistsrevealed"
+      ],
+      "platforms": [
+        "youtube_shorts",
+        "tiktok",
+        "instagram_reels"
+      ],
+      "status": "available"
+    },
+    {
+      "profile": "football_highlights",
+      "description": "Football/soccer highlights, goals, tactics, match commentary",
+      "target_brands": [
+        "goalmachinez"
+      ],
+      "platforms": [
+        "youtube_shorts",
+        "tiktok",
+        "instagram_reels",
+        "twitter"
+      ],
+      "status": "available"
+    },
+    {
+      "profile": "cute_wholesome",
+      "description": "Cute animals, babies, family moments, feel-good content",
+      "target_brands": [
+        "cutedosage"
+      ],
+      "platforms": [
+        "youtube_shorts",
+        "tiktok",
+        "instagram_reels"
+      ],
+      "status": "available"
+    },
+    {
+      "profile": "plot_twists",
+      "description": "Plot twists, reveals, shocking endings, narrative suspense",
+      "target_brands": [
+        "twistsrevealed"
+      ],
+      "platforms": [
+        "youtube_shorts",
+        "tiktok",
+        "instagram_reels"
+      ],
+      "status": "available"
+    },
+    {
+      "profile": "tech_automation",
+      "description": "AI, automation, build-in-public, pipeline demos, case studies",
+      "target_brands": [
+        "clippingfactorymbm"
+      ],
+      "platforms": [
+        "youtube_shorts",
+        "tiktok",
+        "linkedin"
+      ],
+      "status": "available"
+    },
+    {
+      "profile": "movie_recaps",
+      "description": "Movie/TV show recaps, analysis, endings explained",
+      "target_brands": [
+        "dontwatchthis",
+        "twistsrevealed"
+      ],
+      "platforms": [
+        "youtube_shorts",
+        "tiktok",
+        "instagram_reels"
+      ],
+      "status": "available"
+    },
+    {
+      "profile": "business_finance",
+      "description": "Business insights, finance tips, entrepreneurship, real estate",
+      "target_brands": [
+        "clippingfactorymbm"
+      ],
+      "platforms": [
+        "youtube_shorts",
+        "tiktok",
+        "linkedin",
+        "twitter"
+      ],
+      "status": "available"
+    },
+    {
+      "profile": "history_documentary",
+      "description": "Historical events, documentary clips, educational content",
+      "target_brands": [
+        "dontwatchthis"
+      ],
+      "platforms": [
+        "youtube_shorts",
+        "tiktok",
+        "instagram_reels"
+      ],
+      "status": "available"
+    },
+    {
+      "profile": "islamic_content",
+      "description": "Islamic reminders, Quran stories, spiritual content",
+      "target_brands": [
+        "cutedosage"
+      ],
+      "platforms": [
+        "youtube_shorts",
+        "tiktok",
+        "instagram_reels"
+      ],
+      "status": "available"
+    },
+    {
+      "profile": "construction_real_estate",
+      "description": "Construction projects, real estate tours, property development",
+      "target_brands": [
+        "clippingfactorymbm"
+      ],
+      "platforms": [
+        "youtube_shorts",
+        "tiktok",
+        "instagram_reels",
+        "linkedin"
+      ],
+      "status": "available"
+    }
+  ],
+  "status": "healthy"
+}

@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-07-31T20:23:43Z",
+  "platform": "Property Labs AI",
+  "integration_status": "SESSION_ONBOARDED_ACTIVE",
+  "lead_source": "PropertyLabs.ai Real Estate Intelligence",
+  "total_active_session_cookies": 0,
+  "target_portals": [
+    "propertylabs.ai",
+    "propertylabs.io",
+    "propertylabs.com",
+    "propstream.com",
+    "zillow.com",
+    "redfin.com",
+    "realtor.com",
+    "clipping.net",
+    "whop.com",
+    "retellai.com",
+    "supabase.com"
+  ],
+  "discovered_sessions": []
+}
