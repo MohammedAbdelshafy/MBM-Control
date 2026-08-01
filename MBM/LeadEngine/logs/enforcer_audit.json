@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-07-27T12:20:56.342063+00:00",
+  "overall_status": "NON_COMPLIANT",
+  "kpi_metrics": {
+    "volume_kpi": {
+      "target": 30,
+      "actual": 32,
+      "status": "PASS"
+    },
+    "enrichment_kpi": {
+      "total_leads": 32,
+      "enriched": 0,
+      "blank_cards": 32,
+      "status": "FAIL (32 blank cards found, rate: 0.0%)"
+    },
+    "data_quality_kpi": {
+      "queue_size": 29,
+      "valid_phones": 29,
+      "status": "PASS"
+    },
+    "outreach_kpi": {
+      "outreach_log_size": 43,
+      "status": "PASS"
+    }
+  },
+  "enforcement_actions_required": [
+    "Re-run Skip Tracing & Contact Enrichment module."
+  ]
+}

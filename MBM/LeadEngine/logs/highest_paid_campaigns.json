@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-07-27T21:09:50.036679+00:00",
+  "highest_paid_clipping_campaign": {
+    "title": "PlaqueBoyMax \u2014 Bounty Campaign",
+    "rate": "Bounty pot $4000"
+  },
+  "highest_paid_voice_agent": {
+    "title": "US Commercial Real Estate Acquisition Director ($0.85/min)",
+    "rate_per_min": "$0.85/min"
+  },
+  "clipping_campaigns_total": 14,
+  "voice_agents_created_total": 6,
+  "youtube_packages_queued": 3
+}

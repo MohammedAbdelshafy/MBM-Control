@@ -54,6 +54,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.venv/
 dist
 dist-ssr
 *.local
@@ -88,9 +89,26 @@ MBM/Scripts/lead-pipeline/
 MBM/Scripts/leadhunter-pro/
 MBM/Scripts/leadhunter/
 MBM/Scripts/wholesaile/
+clipping-factory/video_repos/
 
 # Local runtime config (contains secrets/paths)
 MBM/Instagram/config.local.yaml
 # Generated runtime outputs (rebuilt by run)
 MBM/Instagram/Knowledge/
 MBM/Instagram/data/
+
+# Clipping Factory runtime storage & databases
+clipping-factory/backend/data/storage/
+clipping-factory/backend/data/*.db
+clipping-factory/backend/data/*.sqlite
+clipping-factory/backend/data/*.sqlite3
+
+# Secrets — social sessions, OAuth tokens, browser profiles (never commit)
+clipping-factory/backend/sessions/
+clipping-factory/MBM-Social/sessions/
+clipping-factory/backend/youtube_session.json
+clipping-factory/backend/youtube_tokens.json
+clipping-factory/youtube_tokens.json
+clipping-factory/MBM-Social/youtube_tokens.json
+clipping-factory/MBM-Social/youtube_profile/
+clipping-factory/backend/youtube_profile/

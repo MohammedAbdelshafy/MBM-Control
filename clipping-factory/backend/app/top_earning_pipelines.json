@@ -1,0 +1,419 @@
+[
+  {
+    "id": "CAMP-CASTLE-001",
+    "name": "Castle [CLIPPING]",
+    "monthly_bounty_usd": 3000.0,
+    "platform": "Clipping.net",
+    "niche": "dark_stories",
+    "hook_style": "suspense-heavy",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-STAKE-002",
+    "name": "Stake Bounties",
+    "monthly_bounty_usd": 3000.0,
+    "platform": "Clipping.net",
+    "niche": "tech_automation",
+    "hook_style": "proof_curiosity",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-VYRO-003",
+    "name": "Vyro MrBeast Gaming Bounty",
+    "monthly_bounty_usd": 3500.0,
+    "platform": "Vyro",
+    "niche": "football_highlights",
+    "hook_style": "energetic",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-WHOP-004",
+    "name": "Whop Reseller Blueprint",
+    "monthly_bounty_usd": 2500.0,
+    "platform": "Whop.com",
+    "niche": "business_finance",
+    "hook_style": "authority",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-BEYOND-PETRO-005",
+    "name": "Beyond Petro - Clipping Campaign",
+    "campaign_url": "https://clipping.net/c/beyond-petro-x-clipping",
+    "platform": "Clipping.net",
+    "target_platforms": [
+      "tiktok",
+      "instagram_reels",
+      "youtube_shorts"
+    ],
+    "bounties_available": 2,
+    "niche": "tech_automation",
+    "hook_style": "proof_curiosity",
+    "monthly_bounty_usd": 3000.0,
+    "target_views": "500k",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-JOHN-MALEK-006",
+    "name": "John Malek - Clipping Campaign",
+    "campaign_url": "https://clipping.net/c/john-malek-x-clipping",
+    "platform": "Clipping.net",
+    "target_platforms": [
+      "tiktok",
+      "instagram_reels",
+      "youtube_shorts"
+    ],
+    "bounties_available": 2,
+    "niche": "business_finance",
+    "hook_style": "authority",
+    "monthly_bounty_usd": 3000.0,
+    "target_views": "500k",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-CONTENTREWARDS-007",
+    "name": "ContentRewards High-CPM Whop Hub",
+    "campaign_url": "https://whop.com/contentrewards",
+    "platform": "ContentRewards / Whop",
+    "target_platforms": [
+      "tiktok",
+      "instagram_reels",
+      "youtube_shorts"
+    ],
+    "payout_model": "$1.50 - $3.00 CPM",
+    "niche": "tech_automation",
+    "hook_style": "proof_curiosity",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-VIRALORA-008",
+    "name": "Viralora Multi-Platform Bounty Aggregator",
+    "campaign_url": "https://viralora.app/campaigns",
+    "platform": "Viralora",
+    "target_platforms": [
+      "tiktok",
+      "instagram_reels",
+      "youtube_shorts"
+    ],
+    "payout_model": "Performance Bounty Pool",
+    "niche": "business_finance",
+    "hook_style": "authority",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-CRAYO-009",
+    "name": "Crayo.ai Affiliate & Clipper Challenge",
+    "campaign_url": "https://crayo.ai/affiliate",
+    "platform": "Crayo AI",
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok"
+    ],
+    "payout_model": "30% Lifetime Recurring",
+    "niche": "tech_automation",
+    "hook_style": "tech_clean",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-WHOPCLIPS-010",
+    "name": "Whop Discover Clipping Bounties",
+    "campaign_url": "https://whop.com/discover/clips",
+    "platform": "Whop Clips",
+    "target_platforms": [
+      "tiktok",
+      "instagram_reels",
+      "youtube_shorts"
+    ],
+    "payout_model": "$2.50 per 1k views",
+    "niche": "dark_stories",
+    "hook_style": "suspense-heavy",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-LUMINA-ENTERPRISE-011",
+    "name": "Lumina Clippers Enterprise Fund",
+    "campaign_url": "https://luminaclippers.com/campaigns/enterprise-5k",
+    "platform": "Lumina Clippers Agency Network",
+    "target_platforms": [
+      "tiktok",
+      "instagram_reels",
+      "youtube_shorts"
+    ],
+    "payout_model": "$5,000 / Mo Verified View Pool ($4.50 CPM)",
+    "monthly_bounty_usd": 5000.0,
+    "niche": "tech_automation",
+    "hook_style": "proof_curiosity",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-AIRAA-CRYPTO-012",
+    "name": "Airaa Crypto & AI Master Bounty",
+    "campaign_url": "https://airaa.xyz/bounties/crypto-ai",
+    "platform": "Airaa Protocol",
+    "target_platforms": [
+      "tiktok",
+      "instagram_reels",
+      "youtube_shorts",
+      "twitter"
+    ],
+    "payout_model": "$4,500 / Mo Bounty Pool ($5.00 CPM)",
+    "monthly_bounty_usd": 4500.0,
+    "niche": "business_finance",
+    "hook_style": "authority",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-LUVKAIZEN-013",
+    "name": "LuvKaizen Premium Creator Network",
+    "campaign_url": "https://luvkaizen.com/clipping-hub",
+    "platform": "LuvKaizen Managed Agency",
+    "target_platforms": [
+      "tiktok",
+      "instagram_reels",
+      "youtube_shorts"
+    ],
+    "payout_model": "$4,000 / Mo View Pool ($4.00 CPM)",
+    "monthly_bounty_usd": 4000.0,
+    "niche": "dark_stories",
+    "hook_style": "suspense-heavy",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-ASCYND-SAAS-014",
+    "name": "Ascynd High-RPM SaaS Clipping",
+    "campaign_url": "https://ascynd.io/clipping-campaigns",
+    "platform": "Ascynd Network",
+    "target_platforms": [
+      "tiktok",
+      "instagram_reels",
+      "youtube_shorts"
+    ],
+    "payout_model": "$3,800 / Mo Revenue Pool ($3.80 CPM)",
+    "monthly_bounty_usd": 3800.0,
+    "niche": "tech_automation",
+    "hook_style": "tech_clean",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-CLIPAFFILIATES-VIP-015",
+    "name": "ClipAffiliates VIP Tier-1 Network",
+    "campaign_url": "https://clipaffiliates.com/vip-hub",
+    "platform": "ClipAffiliates VIP",
+    "target_platforms": [
+      "tiktok",
+      "instagram_reels",
+      "youtube_shorts"
+    ],
+    "payout_model": "$5.00 Fixed CPM Rate",
+    "monthly_bounty_usd": 3500.0,
+    "niche": "real_estate_wholesaling",
+    "hook_style": "bold_claim",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-KAI-CENAT-016",
+    "name": "Kai Cenat Viral Moments",
+    "campaign_url": "https://clipping.net/c/kai-cenat",
+    "platform": "Clipping.net / Whop",
+    "payout_model": "$500 / 100K Views ($5.00 CPM)",
+    "monthly_bounty_usd": 5000.0,
+    "target_platforms": [
+      "tiktok",
+      "youtube_shorts",
+      "instagram_reels"
+    ],
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-ISHOWSPEED-017",
+    "name": "IShowSpeed Stream Clips",
+    "campaign_url": "https://clipping.net/c/ishowspeed",
+    "platform": "Clipping.net",
+    "payout_model": "$400 / 100K Views ($4.00 CPM)",
+    "monthly_bounty_usd": 4000.0,
+    "target_platforms": [
+      "tiktok",
+      "youtube_shorts",
+      "instagram_reels"
+    ],
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-ADIN-ROSS-018",
+    "name": "Adin Ross Stream Highlights",
+    "campaign_url": "https://clipping.net/c/adin-ross",
+    "platform": "Kick / Clipping.net",
+    "payout_model": "$350 / 100K Views ($3.50 CPM)",
+    "monthly_bounty_usd": 3500.0,
+    "target_platforms": [
+      "tiktok",
+      "youtube_shorts",
+      "instagram_reels"
+    ],
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-LEX-FRIDMAN-019",
+    "name": "Lex Fridman AI & Tech Interviews",
+    "campaign_url": "https://clipping.net/c/lex-fridman",
+    "platform": "Whop Discover",
+    "payout_model": "$6,000 / Month Verified Pool",
+    "monthly_bounty_usd": 6000.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "twitter"
+    ],
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-HUBERMAN-LAB-020",
+    "name": "Huberman Lab Health & Biohacking Tips",
+    "campaign_url": "https://clipping.net/c/huberman-lab",
+    "platform": "ContentRewards",
+    "payout_model": "$4,500 / Month Verified Pool",
+    "monthly_bounty_usd": 4500.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "instagram_reels"
+    ],
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-MUSLIMSCLIPPING-021",
+    "name": "MuslimsClipping.com Islamic Dawah & Podcast Highlights",
+    "campaign_url": "https://muslimsclipping.com/c/islamic-highlights",
+    "platform": "MuslimsClipping.com",
+    "payout_model": "$300 / 100K Views ($3.00 CPM)",
+    "monthly_bounty_usd": 5000.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "instagram_reels"
+    ],
+    "hook_style": "moral_inspiration",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-MUSLIMSCLIPPING-022",
+    "name": "MuslimsClipping.com Life Wisdom & Quranic Reflections",
+    "campaign_url": "https://muslimsclipping.com/c/quran-wisdom",
+    "platform": "MuslimsClipping.com",
+    "payout_model": "$400 / 100K Views ($4.00 CPM)",
+    "monthly_bounty_usd": 4000.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "instagram_reels"
+    ],
+    "hook_style": "wisdom_deep",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-OPUSCLIP-023",
+    "name": "OpusClip AI Clipping Challenge",
+    "campaign_url": "https://clipping.net/c/opusclip",
+    "platform": "Clipping.net / OpusClip",
+    "payout_model": "$350 / 100K Views ($3.50 CPM)",
+    "monthly_bounty_usd": 3500.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "instagram_reels"
+    ],
+    "hook_style": "tech_clean",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-INVIDEO-024",
+    "name": "InVideo AI Video Generation Bounty",
+    "campaign_url": "https://clipping.net/c/invideo-ai",
+    "platform": "ContentRewards / InVideo",
+    "payout_model": "$450 / 100K Views ($4.50 CPM)",
+    "monthly_bounty_usd": 4500.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "instagram_reels"
+    ],
+    "hook_style": "proof_curiosity",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-WHOPMEGA-025",
+    "name": "Whop Affiliate Marketplace Mega Hub",
+    "campaign_url": "https://whop.com/discover/mega-bounties",
+    "platform": "Whop Clips",
+    "payout_model": "$5,000 / Month Bounty Pool",
+    "monthly_bounty_usd": 5000.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "instagram_reels",
+      "twitter"
+    ],
+    "hook_style": "authority",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-MUSLIMSCLIPPING-026",
+    "name": "MuslimsClipping.com Scholar Lectures & Reminders",
+    "campaign_url": "https://muslimsclipping.com/c/scholar-lectures",
+    "platform": "MuslimsClipping.com",
+    "payout_model": "$350 / 100K Views ($3.50 CPM)",
+    "monthly_bounty_usd": 4000.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "instagram_reels"
+    ],
+    "hook_style": "moral_inspiration",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-MUSLIMSCLIPPING-027",
+    "name": "MuslimsClipping.com Halal Tech & Entrepreneurship",
+    "campaign_url": "https://muslimsclipping.com/c/halal-tech",
+    "platform": "MuslimsClipping.com",
+    "payout_model": "$450 / 100K Views ($4.50 CPM)",
+    "monthly_bounty_usd": 4500.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "instagram_reels",
+      "twitter"
+    ],
+    "hook_style": "tech_clean",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-MUSLIMSCLIPPING-028",
+    "name": "MuslimsClipping.com Family & Moral Values",
+    "campaign_url": "https://muslimsclipping.com/c/family-values",
+    "platform": "MuslimsClipping.com",
+    "payout_model": "$300 / 100K Views ($3.00 CPM)",
+    "monthly_bounty_usd": 3500.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "instagram_reels"
+    ],
+    "hook_style": "wholesome_moment",
+    "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-MUSLIMSCLIPPING-029",
+    "name": "MuslimsClipping.com Global Ummah Stories",
+    "campaign_url": "https://muslimsclipping.com/c/global-ummah",
+    "platform": "MuslimsClipping.com",
+    "payout_model": "$5,000 / Month Bounty Pool",
+    "monthly_bounty_usd": 5000.0,
+    "target_platforms": [
+      "youtube_shorts",
+      "tiktok",
+      "instagram_reels"
+    ],
+    "hook_style": "wisdom_deep",
+    "status": "PIPELINE_ACTIVE"
+  }
+]

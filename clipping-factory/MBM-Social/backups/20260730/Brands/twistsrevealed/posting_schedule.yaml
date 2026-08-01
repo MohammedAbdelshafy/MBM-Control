@@ -1,0 +1,7 @@
+cadence: daily
+timezone: America/New_York
+windows:
+- '19:00'
+- '21:30'
+approval_gate: true
+brand_aware: true

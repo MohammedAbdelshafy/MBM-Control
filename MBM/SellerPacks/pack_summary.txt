@@ -1,0 +1,37 @@
+============================================================
+MBM SELLER PACKS - AVAILABLE INVENTORY
+============================================================
+Generated: 2026-07-27 15:34
+
+PACK: Dallas Distressed Seller Pack
+  Tier: Premium
+  Price: $300/lead
+  Leads: 209
+  Total Value: $62,700
+  Description: Pre-foreclosure & code violation properties in Dallas, TX with verified equity
+
+PACK: DFW Wholesale Deal Pack
+  Tier: Premium
+  Price: $300/lead
+  Leads: 20
+  Total Value: $6,000
+  Description: 20 verified wholesale properties with $20K-$447K equity, auction dates confirmed
+
+PACK: Multi-Market Qualified Lead Pack
+  Tier: Mid
+  Price: $150/lead
+  Leads: 40
+  Total Value: $6,000
+  Description: 40 verified real estate contacts across Houston, Dallas, Austin with emails and phones
+
+PACK: Cash Buyer Contact Pack
+  Tier: Base
+  Price: $70/lead
+  Leads: 202
+  Total Value: $14,140
+  Description: Real estate investor & wholesale buyer contacts with emails and phones
+
+============================================================
+TOTAL INVENTORY: 471 leads
+TOTAL POTENTIAL REVENUE: $88,840
+============================================================

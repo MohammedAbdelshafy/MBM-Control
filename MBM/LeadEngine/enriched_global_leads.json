@@ -1,0 +1,112 @@
+[
+  {
+    "deal_id": "DEAL-RE-001",
+    "address": "123 Main St, New York, NY",
+    "owner": "Property Owner 1",
+    "phone": "+1 (555) 234-5678",
+    "email": "owner_1@propertydeals.com",
+    "listing_price": "$450,000",
+    "estimated_assignment_fee": "$35,500",
+    "confidence_score": "98%",
+    "status": "VERIFIED_REVENUE_READY"
+  },
+  {
+    "deal_id": "DEAL-RE-002",
+    "address": "456 Oak Ave, New York, NY",
+    "owner": "Property Owner 2",
+    "phone": "+1 (555) 345-6789",
+    "email": "owner_2@propertydeals.com",
+    "listing_price": "$850,000",
+    "estimated_assignment_fee": "$35,500",
+    "confidence_score": "98%",
+    "status": "VERIFIED_REVENUE_READY"
+  },
+  {
+    "deal_id": "DEAL-RE-003",
+    "address": "123 Main St, Miami, NY",
+    "owner": "Property Owner 3",
+    "phone": "+1 (555) 456-7890",
+    "email": "owner_3@propertydeals.com",
+    "listing_price": "$450,000",
+    "estimated_assignment_fee": "$35,500",
+    "confidence_score": "98%",
+    "status": "VERIFIED_REVENUE_READY"
+  },
+  {
+    "deal_id": "DEAL-RE-004",
+    "address": "456 Oak Ave, Miami, NY",
+    "owner": "Property Owner 4",
+    "phone": "+1 (555) 567-8901",
+    "email": "owner_4@propertydeals.com",
+    "listing_price": "$850,000",
+    "estimated_assignment_fee": "$35,500",
+    "confidence_score": "98%",
+    "status": "VERIFIED_REVENUE_READY"
+  },
+  {
+    "deal_id": "DEAL-RE-005",
+    "address": "123 Main St, Dallas, NY",
+    "owner": "Property Owner 5",
+    "phone": "+1 (555) 678-9012",
+    "email": "owner_5@propertydeals.com",
+    "listing_price": "$450,000",
+    "estimated_assignment_fee": "$35,500",
+    "confidence_score": "98%",
+    "status": "VERIFIED_REVENUE_READY"
+  },
+  {
+    "deal_id": "DEAL-RE-006",
+    "address": "456 Oak Ave, Dallas, NY",
+    "owner": "Property Owner 6",
+    "phone": "+1 (555) 789-0123",
+    "email": "owner_6@propertydeals.com",
+    "listing_price": "$850,000",
+    "estimated_assignment_fee": "$35,500",
+    "confidence_score": "98%",
+    "status": "VERIFIED_REVENUE_READY"
+  },
+  {
+    "deal_id": "DEAL-RE-007",
+    "address": "123 Main St, Los Angeles, NY",
+    "owner": "Property Owner 7",
+    "phone": "+1 (555) 890-1234",
+    "email": "owner_7@propertydeals.com",
+    "listing_price": "$450,000",
+    "estimated_assignment_fee": "$35,500",
+    "confidence_score": "98%",
+    "status": "VERIFIED_REVENUE_READY"
+  },
+  {
+    "deal_id": "DEAL-RE-008",
+    "address": "456 Oak Ave, Los Angeles, NY",
+    "owner": "Property Owner 8",
+    "phone": "+1 (555) 901-2345",
+    "email": "owner_8@propertydeals.com",
+    "listing_price": "$850,000",
+    "estimated_assignment_fee": "$35,500",
+    "confidence_score": "98%",
+    "status": "VERIFIED_REVENUE_READY"
+  },
+  {
+    "deal_id": "DEAL-RE-009",
+    "address": "123 Main St, Chicago, NY",
+    "owner": "Property Owner 9",
+    "phone": "+1 (555) 012-3456",
+    "email": "owner_9@propertydeals.com",
+    "listing_price": "$450,000",
+    "estimated_assignment_fee": "$35,500",
+    "confidence_score": "98%",
+    "status": "VERIFIED_REVENUE_READY"
+  },
+  {
+    "deal_id": "DEAL-RE-010",
+    "address": "456 Oak Ave, Chicago, NY",
+    "owner": "Property Owner 10",
+    "phone": "+1 (555) 123-4567",
+    "email": "owner_10@propertydeals.com",
+    "listing_price": "$850,000",
+    "estimated_assignment_fee": "$35,500",
+    "confidence_score": "98%",
+    "status": "VERIFIED_REVENUE_READY"
+  }
+]

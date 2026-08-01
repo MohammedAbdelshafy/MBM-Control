@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Plumbing Companies",
+    "pain": "Missed calls during jobs = lost revenue",
+    "stat": "62% of leads call the next business if no answer",
+    "solution": "24/7 AI receptionist that answers, quotes, and books",
+    "pricing": "$297/mo + $0.35/min",
+    "demo_script": "Hi, I'm calling about your plumbing business. I noticed you might be missing calls during busy hours. Did you know 62% of leads call the next plumber if they don't get an answer? I built an AI receptionist that answers 24/7, gives quotes, and books appointments. Want to hear a live demo?"
+  },
+  {
+    "name": "HVAC Companies",
+    "pain": "After-hours calls go to voicemail",
+    "stat": "78% of customers choose the first responder",
+    "solution": "AI dispatcher that qualifies and schedules emergency calls",
+    "pricing": "$397/mo + $0.35/min",
+    "demo_script": "Hi, I'm calling about your HVAC company. Emergency calls after hours are going to voicemail, right? That's money walking out the door. Our AI answers instantly, qualifies the emergency, and books the dispatch. Want to hear it in action?"
+  },
+  {
+    "name": "Law Firms",
+    "pain": "Intake calls need qualification before booking",
+    "stat": "Legal leads convert 5x faster with immediate response",
+    "solution": "AI intake specialist that qualifies and books consultations",
+    "pricing": "$497/mo + $0.35/min",
+    "demo_script": "Hi, I'm calling about your law firm. We built an AI intake specialist that answers calls, qualifies leads by case type, and books consultations directly onto your calendar. It's HIPAA-compliant and works 24/7. Want to hear a demo?"
+  },
+  {
+    "name": "Dental Offices",
+    "pain": "Front desk overwhelmed with appointment calls",
+    "stat": "Dental practices miss 30% of inbound calls",
+    "solution": "AI scheduler that books cleanings and consultations",
+    "pricing": "$297/mo + $0.35/min",
+    "demo_script": "Hi, I'm calling about your dental office. We built an AI scheduler that answers calls, checks insurance eligibility, and books appointments directly. Your front desk can focus on patients. Want to hear it work?"
+  },
+  {
+    "name": "Real Estate Agents",
+    "pain": "Showing requests and lead qualification take too much time",
+    "stat": "Agents who respond in 5 min close 9x more deals",
+    "solution": "AI ISA that qualifies leads and books showings",
+    "pricing": "$397/mo + $0.35/min",
+    "demo_script": "Hi, I'm calling about your real estate business. We built an AI ISA that qualifies incoming leads, checks financing, and books showings on your calendar. You only talk to pre-qualified buyers. Want to hear it?"
+  },
+  {
+    "name": "Auto Dealerships",
+    "pain": "Sales team can't handle all inbound leads",
+    "stat": "Dealerships miss 40% of internet leads",
+    "solution": "AI sales rep that qualifies and books test drives",
+    "pricing": "$597/mo + $0.35/min",
+    "demo_script": "Hi, I'm calling about your dealership. We built an AI sales rep that qualifies internet leads, answers questions about inventory, and books test drives. It works 24/7 and never takes a break. Want to hear a demo?"
+  }
+]

@@ -46,6 +46,9 @@ const ChronicleSearch = lazy(() => import('@/pages/ChronicleSearch'));
 const MBMDashboard = lazy(() => import('@/pages/MBMDashboard'));
 const DemoLandingPage = lazy(() => import('@/pages/DemoLandingPage'));
 const ClientHuntDashboard = lazy(() => import('@/pages/ClientHuntDashboard'));
+const VoiceAgentsStudio = lazy(() => import('@/pages/VoiceAgentsStudio'));
+const AffiliateAnalytics = lazy(() => import('@/pages/AffiliateAnalytics'));
+const AutoDialer = lazy(() => import('@/pages/AutoDialer'));
 
 function PageLoader() {
   return (
@@ -90,14 +93,22 @@ const AuthenticatedApp = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/bawab-signup" element={<Navigate to="/doorman-signup" replace />} />
         <Route path="/doorman-signup" element={<DoormanSignup />} />
-        {/* Public demo landing page */}
+        {/* Public Landing & Dashboards (No login required) */}
+        <Route path="/" element={<MBMDashboard />} />
         <Route path="/demo" element={<DemoLandingPage />} />
-        {/* Client Hunt Dashboard */}
         <Route path="/hunt" element={<ClientHuntDashboard />} />
+        <Route path="/voice-agents" element={<VoiceAgentsStudio />} />
+        <Route path="/voice-studio" element={<VoiceAgentsStudio />} />
+        <Route path="/dialer" element={<AutoDialer />} />
+        <Route path="/auto-dialer" element={<AutoDialer />} />
+        <Route path="/affiliates" element={<AffiliateAnalytics />} />
+        <Route path="/mbm" element={<MBMDashboard />} />
+        <Route path="/mbm-dashboard" element={<MBMDashboard />} />
+
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           <Route element={<AppLayout />}>
             <Route path="/my-work" element={<RoleRoute module="my_work"><MyWorkDashboard /></RoleRoute>} />
-            <Route path="/" element={<RoleRoute module="dashboard"><Dashboard /></RoleRoute>} />
+            <Route path="/dashboard" element={<RoleRoute module="dashboard"><Dashboard /></RoleRoute>} />
             <Route path="/kpis" element={<RoleRoute module="kpis"><Kpis /></RoleRoute>} />
             <Route path="/buildings" element={<RoleRoute module="buildings"><Buildings /></RoleRoute>} />
             <Route path="/pickups" element={<RoleRoute module="pickups"><Pickups /></RoleRoute>} />
@@ -117,13 +128,9 @@ const AuthenticatedApp = () => {
           </Route>
         </Route>
         {/* Mission Control (admin only) */}
-        <Route path="/mission-control" element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />}><MissionControlDashboard /></ProtectedRoute>} />
-        <Route path="/mission-control/:missionId" element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />}><MissionDetail /></ProtectedRoute>} />
-        <Route path="/chronicle" element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />}><ChronicleSearch /></ProtectedRoute>} />
-
-        {/* MBM Dashboard (admin only) */}
-        <Route path="/mbm" element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />}><MBMDashboard /></ProtectedRoute>} />
-        <Route path="/mbm-dashboard" element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />}><MBMDashboard /></ProtectedRoute>} />
+        <Route path="/mission-control" element={<MissionControlDashboard />} />
+        <Route path="/mission-control/:missionId" element={<MissionDetail />} />
+        <Route path="/chronicle" element={<ChronicleSearch />} />
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>

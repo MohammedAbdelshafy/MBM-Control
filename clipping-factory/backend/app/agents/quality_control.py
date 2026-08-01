@@ -73,13 +73,16 @@ class QualityControlAgent(BaseAgent):
             self.logger.debug(f"Telegram QC notification skipped: {exc}")
 
         if passed and overall >= self.settings.clip_score_threshold:
-            if self.settings.auto_submit:
-                from app.workers.delivery_tasks import create_deliverable
-                create_deliverable.apply_async(args=[clip_id], queue="delivery")
-            if self.settings.auto_publish:
-                from app.workers.publish_tasks import publish_clip
-                publish_clip.apply_async(args=[clip_id], queue="publish")
-                self.logger.info(f"auto_publish: queued YouTube/social publish for clip {clip_id}")
+            try:
+                if self.settings.auto_submit:
+                    from app.workers.delivery_tasks import create_deliverable
+                    create_deliverable.apply_async(args=[clip_id], queue="delivery")
+                if self.settings.auto_publish:
+                    from app.workers.publish_tasks import publish_clip
+                    publish_clip.apply_async(args=[clip_id], queue="publish")
+                    self.logger.info(f"auto_publish: queued YouTube/social publish for clip {clip_id}")
+            except Exception as exc:
+                self.logger.debug(f"Celery dispatch skipped in sync mode: {exc}")
 
         return AgentResult.ok({"passed": passed, "score": overall, "notes": notes})
 

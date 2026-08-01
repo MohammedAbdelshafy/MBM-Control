@@ -1,8 +1,9 @@
 """
 EnhancementAgent — applies video quality enhancement to clips.
-Runs FFmpeg filter pipeline (sharpen, color grade, denoise, re-encode)
-and optionally ML upscaling via Real-ESRGAN. Can run standalone on
-already-edited clips or be called as part of the editing pipeline.
+Runs FFmpeg filter pipeline (sharpen, color grade, denoise, dehaze,
+deband, film grain, LUT, tone map, re-encode) and optionally ML
+upscaling via Real-ESRGAN or frame interpolation. Can run standalone
+on already-edited clips or be called as part of the editing pipeline.
 """
 import tempfile
 from pathlib import Path
@@ -47,7 +48,7 @@ class EnhancementAgent(BaseAgent):
             current = local_path
             enhancements = []
 
-            # Step 1: FFmpeg filter enhancement
+            # Step 1: FFmpeg filter enhancement (combined pipeline)
             enhanced = Path(tmpdir) / "enhanced.mp4"
             if VideoProcessor.enhance_video(
                 current, enhanced,
@@ -67,6 +68,13 @@ class EnhancementAgent(BaseAgent):
                 denoise_spatial_chroma=enhance_req.get("denoise_spatial_chroma", self.settings.enhancement_denoise_spatial_chroma),
                 denoise_temp_luma=enhance_req.get("denoise_temp_luma", self.settings.enhancement_denoise_temp_luma),
                 denoise_temp_chroma=enhance_req.get("denoise_temp_chroma", self.settings.enhancement_denoise_temp_chroma),
+                dehaze=enhance_req.get("dehaze", False),
+                dehaze_strength=enhance_req.get("dehaze_strength", 0.7),
+                film_grain=enhance_req.get("film_grain", False),
+                film_grain_strength=enhance_req.get("film_grain_strength", 25),
+                film_grain_size=enhance_req.get("film_grain_size", 3),
+                deband=enhance_req.get("deband", False),
+                deband_strength=enhance_req.get("deband_strength", 0.02),
                 crf=enhance_req.get("crf", self.settings.enhancement_crf),
                 preset=enhance_req.get("preset", self.settings.enhancement_preset),
                 fade_in=enhance_req.get("fade_in", 0),
@@ -74,6 +82,48 @@ class EnhancementAgent(BaseAgent):
             ):
                 current = enhanced
                 enhancements.append("sharpen_color_denoise")
+
+            # Step 1b: LUT color grading (separate pass if .cube file specified)
+            lut_file = enhance_req.get("lut_file")
+            if lut_file:
+                lut_path = Path(lut_file) if Path(lut_file).exists() else None
+                lut_output = Path(tmpdir) / "lut_graded.mp4"
+                if VideoProcessor.apply_lut(
+                    current, lut_output,
+                    lut_file=lut_path,
+                    lut_intensity=enhance_req.get("lut_intensity", 1.0),
+                    crf=enhance_req.get("crf", self.settings.enhancement_crf),
+                    preset=enhance_req.get("preset", self.settings.enhancement_preset),
+                ):
+                    current = lut_output
+                    enhancements.append("lut_color_grade")
+
+            # Step 1c: Tone mapping (HDR→SDR) if source is HDR
+            tone_map = enhance_req.get("tone_map", False)
+            if tone_map:
+                tm_output = Path(tmpdir) / "tonemapped.mp4"
+                if VideoProcessor.tone_map_hdr(
+                    current, tm_output,
+                    tonemap_mode=enhance_req.get("tonemap_mode", "hable"),
+                    crf=enhance_req.get("crf", self.settings.enhancement_crf),
+                    preset=enhance_req.get("preset", self.settings.enhancement_preset),
+                ):
+                    current = tm_output
+                    enhancements.append("tone_map_hdr")
+
+            # Step 1d: Frame interpolation (optional)
+            interp = enhance_req.get("interpolate", False)
+            if interp:
+                interp_output = Path(tmpdir) / "interpolated.mp4"
+                if VideoProcessor.interpolate_frames(
+                    current, interp_output,
+                    target_fps=enhance_req.get("target_fps"),
+                    interp_mode=enhance_req.get("interp_mode", "mci"),
+                    crf=enhance_req.get("crf", self.settings.enhancement_crf),
+                    preset=enhance_req.get("preset", self.settings.enhancement_preset),
+                ):
+                    current = interp_output
+                    enhancements.append("frame_interpolation")
 
             # Step 2: Upscale (optional)
             upscale_active = self.settings.enhancement_upscale or upscale_req.get("enabled", False)

@@ -11,6 +11,10 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    host: true,
+    watch: {
+      ignored: ['**/chrome_debug_profile/**', '**/.venv/**', '**/clipping_factory.db**', '**/node_modules/**']
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:3002',

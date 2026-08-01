@@ -1,9 +1,5 @@
 company,email,phone,solution,deal_value,stage,last_touch,next_followup,notes
-PipHouse LLC,PipHousellc@gmail.com,469-658-4582,AI Lead Generation Engine + Email Automation,"$3,500-5,000",outreach_sent,2026-07-07,2026-07-10,
-Swift Home Solutions,investments@swifthomesolutions.com,469-273-1235,AI Email Outreach + Customer Support Bot,"$4,000-6,000",bounced,2026-07-08,,EMAIL_BOUNCED - contact via phone instead
-New Western,sales@newwestern.com,(972) 734-1612,AI Data Entry + Email Automation + Customer Support,"$10,000-20,000",outreach_sent,2026-07-07,2026-07-10,
-DFW REI Club,robin@dfwrei.com,817-300-1132,AI Email Automation + Social Media Manager,"$2,500-4,000",outreach_sent,2026-07-07,2026-07-10,
-Diamond Acquisitions,diamondacquisitions@outlook.com,469-436-4884,AI Lead Generation + Email Automation,"$3,000-5,000",bounced,2026-07-08,,EMAIL_BOUNCED - invalid address, try call
-Turner & Partners LLC,calvin@turnerandpartners.com,512-400-4457,AI Data Entry + CRM Automation + Email,"$5,000-8,000",outreach_sent,2026-07-08,2026-07-11,Found Calvin's direct email via website
-We Buy Houses Fast Dallas,info@sellmyhousefastindallas.com,469-461-4209,AI Customer Support Bot + Email Automation,"$4,000-6,000",outreach_sent,2026-07-07,2026-07-10,
-No Worries Home Sale,info@noworrieshomesale.com,,AI Email Automation + Content Factory,"$3,000-5,000",outreach_sent,2026-07-07,2026-07-10,
+PipHouse LLC,PipHousellc@gmail.com,469-658-4582,AI Lead Generation Engine + Email Automation,"$3,500-5,000",followup_sent,2026-07-27,2026-07-30,
+Swift Home Solutions,investments@swifthomesolutions.com,469-273-1235,AI Email Outreach + Customer Support Bot,"$4,000-6,000",followup_sent,2026-07-27,2026-07-30,EMAIL_BOUNCED - contact via phone instead
+New Western,sales@newwestern.com,(972) 734-1612,AI Data Entry + Email Automation + Customer Support,"$10,000-20,000",followup_sent,2026-07-27,2026-07-30,
+DFW REI Club,robin@dfwrei.com,817-300-1132,AI Email Automation + Social Media Manager,"$2,500-4,000",followup_sent,2026-07-27,2026-07-30,

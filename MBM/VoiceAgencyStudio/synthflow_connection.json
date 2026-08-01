@@ -1,0 +1,108 @@
+{
+  "platform": "Synthflow AI Reseller Agency",
+  "status": "SETUP_INSTRUCTIONS",
+  "url": "https://synthflow.ai",
+  "revenue_model": {
+    "type": "White-Label Agency Retainers + Usage Markup",
+    "tiers": {
+      "Starter": "$297/mo (5 agents, 100 min/mo)",
+      "Growth": "$597/mo (15 agents, 500 min/mo)",
+      "Pro": "$997/mo (unlimited agents, unlimited min)"
+    },
+    "usage_markup": "$0.25/min wholesale \u2192 bill client $0.50-$1.00/min",
+    "payout": "Stripe Connect"
+  },
+  "setup_steps": [
+    "1. Go to https://synthflow.ai",
+    "2. Click 'Become an Agency Partner'",
+    "3. Fill out the agency application",
+    "4. Wait for approval (usually 24-48 hours)",
+    "5. Access your agency dashboard",
+    "6. Create voice agents using our grabbed templates",
+    "7. Set your client pricing (markup $0.25-$0.75/min)",
+    "8. White-label the dashboard with your branding",
+    "9. Onboard clients and start billing"
+  ],
+  "agents_to_deploy": [
+    {
+      "name": "US Commercial Real Estate Acquisition Director ($0.85/min)",
+      "persona": "Senior US commercial acquisitions VP (NY, LA, MIA, TX)",
+      "rate": "$0.85/min",
+      "your_rate": "$1.1/min",
+      "tags": [
+        "USA Market",
+        "Commercial Real Estate",
+        "Private Equity",
+        "High-Ticket"
+      ]
+    },
+    {
+      "name": "US Medical & Healthcare Appointment Qualifier ($0.80/min)",
+      "persona": "Professional, HIPAA-trained US medical appointment coordinator",
+      "rate": "$0.8/min",
+      "your_rate": "$1.05/min",
+      "tags": [
+        "USA Market",
+        "Healthcare",
+        "HIPAA Compliant",
+        "High-Ticket Intake"
+      ]
+    },
+    {
+      "name": "US Industrial Waste Scrap Broker ($0.75/min)",
+      "persona": "US Raw materials procurement specialist (TX, OH, IL, CA hubs)",
+      "rate": "$0.75/min",
+      "your_rate": "$1.0/min",
+      "tags": [
+        "USA Market",
+        "Industrial Waste",
+        "Plastic Scrap",
+        "B2B Procurement"
+      ]
+    },
+    {
+      "name": "US Solar & Clean Energy Lead Qualifier ($0.70/min)",
+      "persona": "Energetic US clean energy advisor",
+      "rate": "$0.7/min",
+      "your_rate": "$0.95/min",
+      "tags": [
+        "USA Market",
+        "Solar Energy",
+        "Tax Credits",
+        "Clean Energy"
+      ]
+    },
+    {
+      "name": "US Tax Lien & Pre-Foreclosure Cash Closer ($0.65/min)",
+      "persona": "Empathetic, firm US pre-foreclosure specialist",
+      "rate": "$0.65/min",
+      "your_rate": "$0.9/min",
+      "tags": [
+        "USA Market",
+        "Pre-Foreclosure",
+        "Tax Lien",
+        "Fast Cash Close"
+      ]
+    },
+    {
+      "name": "US E-Commerce High-Ticket Upsell Specialist ($0.60/min)",
+      "persona": "Charming, persuasive US brand VIP Concierge",
+      "rate": "$0.6/min",
+      "your_rate": "$0.85/min",
+      "tags": [
+        "USA Market",
+        "E-Commerce",
+        "VIP Upsell",
+        "High-Ticket Retail"
+      ]
+    }
+  ],
+  "pitch_to_clients": {
+    "target_market": "Local service businesses (plumbers, HVAC, lawyers, doctors, dentists)",
+    "pain_point": "62% of leads call the next business if no answer",
+    "solution": "24/7 AI receptionist that answers, qualifies, and books appointments",
+    "pricing_to_client": "$197-$497/mo + usage",
+    "your_cost": "$0.09-$0.25/min (wholesale)",
+    "margin": "$0.25-$0.75/min + setup fees"
+  }
+}

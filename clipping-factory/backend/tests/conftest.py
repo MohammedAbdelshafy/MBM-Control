@@ -4,8 +4,9 @@ Uses an in-memory SQLite DB to avoid requiring PostgreSQL for unit tests.
 """
 import pytest
 import pytest_asyncio
+from unittest.mock import patch, MagicMock
 from httpx import AsyncClient, ASGITransport
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import sessionmaker
 
@@ -41,8 +42,32 @@ async def test_db():
     await engine.dispose()
 
 
+@pytest.fixture
+def sync_test_db():
+    """In-memory sync SQLite database for SyncSessionLocal override.
+    Uses StaticPool so the same in-memory DB is shared across threads
+    (routes use run_in_executor which calls in a thread pool).
+    """
+    from sqlalchemy.pool import StaticPool
+
+    engine = create_engine(
+        "sqlite:///:memory:",
+        echo=False,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+
+    # Ensure all models are imported so Base.metadata knows about all tables
+    import app.models  # noqa: F401 — registers all models with Base
+
+    Base.metadata.create_all(bind=engine)
+    SyncSession = sessionmaker(bind=engine, expire_on_commit=False)
+    yield SyncSession
+    engine.dispose()
+
+
 @pytest_asyncio.fixture
-async def client(test_db):
+async def client(test_db, sync_test_db):
     """FastAPI test client with DB override."""
     from app.core.config import get_settings
 
@@ -56,9 +81,21 @@ async def client(test_db):
 
     app.dependency_overrides[get_db] = override_get_db
 
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        yield ac
+    # Patch SyncSessionLocal for routes that use sync DB sessions
+    # and mock AIService to avoid real API calls
+    with patch("app.core.database.SyncSessionLocal", sync_test_db), \
+         patch("app.services.command_service.AIService") as mock_ai_cls, \
+         patch("app.services.ai_service.AIService") as mock_ai_direct:
+        # Mock AI to return None (triggers rule-based fallback)
+        mock_ai = MagicMock()
+        mock_ai.complete.return_value = None
+        mock_ai._get_anthropic.return_value = MagicMock()
+        mock_ai_cls.return_value = mock_ai
+        mock_ai_direct.return_value = mock_ai
+
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as ac:
+            yield ac
 
     app.dependency_overrides.clear()
 

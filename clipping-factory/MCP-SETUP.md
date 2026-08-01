@@ -1,6 +1,7 @@
-# Clipping Factory MCP Server — Claude Code Integration
+# Clipping Factory MCP Server v2.0 — Claude Code Integration
 
-The Clipping Factory now exposes all 9 agents as MCP tools, allowing Claude Code and any MCP-capable AI assistant to control the system directly.
+The Clipping Factory exposes **34 MCP tools** covering all agents, pipelines,
+queries, infrastructure introspection, and direct service access.
 
 ## Quick Start
 
@@ -45,28 +46,53 @@ Edit `~/.claude/settings.json` and add:
 ### 4. Restart Claude Code
 Close and reopen Claude Code. The MCP server should now be connected.
 
-## Available Tools
+## Available Tools (34 total)
 
-### Agent Control
+### Agent Control (15 tools)
 - **`scan_campaigns(page_id?)`** — Scan Clipping.com for new campaigns
 - **`analyze_campaign(campaign_id)`** — Score and analyze a campaign
 - **`acquire_content(campaign_id)`** — Download source video
 - **`analyze_content(source_content_id)`** — Transcribe and score clips
 - **`generate_clips(source_content_id)`** — Cut raw clips
 - **`edit_clip(clip_id)`** — Apply post-production
+- **`enhance_clip(clip_id)`** — Sharpen, color grade, denoise, upscale
 - **`quality_check(clip_id)`** — Automated QC review
 - **`deliver_clip(clip_id)`** — Submit to Clipping.com
+- **`publish_clip(clip_id, platforms?)`** — Publish to social platforms
 - **`system_health()`** — Check all system components
+- **`monetization_check()`** — Pipeline health + earnings recovery
+- **`multi_platform_deliver(clip_id, platforms?)`** — Deliver to all platforms simultaneously
+- **`ingest_leads(source?, date_str?, max_campaigns?)`** — Ingest leads from MBM/Social
+- **`editor_quality_check(clip_id, auto_fix?)`** — Professional-grade quality gate
+- **`poll_outcomes()`** — Check delivery acceptance/rejection status
 
-### Pipeline Control
+### Pipeline Control (5 tools)
 - **`run_full_pipeline(campaign_id)`** — End-to-end processing
 - **`approve_clip(clip_id, notes?)`** — Manual approval workflow
 - **`reject_clip(clip_id, reason?)`** — Manual rejection
+- **`run_youtube_pipeline(topic, niche?)`** — Full 10-stage YouTube pipeline
+- **`list_pipeline_stages()`** — View pipeline stage order
 
-### Queries
+### Analytics (1 tool)
+- **`get_analytics(days?)`** — Performance summary for last N days
+
+### Queries (8 tools)
 - **`list_campaigns(status?, limit?)`** — Query campaigns
 - **`list_clips(campaign_id?, limit?)`** — Query clips
 - **`get_campaign(campaign_id)`** — Full campaign details
+- **`list_audit_log(entity_type?, actor?, limit?)`** — Query audit log
+- **`list_jobs(status?, task_name?, limit?)`** — Query job records
+- **`get_job_status(job_id)`** — Full job details
+- **`get_submission(clip_id)`** — Submission details for a clip
+
+### Infrastructure (3 tools)
+- **`list_celery_queues()`** — Queue depths across all 9 queues
+- **`list_celery_tasks(queue?, limit?)`** — Active/reserved/scheduled tasks
+- **`retry_failed_task(task_id)`** — Re-queue failed task from DLQ
+
+### Services (2 tools)
+- **`send_telegram(message, category?)`** — Direct Telegram notification
+- **`get_storage_stats()`** — MinIO bucket statistics
 
 ## Example Usage in Claude Code
 
@@ -81,19 +107,29 @@ Claude Code: Let me check all system components...
 [calls system_health()]
 Result: PostgreSQL ✓ Redis ✓ MinIO ✓ Celery workers ✓
 
-User: Analyze campaign abc-123
-Claude Code: I'll score this campaign for viability.
-[calls analyze_campaign("abc-123")]
-Result: Score 0.87 - Recommended to pursue
+User: How many tasks are queued?
+Claude Code: Let me check the Celery queue depths...
+[calls list_celery_queues()]
+Result: campaigns=2, video=1, delivery=0, total=3
+
+User: Run quality check on clip abc-123
+Claude Code: I'll run the professional quality gate...
+[calls editor_quality_check("abc-123")]
+Result: Score 0.91 — visual=0.95, audio=0.88, hook=0.90, platform=1.0
+
+User: Deliver to all platforms
+Claude Code: Delivering to Whop, Clipping.com, Vyro, and more...
+[calls multi_platform_deliver("abc-123")]
+Result: whop=success, clipping_com=success, vyro=pending
 ```
 
 ## Troubleshooting
 
 ### MCP server not connecting
 
-**Check if server is running:**
+**Health endpoint:**
 ```bash
-curl http://localhost:8001/sse
+curl http://localhost:8001/health
 ```
 
 **Check Docker logs:**
@@ -112,6 +148,12 @@ python backend/app/mcp_server.py --check
 ```
 Claude Code: Check system health
 [calls system_health()]
+```
+
+**Check Celery queues:**
+```
+Claude Code: Check queue depths
+[calls list_celery_queues()]
 ```
 
 **Check database:**
@@ -135,31 +177,28 @@ Then update `claude-mcp-config.json`:
 ## Architecture
 
 ```
-Claude Code (MCP Client)
-        ↓ (SSE over HTTP)
-MCP Server (fastmcp) — Port 8001
-        ↓
-Agents (9 specialized AI workflows)
-        ↓
-Database (PostgreSQL)
-        ↓
-Workers (Celery) — Async processing
+Claude Code / Cursor / Any MCP Client
+         ↓ (SSE over HTTP)
+MCP Server v2.0 (fastmcp) — Port 8001
+         ↓
+┌────────────────────────────────────────┐
+│  15 Agents         │  5 Pipeline Tools │
+│  8 Query Tools     │  3 Infra Tools    │
+│  2 Service Tools   │  1 Analytics Tool │
+└────────────────────────────────────────┘
+         ↓
+┌──────────┬──────────┬──────────┐
+│ Postgres │  Redis   │  MinIO   │
+│ (data)   │ (queues) │ (storage)│
+└──────────┴──────────┴──────────┘
+         ↓
+Celery Workers (3 pools, 8 queues)
 ```
-
-## What's Happening Under the Hood
-
-1. Claude Code connects to the MCP server via SSE (Server-Sent Events)
-2. Tools are exposed as MCP resources
-3. When you call a tool, it:
-   - Gets a sync database session
-   - Instantiates the corresponding agent
-   - Runs the agent's `_safe_run()` method
-   - Returns results back to Claude Code
 
 ## Files
 
-- `app/mcp_server.py` — MCP server implementation
-- `docker-compose.yml` — MCP service definition
+- `app/mcp_server.py` — MCP server implementation (34 tools)
+- `docker-compose.yml` — MCP service definition with /health endpoint
 - `claude-mcp-config.json` — Claude Code MCP config
 - `verify-mcp-setup.ps1` — Windows verification script
 - `verify-mcp-setup.sh` — Unix/Mac verification script

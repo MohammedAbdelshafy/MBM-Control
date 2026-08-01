@@ -10,6 +10,7 @@ from app.agents.health_monitor import HealthMonitorAgent
 from app.agents.publishing import PublishingAgent
 from app.agents.lead_ingestion import LeadIngestionAgent
 from app.agents.enhancement_agent import EnhancementAgent
+from app.agents.viral_benchmark_agent import ViralBenchmarkAgent
 
 __all__ = [
     "CampaignHunterAgent",
@@ -25,4 +26,5 @@ __all__ = [
     "PublishingAgent",
     "LeadIngestionAgent",
     "EnhancementAgent",
+    "ViralBenchmarkAgent",
 ]

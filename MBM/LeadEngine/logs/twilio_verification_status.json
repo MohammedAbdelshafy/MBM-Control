@@ -1,0 +1,91 @@
+{
+  "total": 16,
+  "already_verified": 1,
+  "new_verifications": 0,
+  "failed": 16,
+  "numbers": [
+    {
+      "phone": "+14696584582",
+      "name": "PipHouse LLC",
+      "source": "pipeline"
+    },
+    {
+      "phone": "+14692731235",
+      "name": "Swift Home Solutions",
+      "source": "pipeline"
+    },
+    {
+      "phone": "+19727341612",
+      "name": "New Western",
+      "source": "pipeline"
+    },
+    {
+      "phone": "+18173001132",
+      "name": "DFW REI Club",
+      "source": "pipeline"
+    },
+    {
+      "phone": "+12149297576",
+      "name": "3134 Arizona Ave seller",
+      "source": "whatsapp"
+    },
+    {
+      "phone": "+18179888547",
+      "name": "Joel - RE agent/investor",
+      "source": "whatsapp"
+    },
+    {
+      "phone": "+12145149615",
+      "name": "1825 Canelo Dr seller",
+      "source": "whatsapp"
+    },
+    {
+      "phone": "+18173663324",
+      "name": "Velma - 1900 Ridge Oak",
+      "source": "whatsapp"
+    },
+    {
+      "phone": "+14696603146",
+      "name": "Miguel - 2106 Holland St",
+      "source": "whatsapp"
+    },
+    {
+      "phone": "+14694364884",
+      "name": "Diamond Acquisitions",
+      "source": "whatsapp"
+    },
+    {
+      "phone": "+15124004457",
+      "name": "Calvin - Turner & Partners",
+      "source": "whatsapp"
+    },
+    {
+      "phone": "+14694614209",
+      "name": "DFW investor",
+      "source": "whatsapp"
+    },
+    {
+      "phone": "+12142841222",
+      "name": "Rylie - Altura Homes",
+      "source": "whatsapp"
+    },
+    {
+      "phone": "+12149089188",
+      "name": "Steve Hendry Homes",
+      "source": "painpoints"
+    },
+    {
+      "phone": "+12142336158",
+      "name": "ULR Properties Dallas",
+      "source": "painpoints"
+    },
+    {
+      "phone": "+12145998997",
+      "name": "LBJ Station",
+      "source": "painpoints"
+    }
+  ],
+  "verified_phones": [
+    "+2001030360224"
+  ]
+}

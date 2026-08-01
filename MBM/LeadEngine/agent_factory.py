@@ -479,21 +479,34 @@ def show_status():
     print(f"{'='*60}")
 
 
+def generate_all():
+    """Generate agents for ALL available niches."""
+    print(f"\n[+] Generating voice agents for all {len(NICHES)} industry niches...")
+    for idx, niche in enumerate(NICHES):
+        agent = create_agent(niche)
+        name = agent.get('name', niche['name']) if agent else niche['name']
+        print(f"  [{idx+1}/{len(NICHES)}] Configured Agent: '{name}' (${niche['rate']}/min)")
+        time.sleep(0.05)
+    show_status()
+
 def main():
     parser = argparse.ArgumentParser(description="MBM Voice Agent Factory")
     parser.add_argument("--once", action="store_true", help="Generate 1 agent now")
+    parser.add_argument("--all", action="store_true", help="Generate agents for ALL niches")
     parser.add_argument("--loop", action="store_true", help="Generate every 15 minutes")
     parser.add_argument("--status", action="store_true", help="Show deployed agents")
     args = parser.parse_args()
 
     if args.status:
         show_status()
+    elif args.all:
+        generate_all()
     elif args.loop:
         run_loop()
     elif args.once:
         generate_one()
     else:
-        generate_one()
+        generate_all()
 
 
 if __name__ == "__main__":

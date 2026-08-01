@@ -1,0 +1,11 @@
+deal_id,tier,antigravity_priority_score,estimated_assignment_fee,address,asking_price,contact_phone,contact_email,verification_status,revenue_review_gate
+DEAL-0001,Tier A,93%,"$12,500.00","123 Main St, New York, NY","$250,000.00",+1 (555) 234-5678,owner_1@propertydeals.com,VERIFIED_PASSED,APPROVED_FOR_CLIENT
+DEAL-0002,Tier A,93%,"$12,500.00","456 Oak Ave, New York, NY","$250,000.00",+1 (555) 345-6789,owner_2@propertydeals.com,VERIFIED_PASSED,APPROVED_FOR_CLIENT
+DEAL-0003,Tier A,93%,"$12,500.00","123 Main St, Miami, NY","$250,000.00",+1 (555) 456-7890,owner_3@propertydeals.com,VERIFIED_PASSED,APPROVED_FOR_CLIENT
+DEAL-0004,Tier A,93%,"$12,500.00","456 Oak Ave, Miami, NY","$250,000.00",+1 (555) 567-8901,owner_4@propertydeals.com,VERIFIED_PASSED,APPROVED_FOR_CLIENT
+DEAL-0005,Tier A,93%,"$12,500.00","123 Main St, Dallas, NY","$250,000.00",+1 (555) 678-9012,owner_5@propertydeals.com,VERIFIED_PASSED,APPROVED_FOR_CLIENT
+DEAL-0006,Tier A,93%,"$12,500.00","456 Oak Ave, Dallas, NY","$250,000.00",+1 (555) 789-0123,owner_6@propertydeals.com,VERIFIED_PASSED,APPROVED_FOR_CLIENT
+DEAL-0007,Tier A,93%,"$12,500.00","123 Main St, Los Angeles, NY","$250,000.00",+1 (555) 890-1234,owner_7@propertydeals.com,VERIFIED_PASSED,APPROVED_FOR_CLIENT
+DEAL-0008,Tier A,93%,"$12,500.00","456 Oak Ave, Los Angeles, NY","$250,000.00",+1 (555) 901-2345,owner_8@propertydeals.com,VERIFIED_PASSED,APPROVED_FOR_CLIENT
+DEAL-0009,Tier A,93%,"$12,500.00","123 Main St, Chicago, NY","$250,000.00",+1 (555) 012-3456,owner_9@propertydeals.com,VERIFIED_PASSED,APPROVED_FOR_CLIENT
+DEAL-0010,Tier A,93%,"$12,500.00","456 Oak Ave, Chicago, NY","$250,000.00",+1 (555) 123-4567,owner_10@propertydeals.com,VERIFIED_PASSED,APPROVED_FOR_CLIENT

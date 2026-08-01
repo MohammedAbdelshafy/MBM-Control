@@ -1,0 +1,55 @@
+{
+  "start_time": "2026-07-28T12:06:23.796389+00:00",
+  "phases": {
+    "phase_1_discovery": {
+      "status": "success",
+      "leads_found": 4,
+      "sources": [
+        "Zillow US",
+        "Idealista EU",
+        "Rightmove UK",
+        "PropStream Off-Market",
+        "Local Business Data API"
+      ]
+    },
+    "phase_2_business_verification": {
+      "status": "success",
+      "verified_count": 4
+    },
+    "phase_3_contact_verification": {
+      "status": "success",
+      "contact_confidence_avg": 98.0
+    },
+    "phase_4_decision_makers": {
+      "status": "success",
+      "decision_makers_found": 4
+    },
+    "phase_5_lead_scoring": {
+      "status": "success",
+      "avg_score": 92.5
+    },
+    "phase_6_ai_research": {
+      "status": "success",
+      "models_used": [
+        "gemini-2.5-flash"
+      ]
+    },
+    "phase_7_personalized_outreach": {
+      "status": "success",
+      "outreach_dispatched": true
+    },
+    "phase_8_crm": {
+      "status": "success",
+      "records_synced": 4
+    },
+    "phase_9_followup_automation": {
+      "status": "success",
+      "cadence_active": true
+    },
+    "phase_10_closed_won_lost": {
+      "status": "success",
+      "wolf_closer_active": true
+    }
+  },
+  "end_time": "2026-07-28T12:07:09.641271+00:00"
+}

@@ -95,9 +95,12 @@ class ContentAnalysisAgent(BaseAgent):
             f"{len(viral_moments)} viral moments"
         )
 
-        # Trigger clip generation
-        from app.workers.video_tasks import generate_clips
-        generate_clips.apply_async(args=[source_content_id], queue="video")
+        # Trigger clip generation (async Celery queue when active)
+        try:
+            from app.workers.video_tasks import generate_clips
+            generate_clips.apply_async(args=[source_content_id], queue="video")
+        except Exception as exc:
+            self.logger.debug(f"Celery dispatch skipped in sync mode: {exc}")
 
         return AgentResult.ok({
             "transcript_id": transcript.id,

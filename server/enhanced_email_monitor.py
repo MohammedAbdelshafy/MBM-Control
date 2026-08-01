@@ -78,11 +78,16 @@ class EnhancedEmailQueueMonitor:
 
 This is an automated alert from the Email Queue Monitoring System."""
 
+            TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+            TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
+            if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+                logger.error("TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID env vars required")
+                return
             async with httpx.AsyncClient(timeout=30) as client:
                 response = await client.post(
-                    f"https://api.telegram.org/bot8871015419:AAHXRLkEJlQEwdUiZWIjUoCUofrtbpraA34/sendMessage",
+                    f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
                     json={
-                        "chat_id": "6617518949",
+                        "chat_id": TELEGRAM_CHAT_ID,
                         "text": message,
                         "parse_mode": "HTML"
                     }
@@ -136,20 +141,29 @@ This is an automated alert from the Email Queue Monitoring System."""
     async def send_retry_alert(self, emails: list):
         """Send alert about emails needing retry"""
         try:
+            lines = []
+            for email in emails[:5]:
+                lines.append(f"• {email['recipient_email']} (retry: {email['retry_count'] or 0}) - {email.get('error', 'Unknown error')}")
+            email_list = "\n".join(lines)
             message = f"""🔄 EMAIL RETRY NEEDED ⚠️
 
 📧 {len(emails)} emails failed multiple times and may need retry:
 
-{''.join(f"• {email['recipient_email']} (retry: {email['retry_count'] or 0}) - {email.get('error', 'Unknown error')}\n" for email in emails[:5])}
+{email_list}
 
 🔧 Please check the retry mechanism and consider retrying these emails.
-Time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")} """
+Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} """
 
+            TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+            TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
+            if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+                logger.error("TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID env vars required")
+                return
             async with httpx.AsyncClient(timeout=30) as client:
                 response = await client.post(
-                    f"https://api.telegram.org/bot8871015419:AAHXRLkEJlQEwdUiZWIjUoCUofrtbpraA34/sendMessage",
+                    f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
                     json={
-                        "chat_id": "6617518949",
+                        "chat_id": TELEGRAM_CHAT_ID,
                         "text": message,
                         "parse_mode": "HTML"
                     }

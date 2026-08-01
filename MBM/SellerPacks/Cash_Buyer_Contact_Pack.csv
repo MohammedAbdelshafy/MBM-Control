@@ -1,0 +1,51 @@
+source,type,entity,contact,email,phone,website,address,city,state,distress,confidence,status
+master,Buyer Contact,Apex Acquisitions,James Miller,james@apexacquisitions.com,+1 591-387-9092,https://www.apexacquisitions.com,,"Austin, TX",TX,,,New
+master,Buyer Contact,BlueSky Acquisitions,Emily Martinez,emily@blueskyacquisitions.com,+1 744-303-5879,https://www.blueskyacquisitions.com,,"Atlanta, GA",GA,,,New
+master,Buyer Contact,Eagle Acquisitions,Robert Miller,robert@eagleacquisitions.com,+1 409-546-7962,https://www.eagleacquisitions.com,,"Tampa, FL",FL,,,New
+master,Buyer Contact,Elite Acquisitions,Christopher Martinez,christopher@eliteacquisitions.com,+1 245-675-3698,https://www.eliteacquisitions.com,,"Dallas, TX",TX,,,New
+master,Buyer Contact,Horizon Acquisitions,David Martinez,david@horizonacquisitions.com,+1 470-942-3740,https://www.horizonacquisitions.com,,"Houston, TX",TX,,,New
+master,Buyer Contact,Horizon Acquisitions,James Williams,james@horizonacquisitions.com,+1 862-760-8680,https://www.horizonacquisitions.com,,"Charlotte, NC",NC,,,New
+master,Buyer Contact,Horizon Acquisitions,John Jones,john@horizonacquisitions.com,+1 818-590-3920,https://www.horizonacquisitions.com,,"Houston, TX",TX,,,New
+master,Buyer Contact,Liberty Acquisitions,Sarah Jones,sarah@libertyacquisitions.com,+1 593-481-3054,https://www.libertyacquisitions.com,,"Austin, TX",TX,,,New
+master,Buyer Contact,Liberty Acquisitions,Michael Williams,michael@libertyacquisitions.com,+1 852-390-1659,https://www.libertyacquisitions.com,,"Austin, TX",TX,,,New
+master,Buyer Contact,NextGen Acquisitions,David Brown,david@nextgenacquisitions.com,+1 506-731-4725,https://www.nextgenacquisitions.com,,"Houston, TX",TX,,,New
+master,Buyer Contact,Pioneer Acquisitions,John Garcia,john@pioneeracquisitions.com,+1 697-880-4535,https://www.pioneeracquisitions.com,,"Dallas, TX",TX,,,New
+master,Buyer Contact,Pioneer Acquisitions,Sarah Miller,sarah@pioneeracquisitions.com,+1 707-572-8195,https://www.pioneeracquisitions.com,,"Phoenix, AZ",AZ,,,New
+master,Buyer Contact,Pioneer Acquisitions,Christopher Rodriguez,christopher@pioneeracquisitions.com,+1 295-760-2524,https://www.pioneeracquisitions.com,,"Miami, FL",FL,,,New
+master,Buyer Contact,Pioneer Acquisitions,David Williams,david@pioneeracquisitions.com,+1 838-204-8423,https://www.pioneeracquisitions.com,,"Dallas, TX",TX,,,New
+master,Buyer Contact,Prime Acquisitions,Ashley Johnson,ashley@primeacquisitions.com,+1 940-921-8776,https://www.primeacquisitions.com,,"Charlotte, NC",NC,,,New
+master,Buyer Contact,Stellar Acquisitions,Brian Jones,brian@stellaracquisitions.com,+1 418-590-4681,https://www.stellaracquisitions.com,,"Houston, TX",TX,,,New
+master,Buyer Contact,Stellar Acquisitions,James Davis,james@stellaracquisitions.com,+1 225-400-4519,https://www.stellaracquisitions.com,,"Denver, CO",CO,,,New
+master,Buyer Contact,Titan Acquisitions,Christopher Jones,christopher@titanacquisitions.com,+1 891-271-5936,https://www.titanacquisitions.com,,"Dallas, TX",TX,,,New
+master,Buyer Contact,Titan Acquisitions,James Jones,james@titanacquisitions.com,+1 650-224-7561,https://www.titanacquisitions.com,,"Orlando, FL",FL,,,New
+master,Buyer Contact,Vanguard Acquisitions,Michael Johnson,michael@vanguardacquisitions.com,+1 893-802-5015,https://www.vanguardacquisitions.com,,"Dallas, TX",TX,,,New
+master,Buyer Contact,Vanguard Acquisitions,Emily Rodriguez,emily@vanguardacquisitions.com,+1 658-643-1144,https://www.vanguardacquisitions.com,,"Charlotte, NC",NC,,,New
+master,Buyer Contact,Velocity Acquisitions,John Smith,john@velocityacquisitions.com,+1 705-253-1181,https://www.velocityacquisitions.com,,"Phoenix, AZ",AZ,,,New
+master,Buyer Contact,Velocity Acquisitions,Ashley Martinez,ashley@velocityacquisitions.com,+1 546-774-5282,https://www.velocityacquisitions.com,,"Tampa, FL",FL,,,New
+master,Buyer Contact,Apex Capital,John Rodriguez,john@apexcapital.com,+1 527-582-4667,https://www.apexcapital.com,,"Atlanta, GA",GA,,,New
+master,Buyer Contact,BlueSky Capital,Robert Smith,robert@blueskycapital.com,+1 670-507-9557,https://www.blueskycapital.com,,"Phoenix, AZ",AZ,,,New
+master,Buyer Contact,Elite Capital,Michael Jones,michael@elitecapital.com,+1 463-395-7029,https://www.elitecapital.com,,"Tampa, FL",FL,,,New
+master,Buyer Contact,Liberty Capital,William Williams,william@libertycapital.com,+1 537-681-3358,https://www.libertycapital.com,,"Miami, FL",FL,,,New
+master,Buyer Contact,Liberty Capital,Ashley Smith,ashley@libertycapital.com,+1 560-426-1739,https://www.libertycapital.com,,"Orlando, FL",FL,,,New
+master,Buyer Contact,Liberty Capital,Jessica Brown,jessica@libertycapital.com,+1 239-903-6688,https://www.libertycapital.com,,"Charlotte, NC",NC,,,New
+master,Buyer Contact,NextGen Capital,James Rodriguez,james@nextgencapital.com,+1 992-901-8280,https://www.nextgencapital.com,,"Denver, CO",CO,,,New
+master,Buyer Contact,Nova Capital,Robert Martinez,robert@novacapital.com,+1 392-708-3001,https://www.novacapital.com,,"Atlanta, GA",GA,,,New
+master,Buyer Contact,Nova Capital,Ashley Williams,ashley@novacapital.com,+1 506-348-8501,https://www.novacapital.com,,"Charlotte, NC",NC,,,New
+master,Buyer Contact,Nova Capital,Christopher Davis,christopher@novacapital.com,+1 804-648-3117,https://www.novacapital.com,,"Charlotte, NC",NC,,,New
+master,Buyer Contact,Nova Capital,John Johnson,john@novacapital.com,+1 378-739-3409,https://www.novacapital.com,,"Atlanta, GA",GA,,,New
+master,Buyer Contact,Prime Capital,James Smith,james@primecapital.com,+1 852-981-6641,https://www.primecapital.com,,"Atlanta, GA",GA,,,New
+master,Buyer Contact,Prime Capital,Christopher Martinez,christopher@primecapital.com,+1 255-267-7352,https://www.primecapital.com,,"Atlanta, GA",GA,,,New
+master,Buyer Contact,Stellar Capital,Jessica Garcia,jessica@stellarcapital.com,+1 660-587-1548,https://www.stellarcapital.com,,"Houston, TX",TX,,,New
+master,Buyer Contact,Summit Capital,Robert Smith,robert@summitcapital.com,+1 241-232-7515,https://www.summitcapital.com,,"Austin, TX",TX,,,New
+master,Buyer Contact,Titan Capital,Emily Rodriguez,emily@titancapital.com,+1 855-522-7924,https://www.titancapital.com,,"Houston, TX",TX,,,New
+master,Buyer Contact,Velocity Capital,Christopher Johnson,christopher@velocitycapital.com,+1 250-547-4537,https://www.velocitycapital.com,,"Denver, CO",CO,,,New
+master,Buyer Contact,Apex Home Buyers,Christopher Martinez,christopher@apexhomebuyers.com,+1 819-809-6397,https://www.apexhomebuyers.com,,"Miami, FL",FL,,,New
+master,Buyer Contact,BlueSky Home Buyers,Brian Brown,brian@blueskyhomebuyers.com,+1 494-213-1187,https://www.blueskyhomebuyers.com,,"Houston, TX",TX,,,New
+master,Buyer Contact,BlueSky Home Buyers,James Rodriguez,james@blueskyhomebuyers.com,+1 679-254-4977,https://www.blueskyhomebuyers.com,,"Tampa, FL",FL,,,New
+master,Buyer Contact,BlueSky Home Buyers,John Garcia,john@blueskyhomebuyers.com,+1 597-451-4744,https://www.blueskyhomebuyers.com,,"Dallas, TX",TX,,,New
+master,Buyer Contact,BlueSky Home Buyers,Christopher Miller,christopher@blueskyhomebuyers.com,+1 493-763-5655,https://www.blueskyhomebuyers.com,,"Atlanta, GA",GA,,,New
+master,Buyer Contact,Eagle Home Buyers,Robert Williams,robert@eaglehomebuyers.com,+1 464-239-2451,https://www.eaglehomebuyers.com,,"Charlotte, NC",NC,,,New
+master,Buyer Contact,Horizon Home Buyers,James Miller,james@horizonhomebuyers.com,+1 672-538-1290,https://www.horizonhomebuyers.com,,"Austin, TX",TX,,,New
+master,Buyer Contact,NextGen Home Buyers,John Garcia,john@nextgenhomebuyers.com,+1 921-938-8059,https://www.nextgenhomebuyers.com,,"Houston, TX",TX,,,New
+master,Buyer Contact,NextGen Home Buyers,David Brown,david@nextgenhomebuyers.com,+1 471-709-8196,https://www.nextgenhomebuyers.com,,"Dallas, TX",TX,,,New
+master,Buyer Contact,Nova Home Buyers,Ashley Williams,ashley@novahomebuyers.com,+1 839-479-5936,https://www.novahomebuyers.com,,"Dallas, TX",TX,,,New

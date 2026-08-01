@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "updated": "2026-07-15",
+  "auth_model": "single_master_gmail",
+  "master_account": "abdelshafyclapps@gmail.com",
+  "auth_note": "One Gmail owns every channel via YouTube brand-account / channel-manager. Session is stored in backend/sessions/youtube.json (or YOUTUBE_SESSION_STATE env) — never hardcoded here.",
+  "channels": [
+    {
+      "brand": "dontwatchthis",
+      "display_name": "Don't Watch This",
+      "handle": "@DONTWATCHTHIS1",
+      "youtube_channel_id": "UC_DONTWATCHTHIS1",
+      "owned_by": "abdelshafyclapps@gmail.com",
+      "auth_method": "youtube_session",
+      "session_ref": "sessions/youtube.json",
+      "active": true
+    },
+    {
+      "brand": "goalmachinez",
+      "display_name": "Goal Machinez",
+      "handle": "@Goalmachinez",
+      "youtube_channel_id": "UC_Goalmachinez",
+      "owned_by": "abdelshafyclapps@gmail.com",
+      "auth_method": "youtube_session",
+      "session_ref": "sessions/youtube.json",
+      "active": true
+    },
+    {
+      "brand": "cutedosage",
+      "display_name": "Cute Dosage",
+      "handle": "@CuteDosage",
+      "youtube_channel_id": "UC_CuteDosage",
+      "owned_by": "abdelshafyclapps@gmail.com",
+      "auth_method": "youtube_session",
+      "session_ref": "sessions/youtube.json",
+      "active": true
+    },
+    {
+      "brand": "clippingfactorymbm",
+      "display_name": "ClippingFactoryMBM",
+      "handle": "@ClippingFactoryMBM",
+      "youtube_channel_id": "UC_ClippingFactoryMBM",
+      "owned_by": "abdelshafyclapps@gmail.com",
+      "auth_method": "youtube_session",
+      "session_ref": "sessions/youtube.json",
+      "active": true
+    },
+    {
+      "brand": "twistsrevealed",
+      "display_name": "Twists Revealed",
+      "handle": "@TwistsRevealed",
+      "youtube_channel_id": "UC_TwistsRevealed",
+      "owned_by": "abdelshafyclapps@gmail.com",
+      "auth_method": "youtube_session",
+      "session_ref": "sessions/youtube.json",
+      "active": true
+    }
+  ],
+  "add_channel_steps": [
+    "Verify the channel is owned by the master Gmail (brand account / channel manager)",
+    "Add a ChannelRegistry entry",
+    "Add the matching brand folder via gen_brand_configs.py",
+    "No framework code changes required"
+  ]
+}

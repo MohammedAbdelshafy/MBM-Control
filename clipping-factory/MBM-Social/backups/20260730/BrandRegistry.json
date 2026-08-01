@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "updated": "2026-07-15",
+  "master_account": "abdelshafyclapps@gmail.com",
+  "brands": {
+    "dontwatchthis": {
+      "display_name": "Don't Watch This",
+      "handle": "@DONTWATCHTHIS1",
+      "youtube_channel_id": "UC_DONTWATCHTHIS1",
+      "theme": "dark stories, chilling truths, mystery, suspense",
+      "active": true,
+      "config_path": "Brands/dontwatchthis/"
+    },
+    "goalmachinez": {
+      "display_name": "Goal Machinez",
+      "handle": "@Goalmachinez",
+      "youtube_channel_id": "UC_Goalmachinez",
+      "theme": "football / soccer / sports highlights and commentary",
+      "active": true,
+      "config_path": "Brands/goalmachinez/"
+    },
+    "cutedosage": {
+      "display_name": "Cute Dosage",
+      "handle": "@CuteDosage",
+      "youtube_channel_id": "UC_CuteDosage",
+      "theme": "cute, wholesome, family, pet, baby-style content",
+      "active": true,
+      "config_path": "Brands/cutedosage/"
+    },
+    "clippingfactorymbm": {
+      "display_name": "ClippingFactoryMBM",
+      "handle": "@ClippingFactoryMBM",
+      "youtube_channel_id": "UC_ClippingFactoryMBM",
+      "theme": "MBM operations, clipping factory, build-in-public, internal brand",
+      "active": true,
+      "config_path": "Brands/clippingfactorymbm/"
+    },
+    "twistsrevealed": {
+      "display_name": "Twists Revealed",
+      "handle": "@TwistsRevealed",
+      "youtube_channel_id": "UC_TwistsRevealed",
+      "theme": "plot twists, reveals, shocking stories, suspense",
+      "active": true,
+      "config_path": "Brands/twistsrevealed/"
+    }
+  },
+  "add_brand_steps": [
+    "Add an entry to tools/gen_brand_configs.py BRANDS and rerun it",
+    "Add a BrandRegistry entry here",
+    "Add a ChannelRegistry entry",
+    "Add a CampaignRouter routing rule if needed",
+    "No framework code changes required"
+  ]
+}

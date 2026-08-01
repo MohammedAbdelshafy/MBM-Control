@@ -1,0 +1,126 @@
+{
+  "platform": "Retell AI + ChatDash Wrapper",
+  "status": "SETUP_INSTRUCTIONS",
+  "url": "https://retellai.com",
+  "revenue_model": {
+    "type": "Wholesale \u2192 Retail Markup",
+    "wholesale_cost": "$0.09/min",
+    "your_client_price": "$0.35/min",
+    "margin": "$0.26/min (289% markup)",
+    "setup_fee": "$1,500 per client",
+    "payout": "Stripe"
+  },
+  "setup_steps": [
+    "1. Go to https://retellai.com",
+    "2. Sign up for a free account",
+    "3. Get $5 free credit to test",
+    "4. Create voice agents using our templates",
+    "5. Deploy to phone numbers",
+    "6. Set up billing dashboard for clients",
+    "7. Bill clients $0.35/min + $1,500 setup"
+  ],
+  "agents_to_deploy": [
+    {
+      "name": "US Commercial Real Estate Acquisition Director ($0.85/min)",
+      "persona": "Senior US commercial acquisitions VP (NY, LA, MIA, TX)",
+      "wholesale_rate": "$0.09/min",
+      "client_rate": "$0.35/min",
+      "margin": "$0.26/min",
+      "tags": [
+        "USA Market",
+        "Commercial Real Estate",
+        "Private Equity",
+        "High-Ticket"
+      ]
+    },
+    {
+      "name": "US Medical & Healthcare Appointment Qualifier ($0.80/min)",
+      "persona": "Professional, HIPAA-trained US medical appointment coordinator",
+      "wholesale_rate": "$0.09/min",
+      "client_rate": "$0.35/min",
+      "margin": "$0.26/min",
+      "tags": [
+        "USA Market",
+        "Healthcare",
+        "HIPAA Compliant",
+        "High-Ticket Intake"
+      ]
+    },
+    {
+      "name": "US Industrial Waste Scrap Broker ($0.75/min)",
+      "persona": "US Raw materials procurement specialist (TX, OH, IL, CA hubs)",
+      "wholesale_rate": "$0.09/min",
+      "client_rate": "$0.35/min",
+      "margin": "$0.26/min",
+      "tags": [
+        "USA Market",
+        "Industrial Waste",
+        "Plastic Scrap",
+        "B2B Procurement"
+      ]
+    },
+    {
+      "name": "US Solar & Clean Energy Lead Qualifier ($0.70/min)",
+      "persona": "Energetic US clean energy advisor",
+      "wholesale_rate": "$0.09/min",
+      "client_rate": "$0.35/min",
+      "margin": "$0.26/min",
+      "tags": [
+        "USA Market",
+        "Solar Energy",
+        "Tax Credits",
+        "Clean Energy"
+      ]
+    },
+    {
+      "name": "US Tax Lien & Pre-Foreclosure Cash Closer ($0.65/min)",
+      "persona": "Empathetic, firm US pre-foreclosure specialist",
+      "wholesale_rate": "$0.09/min",
+      "client_rate": "$0.35/min",
+      "margin": "$0.26/min",
+      "tags": [
+        "USA Market",
+        "Pre-Foreclosure",
+        "Tax Lien",
+        "Fast Cash Close"
+      ]
+    },
+    {
+      "name": "US E-Commerce High-Ticket Upsell Specialist ($0.60/min)",
+      "persona": "Charming, persuasive US brand VIP Concierge",
+      "wholesale_rate": "$0.09/min",
+      "client_rate": "$0.35/min",
+      "margin": "$0.26/min",
+      "tags": [
+        "USA Market",
+        "E-Commerce",
+        "VIP Upsell",
+        "High-Ticket Retail"
+      ]
+    }
+  ],
+  "revenue_calculator": {
+    "per_client_per_month": {
+      "100_minutes": {
+        "cost": "$9",
+        "revenue": "$35",
+        "profit": "$26"
+      },
+      "500_minutes": {
+        "cost": "$45",
+        "revenue": "$175",
+        "profit": "$130"
+      },
+      "1000_minutes": {
+        "cost": "$90",
+        "revenue": "$350",
+        "profit": "$260"
+      }
+    },
+    "with_setup_fee": {
+      "1_client": "$1,500 + $26/mo",
+      "5_clients": "$7,500 + $130/mo",
+      "10_clients": "$15,000 + $260/mo"
+    }
+  }
+}
