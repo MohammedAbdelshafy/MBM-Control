@@ -19,16 +19,24 @@ class Base(DeclarativeBase):
     pass
 
 
-# Async engine for FastAPI
-async_engine = create_async_engine(
-    settings.database_url,
-    pool_size=settings.database_pool_size,
-    max_overflow=settings.database_max_overflow,
-    pool_timeout=settings.database_pool_timeout,
-    connect_args={"statement_cache_size": 0, "timeout": settings.database_statement_timeout},
-    echo=not settings.is_production,
-    future=True,
-)
+try:
+    _async_url = settings.database_url
+    if _async_url.startswith("sqlite://"):
+        _async_url = _async_url.replace("sqlite://", "sqlite+aiosqlite://")
+
+    _connect_args = {}
+    if "postgresql" in settings.database_url:
+        _connect_args = {"statement_cache_size": 0, "timeout": settings.database_statement_timeout}
+
+    async_engine = create_async_engine(
+        _async_url,
+        connect_args=_connect_args,
+        echo=not settings.is_production,
+        future=True,
+    )
+except Exception:
+    # Safe fallback if async driver is not installed locally
+    async_engine = None  # type: ignore
 
 AsyncSessionLocal = async_sessionmaker(
     bind=async_engine,
@@ -54,13 +62,33 @@ def _get_sync_engine():
             .replace("?ssl=require", "?sslmode=require")
             .replace("&ssl=require", "&sslmode=require")
         )
-        _sync_engine = create_engine(
-            _sync_url,
-            pool_size=settings.database_pool_size,
-            max_overflow=settings.database_max_overflow,
-            echo=False,
-            future=True,
-        )
+        try:
+            _sync_engine = create_engine(
+                _sync_url,
+                pool_size=settings.database_pool_size,
+                max_overflow=settings.database_max_overflow,
+                echo=False,
+                future=True,
+            )
+        except Exception:
+            # Fallback to local SQLite DB when postgres driver or DB is not reachable
+            sqlite_url = "sqlite:///./clipping_factory.db"
+            _sync_engine = create_engine(
+                sqlite_url,
+                connect_args={"timeout": 30.0, "check_same_thread": False},
+                echo=False,
+                future=True,
+            )
+            from sqlalchemy import event
+            @event.listens_for(_sync_engine, "connect")
+            def _set_sqlite_pragmas(dbapi_connection, connection_record):
+                cursor = dbapi_connection.cursor()
+                cursor.execute("PRAGMA journal_mode=WAL;")
+                cursor.execute("PRAGMA busy_timeout=30000;")
+                cursor.close()
+
+            Base.metadata.create_all(_sync_engine)
+
         _SyncSession = sessionmaker(
             bind=_sync_engine,
             autoflush=False,

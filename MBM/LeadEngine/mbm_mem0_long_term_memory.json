@@ -1,0 +1,64 @@
+{
+  "memories": [
+    {
+      "timestamp": "2026-07-30T20:26:00.077331",
+      "event_type": "MASTER_COO_SESSION_EXECUTION",
+      "details": {
+        "clinic_leads_count": 6,
+        "realty_leads_count": 3,
+        "top_lead": "Mark Johnson",
+        "top_lead_score": 135
+      }
+    },
+    {
+      "timestamp": "2026-07-30T20:26:16.242109",
+      "event_type": "MASTER_COO_SESSION_EXECUTION",
+      "details": {
+        "clinic_leads_count": 6,
+        "realty_leads_count": 3,
+        "top_lead": "Mark Johnson",
+        "top_lead_score": 135
+      }
+    },
+    {
+      "timestamp": "2026-07-30T20:27:47.319607",
+      "event_type": "MASTER_COO_SESSION_EXECUTION",
+      "details": {
+        "clinic_leads_count": 6,
+        "realty_leads_count": 3,
+        "top_lead": "Mark Johnson",
+        "top_lead_score": 135
+      }
+    },
+    {
+      "timestamp": "2026-07-30T20:48:02.600243",
+      "event_type": "MASTER_COO_SESSION_EXECUTION",
+      "details": {
+        "clinic_leads_count": 6,
+        "realty_leads_count": 3,
+        "top_lead": "Mark Johnson",
+        "top_lead_score": 135
+      }
+    },
+    {
+      "timestamp": "2026-07-30T20:54:25.321252",
+      "event_type": "MASTER_COO_SESSION_EXECUTION",
+      "details": {
+        "clinic_leads_count": 6,
+        "realty_leads_count": 3,
+        "top_lead": "Mark Johnson",
+        "top_lead_score": 135
+      }
+    },
+    {
+      "timestamp": "2026-07-30T20:56:39.094293",
+      "event_type": "MASTER_COO_SESSION_EXECUTION",
+      "details": {
+        "clinic_leads_count": 6,
+        "realty_leads_count": 3,
+        "top_lead": "Mark Johnson",
+        "top_lead_score": 135
+      }
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { canAccess, isUnassignedRole } from '@/lib/roles';
 import {
   LayoutDashboard, BarChart3, Building2, Truck, CreditCard, Award,
-  Warehouse, Users, UsersRound, Car, UserCog, Menu, X, LogOut, Handshake, UserCheck, Inbox, FileText, Zap
+  Warehouse, Users, UsersRound, Car, UserCog, Menu, X, LogOut, Handshake, UserCheck, Inbox, FileText, Zap, Mic
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PendingActivation from '@/components/PendingActivation';
@@ -14,6 +14,7 @@ import PendingActivation from '@/components/PendingActivation';
 const navItems = [
   { key: 'my_work', icon: LayoutDashboard, path: '/my-work', module: 'my_work' },
   { key: 'dashboard', icon: BarChart3, path: '/', module: 'dashboard' },
+  { key: 'voice_agents', icon: Mic, path: '/voice-agents', module: 'dashboard', label: 'Voice Agents Studio' },
   { key: 'kpis', icon: BarChart3, path: '/kpis', module: 'kpis' },
   { key: 'buildings', icon: Building2, path: '/buildings', module: 'buildings' },
   { key: 'pickups', icon: Truck, path: '/pickups', module: 'pickups' },

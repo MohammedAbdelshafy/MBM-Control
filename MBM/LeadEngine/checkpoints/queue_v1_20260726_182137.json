@@ -1,0 +1,161 @@
+{
+  "_schema": "1.0.0",
+  "_checkpoint": 1,
+  "_created": "20260726_182137",
+  "queue": [
+    {
+      "id": "90874020",
+      "contact_name": "Savills Auctions, London Estate Agent",
+      "phone": "02039096715",
+      "address": "Flat B2308, Deansgate Square,  9 Owen Street Manchester, M15 4UD",
+      "price": "\u00a3373,000",
+      "script": "[COLD CALL SCRIPT - Flat B2308, Deansgate Square,  9 Owen Street Manchester, M15 4UD]\n1. HOOK: \"Hi Savills Auctions, London Estate Agent, I'm calling about Flat B2308, Deansgate Square,  9 Owen Street Manchester, M15 4UD. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:20:46.006957+00:00"
+    },
+    {
+      "id": "91115499",
+      "contact_name": "Greenco, Salford Estate Agent",
+      "phone": "01615249008",
+      "address": "Upper Chorlton Road, Manchester, M16",
+      "price": "\u00a31,650,000",
+      "script": "[COLD CALL SCRIPT - Upper Chorlton Road, Manchester, M16]\n1. HOOK: \"Hi Greenco, Salford Estate Agent, I'm calling about Upper Chorlton Road, Manchester, M16. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:20:50.940274+00:00"
+    },
+    {
+      "id": "89714757",
+      "contact_name": "Trading Places, South Manchester Estate Agent",
+      "phone": "01615247890",
+      "address": "'Lynwood', Westminster Road, Ellesmere Park, Eccles, M30",
+      "price": "\u00a31,250,000",
+      "script": "[COLD CALL SCRIPT - 'Lynwood', Westminster Road, Ellesmere Park, Eccles, M30]\n1. HOOK: \"Hi Trading Places, South Manchester Estate Agent, I'm calling about 'Lynwood', Westminster Road, Ellesmere Park, Eccles, M30. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:20:54.855669+00:00"
+    },
+    {
+      "id": "87906048",
+      "contact_name": "Open House Estate Agents, Nationwide Estate Agent",
+      "phone": "02039101882",
+      "address": "Gorton Lane, Manchester",
+      "price": "\u00a31,000,000",
+      "script": "[COLD CALL SCRIPT - Gorton Lane, Manchester]\n1. HOOK: \"Hi Open House Estate Agents, Nationwide Estate Agent, I'm calling about Gorton Lane, Manchester. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:20:59.634255+00:00"
+    },
+    {
+      "id": "87683445",
+      "contact_name": "Pattinsons, Pattinsons Auction- National Auctioneer Estate Agent",
+      "phone": "01916250964",
+      "address": "Gorton Lane, Manchester, Greater Manchester, M18 8EH",
+      "price": "\u00a31,000,000",
+      "script": "[COLD CALL SCRIPT - Gorton Lane, Manchester, Greater Manchester, M18 8EH]\n1. HOOK: \"Hi Pattinsons, Pattinsons Auction- National Auctioneer Estate Agent, I'm calling about Gorton Lane, Manchester, Greater Manchester, M18 8EH. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:21:02.376992+00:00"
+    },
+    {
+      "id": "174816647",
+      "contact_name": "Jordan Fishwick, Didsbury Estate Agent",
+      "phone": "01615248937",
+      "address": "Barlow Moor Road, Didsbury",
+      "price": "\u00a3995,000",
+      "script": "[COLD CALL SCRIPT - Barlow Moor Road, Didsbury]\n1. HOOK: \"Hi Jordan Fishwick, Didsbury Estate Agent, I'm calling about Barlow Moor Road, Didsbury. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:21:06.584400+00:00"
+    },
+    {
+      "id": "90252408",
+      "contact_name": "Bridgfords, Didsbury Estate Agent",
+      "phone": "01615244743",
+      "address": "Goulden Road, Didsbury, Manchester, Greater Manchester, M20",
+      "price": "\u00a3950,000",
+      "script": "[COLD CALL SCRIPT - Goulden Road, Didsbury, Manchester, Greater Manchester, M20]\n1. HOOK: \"Hi Bridgfords, Didsbury Estate Agent, I'm calling about Goulden Road, Didsbury, Manchester, Greater Manchester, M20. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:21:10.160764+00:00"
+    },
+    {
+      "id": "89280189",
+      "contact_name": "Trading Places, South Manchester Estate Agent",
+      "phone": "01615247890",
+      "address": "101 Manchester Road, M43",
+      "price": "\u00a3800,000",
+      "script": "[COLD CALL SCRIPT - 101 Manchester Road, M43]\n1. HOOK: \"Hi Trading Places, South Manchester Estate Agent, I'm calling about 101 Manchester Road, M43. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:21:14.482304+00:00"
+    },
+    {
+      "id": "169911650",
+      "contact_name": "WPF Properties Ltd, Manchester Estate Agent",
+      "phone": "01615249220",
+      "address": "Manchester Road, Droylsden",
+      "price": "\u00a3800,000",
+      "script": "[COLD CALL SCRIPT - Manchester Road, Droylsden]\n1. HOOK: \"Hi WPF Properties Ltd, Manchester Estate Agent, I'm calling about Manchester Road, Droylsden. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:21:17.957553+00:00"
+    },
+    {
+      "id": "172579193",
+      "contact_name": "Philip James Kennedy, Didsbury Estate Agent",
+      "phone": "01615244262",
+      "address": "Bamford Road, Didsbury, M20",
+      "price": "\u00a3800,000",
+      "script": "[COLD CALL SCRIPT - Bamford Road, Didsbury, M20]\n1. HOOK: \"Hi Philip James Kennedy, Didsbury Estate Agent, I'm calling about Bamford Road, Didsbury, M20. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:21:22.235782+00:00"
+    },
+    {
+      "id": "91062477",
+      "contact_name": "Philip James Kennedy, Didsbury Estate Agent",
+      "phone": "01615244262",
+      "address": "Hart Road, Fallowfield, M14",
+      "price": "\u00a3750,000",
+      "script": "[COLD CALL SCRIPT - Hart Road, Fallowfield, M14]\n1. HOOK: \"Hi Philip James Kennedy, Didsbury Estate Agent, I'm calling about Hart Road, Fallowfield, M14. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:21:25.745687+00:00"
+    },
+    {
+      "id": "174618980",
+      "contact_name": "Philip James Kennedy, Didsbury Estate Agent",
+      "phone": "01615244262",
+      "address": "Willoughby Avenue, Didsbury, M20",
+      "price": "\u00a3735,000",
+      "script": "[COLD CALL SCRIPT - Willoughby Avenue, Didsbury, M20]\n1. HOOK: \"Hi Philip James Kennedy, Didsbury Estate Agent, I'm calling about Willoughby Avenue, Didsbury, M20. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:21:30.491779+00:00"
+    },
+    {
+      "id": "174847163",
+      "contact_name": "Trading Places, Stretford Estate Agent",
+      "phone": "01615244179",
+      "address": "Manchester Road, Chorlton, M21",
+      "price": "\u00a3725,000",
+      "script": "[COLD CALL SCRIPT - Manchester Road, Chorlton, M21]\n1. HOOK: \"Hi Trading Places, Stretford Estate Agent, I'm calling about Manchester Road, Chorlton, M21. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:21:33.440965+00:00"
+    },
+    {
+      "id": "174529730",
+      "contact_name": "MCR Move, Manchester Estate Agent",
+      "phone": "01612486277",
+      "address": "Burton Road, Manchester",
+      "price": "\u00a3725,000",
+      "script": "[COLD CALL SCRIPT - Burton Road, Manchester]\n1. HOOK: \"Hi MCR Move, Manchester Estate Agent, I'm calling about Burton Road, Manchester. We are cash buyers deploying capital in your neighborhood this week. Are you open to a firm cash offer with zero agent fees?\"\n2. DISCOVERY: \"If we could close in 7-10 days on your timeline, what price would make sense for you?\"\n3. OBJECTION HANDLER ('Want market price'): \"I understand! The difference is with our cash offer, there are no 6% realtor fees, zero repair costs, and we pay all closing costs. You walk away with net cash in days.\" ",
+      "status": "ready_to_call",
+      "disposition": null,
+      "created_at": "2026-07-26T15:21:37.555346+00:00"
+    }
+  ]
+}

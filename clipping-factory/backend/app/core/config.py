@@ -123,6 +123,8 @@ class Settings(BaseSettings):
     reachcat_session_state: str = ""
     clipaffiliates_session_state: str = ""
     clippingcom_session_state: str = ""
+    muslim_clippers_session_state: str = ""
+    halalclipping_session_state: str = ""
 
     @property
     def publish_platform_list(self) -> list[str]:
@@ -131,11 +133,22 @@ class Settings(BaseSettings):
         return SocialPlatform.resolve(raw)
 
     def social_session_state(self, platform: str) -> str:
-        return {
+        env_val = {
             "tiktok": self.tiktok_session_state,
             "instagram": self.instagram_session_state,
             "youtube": self.youtube_session_state,
         }.get(platform, "")
+        if env_val:
+            return env_val
+        session_file = (
+            Path(__file__).parent.parent.parent / "sessions" / f"{platform}.json"
+        )
+        if session_file.exists():
+            try:
+                return session_file.read_text(encoding="utf-8")
+            except Exception:
+                return ""
+        return ""
 
     def clipping_session_state(self, platform: str) -> str:
         """Return exported session JSON for a clipping platform key.
@@ -151,13 +164,14 @@ class Settings(BaseSettings):
             "vyro": self.vyro_session_state,
             "reach_cat": self.reachcat_session_state,
             "clip_affiliates": self.clipaffiliates_session_state,
-            "clipping_com": self.clippingcom_session_state,
+            "muslim_clippers": self.muslim_clippers_session_state,
+            "halalclipping": self.halalclipping_session_state,
         }.get(platform, "")
         if env_val:
             return env_val
         # Fallback: read the saved session file produced by the export script.
         session_file = (
-            Path(__file__).parent.parent / "sessions" / f"{platform}.json"
+            Path(__file__).parent.parent.parent / "sessions" / f"{platform}.json"
         )
         if session_file.exists():
             try:

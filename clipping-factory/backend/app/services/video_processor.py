@@ -225,35 +225,66 @@ class VideoProcessor:
         denoise_spatial_chroma: float = 1.5,
         denoise_temp_luma: float = 3.0,
         denoise_temp_chroma: float = 3.0,
+        dehaze: bool = False,
+        dehaze_strength: float = 0.7,
+        film_grain: bool = False,
+        film_grain_strength: int = 25,
+        film_grain_size: int = 3,
+        deband: bool = False,
+        deband_strength: float = 0.02,
         crf: int = 18,
         preset: str = "slow",
         fade_in: float = 0,
         fade_out: float = 0,
     ) -> bool:
         """Apply quality enhancements to a video:
-        1. Unsharp mask sharpen (optional)
-        2. Color levels/contrast grade (optional)
-        3. Denoise (optional)
-        4. High-quality re-encode with CRF
-        5. Fade in/out (optional)
+        1. Dehaze (optional) — contrast stretch + histeq
+        2. Denoise (optional) — hqdn3d
+        3. Unsharp mask sharpen (optional)
+        4. Deband (optional) — remove banding
+        5. Color levels/contrast grade (optional)
+        6. Film grain (optional) — cinematic texture
+        7. High-quality re-encode with CRF
+        8. Fade in/out (optional)
         """
         filter_parts = []
         duration = VideoProcessor.get_duration(src)
+
+        # Order matters — dehaze first (cleaner input for other filters)
+        if dehaze:
+            opacity = max(0.0, min(1.0, dehaze_strength))
+            filter_parts.append(f"histeq=strength={opacity}")
+
+        if denoise:
+            filter_parts.append(
+                f"hqdn3d={denoise_spatial_luma}:{denoise_spatial_chroma}:"
+                f"{denoise_temp_luma}:{denoise_temp_chroma}"
+            )
 
         if sharpen:
             filter_parts.append(
                 f"unsharp={sharpen_luma_radius}:{sharpen_luma_strength}:{sharpen_luma_threshold}:"
                 f"{sharpen_chroma_radius}:{sharpen_chroma_strength}:{sharpen_chroma_threshold}"
             )
+
+        if deband:
+            bd = deband_strength
+            filter_parts.append(
+                f"deband=1thr={bd}:2thr={bd}:3thr={bd}:4thr={bd}"
+                f":blur=16:range=15:direction=3:dither=fs:plane=7"
+            )
+
         if color_grade:
             filter_parts.append(
                 f"eq=contrast={contrast}:brightness={brightness}:saturation={saturation}"
             )
-        if denoise:
+
+        if film_grain:
             filter_parts.append(
-                f"hqdn3d={denoise_spatial_luma}:{denoise_spatial_chroma}:"
-                f"{denoise_temp_luma}:{denoise_temp_chroma}"
+                f"noise=c0s={film_grain_strength}:c0f={film_grain_size}"
+                f":allf=t+u:allst=8"
             )
+
         if fade_in > 0:
             filter_parts.append(f"fade=t=in:st=0:d={fade_in}")
         if fade_out > 0:
@@ -386,6 +417,240 @@ class VideoProcessor:
             return float(n) / float(d) if float(d) else 30.0
         except Exception:
             return 30.0
+
+    # ------------------------------------------------------------------
+    # Advanced Enhancement Filters
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def dehaze_video(
+        src: Path, dst: Path,
+        strength: float = 0.7,
+        contrast: float = 1.15,
+        brightness: float = 0.05,
+        saturation: float = 1.2,
+        crf: int = 18,
+        preset: str = "slow",
+    ) -> bool:
+        """Remove haze/fog using contrast stretching + saturation boost + adaptive histogram eq.
+        Simulates dehaze by:
+          1. Ahequalize CLAHE-style via histeq
+          2. Contrast/saturation boost
+          3. Unsharp for detail recovery
+        """
+        # Blend histeq with original based on strength
+        opacity = max(0.0, min(1.0, strength))
+        vf = (
+            f"histeq=strength={opacity},"
+            f"eq=contrast={contrast}:brightness={brightness}:saturation={saturation},"
+            f"unsharp=3:3:0.5:3:3:0.0"
+        )
+        cmd = [
+            settings.ffmpeg_path, "-y",
+            "-i", str(src),
+            "-vf", vf,
+            "-c:v", "libx264", "-crf", str(crf), "-preset", preset,
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-b:a", "192k",
+            "-movflags", "+faststart",
+            str(dst),
+        ]
+        return VideoProcessor._run(cmd)
+
+    @staticmethod
+    def apply_lut(
+        src: Path, dst: Path,
+        lut_file: Optional[Path] = None,
+        lut_intensity: float = 1.0,
+        crf: int = 18,
+        preset: str = "slow",
+    ) -> bool:
+        """Apply a 3D LUT (.cube file) for color grading.
+        If no LUT file provided, applies a built-in cinematic warm tone via curves.
+        lut_intensity: 0.0 = no effect, 1.0 = full LUT.
+        """
+        if lut_file and lut_file.exists():
+            filter_str = f"lut3d='{str(lut_file).replace(chr(39), chr(39)+chr(39))}'"
+            if lut_intensity < 1.0:
+                # Blend original with LUT-processed
+                filter_str = (
+                    f"[0:v]split[main][lut];"
+                    f"[lut]{filter_str}[graded];"
+                    f"[main][graded]blend=all_mode=normal:"
+                    f"all_opacity={lut_intensity}[v]"
+                )
+                cmd = [
+                    settings.ffmpeg_path, "-y",
+                    "-i", str(src),
+                    "-filter_complex", filter_str,
+                    "-map", "[v]", "-map", "0:a?",
+                    "-c:v", "libx264", "-crf", str(crf), "-preset", preset,
+                    "-pix_fmt", "yuv420p",
+                    "-c:a", "aac", "-b:a", "192k",
+                    "-movflags", "+faststart",
+                    str(dst),
+                ]
+            else:
+                cmd = [
+                    settings.ffmpeg_path, "-y",
+                    "-i", str(src),
+                    "-vf", filter_str,
+                    "-c:v", "libx264", "-crf", str(crf), "-preset", preset,
+                    "-pix_fmt", "yuv420p",
+                    "-c:a", "aac", "-b:a", "192k",
+                    "-movflags", "+faststart",
+                    str(dst),
+                ]
+        else:
+            # Built-in cinematic warm grade via curves
+            vf = (
+                "curves=r='0/0 0.25/0.28 0.5/0.55 0.75/0.78 1/1':"
+                "g='0/0 0.25/0.25 0.5/0.52 0.75/0.76 1/0.98':"
+                "b='0/0.02 0.25/0.22 0.5/0.47 0.75/0.72 1/0.95',"
+                f"eq=contrast=1.08:saturation=1.15"
+            )
+            cmd = [
+                settings.ffmpeg_path, "-y",
+                "-i", str(src),
+                "-vf", vf,
+                "-c:v", "libx264", "-crf", str(crf), "-preset", preset,
+                "-pix_fmt", "yuv420p",
+                "-c:a", "aac", "-b:a", "192k",
+                "-movflags", "+faststart",
+                str(dst),
+            ]
+        return VideoProcessor._run(cmd)
+
+    @staticmethod
+    def add_film_grain(
+        src: Path, dst: Path,
+        grain_strength: int = 25,
+        grain_size: int = 3,
+        temporal_strength: int = 8,
+        crf: int = 18,
+        preset: str = "slow",
+    ) -> bool:
+        """Add cinematic film grain using FFmpeg's noise filter.
+        grain_strength: 0-100, controls grain intensity.
+        grain_size: 1-3, grain颗粒大小.
+        temporal_strength: 0-100, temporal variation of grain pattern.
+        """
+        vf = (
+            f"noise=c0s={grain_strength}:c0f={grain_size}"
+            f":allf=t+u:allst={temporal_strength}"
+        )
+        cmd = [
+            settings.ffmpeg_path, "-y",
+            "-i", str(src),
+            "-vf", vf,
+            "-c:v", "libx264", "-crf", str(crf), "-preset", preset,
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-b:a", "192k",
+            "-movflags", "+faststart",
+            str(dst),
+        ]
+        return VideoProcessor._run(cmd)
+
+    @staticmethod
+    def tone_map_hdr(
+        src: Path, dst: Path,
+        tonemap_mode: str = "hable",
+        target_colorspace: str = "bt709",
+        crf: int = 18,
+        preset: str = "slow",
+    ) -> bool:
+        """Tone-map HDR/HLG content to SDR using FFmpeg tonemap filter.
+        tonemap_mode: hable, reinhard, mobius, bt2390, bt2390_ocr.
+        Converts from PQ/HLG to bt709 SDR for platform compatibility.
+        """
+        vf = (
+            f"zscale=t=linear:npl=100,format=gbrpf32le,"
+            f"tonemap={tonemap_mode},"
+            f"zospace=t={target_colorspace}:m=bt709:range=pc"
+        )
+        cmd = [
+            settings.ffmpeg_path, "-y",
+            "-i", str(src),
+            "-vf", vf,
+            "-c:v", "libx264", "-crf", str(crf), "-preset", preset,
+            "-pix_fmt", "yuv420p",
+            "-colorspace", "bt709", "-color_trc", "bt709", "-color_primaries", "bt709",
+            "-c:a", "aac", "-b:a", "192k",
+            "-movflags", "+faststart",
+            str(dst),
+        ]
+        return VideoProcessor._run(cmd)
+
+    @staticmethod
+    def interpolate_frames(
+        src: Path, dst: Path,
+        target_fps: Optional[float] = None,
+        interp_mode: str = "mci",
+        crf: int = 18,
+        preset: str = "slow",
+    ) -> bool:
+        """Interpolate frames to higher FPS using motion-compensated interpolation.
+        Useful for creating smoother slow-motion or upsampling 24/30fps to 60fps.
+        interp_mode: mci (motion-compensated), blend (simple blend).
+        If target_fps is None, doubles the current FPS.
+        """
+        src_fps = VideoProcessor._get_fps(src)
+        if target_fps is None:
+            target_fps = src_fps * 2
+
+        if interp_mode == "mci":
+            vf = (
+                f"minterpolate=fps={target_fps}:mi_mode=mci"
+                f":mc_mode=aobmc:me_mode=bidir:vsbmc=1"
+            )
+        else:
+            vf = f"minterpolate=fps={target_fps}:mi_mode=blend"
+
+        cmd = [
+            settings.ffmpeg_path, "-y",
+            "-i", str(src),
+            "-vf", vf,
+            "-c:v", "libx264", "-crf", str(crf), "-preset", preset,
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-b:a", "192k",
+            "-movflags", "+faststart",
+            str(dst),
+        ]
+        return VideoProcessor._run(cmd)
+
+    @staticmethod
+    def deband_video(
+        src: Path, dst: Path,
+        band_detect: float = 0.02,
+        blur: int = 16,
+        range: int = 15,
+        direction: int = 3,
+        crf: int = 18,
+        preset: str = "slow",
+    ) -> bool:
+        """Remove compression banding artifacts using FFmpeg deband filter.
+        Useful for heavily compressed or color-graded footage.
+        band_detect: detection threshold (lower = stronger debanding).
+        blur: blur radius for detection.
+        range: max pixel difference for debanding.
+        """
+        vf = (
+            f"deband=1thr={band_detect}:2thr={band_detect}"
+            f":3thr={band_detect}:4thr={band_detect}"
+            f":blur={blur}:range={range}:direction={direction}"
+            f":dither=fs:plane=7"
+        )
+        cmd = [
+            settings.ffmpeg_path, "-y",
+            "-i", str(src),
+            "-vf", vf,
+            "-c:v", "libx264", "-crf", str(crf), "-preset", preset,
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-b:a", "192k",
+            "-movflags", "+faststart",
+            str(dst),
+        ]
+        return VideoProcessor._run(cmd)
 
     # ------------------------------------------------------------------
     # Voice-over & TTS

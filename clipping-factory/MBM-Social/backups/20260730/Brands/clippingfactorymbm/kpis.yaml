@@ -1,0 +1,5 @@
+target_views_30d: 150000
+target_ctr: 0.05
+target_avg_view_pct: 0.4
+target_subs_per_post: 150
+priority_metric: ' authority / leads'

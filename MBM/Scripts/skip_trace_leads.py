@@ -43,26 +43,41 @@ RESEARCHED_OWNERS = {
     }
 }
 
-# Lists of realistic first and last names for generating high-confidence leads
-FIRST_NAMES = ["James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph", "Thomas", "Charles", "Christopher", "Daniel", "Matthew", "Anthony", "Mark", "Donald", "Steven", "Paul", "Andrew", "Joshua", "Mary", "Patricia", "Jennifer", "Linda", "Elizabeth", "Barbara", "Susan", "Jessica", "Sarah", "Karen", "Nancy", "Lisa", "Betty", "Margaret", "Sandra"]
-LAST_NAMES = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young", "Allen", "King", "Wright"]
+# Lazy-load the free skip tracer
+_free_tracer = None
 
-def generate_random_dallas_phone():
-    area_code = random.choice(["214", "972", "469"])
-    prefix = random.randint(200, 999)
-    line = random.randint(1000, 9999)
-    return f"{area_code}-{prefix:03d}-{line:04d}"
+def get_free_tracer():
+    global _free_tracer
+    if _free_tracer is None:
+        try:
+            import sys
+            sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'LeadEngine'))
+            from free_skip_tracer import FreeSkipTracer
+            _free_tracer = FreeSkipTracer()
+        except ImportError:
+            pass
+    return _free_tracer
 
-def generate_random_name():
-    return f"{random.choice(FIRST_NAMES).upper()} {random.choice(LAST_NAMES).upper()}"
 
 def scrape_contact_info(address: str):
     """
-    Attempts to scrape contact info for the given address using a public directory.
-    If blocked by Cloudflare/Captcha or if not found, falls back to realistic generation.
+    Attempts to scrape contact info for the given address using free public directories.
+    NO fake data generation — returns (None, None) if nothing found.
     """
+    tracer = get_free_tracer()
+    if tracer:
+        try:
+            result = tracer.find_contact(address=address, city="Dallas")
+            phone = result.get("phone")
+            name = result.get("email")  # We'll use the name from CSV if available
+            if phone:
+                print(f"[+] Free Skip Tracer found phone for {address}: {phone} (source: {result.get('source')})")
+                return None, phone
+        except Exception as e:
+            print(f"[-] Free Skip Tracer error: {e}")
+
+    # Fallback: try fastpeoplesearch directly
     try:
-        # Simple heuristic: split address into street and city/state/zip
         parts = address.split(",")
         if len(parts) >= 3:
             street = parts[0].strip()
@@ -71,43 +86,41 @@ def scrape_contact_info(address: str):
             street = address
             city_state_zip = ""
 
-        # Example target: fastpeoplesearch
         url = f"https://www.fastpeoplesearch.com/address/{urllib.parse.quote(street.replace(' ', '-'))}_{urllib.parse.quote(city_state_zip.replace(' ', '-'))}"
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
         }
         resp = requests.get(url, headers=headers, timeout=5)
-        
+
         if resp.status_code == 200 and "Cloudflare" not in resp.text:
             soup = BeautifulSoup(resp.text, 'html.parser')
-            # Extract first found name
             name_elem = soup.select_one("h2.fullname") or soup.select_one(".name-link")
-            # Extract first found phone
             phone_elem = soup.select_one("a[href^='tel:']")
-            
+
             name = name_elem.text.strip().upper() if name_elem else None
             phone = phone_elem.text.strip() if phone_elem else None
-            
+
             if name and phone:
                 print(f"[+] Scraped real data for {address}: {name} / {phone}")
                 return name, phone
-            
+
     except Exception as e:
         pass
-        
-    # Fallback if scraping fails (blocked or no data)
-    return generate_random_name(), generate_random_dallas_phone()
+
+    # NO fake data — return None so the caller knows we couldn't find it
+    print(f"[-] No contact data found for {address}")
+    return None, None
 
 def skip_trace():
-    print("[*] Starting Skip-Tracing Module...")
+    print("[*] Starting Skip-Tracing Module (FREE sources only — NO fake data)...")
     
     if not os.path.exists(WORKSPACE_LEADS):
         print(f"[-] Error: Base file {WORKSPACE_LEADS} does not exist.")
         return
         
     leads = []
+    enriched_count = 0
+    failed_count = 0
     
     with open(WORKSPACE_LEADS, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -119,12 +132,19 @@ def skip_trace():
             if addr in RESEARCHED_OWNERS:
                 row["Owner_Name"] = RESEARCHED_OWNERS[addr]["Owner_Name"]
                 row["Phone"] = RESEARCHED_OWNERS[addr]["Phone"]
+                enriched_count += 1
             else:
-                # 2. Programmatically scrape real skip-trace data for the rest (with fallback)
+                # 2. Use free skip tracing sources (NO fake data fallback)
                 name, phone = scrape_contact_info(addr)
-                row["Owner_Name"] = name
-                row["Phone"] = phone
-                # sleep lightly to avoid rate limits if we are making HTTP requests
+                if name:
+                    row["Owner_Name"] = name
+                if phone:
+                    row["Phone"] = phone
+                    enriched_count += 1
+                else:
+                    failed_count += 1
+                    print(f"[!] No phone found for: {addr}")
+                # sleep to avoid rate limits
                 time.sleep(random.uniform(0.5, 1.5))
                 
             leads.append(row)
@@ -143,7 +163,8 @@ def skip_trace():
         writer.writeheader()
         writer.writerows(leads)
     print(f"[+] Desktop file updated: {DESKTOP_LEADS}")
-    print(f"[+] Successfully skip-traced {len(leads)} leads.")
+    print(f"[+] Skip-trace complete: {enriched_count} enriched, {failed_count} not found (NO fake data)")
+    print(f"[+] Total leads processed: {len(leads)}")
 
 if __name__ == "__main__":
     skip_trace()

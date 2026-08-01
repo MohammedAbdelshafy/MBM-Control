@@ -1,0 +1,54 @@
+[
+  {
+    "proposal_id": "prop-4630",
+    "buyer_name": "Apex Real Estate Equity Fund",
+    "contact_person": "Mark Vance, Acquisitions Director",
+    "email": "acquisitions@apexrealtyfund.com",
+    "lead_pack": "Off-market US distressed residential (NY, FL, TX)",
+    "original_price_usd": 499.0,
+    "final_price_usd": 399.2,
+    "discount_code": "FLASH20_SUPERPOWER",
+    "stripe_checkout_url": "https://checkout.stripe.com/pay/prop_4630",
+    "paypal_checkout_url": "https://www.paypal.com/checkoutnow?token=prop_4630",
+    "status": "ready_for_close"
+  },
+  {
+    "proposal_id": "prop-7208",
+    "buyer_name": "Lone Star Polymer Recyclers",
+    "contact_person": "Robert Sterling, Procurement VP",
+    "email": "procurement@lonestarpolymers.com",
+    "lead_pack": "PET / HDPE runner scrap & monthly tonnage",
+    "original_price_usd": 999.0,
+    "final_price_usd": 799.2,
+    "discount_code": "FLASH20_SUPERPOWER",
+    "stripe_checkout_url": "https://checkout.stripe.com/pay/prop_7208",
+    "paypal_checkout_url": "https://www.paypal.com/checkoutnow?token=prop_7208",
+    "status": "ready_for_close"
+  },
+  {
+    "proposal_id": "prop-7097",
+    "buyer_name": "Sunbelt Off-Market Wholesalers",
+    "contact_person": "Jessica Miller, Deal Sourcing Manager",
+    "email": "deals@sunbeltwholesalers.com",
+    "lead_pack": "Code violation & tax deed properties",
+    "original_price_usd": 499.0,
+    "final_price_usd": 399.2,
+    "discount_code": "FLASH20_SUPERPOWER",
+    "stripe_checkout_url": "https://checkout.stripe.com/pay/prop_7097",
+    "paypal_checkout_url": "https://www.paypal.com/checkoutnow?token=prop_7097",
+    "status": "ready_for_close"
+  },
+  {
+    "proposal_id": "prop-7497",
+    "buyer_name": "Outbound Growth Tele-Sales Agency",
+    "contact_person": "David K., Managing Partner",
+    "email": "sales@outboundgrowthagency.com",
+    "lead_pack": "Enriched calling lists with verified phone numbers",
+    "original_price_usd": 499.0,
+    "final_price_usd": 399.2,
+    "discount_code": "FLASH20_SUPERPOWER",
+    "stripe_checkout_url": "https://checkout.stripe.com/pay/prop_7497",
+    "paypal_checkout_url": "https://www.paypal.com/checkoutnow?token=prop_7497",
+    "status": "ready_for_close"
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "call_sid": null,
+    "company": "PipHouse LLC",
+    "phone": "+14696584582",
+    "status": "failed",
+    "error": "HTTP 400 error: Unable to create record: The number +14696584582 is unverified. Trial accounts may only make calls to verified numbers.",
+    "timestamp": "2026-07-28T21:00:28.726583+00:00"
+  },
+  {
+    "call_sid": null,
+    "company": "Swift Home Solutions",
+    "phone": "+14692731235",
+    "status": "failed",
+    "error": "HTTP 400 error: Unable to create record: The number +14692731235 is unverified. Trial accounts may only make calls to verified numbers.",
+    "timestamp": "2026-07-28T21:00:34.020876+00:00"
+  },
+  {
+    "call_sid": null,
+    "company": "New Western",
+    "phone": "+19727341612",
+    "status": "failed",
+    "error": "HTTP 400 error: Unable to create record: The number +19727341612 is unverified. Trial accounts may only make calls to verified numbers.",
+    "timestamp": "2026-07-28T21:00:39.477491+00:00"
+  },
+  {
+    "call_sid": null,
+    "company": "DFW REI Club",
+    "phone": "+18173001132",
+    "status": "failed",
+    "error": "HTTP 400 error: Unable to create record: The number +18173001132 is unverified. Trial accounts may only make calls to verified numbers.",
+    "timestamp": "2026-07-28T21:00:44.707133+00:00"
+  }
+]

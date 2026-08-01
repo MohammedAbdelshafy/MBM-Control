@@ -5,17 +5,17 @@ Automated email sending via Gmail SMTP.
 """
 
 import smtplib
+import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-import os
 
 # Gmail SMTP Configuration
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-EMAIL_ADDRESS = "abdelshafyclapps@gmail.com"
-EMAIL_PASSWORD = "ffcd pjvx cmdf zbxg"
+EMAIL_ADDRESS = os.environ.get("SMTP_USER", "abdelshafyclapps@gmail.com")
+EMAIL_PASSWORD = os.environ.get("SMTP_PASS", "")
 
 def send_email(to_email, subject, body, attachment_path=None):
     """Send an email with optional attachment."""

@@ -23,6 +23,20 @@ from .schema import (
 )
 
 
+def _detect_model(candidates: list[str]) -> str | None:
+    """Return the first candidate model tag that is actually pulled in Ollama."""
+    try:
+        import ollama
+
+        local = {m.model for m in ollama.list().get("models", [])}
+        for c in candidates:
+            if c in local:
+                return c
+    except Exception:  # noqa: BLE001
+        return None
+    return None
+
+
 class Analyzer:
     def __init__(self, config: Config, log: Callable[[str], None] = print):
         self.config = config
@@ -110,9 +124,15 @@ class Analyzer:
         try:
             import ollama
 
+            model = self.config.vision_model or _detect_model(
+                ["llava:7b", "qwen2.5vl:7b", "qwen2.5-vl", "minicpm-v"]
+            )
+            if not model:
+                self.log("[vision] no vision model available in Ollama")
+                return ""
             imgs = [str(f) for f in frames[:8]]
             res = ollama.chat(
-                model=self.config.vision_model,
+                model=model,
                 messages=[{
                     "role": "user",
                     "content": prompt,
@@ -156,8 +176,15 @@ class Analyzer:
         try:
             import ollama
 
+            model = self.config.llm_model or _detect_model(
+                ["qwen2.5-coder:14b", "deepseek-coder-v2:latest",
+                 "qwen2.5-coder:7b", "deepseek-coder:6.7b", "gemma4:latest"]
+            )
+            if not model:
+                self.log("[llm] no text model available in Ollama")
+                return ""
             res = ollama.chat(
-                model=self.config.llm_model,
+                model=model,
                 messages=[{"role": "user", "content": prompt}],
             )
             return res["message"]["content"]

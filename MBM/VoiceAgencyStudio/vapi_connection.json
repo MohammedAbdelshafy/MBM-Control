@@ -1,0 +1,94 @@
+{
+  "platform": "Vapi AI Ecosystem",
+  "status": "SETUP_INSTRUCTIONS",
+  "url": "https://vapi.ai",
+  "revenue_model": {
+    "type": "Enterprise White-Label Reselling",
+    "model": "Custom setup fees + per-minute usage margins",
+    "typical_deal": "$5,000-$20,000 setup + $500-$2,000/mo",
+    "payout": "Stripe / Wire"
+  },
+  "setup_steps": [
+    "1. Go to https://vapi.ai",
+    "2. Sign up for developer account",
+    "3. Get API key and add to .env as VAPI_API_KEY",
+    "4. Create voice agents using our templates",
+    "5. Deploy to phone numbers via Vapi",
+    "6. Set up white-label portal for clients",
+    "7. Bill clients custom pricing"
+  ],
+  "agents_to_deploy": [
+    {
+      "name": "US Commercial Real Estate Acquisition Director ($0.85/min)",
+      "persona": "Senior US commercial acquisitions VP (NY, LA, MIA, TX)",
+      "voice_provider": "elevenlabs",
+      "model": "gemini-1.5-flash-audio",
+      "tags": [
+        "USA Market",
+        "Commercial Real Estate",
+        "Private Equity",
+        "High-Ticket"
+      ]
+    },
+    {
+      "name": "US Medical & Healthcare Appointment Qualifier ($0.80/min)",
+      "persona": "Professional, HIPAA-trained US medical appointment coordinator",
+      "voice_provider": "deepgram",
+      "model": "gemini-1.5-flash-audio",
+      "tags": [
+        "USA Market",
+        "Healthcare",
+        "HIPAA Compliant",
+        "High-Ticket Intake"
+      ]
+    },
+    {
+      "name": "US Industrial Waste Scrap Broker ($0.75/min)",
+      "persona": "US Raw materials procurement specialist (TX, OH, IL, CA hubs)",
+      "voice_provider": "deepgram",
+      "model": "gemini-1.5-flash-audio",
+      "tags": [
+        "USA Market",
+        "Industrial Waste",
+        "Plastic Scrap",
+        "B2B Procurement"
+      ]
+    },
+    {
+      "name": "US Solar & Clean Energy Lead Qualifier ($0.70/min)",
+      "persona": "Energetic US clean energy advisor",
+      "voice_provider": "openai",
+      "model": "gemini-1.5-flash-audio",
+      "tags": [
+        "USA Market",
+        "Solar Energy",
+        "Tax Credits",
+        "Clean Energy"
+      ]
+    },
+    {
+      "name": "US Tax Lien & Pre-Foreclosure Cash Closer ($0.65/min)",
+      "persona": "Empathetic, firm US pre-foreclosure specialist",
+      "voice_provider": "elevenlabs",
+      "model": "gemini-1.5-flash-audio",
+      "tags": [
+        "USA Market",
+        "Pre-Foreclosure",
+        "Tax Lien",
+        "Fast Cash Close"
+      ]
+    },
+    {
+      "name": "US E-Commerce High-Ticket Upsell Specialist ($0.60/min)",
+      "persona": "Charming, persuasive US brand VIP Concierge",
+      "voice_provider": "openai",
+      "model": "gemini-1.5-flash-audio",
+      "tags": [
+        "USA Market",
+        "E-Commerce",
+        "VIP Upsell",
+        "High-Ticket Retail"
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -38,25 +38,50 @@ function parseCsv(path) {
   });
 }
 
+function extractWebsiteFromEmail(email, defaultWebsite = '') {
+  if (defaultWebsite) return defaultWebsite;
+  if (!email || !email.includes('@')) return '';
+  const domain = email.split('@')[1].toLowerCase();
+  const genericDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'aol.com'];
+  if (genericDomains.includes(domain)) return '';
+  return `https://www.${domain}`;
+}
+
 function loadBuyers() {
   const buyers = [];
+  const seenEmails = new Set();
 
-  // 1. wholesalers_final_qualified.csv (40 verified buyers with emails)
-  const qualified = parseCsv(join(MBM, 'Artifacts', 'wholesalers_final_qualified.csv'));
-  for (const r of qualified) {
-    const e = normalizeEmail(r.Email);
-    if (validEmail(e)) {
-      buyers.push({
-        company: r.Company || '',
-        name: r.Contact_Name || '',
-        email: e,
-        phone: r.Phone || '',
-        website: r.Website || '',
-        city: r.City || '',
-        confidence: parseInt(r.Confidence) || 0,
-        source: r.Lead_Source || r.Lead_Source || 'qualified_csv',
-        category: 'buyer',
-      });
+  const addBuyer = (b) => {
+    if (!b.email || !validEmail(b.email) || seenEmails.has(b.email)) return;
+    seenEmails.add(b.email);
+    buyers.push(b);
+  };
+
+  const artifactsDir = join(MBM, 'Artifacts');
+
+  // 1. Ingest all buyer CSV files from Artifacts
+  if (existsSync(artifactsDir)) {
+    const buyerFiles = readdirSync(artifactsDir).filter(f => 
+      (f.includes('buyer') || f.includes('qualified') || f.includes('leads_master') || f.includes('leads')) && f.endsWith('.csv') && !f.includes('distressed')
+    );
+    for (const file of buyerFiles) {
+      const records = parseCsv(join(artifactsDir, file));
+      for (const r of records) {
+        const e = normalizeEmail(r.Email || r.email || r.EMAIL);
+        if (e && validEmail(e)) {
+          addBuyer({
+            company: r.Company || r.Entity_Name || r.company || '',
+            name: r.Contact_Name || r.contact || '',
+            email: e,
+            phone: r.Phone || r.phone || '',
+            website: extractWebsiteFromEmail(e, r.Website || r.website),
+            city: r.City || r.city || '',
+            confidence: parseInt(r.Confidence || r.score || '80') || 80,
+            source: file,
+            category: 'buyer',
+          });
+        }
+      }
     }
   }
 
@@ -64,13 +89,13 @@ function loadBuyers() {
   const pipeline = parseCsv(join(MBM, 'Pipeline', 'pipeline.csv'));
   for (const r of pipeline) {
     const e = normalizeEmail(r.email);
-    if (validEmail(e) && !buyers.some(b => b.email === e)) {
-      buyers.push({
+    if (validEmail(e)) {
+      addBuyer({
         company: r.company || '',
         name: r.contact || '',
         email: e,
         phone: r.phone || '',
-        website: '',
+        website: extractWebsiteFromEmail(e, r.website),
         city: '',
         confidence: 80,
         source: 'pipeline',
@@ -85,13 +110,13 @@ function loadBuyers() {
   const contacts = parseCsv(join(MBM, 'Contacts', 'wholesaler_targets.csv'));
   for (const r of contacts) {
     const e = normalizeEmail(r.email);
-    if (validEmail(e) && !buyers.some(b => b.email === e)) {
-      buyers.push({
+    if (validEmail(e)) {
+      addBuyer({
         company: r.company || '',
         name: '',
         email: e,
         phone: r.phone || '',
-        website: '',
+        website: extractWebsiteFromEmail(e, r.website),
         city: '',
         confidence: 80,
         source: 'contacts',
@@ -105,36 +130,53 @@ function loadBuyers() {
 
 function loadSellers() {
   const sellers = [];
+  const seenAddresses = new Set();
 
-  // 1. Scored leads with phones (highest priority)
-  const scored = parseCsv(join(MBM, 'Artifacts', 'scored_leads_20260707_0200.csv'));
-  for (const r of scored) {
-    const phone = (r.Owner_Phone || '').trim();
-    if (phone) {
-      sellers.push({
-        owner: r.Owner_Name || '',
-        phone,
-        address: r.Property_Address || '',
-        city: r.City || '',
-        distress: r.Distress_Signal || '',
-        signal_date: r.Signal_Date || '',
-        priority: r.Priority || 'MEDIUM',
-        score: parseInt(r.Score) || 0,
-        email: normalizeEmail(r.Owner_Email || ''),
-        source: 'scored_leads',
-        category: 'seller',
-      });
+  const addSeller = (s) => {
+    const key = (s.address || s.owner || s.email || s.phone).trim().toLowerCase();
+    if (!key || seenAddresses.has(key)) return;
+    seenAddresses.add(key);
+    sellers.push(s);
+  };
+
+  const artifactsDir = join(MBM, 'Artifacts');
+
+  // 1. Scored leads with phones/emails from Artifacts
+  if (existsSync(artifactsDir)) {
+    const scoredFiles = readdirSync(artifactsDir).filter(f => (f.startsWith('scored_leads_') || f.includes('distressed')) && f.endsWith('.csv'));
+    for (const file of scoredFiles) {
+      const scored = parseCsv(join(artifactsDir, file));
+      for (const r of scored) {
+        const addr = r.Property_Address || r.Address || '';
+        const phone = (r.Owner_Phone || r.Phone || '').trim();
+        const email = normalizeEmail(r.Owner_Email || r.Email || '');
+        if (addr || phone || email) {
+          addSeller({
+            owner: r.Owner_Name || r.Contact_Name || r.Entity_Name || '',
+            phone: phone !== 'ACTION_REQUIRED_SKIP_TRACE' ? phone : '',
+            address: addr,
+            city: r.City || '',
+            distress: r.Distress_Signal || 'Code Concern',
+            signal_date: r.Signal_Date || '',
+            priority: r.Priority || 'MEDIUM',
+            score: parseInt(r.Score) || 50,
+            email: email !== 'action_required_skip_trace' ? email : '',
+            source: file,
+            category: 'seller',
+            needs_skiptrace: (!phone || phone === 'ACTION_REQUIRED_SKIP_TRACE') && (!email || email === 'action_required_skip_trace'),
+          });
+        }
+      }
     }
   }
 
-  // 2. Distressed sellers from daily pack — no phones/emails, need skip-trace
-  const sellersCsv = parseCsv(join(MBM, 'LeadPacks', 'Pack_2026-07-07', 'DISTRESSED_SELLERS_2026-07-07.csv'));
+  // 2. Distressed sellers from daily packs
+  const todayStr = new Date().toISOString().split('T')[0];
+  const sellersCsv = parseCsv(join(MBM, 'LeadPacks', `Pack_${todayStr}`, `DISTRESSED_SELLERS_${todayStr}.csv`));
   for (const r of sellersCsv) {
     const addr = r.Property_Address || '';
     if (!addr) continue;
-    const existing = sellers.some(s => s.address === addr);
-    if (existing) continue;
-    sellers.push({
+    addSeller({
       owner: r.Owner_Name || '',
       phone: r.Phone || '',
       address: addr,
@@ -144,7 +186,7 @@ function loadSellers() {
       priority: 'LOW',
       score: 0,
       email: normalizeEmail(r.Email || ''),
-      source: 'distressed_pack_0707',
+      source: `distressed_pack_${todayStr.replace(/-/g, '').slice(0, 8)}`,
       category: 'seller',
       needs_skiptrace: !r.Phone && !r.Email,
     });
@@ -157,7 +199,8 @@ function loadAIProspects() {
   const prospects = [];
 
   // 1. Multi-market targets (44 entries with emails)
-  const mmPath = join(MBM, 'MultiMarket', 'ALL_TARGETS_2026-07-07.json');
+  const todayStr2 = new Date().toISOString().split('T')[0];
+  const mmPath = join(MBM, 'MultiMarket', `ALL_TARGETS_${todayStr2}.json`);
   if (existsSync(mmPath)) {
     const mm = JSON.parse(readFileSync(mmPath, 'utf8'));
     for (const r of mm) {
@@ -177,7 +220,8 @@ function loadAIProspects() {
   }
 
   // 2. New targets (22 with emails)
-  const ntPath = join(MBM, 'Targets', 'NEW_TARGETS_2026-07-07.json');
+  const todayStr3 = new Date().toISOString().split('T')[0];
+  const ntPath = join(MBM, 'Targets', `NEW_TARGETS_${todayStr3}.json`);
   if (existsSync(ntPath)) {
     const nt = JSON.parse(readFileSync(ntPath, 'utf8'));
     for (const r of nt) {

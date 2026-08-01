@@ -185,6 +185,37 @@ class EditingAgent(BaseAgent):
             clip.height = meta.get("height")
             clip.fps = meta.get("fps")
             clip.file_size_bytes = edited_path.stat().st_size
+            # Run Viral Video Benchmark comparison & metadata tag enhancement
+            try:
+                from app.services.viral_comparison_service import ViralComparisonService
+                v_service = ViralComparisonService()
+                window_transcript = self._get_transcript_window(clip)
+                target_niche = requirements.get("niche", campaign.brand_name if campaign and campaign.brand_name else "general_viral")
+
+                comp = v_service.compare_clip_to_viral(
+                    transcript_text=window_transcript,
+                    hook_text=clip.hook_text,
+                    current_tags=clip.enhanced_tags or [],
+                    duration_seconds=clip.duration_seconds or (clip.source_end_seconds - clip.source_start_seconds),
+                    niche=target_niche,
+                )
+                enh = v_service.generate_viral_enhancements(
+                    transcript_text=window_transcript,
+                    hook_text=clip.hook_text,
+                    current_tags=clip.enhanced_tags or [],
+                    niche=target_niche,
+                )
+
+                clip.viral_benchmark = comp
+                clip.enhanced_tags = enh["enhanced_tags"]
+                clip.platform_metadata = enh["platform_metadata"]
+                if not clip.scores:
+                    clip.scores = {}
+                clip.scores["viral_alignment"] = comp["overall_viral_score"] / 100.0
+                edits_applied.append("viral_benchmark_enhanced")
+            except Exception as exc:
+                self.logger.warning(f"Viral comparison pass skipped in EditingAgent: {exc}")
+
             clip.edits_applied = edits_applied
             clip.edit_template = requirements.get("aspect_ratio", "9:16")
             clip.status = ClipStatus.QC_PENDING
@@ -200,9 +231,12 @@ class EditingAgent(BaseAgent):
         except Exception as exc:
             self.logger.debug(f"Telegram edit notification skipped: {exc}")
 
-        # Trigger Editor QA (professional quality gate)
-        from app.workers.video_tasks import editor_quality_check
-        editor_quality_check.apply_async(args=[clip_id, True], queue="video")
+        # Trigger Editor QA (async Celery queue when active)
+        try:
+            from app.workers.video_tasks import editor_quality_check
+            editor_quality_check.apply_async(args=[clip_id, True], queue="video")
+        except Exception as exc:
+            self.logger.debug(f"Celery dispatch skipped in sync mode: {exc}")
 
         return AgentResult.ok({"clip_id": clip_id, "edits": edits_applied})
 

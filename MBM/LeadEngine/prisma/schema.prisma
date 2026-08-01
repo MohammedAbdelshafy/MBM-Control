@@ -1,0 +1,553 @@
+// MBM Lead Engine v3 — PostgreSQL Schema
+// generator, datasource, enums, models, indexes
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [uuidOssd(map: "uuid-ossp")]
+}
+
+// ────────────────────────────────────────────── Enums
+
+enum LeadStatus {
+  NEW        @map("new")
+  ACTIVE     @map("active")
+  QUALIFIED  @map("qualified")
+  CONVERTED  @map("converted")
+  REJECTED   @map("rejected")
+  STALE      @map("stale")
+
+  @@map("lead_status")
+}
+
+enum LeadGrade {
+  A_PLUS @map("a_plus")
+  A      @map("a")
+  B      @map("b")
+  C      @map("c")
+  REJECT @map("reject")
+
+  @@map("lead_grade")
+}
+
+enum PropertyType {
+  SINGLE_FAMILY  @map("single_family")
+  MULTI_FAMILY   @map("multi_family")
+  COMMERCIAL     @map("commercial")
+  INDUSTRIAL     @map("industrial")
+  LAND           @map("land")
+  CONDO          @map("condo")
+  TOWNHOUSE      @map("townhouse")
+  OTHER          @map("other")
+
+  @@map("property_type")
+}
+
+enum OwnershipType {
+  INDIVIDUAL @map("individual")
+  LLC        @map("llc")
+  CORPORATION @map("corporation")
+  TRUST      @map("trust")
+  PARTNERSHIP @map("partnership")
+  GOVERNMENT @map("government")
+  OTHER      @map("other")
+
+  @@map("ownership_type")
+}
+
+enum NicheType {
+  CODE_VIOLATION        @map("code_violation")
+  VACANT                @map("vacant")
+  TAX_DELINQUENT        @map("tax_delinquent")
+  ABSENTEE              @map("absentee")
+  HIGH_EQUITY           @map("high_equity")
+  FREE_AND_CLEAR        @map("free_and_clear")
+  PROBATE               @map("probate")
+  PRE_FORECLOSURE       @map("pre_foreclosure")
+  EVICTION              @map("eviction")
+  UTILITY_SHUTOFF       @map("utility_shutoff")
+  FIRE_DAMAGE           @map("fire_damage")
+  CONDEMNED             @map("condemned")
+  ZOMBIE                @map("zombie")
+  COMMERCIAL_DISTRESS   @map("commercial_distress")
+  INDUSTRIAL_OPPORTUNITY @map("industrial_opportunity")
+
+  @@map("niche_type")
+}
+
+enum ExportFormat {
+  CSV        @map("csv")
+  EXCEL      @map("excel")
+  PDF        @map("pdf")
+  JSON       @map("json")
+  CRM_IMPORT @map("crm_import")
+
+  @@map("export_format")
+}
+
+enum JobStatus {
+  QUEUED    @map("queued")
+  RUNNING   @map("running")
+  COMPLETED @map("completed")
+  FAILED    @map("failed")
+  CANCELLED @map("cancelled")
+
+  @@map("job_status")
+}
+
+enum SourceType {
+  COUNTY_ASSESSOR          @map("county_assessor")
+  PROPERTY_APPRAISER       @map("property_appraiser")
+  GIS                      @map("gis")
+  TAX_ASSESSOR             @map("tax_assessor")
+  OPEN_RECORDS             @map("open_records")
+  MUNICIPAL_CODE_ENFORCEMENT @map("municipal_code_enforcement")
+  COURT_RECORDS            @map("court_records")
+  BUSINESS_REGISTRY        @map("business_registry")
+  AUCTION_DATA             @map("auction_data")
+  USER_IMPORT              @map("user_import")
+  API_CONNECTOR            @map("api_connector")
+
+  @@map("source_type")
+}
+
+enum SubscriptionTier {
+  STARTER_100  @map("starter_100")
+  GROWTH_500   @map("growth_500")
+  SCALE_1000   @map("scale_1000")
+  COUNTY       @map("county")
+  STATE        @map("state")
+  ENTERPRISE   @map("enterprise")
+
+  @@map("subscription_tier")
+}
+
+enum ImportStatus {
+  PENDING    @map("pending")
+  PROCESSING @map("processing")
+  COMPLETED  @map("completed")
+  FAILED     @map("failed")
+  PARTIAL    @map("partial")
+
+  @@map("import_status")
+}
+
+// ────────────────────────────────────────────── Models
+
+model Property {
+  id               String   @id @default(uuid()) @db.Uuid
+  parcelId         String   @unique @map("parcel_id")
+  addressLine1     String   @map("address_line1")
+  addressLine2     String?  @map("address_line2")
+  city             String
+  state            String   @db.VarChar(2)
+  zip              String   @db.VarChar(10)
+  county           String
+  lat              Float?
+  lng              Float?
+  propertyType     PropertyType @map("property_type")
+  yearBuilt        Int?     @map("year_built")
+  lotSizeSqft      Float?   @map("lot_size_sqft")
+  buildingSqft     Float?   @map("building_sqft")
+  bedrooms         Int?
+  bathrooms        Float?
+  estimatedValue   Float?   @map("estimated_value")
+  lastSaleDate     DateTime? @map("last_sale_date")
+  lastSalePrice    Float?   @map("last_sale_price")
+  assessedValue    Float?   @map("assessed_value")
+  marketValue      Float?   @map("market_value")
+  legalDescription String?  @map("legal_description")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  owners    Owner[]
+  violations    Violation[]
+  taxRecords    TaxRecord[]
+  leads     Lead[]
+  documents     Document[]
+  addresses     Address[]
+
+  @@index([county])
+  @@index([state, county])
+  @@index([propertyType])
+  @@index([zip])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@map("properties")
+}
+
+model Owner {
+  id              String        @id @default(uuid()) @db.Uuid
+  propertyId      String        @map("property_id") @db.Uuid
+  name            String
+  ownerType       OwnershipType @map("owner_type")
+  mailingAddress  String        @map("mailing_address")
+  phone           String?
+  email           String?
+  isAbsentee      Boolean       @default(false) @map("is_absentee")
+  confidenceScore Float         @default(0) @map("confidence_score")
+  verifiedAt      DateTime?     @map("verified_at")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+  @@index([ownerType])
+  @@index([isAbsentee])
+  @@index([confidenceScore])
+  @@map("owners")
+}
+
+model Address {
+  id               String    @id @default(uuid()) @db.Uuid
+  propertyId       String    @map("property_id") @db.Uuid
+  sourceAddress    String    @map("source_address")
+  normalizedAddress String?  @map("normalized_address")
+  city             String
+  state            String    @db.VarChar(2)
+  zip              String    @db.VarChar(10)
+  county           String
+  lat              Float?
+  lng              Float?
+  geocodedAt       DateTime? @map("geocoded_at")
+  normalizedAt     DateTime? @map("normalized_at")
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+  @@index([state, county])
+  @@map("addresses")
+}
+
+model Lead {
+  id          String     @id @default(uuid()) @db.Uuid
+  propertyId  String     @map("property_id") @db.Uuid
+  niche       NicheType
+  status      LeadStatus @default(NEW)
+  grade       LeadGrade?
+  score       Int        @default(0)
+  signals     Json?
+  confidence  Float      @default(0)
+  summary     String?
+  generatedAt DateTime   @default(now()) @map("generated_at")
+  claimedAt   DateTime?  @map("claimed_at")
+  clientId    String?    @map("client_id")
+  assignedTo  String?    @map("assigned_to")
+
+  property   Property       @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  leadScore  LeadScore?
+  documents  Document[]
+
+  @@index([propertyId])
+  @@index([status])
+  @@index([score])
+  @@index([niche])
+  @@index([grade])
+  @@index([clientId])
+  @@index([assignedTo])
+  @@index([generatedAt])
+  @@index([status, score])
+  @@index([niche, status])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@map("leads")
+}
+
+model Source {
+  id        String     @id @default(uuid()) @db.Uuid
+  type      SourceType
+  name      String
+  county    String
+  state     String     @db.VarChar(2)
+  config    Json?
+  enabled   Boolean    @default(true)
+  lastRunAt DateTime?  @map("last_run_at")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  imports Import[]
+
+  @@index([type])
+  @@index([enabled])
+  @@index([state, county])
+  @@map("sources")
+}
+
+model Import {
+  id            String       @id @default(uuid()) @db.Uuid
+  sourceId      String       @map("source_id") @db.Uuid
+  filename      String?
+  status        ImportStatus @default(PENDING)
+  totalRows     Int          @default(0) @map("total_rows")
+  processedRows Int          @default(0) @map("processed_rows")
+  errorRows     Int          @default(0) @map("error_rows")
+  errors        Json?
+  startedAt     DateTime?    @map("started_at")
+  completedAt   DateTime?    @map("completed_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+
+  source Source @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@index([sourceId])
+  @@index([status])
+  @@map("imports")
+}
+
+model Export {
+  id          String       @id @default(uuid()) @db.Uuid
+  format      ExportFormat
+  filters     Json?
+  totalLeads  Int          @map("total_leads")
+  filePath    String?      @map("file_path")
+  fileSize    Int?         @map("file_size")
+  clientId    String?      @map("client_id")
+  generatedBy String?      @map("generated_by")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  downloadedAt DateTime?   @map("downloaded_at")
+
+  @@index([format])
+  @@index([clientId])
+  @@map("exports")
+}
+
+model Client {
+  id              String           @id @default(uuid()) @db.Uuid
+  name            String
+  email           String           @unique
+  company         String?
+  tier            SubscriptionTier
+  creditsRemaining Int             @default(0) @map("credits_remaining")
+  totalPurchased  Int              @default(0) @map("total_purchased")
+  isActive        Boolean          @default(true) @map("is_active")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  subscriptions Subscription[]
+
+  @@index([email])
+  @@index([tier])
+  @@index([isActive])
+  @@map("clients")
+}
+
+model Subscription {
+  id        String           @id @default(uuid()) @db.Uuid
+  clientId  String           @map("client_id") @db.Uuid
+  tier      SubscriptionTier
+  startDate DateTime         @map("start_date")
+  endDate   DateTime         @map("end_date")
+  amount    Float
+  isActive  Boolean          @default(true) @map("is_active")
+  autoRenew Boolean          @default(false) @map("auto_renew")
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([tier])
+  @@index([isActive])
+  @@index([startDate, endDate])
+  @@map("subscriptions")
+}
+
+model LeadScore {
+  id                   String   @id @default(uuid()) @db.Uuid
+  leadId               String   @unique @map("lead_id") @db.Uuid
+  overallScore         Int      @map("overall_score")
+  ownershipConfidence  Float    @map("ownership_confidence")
+  recordFreshness      Float    @map("record_freshness")
+  absenteeSignal       Float    @map("absentee_signal")
+  vacancyIndicators    Float    @map("vacancy_indicators")
+  violationSeverity    Float    @map("violation_severity")
+  taxDelinquency       Float    @map("tax_delinquency")
+  equityProxy          Float    @map("equity_proxy")
+  commercialOpportunity Float   @map("commercial_opportunity")
+  dataCompleteness     Float    @map("data_completeness")
+  duplicatePenalty     Float    @map("duplicate_penalty")
+  calculatedAt         DateTime @default(now()) @map("calculated_at")
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("lead_scores")
+}
+
+model Violation {
+  id           String    @id @default(uuid()) @db.Uuid
+  propertyId   String    @map("property_id") @db.Uuid
+  code         String?
+  description  String?
+  severity     String?
+  status       String?
+  filedDate    DateTime? @map("filed_date")
+  resolvedDate DateTime? @map("resolved_date")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+  @@index([severity])
+  @@index([status])
+  @@index([filedDate])
+  @@map("violations")
+}
+
+model TaxRecord {
+  id                String    @id @default(uuid()) @db.Uuid
+  propertyId        String    @map("property_id") @db.Uuid
+  taxYear           Int       @map("tax_year")
+  assessedValue     Float?    @map("assessed_value")
+  marketValue       Float?    @map("market_value")
+  taxAmount         Float?    @map("tax_amount")
+  paid              Boolean   @default(true)
+  paidDate          DateTime? @map("paid_date")
+  delinquencyAmount Float?    @map("delinquency_amount")
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+  @@index([taxYear])
+  @@index([paid])
+  @@index([delinquencyAmount])
+  @@map("tax_records")
+}
+
+model Document {
+  id          String   @id @default(uuid()) @db.Uuid
+  propertyId  String   @map("property_id") @db.Uuid
+  leadId      String?  @map("lead_id") @db.Uuid
+  filename    String
+  fileType    String   @map("file_type")
+  fileSize    Int      @map("file_size")
+  storageKey  String   @map("storage_key")
+  uploadedBy  String   @map("uploaded_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  lead     Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  @@index([propertyId])
+  @@index([leadId])
+  @@map("documents")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id") @db.Uuid
+  userId     String?  @map("user_id")
+  details    Json?
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([entityType, entityId])
+  @@index([action])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model Job {
+  id          String    @id @default(uuid()) @db.Uuid
+  type        String
+  status      JobStatus @default(QUEUED)
+  payload     Json?
+  result      Json?
+  error       String?
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  tasks Task[]
+
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+  @@map("jobs")
+}
+
+model Task {
+  id          String    @id @default(uuid()) @db.Uuid
+  jobId       String    @map("job_id") @db.Uuid
+  type        String
+  status      JobStatus @default(QUEUED)
+  payload     Json?
+  result      Json?
+  error       String?
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([type])
+  @@index([status])
+  @@map("tasks")
+}
+
+model Pipeline {
+  id         String    @id @default(uuid()) @db.Uuid
+  name       String
+  steps      Json?
+  isActive   Boolean   @default(true) @map("is_active")
+  schedule   String?
+  lastRunAt  DateTime? @map("last_run_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@map("pipelines")
+}
+
+model Worker {
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String
+  type          String
+  status        String    @default("idle")
+  currentJob    String?   @map("current_job")
+  lastHeartbeat DateTime? @map("last_heartbeat")
+  config        Json?
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@index([type])
+  @@index([status])
+  @@map("workers")
+}
+
+model OutreachCampaign {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  leadFilters Json?    @map("lead_filters")
+  templateIds Json?    @map("template_ids")
+  status      String   @default("draft")
+  scheduledAt DateTime? @map("scheduled_at")
+  sentCount   Int      @default(0) @map("sent_count")
+  openRate    Float?   @map("open_rate")
+  replyRate   Float?   @map("reply_rate")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([status])
+  @@index([scheduledAt])
+  @@map("outreach_campaigns")
+}
+
+model OutreachTemplate {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  type      String
+  subject   String?
+  body      String   @db.Text
+  variables Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([type])
+  @@map("outreach_templates")
+}

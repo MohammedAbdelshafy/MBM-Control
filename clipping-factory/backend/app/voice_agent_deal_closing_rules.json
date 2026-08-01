@@ -1,0 +1,15 @@
+{
+  "outbound_number": "+1 (661) 990-9068",
+  "transfer_cell": "+201040404118",
+  "four_pillars": [
+    "1. Property Condition & Repair Estimate",
+    "2. Seller Relocation / Closing Timeline",
+    "3. Reason for Selling (Inheritance, Foreclosure, Vacant, Repairs)",
+    "4. Cash Price Expectation"
+  ],
+  "objection_matrix": {
+    "think_about_it": "I completely respect that! Is it the price, the closing timeline, or something else holding you back?",
+    "price_too_low": "That is our cash as-is offer with zero closing fees. If you want a higher price, would you consider seller financing terms?",
+    "competing_investors": "We put down non-refundable earnest money and let you leave behind anything you don't want. Let's lock this in today."
+  }
+}

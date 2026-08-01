@@ -58,6 +58,20 @@ _PLATFORM_FLOWS = {
         "submit": "ytcp-button#done-button, #done-button",
         "success_url_contains": "studio.youtube.com",
     },
+    SocialPlatform.TWITTER: {
+        "upload_url": "https://twitter.com/compose/tweet",
+        "file_input": "input[type='file']",
+        "caption": "div[data-testid='tweetTextarea_0']",
+        "submit": "button[data-testid='tweetButton']",
+        "success_url_contains": "twitter.com",
+    },
+    SocialPlatform.LINKEDIN: {
+        "upload_url": "https://www.linkedin.com/feed/",
+        "file_input": "input[type='file']",
+        "caption": "div[role='textbox']",
+        "submit": "button.share-actions__primary-action",
+        "success_url_contains": "linkedin.com",
+    },
 }
 
 
@@ -152,24 +166,38 @@ class PublishingAgent(BaseAgent):
     # ------------------------------------------------------------------
 
     def _build_caption(self, clip, campaign) -> tuple[str, str]:
-        """Compose a caption/title from the clip hook and campaign metadata."""
+        """Compose a caption/title with monetized CTAs, Trial Reels settings, and niche tags."""
+        from app.services.monetization_service import MonetizationService
+
         hooks = (clip.scores or {}).get("hook_variants", [])
         hook = (clip.hook_text or "").strip()
         if not hook and hooks:
             hook = hooks[0]
 
         brand = (campaign.brand_name if campaign and campaign.brand_name else "").strip()
-        title = hook or (campaign.title if campaign else "New clip")
-        parts = [hook] if hook else []
+        niche = (campaign.niche if campaign and hasattr(campaign, 'niche') and campaign.niche else "general_viral")
+        
+        ms = MonetizationService()
+        cta_data = ms.generate_monetized_cta(brand, niche)
+
+        title = hook or (campaign.title if campaign else "Viral Clip")
+        parts = [title]
+        
+        # Add monetized caption call to action
+        if cta_data.get("caption_cta"):
+            parts.append(f"\n\n{cta_data['caption_cta']}")
+            
         if brand:
             parts.append(f"#{brand.replace(' ', '')}")
-        parts.append("#shorts #viral #fyp")
-        caption = " ".join(parts).strip()
+            
+        parts.append("#shorts #viral #fyp #reels")
+        caption = "\n".join(parts)
         return caption[:2200], title[:100]
 
     def _publish(self, platform: str, video_path: Path, caption: str, title: str) -> dict:
-        """Publish to one platform; simulate when Playwright/session unavailable."""
-        flow = _PLATFORM_FLOWS[platform]
+        flow = _PLATFORM_FLOWS.get(platform)
+        if not flow:
+            return self._simulated(platform, f"no flow configured for {platform}")
         session_state = self.settings.social_session_state(platform)
 
         # YouTube: try Data API first (no session needed), then Playwright

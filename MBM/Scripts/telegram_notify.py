@@ -1,7 +1,7 @@
 import os, sys, json, urllib.request, urllib.parse, mimetypes, time
 from datetime import datetime
 
-TOKEN = "8871015419:AAHXRLkEJlQEwdUiZWIjUoCUofrtbpraA34"
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 API = f"https://api.telegram.org/bot{TOKEN}"
 CHAT_ID_FILE = os.path.join(os.path.dirname(__file__), "..", "Config", "telegram_chat_id.txt")
 

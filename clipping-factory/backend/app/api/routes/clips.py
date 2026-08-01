@@ -54,6 +54,9 @@ async def list_clips(
                 "qc_notes": c.qc_notes,
                 "rejection_reason": c.rejection_reason,
                 "edits_applied": c.edits_applied,
+                "viral_benchmark": c.viral_benchmark,
+                "enhanced_tags": c.enhanced_tags,
+                "platform_metadata": c.platform_metadata,
                 "version": c.version,
                 "created_at": c.created_at.isoformat(),
             }
@@ -124,3 +127,103 @@ async def reject_clip(
     clip.reviewed_by = user
     await db.flush()
     return {"status": "rejected", "clip_id": clip_id}
+
+
+@router.get("/{clip_id}/viral-report")
+async def get_viral_report(
+    clip_id: str,
+    db: AsyncSession = Depends(get_db),
+    _: str = Depends(get_current_user),
+):
+    """Retrieve full viral video comparison report and enhanced tags for clip."""
+    result = await db.execute(select(Clip).where(Clip.id == clip_id))
+    clip = result.scalar_one_or_none()
+    if not clip:
+        raise HTTPException(404, "Clip not found")
+    return {
+        "clip_id": clip.id,
+        "viral_benchmark": clip.viral_benchmark or {},
+        "enhanced_tags": clip.enhanced_tags or [],
+        "platform_metadata": clip.platform_metadata or {},
+        "scores": clip.scores or {},
+    }
+
+
+@router.post("/{clip_id}/viral-compare")
+async def run_viral_comparison(
+    clip_id: str,
+    niche: Optional[str] = Query(None),
+    db: AsyncSession = Depends(get_db),
+    _: str = Depends(get_current_user),
+):
+    """Trigger background or immediate viral video comparison."""
+    result = await db.execute(select(Clip).where(Clip.id == clip_id))
+    clip = result.scalar_one_or_none()
+    if not clip:
+        raise HTTPException(404, "Clip not found")
+
+    from app.workers.video_tasks import run_viral_benchmark
+    task = run_viral_benchmark.apply_async(args=[clip_id, niche], queue="video")
+    return {"status": "queued", "task_id": task.id, "clip_id": clip_id}
+
+
+@router.post("/{clip_id}/enhance-viral")
+async def enhance_viral(
+    clip_id: str,
+    niche: Optional[str] = Query(None),
+    db: AsyncSession = Depends(get_db),
+    _: str = Depends(get_current_user),
+):
+    """Run inline viral video benchmark comparison and return updated tags & metadata."""
+    result = await db.execute(select(Clip).where(Clip.id == clip_id))
+    clip = result.scalar_one_or_none()
+    if not clip:
+        raise HTTPException(404, "Clip not found")
+
+    from app.services.viral_comparison_service import ViralComparisonService
+    service = ViralComparisonService()
+
+    # Obtain transcript segment text
+    window_transcript = clip.hook_text or ""
+    if clip.source_content and clip.source_content.transcript:
+        segments = clip.source_content.transcript.segments or []
+        wt = [
+            s.get("text", "") for s in segments
+            if s.get("start", 0) >= clip.source_start_seconds and s.get("end", 0) <= clip.source_end_seconds + 2
+        ]
+        if wt:
+            window_transcript = " ".join(wt)
+
+    target_niche = niche or "general_viral"
+    comp = service.compare_clip_to_viral(
+        transcript_text=window_transcript,
+        hook_text=clip.hook_text,
+        current_tags=clip.enhanced_tags or [],
+        duration_seconds=clip.duration_seconds or 30.0,
+        niche=target_niche,
+    )
+    enh = service.generate_viral_enhancements(
+        transcript_text=window_transcript,
+        hook_text=clip.hook_text,
+        current_tags=clip.enhanced_tags or [],
+        niche=target_niche,
+    )
+
+    clip.viral_benchmark = comp
+    clip.enhanced_tags = enh["enhanced_tags"]
+    clip.platform_metadata = enh["platform_metadata"]
+    scores = dict(clip.scores or {})
+    scores["viral_alignment"] = comp["overall_viral_score"] / 100.0
+    clip.scores = scores
+    await db.flush()
+
+    return {
+        "status": "success",
+        "clip_id": clip.id,
+        "overall_viral_score": comp["overall_viral_score"],
+        "tier": comp["tier"],
+        "enhanced_tags": clip.enhanced_tags,
+        "platform_metadata": clip.platform_metadata,
+        "viral_benchmark": comp,
+    }
+

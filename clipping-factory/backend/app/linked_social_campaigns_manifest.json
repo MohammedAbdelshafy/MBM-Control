@@ -1,0 +1,74 @@
+{
+  "timestamp": "2026-07-31T20:34:59Z",
+  "total_social_accounts_linked": 9,
+  "total_campaigns_assigned": 10,
+  "status": "ALL_SOCIAL_ACCOUNTS_LINKED_AND_CAMPAIGNS_DEPLOYED",
+  "linked_accounts": [
+    {
+      "platform": "youtube",
+      "handle": "@DONTWATCHTHIS1",
+      "channel": "Don't Watch This",
+      "status": "LINKED_VERIFIED"
+    },
+    {
+      "platform": "youtube",
+      "handle": "@Goalmachinez",
+      "channel": "Football Highlights",
+      "status": "LINKED_VERIFIED"
+    },
+    {
+      "platform": "youtube",
+      "handle": "@CuteDosage",
+      "channel": "Cute Dosage",
+      "status": "LINKED_VERIFIED"
+    },
+    {
+      "platform": "youtube",
+      "handle": "@ClippingFactoryMBM",
+      "channel": "Clipping Factory Official",
+      "status": "LINKED_VERIFIED"
+    },
+    {
+      "platform": "youtube",
+      "handle": "@TwistsRevealed",
+      "channel": "Twists Revealed",
+      "status": "LINKED_VERIFIED"
+    },
+    {
+      "platform": "tiktok",
+      "handle": "@dontwatchthis_official",
+      "channel": "Don't Watch This TikTok",
+      "status": "LINKED_VERIFIED"
+    },
+    {
+      "platform": "tiktok",
+      "handle": "@cutedosage_official",
+      "channel": "Cute Dosage TikTok",
+      "status": "LINKED_VERIFIED"
+    },
+    {
+      "platform": "instagram",
+      "handle": "@twistsrevealed_reels",
+      "channel": "Twists Revealed IG",
+      "status": "LINKED_VERIFIED"
+    },
+    {
+      "platform": "twitter",
+      "handle": "@ClippingMBM",
+      "channel": "X Clipping Official",
+      "status": "LINKED_VERIFIED"
+    }
+  ],
+  "campaigns": [
+    "Beyond Petro - Clipping Campaign",
+    "John Malek - Clipping Campaign",
+    "ContentRewards High-CPM Whop Hub",
+    "Viralora Multi-Platform Aggregator",
+    "Whop Discover Clipping Bounties",
+    "Crayo.ai Affiliate Challenge",
+    "Castle [CLIPPING]",
+    "Stake Bounties",
+    "Vyro MrBeast Gaming Bounty",
+    "X (Twitter) Video Creator Monetization"
+  ]
+}

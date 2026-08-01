@@ -1,0 +1,18 @@
+{
+  "call_id": "call_7e605eed209c68310f166c7ea54",
+  "call_type": "web_call",
+  "agent_id": "agent_00bb14caed46feaddd75526ce2",
+  "agent_version": 0,
+  "agent_name": "Seller Qualifier",
+  "call_status": "registered",
+  "latency": {},
+  "call_cost": {
+    "product_costs": [],
+    "total_duration_unit_price": 0,
+    "total_duration_seconds": 0,
+    "combined_cost": 0
+  },
+  "data_storage_setting": "everything",
+  "opt_in_signed_url": false,
+  "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6IndlYl9jYWxsXzdlNjA1ZWVkMjA5YzY4MzEwZjE2NmM3ZWE1NCJ9LCJpc3MiOiJBUElVTXg5OFUyR2MyanIiLCJleHAiOjE3ODUyNzE2MjMsIm5iZiI6MTc4NTI3MTAyMywic3ViIjoiY2xpZW50In0.CGL7ihC3acFpyFbtHa6fnQvt-lkN2GN-gZBTyTGS1yc"
+}

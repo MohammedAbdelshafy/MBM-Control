@@ -1,0 +1,72 @@
+[
+  {
+    "niche": "Painting Contractor",
+    "agent_id": "agent_2a0cca88bf98dc1bd81a359cb1",
+    "llm_id": "llm_f2cd4fc0d42a70fdd54e3e093efa",
+    "voice_id": "retell-Willa",
+    "rate_per_min": 0.4,
+    "tags": [
+      "painting",
+      "contractor",
+      "home-improvement"
+    ],
+    "deployed_at": "2026-07-31T02:13:28.222719",
+    "status": "deployed"
+  },
+  {
+    "niche": "Appliance Repair",
+    "agent_id": "agent_77b0c8cde0dc284829bf79beca",
+    "llm_id": "llm_aed70c749513bd58704239d1b761",
+    "voice_id": "retell-Willa",
+    "rate_per_min": 0.4,
+    "tags": [
+      "appliance",
+      "repair",
+      "home-services"
+    ],
+    "deployed_at": "2026-07-31T02:16:50.494070",
+    "status": "deployed"
+  },
+  {
+    "niche": "Water Heater",
+    "agent_id": "agent_d43ab0cf191b155bf104d59635",
+    "llm_id": "llm_8c40423c05f631b12fa97b4c8ec1",
+    "voice_id": "retell-Willa",
+    "rate_per_min": 0.4,
+    "tags": [
+      "water-heater",
+      "plumbing",
+      "repair"
+    ],
+    "deployed_at": "2026-07-31T02:18:09.220399",
+    "status": "deployed"
+  },
+  {
+    "niche": "HVAC Repair",
+    "agent_id": "agent_4b1ca5bc2ac41a76c4788b16c4",
+    "llm_id": "llm_00ae70c5b509e3ac1b4ffb700a43",
+    "voice_id": "retell-Cimo",
+    "rate_per_min": 0.35,
+    "tags": [
+      "hvac",
+      "home-services",
+      "repair"
+    ],
+    "deployed_at": "2026-07-31T02:25:53.555921",
+    "status": "deployed"
+  },
+  {
+    "niche": "Pest Control",
+    "agent_id": "agent_966fe3e9bea7b8f13970a7b3d4",
+    "llm_id": "llm_9be25e598ed6198eb616afba7dbe",
+    "voice_id": "retell-Willa",
+    "rate_per_min": 0.35,
+    "tags": [
+      "pest-control",
+      "home-services",
+      "maintenance"
+    ],
+    "deployed_at": "2026-07-31T20:45:38.436491",
+    "status": "deployed"
+  }
+]

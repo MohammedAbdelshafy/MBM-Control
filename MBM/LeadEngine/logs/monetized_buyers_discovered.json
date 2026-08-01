@@ -1,0 +1,78 @@
+[
+  {
+    "id": "buyer-201",
+    "name": "Apex Real Estate Equity Fund",
+    "contact_person": "Mark Vance",
+    "title": "Acquisitions Director",
+    "company_type": "Institutional Private Equity",
+    "city": "New York, NY",
+    "email": "acquisitions@apexrealtyfund.com",
+    "phone": "+12125550198",
+    "budget_level": "High ($1M+ deals)",
+    "interests": [
+      "Off-market US distressed residential",
+      "Cap Rate > 8%"
+    ]
+  },
+  {
+    "id": "buyer-202",
+    "name": "Lone Star Polymer Recyclers",
+    "contact_person": "Robert Sterling",
+    "title": "Procurement VP",
+    "company_type": "Industrial Plastic Recycling",
+    "city": "Houston, TX",
+    "email": "procurement@lonestarpolymers.com",
+    "phone": "+17135550172",
+    "budget_level": "Medium ($100k+ monthly scrap)",
+    "interests": [
+      "PET / HDPE runner scrap",
+      "Direct plant manager contacts"
+    ]
+  },
+  {
+    "id": "buyer-203",
+    "name": "Sunbelt Off-Market Wholesalers",
+    "contact_person": "Jessica Miller",
+    "title": "Deal Sourcing Manager",
+    "company_type": "Wholesale Real Estate",
+    "city": "Miami, FL",
+    "email": "deals@sunbeltwholesalers.com",
+    "phone": "+13055550143",
+    "budget_level": "Flexible ($499 - $1,499 lead packs)",
+    "interests": [
+      "Code violation & tax deed properties",
+      "Speed to close"
+    ]
+  },
+  {
+    "id": "buyer-204",
+    "name": "Outbound Growth Tele-Sales Agency",
+    "contact_person": "David K.",
+    "title": "Managing Partner",
+    "company_type": "Outbound B2B Call Center",
+    "city": "Chicago, IL",
+    "email": "sales@outboundgrowthagency.com",
+    "phone": "+13125550189",
+    "budget_level": "Medium ($2,500 voice bot builds)",
+    "interests": [
+      "Enriched phone numbers",
+      "AI Voice Agent auto-dialers"
+    ]
+  },
+  {
+    "id": "buyer-205",
+    "name": "NextGen Digital Media Agency",
+    "contact_person": "Sarah Jenkins",
+    "title": "Agency Founder & CEO",
+    "company_type": "Digital Marketing & Local Lead Gen Agency",
+    "city": "Miami, FL",
+    "email": "sarah@nextgenmedagencies.com",
+    "phone": "+13055550199",
+    "budget_level": "High ($1,500 setup + $997/mo white-label retainer)",
+    "interests": [
+      "White-Label AI Voice Bots",
+      "Automated Lead Hunters",
+      "Short-Form Video Clipping"
+    ]
+  }
+]
