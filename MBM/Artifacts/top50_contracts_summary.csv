@@ -1,0 +1,51 @@
+contract_num,seller,city,score,grade,offer_price,emd,closing_date,file
+CNT-20260801-001,Anthony Lopez,Dallas,98,A+,333634,10000,2026-08-15,contract_Anthony_Lopez_CNT-20260801-001.md
+CNT-20260801-002,Richard Gonzalez,Garland,98,A+,559161,10000,2026-08-16,contract_Richard_Gonzalez_CNT-20260801-002.md
+CNT-20260801-003,Samantha Morris,San Antonio,98,A+,572654,10000,2026-08-17,contract_Samantha_Morris_CNT-20260801-003.md
+CNT-20260801-004,Harold Wright,Midland,98,A+,200525,10000,2026-08-18,contract_Harold_Wright_CNT-20260801-004.md
+CNT-20260801-005,Jerry Hall,Midland,98,A+,179758,10000,2026-08-19,contract_Jerry_Hall_CNT-20260801-005.md
+CNT-20260801-006,Donna Gray,San Antonio,97,A+,623196,10000,2026-08-20,contract_Donna_Gray_CNT-20260801-006.md
+CNT-20260801-007,Jonathan Price,Irving,97,A+,529837,10000,2026-08-21,contract_Jonathan_Price_CNT-20260801-007.md
+CNT-20260801-008,Janet Brown,Waco,97,A+,592938,10000,2026-08-15,contract_Janet_Brown_CNT-20260801-008.md
+CNT-20260801-009,Peter Watson,Amarillo,97,A+,438729,10000,2026-08-16,contract_Peter_Watson_CNT-20260801-009.md
+CNT-20260801-010,Kevin Howard,Garland,96,A+,599014,10000,2026-08-17,contract_Kevin_Howard_CNT-20260801-010.md
+CNT-20260801-011,Sandra Foster,El Paso,96,A+,574681,10000,2026-08-18,contract_Sandra_Foster_CNT-20260801-011.md
+CNT-20260801-012,Kenneth Nelson,Amarillo,96,A+,318222,10000,2026-08-19,contract_Kenneth_Nelson_CNT-20260801-012.md
+CNT-20260801-013,William Parker,Lubbock,96,A+,658743,10000,2026-08-20,contract_William_Parker_CNT-20260801-013.md
+CNT-20260801-014,Mark Gonzalez,McKinney,95,A+,405741,10000,2026-08-21,contract_Mark_Gonzalez_CNT-20260801-014.md
+CNT-20260801-015,Matthew Gonzalez,Garland,95,A+,397635,10000,2026-08-15,contract_Matthew_Gonzalez_CNT-20260801-015.md
+CNT-20260801-016,Brian Patel,Arlington,95,A+,659351,10000,2026-08-16,contract_Brian_Patel_CNT-20260801-016.md
+CNT-20260801-017,Emma Kim,El Paso,95,A+,632061,10000,2026-08-17,contract_Emma_Kim_CNT-20260801-017.md
+CNT-20260801-018,Harold Thompson,Beaumont,95,A+,457994,10000,2026-08-18,contract_Harold_Thompson_CNT-20260801-018.md
+CNT-20260801-019,Douglas Garcia,Houston,95,A+,306261,10000,2026-08-19,contract_Douglas_Garcia_CNT-20260801-019.md
+CNT-20260801-020,Kathleen Hernandez,Fort Worth,95,A+,492713,10000,2026-08-20,contract_Kathleen_Hernandez_CNT-20260801-020.md
+CNT-20260801-021,Scott Gomez,Tyler,95,A+,180000,10000,2026-08-21,contract_Scott_Gomez_CNT-20260801-021.md
+CNT-20260801-022,Betty Reed,Irving,95,A+,180000,10000,2026-08-15,contract_Betty_Reed_CNT-20260801-022.md
+CNT-20260801-023,Daniel Price,Dallas,95,A+,180000,10000,2026-08-16,contract_Daniel_Price_CNT-20260801-023.md
+CNT-20260801-024,Pamela Sanchez,Frisco,95,A+,180000,10000,2026-08-17,contract_Pamela_Sanchez_CNT-20260801-024.md
+CNT-20260801-025,Cynthia Williams,Dallas,94,A+,585496,10000,2026-08-18,contract_Cynthia_Williams_CNT-20260801-025.md
+CNT-20260801-026,Katherine Brown,McKinney,94,A+,381719,10000,2026-08-19,contract_Katherine_Brown_CNT-20260801-026.md
+CNT-20260801-027,Amy Lewis,Odessa,94,A+,234926,10000,2026-08-20,contract_Amy_Lewis_CNT-20260801-027.md
+CNT-20260801-028,Paul Allen,Fort Worth,94,A+,592183,10000,2026-08-21,contract_Paul_Allen_CNT-20260801-028.md
+CNT-20260801-029,Patricia Bailey,Midland,94,A+,180000,10000,2026-08-15,contract_Patricia_Bailey_CNT-20260801-029.md
+CNT-20260801-030,Catherine Ramos,Tyler,94,A+,180000,10000,2026-08-16,contract_Catherine_Ramos_CNT-20260801-030.md
+CNT-20260801-031,Richard Gomez,Houston,94,A+,180000,10000,2026-08-17,contract_Richard_Gomez_CNT-20260801-031.md
+CNT-20260801-032,Katherine Clark,Waco,94,A+,180000,10000,2026-08-18,contract_Katherine_Clark_CNT-20260801-032.md
+CNT-20260801-033,Jerry Phillips,Irving,93,A+,297072,10000,2026-08-19,contract_Jerry_Phillips_CNT-20260801-033.md
+CNT-20260801-034,Eric Alvarez,Midland,93,A+,428547,10000,2026-08-20,contract_Eric_Alvarez_CNT-20260801-034.md
+CNT-20260801-035,Jeffrey Morales,Corpus Christi,93,A+,544728,10000,2026-08-21,contract_Jeffrey_Morales_CNT-20260801-035.md
+CNT-20260801-036,Kenneth Martin,Garland,93,A+,151338,10000,2026-08-15,contract_Kenneth_Martin_CNT-20260801-036.md
+CNT-20260801-037,Cynthia Evans,Dallas,93,A+,612691,10000,2026-08-16,contract_Cynthia_Evans_CNT-20260801-037.md
+CNT-20260801-038,Jason Sanders,Corpus Christi,93,A+,180000,10000,2026-08-17,contract_Jason_Sanders_CNT-20260801-038.md
+CNT-20260801-039,Steven Roberts,Odessa,93,A+,180000,10000,2026-08-18,contract_Steven_Roberts_CNT-20260801-039.md
+CNT-20260801-040,Brian Allen,Waco,92,A+,180000,10000,2026-08-19,contract_Brian_Allen_CNT-20260801-040.md
+CNT-20260801-041,Christopher Jones,Corpus Christi,92,A+,180000,10000,2026-08-20,contract_Christopher_Jones_CNT-20260801-041.md
+CNT-20260801-042,Barbara Carter,Beaumont,92,A+,180000,10000,2026-08-21,contract_Barbara_Carter_CNT-20260801-042.md
+CNT-20260801-043,Jeffrey Wood,Lubbock,92,A+,180000,10000,2026-08-15,contract_Jeffrey_Wood_CNT-20260801-043.md
+CNT-20260801-044,Janet White,Garland,92,A+,180000,10000,2026-08-16,contract_Janet_White_CNT-20260801-044.md
+CNT-20260801-045,Christine Alvarez,Frisco,91,A+,432247,10000,2026-08-17,contract_Christine_Alvarez_CNT-20260801-045.md
+CNT-20260801-046,Raymond Richardson,San Antonio,91,A+,112151,10000,2026-08-18,contract_Raymond_Richardson_CNT-20260801-046.md
+CNT-20260801-047,Peter Murphy,Arlington,91,A+,321250,10000,2026-08-19,contract_Peter_Murphy_CNT-20260801-047.md
+CNT-20260801-048,Anthony Reyes,Plano,91,A+,166515,10000,2026-08-20,contract_Anthony_Reyes_CNT-20260801-048.md
+CNT-20260801-049,Michael Evans,Tyler,91,A+,180000,10000,2026-08-21,contract_Michael_Evans_CNT-20260801-049.md
+CNT-20260801-050,Pamela Ramirez,Garland,91,A+,180000,10000,2026-08-15,contract_Pamela_Ramirez_CNT-20260801-050.md
