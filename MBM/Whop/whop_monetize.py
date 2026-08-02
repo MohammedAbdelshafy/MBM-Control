@@ -5,7 +5,8 @@ Turns the (currently hidden, zero-member) Whop store into a money machine and
 feeds real sales back into the revenue tracker.
 
 Subcommands:
-  publish     Publish products + create subscription plans (idempotent)
+  logo        Upload + attach per-product logos (gallery images) — unblocks publish
+  publish     Set logos, apply monetisation, publish products + create plans (idempotent)
   checkout    Create prefilled checkout configurations for flagship plans
   affiliate   Enable the account affiliate program + feature a product
   report      Pull REAL Whop revenue signals -> logs/whop_revenue.json
@@ -22,6 +23,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -33,12 +35,29 @@ WHOP_API_URL = os.getenv("WHOP_API_URL", "https://api.whop.com/api/v1")
 ACCOUNT_ID = os.getenv("WHOP_ACCOUNT_ID", "biz_2VDyenKpD0KOyo")
 WHOP_API_KEY = os.getenv("WHOP_API_KEY", "")
 
+def _load_env():
+    """Load WHOP_API_KEY from repo-root .env / .env.local without requiring dotenv."""
+    for name in (".env", ".env.local"):
+        env_file = BASE_DIR.parent.parent / name
+        try:
+            if not env_file.exists():
+                continue
+            for line in env_file.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if line.startswith("WHOP_API_KEY=") and not line.startswith("#"):
+                    return line.split("=", 1)[1].strip().strip('"').strip("'")
+        except Exception:
+            continue
+    return ""
+
+
 try:
     from dotenv import load_dotenv
+    load_dotenv(BASE_DIR.parent.parent / ".env")
     load_dotenv(BASE_DIR.parent.parent / ".env.local")
-    WHOP_API_KEY = os.getenv("WHOP_API_KEY", WHOP_API_KEY)
+    WHOP_API_KEY = os.getenv("WHOP_API_KEY", WHOP_API_KEY) or _load_env()
 except Exception:
-    pass
+    WHOP_API_KEY = WHOP_API_KEY or _load_env()
 
 # ─── Product + pricing config (from HUNTER sprint mission pricing) ───
 PRODUCTS = [
@@ -96,6 +115,21 @@ AFFILIATE_INSTRUCTIONS = (
     "we handle onboarding and delivery."
 )
 
+# Per-product logo artwork. Products are B2B AI services under the Contec AI
+# Agentic Teamz umbrella, so the ClippingFactoryMBM brand mark is reused as the
+# company logo. Swap paths to regenerate per-product logos later.
+REPO_ROOT = BASE_DIR.parent.parent
+LOGO_BY_PRODUCT = {
+    "prod_TwaiFektWmoOS": REPO_ROOT / "clipping-factory" / "MBM-Social" / "Brands" / "clippingfactorymbm" / "profile.png",
+    "prod_oGAtXGDcJsvJu": REPO_ROOT / "clipping-factory" / "MBM-Social" / "Brands" / "clippingfactorymbm" / "profile.png",
+    "prod_l39iYJFojPjBU": REPO_ROOT / "clipping-factory" / "MBM-Social" / "Brands" / "clippingfactorymbm" / "profile.png",
+}
+
+# Monetisation levers applied to every flagship product.
+AFFILIATE_PERCENTAGE = 20.0   # 20% recurring commission (global + member programs)
+CUSTOM_CTA = "get_access"
+CUSTOM_STATEMENT_DESCRIPTOR = "WHOP*CONTEAI"
+
 
 def log(msg):
     line = f"[WHOP MONETIZE] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {msg}"
@@ -146,7 +180,7 @@ def whop_rest(path, params=None, method="GET", body=None):
     import requests
     headers = {"Authorization": f"Bearer {WHOP_API_KEY}", "Content-Type": "application/json"}
     url = f"{WHOP_API_URL}{path}"
-    r = requests.request(method, url, headers=headers, params=params, json=body, timeout=30)
+    r = requests.request(method, url, headers=headers, params=params, json=body, timeout=60)
     if r.status_code >= 400:
         raise RuntimeError(f"{method} {path}: {r.status_code} {r.text[:300]}")
     if not r.text:
@@ -157,9 +191,112 @@ def whop_rest(path, params=None, method="GET", body=None):
         return {}
 
 
+def upload_file(image_path):
+    """Upload a local image via REST and return the Whop file id."""
+    import requests
+    if not image_path.exists():
+        raise RuntimeError(f"logo file missing: {image_path}")
+    filename = image_path.name
+    res = whop_rest("/files", method="POST", body={"filename": filename, "visibility": "public"})
+    file_id = res.get("id")
+    upload_url = res.get("upload_url")
+    if not file_id or not upload_url:
+        raise RuntimeError(f"files create returned no upload target: {res}")
+    headers = dict(res.get("upload_headers") or {})
+    headers.setdefault("Content-Type", "image/png")
+    with open(image_path, "rb") as fh:
+        content = fh.read()
+    up = requests.put(upload_url, data=content, headers=headers, timeout=180)
+    if up.status_code >= 400:
+        raise RuntimeError(f"file upload failed: {up.status_code} {up.text[:200]}")
+    deadline = time.time() + 90
+    while time.time() < deadline:
+        try:
+            status = whop_rest(f"/files/{file_id}", method="GET").get("upload_status")
+        except Exception:
+            status = None
+        if status == "ready":
+            break
+        time.sleep(3)
+    if status != "ready":
+        raise RuntimeError(f"file {file_id} did not finish processing (status={status})")
+    log(f"Uploaded {filename} -> {file_id} (ready)")
+    return file_id
+
+
+def set_product_logo(pid, file_id):
+    """Attach a gallery image (the product logo/cover) via REST PATCH.
+
+    The Whop Product schema has no dedicated ``logo`` field — the first
+    ``gallery_images`` entry serves as the product's cover/logo for publishing.
+    """
+    whop_rest(f"/products/{pid}", method="PATCH",
+              body={"gallery_images": [{"id": file_id}]})
+    log(f"Logo (gallery image) attached to {pid}")
+
+
+def product_has_logo(pid):
+    """True when the product has at least one gallery image (publish gate)."""
+    try:
+        res = whop_rest(f"/products/{pid}", method="GET")
+        return bool(res.get("gallery_images"))
+    except Exception:
+        return False
+
+
+def apply_monetisation(pid):
+    """Monetisation levers: affiliate programs, CTA, statement descriptor."""
+    body = {
+        "global_affiliate_status": "enabled",
+        "global_affiliate_percentage": AFFILIATE_PERCENTAGE,
+        "member_affiliate_status": "enabled",
+        "member_affiliate_percentage": AFFILIATE_PERCENTAGE,
+        "custom_cta": CUSTOM_CTA,
+        "custom_statement_descriptor": CUSTOM_STATEMENT_DESCRIPTOR,
+    }
+    try:
+        whop_rest(f"/products/{pid}", method="PATCH", body=body)
+        log(f"Monetisation applied to {pid} (affiliate {AFFILIATE_PERCENTAGE}%, cta={CUSTOM_CTA})")
+        return True
+    except Exception as e:
+        log(f"monetisation patch {pid} failed (continuing): {e}")
+        return False
+
+
+def publish_product(pid):
+    """Publish via REST, falling back to CLI on scope failures."""
+    if not product_has_logo(pid):
+        raise RuntimeError(f"cannot publish {pid}: no logo set")
+    try:
+        whop_rest(f"/products/{pid}/publish", method="POST", body={})
+        return
+    except Exception as e:
+        log(f"REST publish {pid} failed, trying CLI: {e}")
+    run_whop(["products", "publish", pid])
+
+
+# ─── logo ───
+def cmd_logo():
+    """Upload per-product logos and attach as gallery images (idempotent)."""
+    out = {"logo_set": [], "skipped": [], "errors": []}
+    for pid, path in LOGO_BY_PRODUCT.items():
+        try:
+            if product_has_logo(pid):
+                out["skipped"].append(f"{pid} (logo exists)")
+                continue
+            file_id = upload_file(path)
+            set_product_logo(pid, file_id)
+            out["logo_set"].append(pid)
+        except Exception as e:
+            out["errors"].append(f"{pid}: {e}")
+            log(f"logo {pid}: {e}")
+    print(json.dumps(_contract("success" if not out["errors"] else "failure", out)))
+    return out
+
+
 # ─── publish ───
 def cmd_publish():
-    """Publish flagship products and create subscription plans (idempotent)."""
+    """Set logos, publish flagship products and create subscription plans (idempotent)."""
     out = {"published": [], "plans_created": [], "skipped": []}
     existing_plans = []
     try:
@@ -175,7 +312,11 @@ def cmd_publish():
             run_whop(["products", "update", pid,
                       "--headline", prod["headline"],
                       "--description", prod["description"]])
-            run_whop(["products", "publish", pid])
+            if not product_has_logo(pid):
+                file_id = upload_file(LOGO_BY_PRODUCT[pid])
+                set_product_logo(pid, file_id)
+            apply_monetisation(pid)
+            publish_product(pid)
             out["published"].append(pid)
             log(f"Published {prod['id']}")
         except Exception as e:
@@ -351,7 +492,7 @@ def _save_json(path, data):
     path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
 
 
-COMMANDS = {"publish": cmd_publish, "checkout": cmd_checkout,
+COMMANDS = {"logo": cmd_logo, "publish": cmd_publish, "checkout": cmd_checkout,
             "affiliate": cmd_affiliate, "report": cmd_report, "status": cmd_status}
 
 if __name__ == "__main__":

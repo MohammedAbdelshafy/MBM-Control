@@ -48,6 +48,10 @@
 # Logs
 /logs
 *.log
+
+# Whop runtime outputs (rebuilt by each run; do not commit)
+MBM/Whop/logs/
+MBM/Whop/__pycache__/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
