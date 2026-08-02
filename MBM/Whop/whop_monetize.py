@@ -422,7 +422,7 @@ def cmd_report():
         res = _try(lambda: whop_rest("/memberships", {"account_id": ACCOUNT_ID, "status": "active", "first": 100}))
         if isinstance(res, dict):
             out["memberships_active"] = len(res.get("data") or res.get("memberships") or [])
-        prods = _try(lambda: whop_rest("/products"))
+        prods = _try(lambda: whop_rest("/products", {"company_id": ACCOUNT_ID}))
         if isinstance(prods, dict):
             rows = prods.get("data") or []
             out["members"] = sum(p.get("member_count") or 0 for p in rows)
@@ -440,9 +440,29 @@ def cmd_report():
                                 "member_count": p.get("member_count") or 0} for p in rows]
 
     _save_json(LOGS_DIR / "whop_revenue.json", out)
+    _telegram_digest(out)
     print(f"WHOP REVENUE: {json.dumps(out, default=str)}")
     print(json.dumps(_contract("success", out)))
     return out
+
+
+def _telegram_digest(out):
+    """Push a compact revenue/members digest to Telegram."""
+    members = out.get("members") or 0
+    active = out.get("memberships_active") or 0
+    revenue = out.get("net_revenue_7d")
+    rev_txt = f"${revenue}" if revenue is not None else "n/a"
+    prods = out.get("products") or []
+    lines = [f"<b>✅ Whop Digest</b>",
+             f"Active memberships: {active}",
+             f"Total members: {members}",
+             f"Net revenue (7d): {rev_txt}",
+             f"Products surfaced: {len(prods)}"]
+    if out.get("errors"):
+        real = [e for e in out["errors"] if "/memberships" not in str(e)]
+        if real:
+            lines.append(f"⚠️ {len(real)} errors — see logs")
+    _send_telegram("\n".join(lines))
 
 
 # ─── status ───

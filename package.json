@@ -43,6 +43,8 @@
     "whop:engage": "python MBM/Whop/whop_lifecycle_engage.py",
     "whop:engage:dry": "python MBM/Whop/whop_lifecycle_engage.py --dry-run",
     "whop:report": "python MBM/Whop/whop_monetize.py report",
+    "whop:digest": "python MBM/Whop/whop_monetize.py report",
+    "whop:all": "npm run whop:monitor && npm run whop:report && npm run whop:engage:dry",
     "whop:publish": "python MBM/Whop/whop_monetize.py publish",
     "whop:affiliate": "python MBM/Whop/whop_monetize.py affiliate",
     "social:publish": "python -m clipping-factory.MBM-Social.mbm_social.shortform_publisher"
