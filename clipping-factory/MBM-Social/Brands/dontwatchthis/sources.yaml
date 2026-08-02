@@ -1,8 +1,8 @@
 long_form_sources:
-- type: youtube_channel
-  value: '@DONTWATCHTHIS1'
+- type: youtube
+  value: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
   role: primary
-  notes: Pull next approved long-form upload from this channel.
+  notes: Primary dark mystery/story source.
 ingest:
   strategy: next_approved
   min_duration_sec: 60

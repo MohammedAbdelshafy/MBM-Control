@@ -36,11 +36,13 @@ def run_daemon():
                 log(f"Found draft package: {filepath}")
                 log(f"Attempting to publish: {package.get('title')}")
                 
-                # 3. Publish to YouTube
+                # 3. Publish to YouTube (resolves per-channel Google account)
+                brand_name = package.get("brand") or package.get("slug")
                 success = publisher.upload_to_youtube(
                     package.get("video_path"), 
                     package.get("title"), 
-                    package.get("description")
+                    package.get("description"),
+                    brand=brand_name
                 )
                 
                 if success:

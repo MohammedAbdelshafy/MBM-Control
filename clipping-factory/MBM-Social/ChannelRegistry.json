@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "updated": "2026-07-15",
-  "auth_model": "single_master_gmail",
+  "auth_model": "multi_account_google_channels",
   "master_account": "abdelshafyclapps@gmail.com",
-  "auth_note": "One Gmail owns every channel via YouTube brand-account / channel-manager. Session is stored in backend/sessions/youtube.json (or YOUTUBE_SESSION_STATE env) — never hardcoded here.",
+  "auth_note": "Each YouTube channel maps 1:1 to its Google account. Per-brand sessions are resolved from backend/sessions/youtube_<brand>.json with automatic fallback to backend/sessions/youtube.json.",
   "channels": [
     {
       "brand": "dontwatchthis",
       "display_name": "Don't Watch This",
       "handle": "@DONTWATCHTHIS1",
       "youtube_channel_id": "UC_DONTWATCHTHIS1",
-      "owned_by": "abdelshafyclapps@gmail.com",
+      "owned_by": "abdelshafyclapps@gmail.com / Account 1",
       "auth_method": "youtube_session",
-      "session_ref": "sessions/youtube.json",
+      "session_ref": "sessions/youtube_dontwatchthis.json (fallback: sessions/youtube.json)",
       "active": true
     },
     {
@@ -20,9 +20,9 @@
       "display_name": "Goal Machinez",
       "handle": "@Goalmachinez",
       "youtube_channel_id": "UC_Goalmachinez",
-      "owned_by": "abdelshafyclapps@gmail.com",
+      "owned_by": "abdelshafyclapps@gmail.com / Account 2",
       "auth_method": "youtube_session",
-      "session_ref": "sessions/youtube.json",
+      "session_ref": "sessions/youtube_goalmachinez.json (fallback: sessions/youtube.json)",
       "active": true
     },
     {
@@ -30,9 +30,9 @@
       "display_name": "Cute Dosage",
       "handle": "@CuteDosage",
       "youtube_channel_id": "UC_CuteDosage",
-      "owned_by": "abdelshafyclapps@gmail.com",
+      "owned_by": "abdelshafyclapps@gmail.com / Account 3",
       "auth_method": "youtube_session",
-      "session_ref": "sessions/youtube.json",
+      "session_ref": "sessions/youtube_cutedosage.json (fallback: sessions/youtube.json)",
       "active": true
     },
     {
@@ -40,9 +40,9 @@
       "display_name": "ClippingFactoryMBM",
       "handle": "@ClippingFactoryMBM",
       "youtube_channel_id": "UC_ClippingFactoryMBM",
-      "owned_by": "abdelshafyclapps@gmail.com",
+      "owned_by": "abdelshafyclapps@gmail.com / Account 4",
       "auth_method": "youtube_session",
-      "session_ref": "sessions/youtube.json",
+      "session_ref": "sessions/youtube_clippingfactorymbm.json (fallback: sessions/youtube.json)",
       "active": true
     },
     {
@@ -50,9 +50,9 @@
       "display_name": "Twists Revealed",
       "handle": "@TwistsRevealed",
       "youtube_channel_id": "UC_TwistsRevealed",
-      "owned_by": "abdelshafyclapps@gmail.com",
+      "owned_by": "abdelshafyclapps@gmail.com / Account 5",
       "auth_method": "youtube_session",
-      "session_ref": "sessions/youtube.json",
+      "session_ref": "sessions/youtube_twistsrevealed.json (fallback: sessions/youtube.json)",
       "active": true
     }
   ],

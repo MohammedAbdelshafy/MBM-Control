@@ -81,13 +81,21 @@ def _run_stage(name: str, fn, *args, **kwargs) -> StageResult:
 
 # ─── Stage implementations ───────────────────────────────────────────
 
-def stage_source_discovery(campaign_id: str, profile: dict, db) -> dict:
+def stage_source_discovery(campaign_id: str, profile: dict, db, brand: Optional[str] = None) -> dict:
     """Scan approved sources for the brand's content sources."""
-    brand_slug = campaign_id.split("_")[0] if "_" in campaign_id else "unknown"
+    brand_slug = brand or (campaign_id.split("_")[1] if len(campaign_id.split("_")) > 1 else campaign_id.split("_")[0])
     try:
         brand_cfg = bc.load_brand(brand_slug)
     except FileNotFoundError:
-        brand_cfg = bc.load_brand("clippingfactorymbm")
+        try:
+            # Fallback check for any valid brand in campaign_id
+            for b in bc.load_brand_registry().get("brands", {}).keys():
+                if b in campaign_id:
+                    brand_slug = b
+                    break
+            brand_cfg = bc.load_brand(brand_slug)
+        except Exception:
+            brand_cfg = bc.load_brand("clippingfactorymbm")
 
     sources = brand_cfg.get("sources", {}).get("long_form_sources", [])
     return {
@@ -120,6 +128,8 @@ def stage_video_acquisition(campaign_id: str, source: dict, db) -> dict:
     if not campaign:
         campaign = Campaign(
             id=campaign_id,
+            platform_campaign_id=f"pcamp_{campaign_id}",
+            page_id="page_mbm_internal",
             title=f"Auto campaign {campaign_id}",
             source_url=source.get("value", ""),
             status=CampaignStatus.DISCOVERED,
@@ -357,7 +367,7 @@ def run_autonomous_campaign(
     try:
         # Stage 1: Source Discovery
         _log("1/14", "Source Discovery...")
-        r1 = _run_stage("source_discovery", stage_source_discovery, campaign_id, profile, db)
+        r1 = _run_stage("source_discovery", stage_source_discovery, campaign_id, profile, db, brand=brand_slug)
         run.stages.append(r1)
         if not r1.success:
             return asdict(run)

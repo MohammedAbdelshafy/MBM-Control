@@ -432,13 +432,15 @@ class ContentQuality:
             },
             "top_strengths": [
                 {
-                    "factor": strength[Args]: strength[1]
+                    "factor": strength[0],
+                    "score": strength[1]
                 }
                 for strength in top_strengths
             ],
             "critical_weaknesses": [
                 {
-                    "factor": weakness[Args]: weakness[1]
+                    "factor": weakness[0],
+                    "score": weakness[1]
                 }
                 for weakness in bottom_strengths
             ],

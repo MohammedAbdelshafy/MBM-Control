@@ -30,13 +30,21 @@ def mark_published(filepath, data, video_id=None):
         json.dump(data, f, indent=2)
     print(f"[PUBLISHER] Marked as published: {filepath}")
 
-def upload_to_youtube(video_path, title, description):
-    print(f"[PUBLISHER] Preparing to upload '{title}' to YouTube...")
+def upload_to_youtube(video_path, title, description, brand=None):
+    print(f"[PUBLISHER] Preparing to upload '{title}' to YouTube (Brand: {brand or 'default'})...")
     
     if not Path(video_path).exists():
         print(f"[PUBLISHER] Video file not found: {video_path}")
         return False
     
+    # Resolve brand-specific user profile directory if available
+    profile_dir = USER_DATA_DIR
+    if brand:
+        brand_clean = brand.strip().lower().replace(" ", "").replace("-", "_")
+        brand_profile = USER_DATA_DIR.parent / f"youtube_profile_{brand_clean}"
+        if brand_profile.exists():
+            profile_dir = brand_profile
+
     youtube_api_key = os.getenv("YOUTUBE_API_KEY")
     if youtube_api_key and not youtube_api_key.startswith("your_"):
         print(f"[PUBLISHER] Using YouTube Data API... (set up tokens for real upload)")
@@ -45,7 +53,7 @@ def upload_to_youtube(video_path, title, description):
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch_persistent_context(
-                user_data_dir=str(USER_DATA_DIR),
+                user_data_dir=str(profile_dir),
                 headless=False,
                 args=["--disable-blink-features=AutomationControlled", "--no-sandbox"]
             )
