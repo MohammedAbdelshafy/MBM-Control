@@ -52,6 +52,16 @@ class AnalyticsService:
         post.last_synced_at = datetime.now(timezone.utc).isoformat()
         self.db.flush()
 
+        milestone_res = None
+        try:
+            from app.agents.views_likes_milestones_agent import ViewsLikesMilestonesAgent
+            agent = ViewsLikesMilestonesAgent(db=self.db)
+            res = agent._safe_run(post_id=post.id)
+            if res.success:
+                milestone_res = res.data
+        except Exception:
+            pass
+
         return {
             "post_id": post.id,
             "platform": post.platform,
@@ -61,6 +71,7 @@ class AnalyticsService:
             "comments": post.comments,
             "earnings_usd": post.earnings_usd,
             "projected_earnings": self.project_post_earnings(post),
+            "milestone_enhancements": milestone_res,
         }
 
     def project_post_earnings(self, post: SocialPost) -> float:

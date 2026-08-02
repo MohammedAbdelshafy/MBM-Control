@@ -35,8 +35,8 @@ class Campaign(Base, UUIDPrimaryKey, TimestampMixin):
     __tablename__ = "campaigns"
 
     # Platform identity
-    platform_campaign_id: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
-    page_id: Mapped[str] = mapped_column(ForeignKey("pages.id"), nullable=False)
+    platform_campaign_id: Mapped[str | None] = mapped_column(String(255), unique=True, nullable=True)
+    page_id: Mapped[str | None] = mapped_column(ForeignKey("pages.id"), nullable=True)
     title: Mapped[str] = mapped_column(String(512), nullable=False)
     brand_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
 

@@ -132,7 +132,20 @@ class Settings(BaseSettings):
         raw = [p.strip().lower() for p in self.publish_platforms.split(",") if p.strip()]
         return SocialPlatform.resolve(raw)
 
-    def social_session_state(self, platform: str) -> str:
+    def social_session_state(self, platform: str, brand: str | None = None) -> str:
+        """Return session JSON for a platform, with support for per-brand accounts."""
+        sessions_dir = Path(__file__).parent.parent.parent / "sessions"
+        
+        # Check per-brand session file first if brand is specified (e.g. sessions/youtube_dontwatchthis.json)
+        if brand:
+            brand_clean = brand.strip().lower().replace(" ", "").replace("-", "_")
+            brand_session = sessions_dir / f"{platform}_{brand_clean}.json"
+            if brand_session.exists():
+                try:
+                    return brand_session.read_text(encoding="utf-8")
+                except Exception:
+                    pass
+
         env_val = {
             "tiktok": self.tiktok_session_state,
             "instagram": self.instagram_session_state,
@@ -140,9 +153,8 @@ class Settings(BaseSettings):
         }.get(platform, "")
         if env_val:
             return env_val
-        session_file = (
-            Path(__file__).parent.parent.parent / "sessions" / f"{platform}.json"
-        )
+
+        session_file = sessions_dir / f"{platform}.json"
         if session_file.exists():
             try:
                 return session_file.read_text(encoding="utf-8")

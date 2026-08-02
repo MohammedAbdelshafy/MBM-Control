@@ -14,15 +14,22 @@ import sys
 import time
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parent
-CLIPPING = BASE.parent.parent
-MBM_SOCIAL = CLIPPING / "MBM-Social"
-PROFILE = MBM_SOCIAL / "youtube_profile"
-OUT = BASE.parent / "sessions" / "youtube.json"
-MBM_OUT = MBM_SOCIAL / "sessions" / "youtube.json"
-BACKUP_OUT = BASE.parent / "youtube_session.json"
+brand_arg = None
+if "--brand" in sys.argv:
+    idx = sys.argv.index("--brand")
+    if idx + 1 < len(sys.argv):
+        brand_arg = sys.argv[idx + 1].strip().lower().replace(" ", "").replace("-", "_")
 
-LOGIN_TIMEOUT_S = int(sys.argv[1]) if len(sys.argv) > 1 else 300
+filename = f"youtube_{brand_arg}.json" if brand_arg else "youtube.json"
+PROFILE = MBM_SOCIAL / (f"youtube_profile_{brand_arg}" if brand_arg else "youtube_profile")
+OUT = BASE.parent / "sessions" / filename
+MBM_OUT = MBM_SOCIAL / "sessions" / filename
+BACKUP_OUT = BASE.parent / filename
+
+LOGIN_TIMEOUT_S = 300
+for arg in sys.argv[1:]:
+    if arg.isdigit():
+        LOGIN_TIMEOUT_S = int(arg)
 
 
 def main() -> int:

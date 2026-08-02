@@ -87,6 +87,7 @@ def _get_sync_engine():
                 cursor.execute("PRAGMA busy_timeout=30000;")
                 cursor.close()
 
+            from app.models import campaign, clip, deliverable, social_post, source_content, transcript, analytics  # noqa: F401
             Base.metadata.create_all(_sync_engine)
 
         _SyncSession = sessionmaker(

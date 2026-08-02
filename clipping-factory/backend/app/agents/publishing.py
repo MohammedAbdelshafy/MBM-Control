@@ -137,7 +137,8 @@ class PublishingAgent(BaseAgent):
                 post.attempts = (post.attempts or 0) + 1
                 self.db.flush()
 
-                outcome = self._publish(platform, local_path, caption, title)
+                brand_name = campaign.brand_name if campaign else None
+                outcome = self._publish(platform, local_path, caption, title, brand=brand_name)
 
                 post.status = outcome["status"]
                 post.platform_post_id = outcome.get("platform_post_id")
@@ -194,11 +195,11 @@ class PublishingAgent(BaseAgent):
         caption = "\n".join(parts)
         return caption[:2200], title[:100]
 
-    def _publish(self, platform: str, video_path: Path, caption: str, title: str) -> dict:
+    def _publish(self, platform: str, video_path: Path, caption: str, title: str, brand: str | None = None) -> dict:
         flow = _PLATFORM_FLOWS.get(platform)
         if not flow:
             return self._simulated(platform, f"no flow configured for {platform}")
-        session_state = self.settings.social_session_state(platform)
+        session_state = self.settings.social_session_state(platform, brand=brand)
 
         # YouTube: try Data API first (no session needed), then Playwright
         if platform == SocialPlatform.YOUTUBE:

@@ -42,8 +42,9 @@ class ContentAcquisitionAgent(BaseAgent):
         if not campaign:
             return AgentResult.fail(f"Campaign {campaign_id} not found")
 
-        if not campaign.source_url:
-            return AgentResult.fail("Campaign has no source URL")
+        if campaign.source_url and campaign.source_url.startswith("@"):
+            campaign.source_url = f"https://www.youtube.com/{campaign.source_url}"
+            self.db.flush()
 
         self.logger.info(f"Acquiring content for campaign {campaign_id}: {campaign.source_url}")
 
@@ -154,8 +155,13 @@ class ContentAcquisitionAgent(BaseAgent):
 
     def _is_supported_url(self, url: str) -> bool:
         """Check if URL is from a supported provider."""
+        if not url:
+            return False
+        # Normalize handle strings like @DONTWATCHTHIS1 to YouTube URLs
+        if url.startswith("@"):
+            return True
         from urllib.parse import urlparse
-        parsed = urlparse(url)
+        parsed = urlparse(url if "://" in url else f"https://{url}")
         domain = parsed.netloc.lower()
         domain = _re.sub(r"^www\.", "", domain)
         if domain in SUPPORTED_DOMAINS:
@@ -233,11 +239,11 @@ class ContentAcquisitionAgent(BaseAgent):
         out_path = Path(tmpdir) / "source.mp4"
         cmd = [
             "yt-dlp",
-            "--no-playlist",
+            "--playlist-items", "1",
             "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
             "--merge-output-format", "mp4",
             "-o", str(out_path),
-            url,
+            url if "/videos" in url or "/watch" in url else f"{url}/videos",
         ]
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
         if out_path.exists():

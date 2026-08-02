@@ -179,6 +179,21 @@ def quality_check(clip_id: str) -> dict:
 
 
 @mcp.tool()
+def check_views_likes_milestones(post_id: str | None = None, clip_id: str | None = None) -> dict:
+    """
+    Audit views & likes milestones for social posts/clips and automatically
+    trigger high-impact system enhancements (cross-distribution, SEO tags,
+    pro video enhancement, and milestone notifications).
+    """
+    try:
+        from app.agents.views_likes_milestones_agent import ViewsLikesMilestonesAgent
+        with _db() as db:
+            return _wrap(ViewsLikesMilestonesAgent(db)._safe_run(post_id=post_id, clip_id=clip_id))
+    except Exception as exc:
+        return {"success": False, "data": None, "error": f"check_views_likes_milestones failed: {exc}"}
+
+
+@mcp.tool()
 def deliver_clip(clip_id: str) -> dict:
     """
     Submit an approved clip to Clipping.com via browser automation.
@@ -1019,6 +1034,7 @@ def _validate_startup() -> tuple[bool, str]:
         "multi_platform_delivery",
         "clip_editor_quality",
         "lead_ingestion",
+        "views_likes_milestones_agent",
     ]
     for agent in agents:
         try:

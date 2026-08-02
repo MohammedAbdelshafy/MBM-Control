@@ -90,3 +90,13 @@ def test_caption_style_string():
     style = agent._caption_style_string("bold_white")
     assert "FontName" in style
     assert "Bold=1" in style
+
+
+def test_views_likes_milestones_logic():
+    from app.agents.views_likes_milestones_agent import ViewsLikesMilestonesAgent
+    agent = ViewsLikesMilestonesAgent(db=None)
+    assert len(agent.VIEW_MILESTONES) == 10
+    assert len(agent.LIKE_MILESTONES) == 7
+    assert agent.VIEW_MILESTONES[0]["threshold"] == 1000
+    assert agent.LIKE_MILESTONES[2]["label"] == "1K Likes"
+

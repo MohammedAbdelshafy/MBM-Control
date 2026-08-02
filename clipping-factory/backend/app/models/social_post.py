@@ -114,6 +114,7 @@ class SocialPost(Base, UUIDPrimaryKey, TimestampMixin):
     comments: Mapped[int] = mapped_column(BigInteger, default=0)
     earnings_usd: Mapped[float] = mapped_column(Float, default=0.0)
     last_synced_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    unlocked_milestones: Mapped[list] = mapped_column(JSON, default=list)
 
     clip: Mapped["Clip"] = relationship()
 
