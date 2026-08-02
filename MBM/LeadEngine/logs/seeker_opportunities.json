@@ -1,61 +1,36 @@
 {
-  "timestamp": "2026-07-27T12:20:56.361859+00:00",
+  "timestamp": "2026-08-02T08:40:33.145332+00:00",
   "target": 30,
   "markets": [
-    "new york",
-    "miami",
-    "los angeles",
-    "austin",
-    "chicago",
-    "houston",
-    "dallas",
-    "phoenix",
-    "atlanta",
-    "las vegas",
+    "manchester",
     "london",
+    "birmingham",
+    "new york",
     "madrid"
   ],
-  "total_found": 32,
+  "total_found": 4,
   "tier_breakdown": {
-    "Tier_A": 6,
-    "Tier_B": 26,
+    "Tier_A": 4,
+    "Tier_B": 0,
     "Tier_C": 0
   },
-  "total_estimated_commission": "$5,532,248.75",
+  "total_estimated_commission": "$55,000.00",
   "top_tier_a_opportunities": [
     {
-      "id": "87683445",
-      "agent": "Pattinsons, Pattinsons Auction- National Auctioneer Estate Agent",
-      "address": "Gorton Lane, Manchester, Greater Manchester, M18 8EH",
-      "price": "\u00a31,000,000",
-      "score": 82.0,
+      "id": "idealista_madrid_1",
+      "agent": "Engel & V\u00f6lkers",
+      "address": "Calle Mayor 1, Madrid, ES",
+      "price": "\u20ac350,000",
+      "score": 88.0,
       "tier": "A",
-      "expected_commission": "$25,000.00"
-    },
-    {
-      "id": "148711487",
-      "agent": "Global 1, London Estate Agent",
-      "address": "Lancaster Gate, Kensington",
-      "price": "\u00a323,000,000",
-      "score": 80.0,
-      "tier": "A",
-      "expected_commission": "$575,000.00"
-    },
-    {
-      "id": "174730580",
-      "agent": "Dixons, Erdington Estate Agent",
-      "address": "Canterbury Close, Birmingham, West Midlands, B23",
-      "price": "\u00a3240,000",
-      "score": 80.0,
-      "tier": "A",
-      "expected_commission": "$6,000.00"
+      "expected_commission": "$8,750.00"
     },
     {
       "id": "zillow_new york_1",
       "agent": "Compass Real Estate",
       "address": "123 Main St, New York, NY",
       "price": "$450,000",
-      "score": 80.0,
+      "score": 84.0,
       "tier": "A",
       "expected_commission": "$11,250.00"
     },
@@ -64,18 +39,18 @@
       "agent": "Douglas Elliman",
       "address": "456 Oak Ave, New York, NY",
       "price": "$850,000",
-      "score": 80.0,
+      "score": 84.0,
       "tier": "A",
       "expected_commission": "$21,250.00"
     },
     {
-      "id": "148711487",
-      "agent": "Global 1, London Estate Agent",
-      "address": "Lancaster Gate, Kensington",
-      "price": "\u00a323,000,000",
-      "score": 80.0,
+      "id": "idealista_madrid_2",
+      "agent": "Century 21",
+      "address": "Avenida de la Constituci\u00f3n, Madrid, ES",
+      "price": "\u20ac550,000",
+      "score": 78.0,
       "tier": "A",
-      "expected_commission": "$575,000.00"
+      "expected_commission": "$13,750.00"
     }
   ]
 }

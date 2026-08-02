@@ -35,6 +35,11 @@ VAPI_API_KEY = os.getenv("VAPI_API_KEY", "")
 RETELL_API_KEY = os.getenv("RETELL_API_KEY", "")
 SYNTHFLOW_API_KEY = os.getenv("SYNTHFLOW_API_KEY", "")
 
+def _js_escape(value):
+    """Escape a value for embedding in a single-quoted JS string literal."""
+    return str(value).replace("\\", "\\\\").replace("'", "\\'")
+
+
 def log(msg):
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     line = f"[VOICE STUDIO] {timestamp} - {msg}"
@@ -418,7 +423,7 @@ def generate_business_outreach():
 # DASHBOARD
 # ══════════════════════════════════════════════════════════════
 
-    def generate_dashboard():
+def generate_dashboard():
     """Generate the voice agency studio dashboard."""
     log("=" * 60)
     log("GENERATING VOICE AGENCY DASHBOARD")
@@ -559,7 +564,7 @@ body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background
                     </div>
                     <div class="flex justify-between items-center">
                         <div class="text-xl font-bold text-green-400">${agent.get('rate_per_min', 0):.2f}/min</div>
-                        <button onclick="sellAgent('{agent.get('title', '').replace(\"'\", '\\\\'')}')" 
+                        <button onclick="sellAgent('{_js_escape(agent.get('title', ''))}')" 
                             class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-orange-600 hover:to-red-600">
                             🎯 Sell Now
                         </button>
@@ -567,7 +572,7 @@ body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background
                 </div>
                 ''' for agent in agents[:6]
             ])}
-            {'' if agents else '<div class="col-span-full text-center py-8 text-gray-500">No voice agents created yet. <a href="#" onclick="createAgent()" class="text-green-400 hover:underline">Create your first agent</a></div>''}
+            {'' if agents else '<div class="col-span-full text-center py-8 text-gray-500">No voice agents created yet. <a href="#" onclick="createAgent()" class="text-green-400 hover:underline">Create your first agent</a></div>'}
         </div>
     </div>
     
@@ -587,7 +592,7 @@ body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background
                 </div>
                 ''' for platform in platforms[:4]
             ])}
-            {'' if platforms else '<div class="col-span-full text-center py-8 text-gray-500">No platforms connected yet. <a href="#" onclick="connectPlatform()" class="text-green-400 hover:underline">Connect your first platform</a></div>''}
+            {'' if platforms else '<div class="col-span-full text-center py-8 text-gray-500">No platforms connected yet. <a href="#" onclick="connectPlatform()" class="text-green-400 hover:underline">Connect your first platform</a></div>'}
         </div>
     </div>
     

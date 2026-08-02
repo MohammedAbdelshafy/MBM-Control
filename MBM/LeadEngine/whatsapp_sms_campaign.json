@@ -1,176 +1,38 @@
 [
   {
-    "name": "Savills Auctions, London Estate Agent",
-    "phone": "02039096715",
-    "whatsapp_link": "https://wa.me/12039096715?text=Hi%20Savills%20Auctions,%20London%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Flat%20B2308,%20Deansgate%20Square,%20%209%20Owen%20Street%20Manchester,%20M15%204UD.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Flat B2308, Deansgate Square,  9 Owen Street Manchester, M15 4UD"
+    "agent": "Compass Real Estate",
+    "address": "123 Main St, New York, NY",
+    "price": "$450,000",
+    "raw_phone": "212-913-9058",
+    "clean_phone": "2129139058",
+    "whatsapp_link": "https://wa.me/2129139058?text=Hi%20Compass%20Real%20Estate%2C%20we%20saw%20your%20listing%20for%20123%20Main%20St%2C%20New%20York%2C%20NY%20%28%24450%2C000%29.%20We%20are%20cash%20buyers%20ready%20to%20submit%20an%20offer%20and%20move%20fast.%20Do%20you%20have%2010%20mins%20for%20a%20quick%20Google%20Meet%20call%20this%20week%3F",
+    "sms_text": "Hi Compass Real Estate, we saw your listing for 123 Main St, New York, NY ($450,000). We are cash buyers ready to submit an offer and move fast. Do you have 10 mins for a quick Google Meet call this week?"
   },
   {
-    "name": "Greenco, Salford Estate Agent",
-    "phone": "01615249008",
-    "whatsapp_link": "https://wa.me/11615249008?text=Hi%20Greenco,%20Salford%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Upper%20Chorlton%20Road,%20Manchester,%20M16.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Upper Chorlton Road, Manchester, M16"
+    "agent": "Douglas Elliman",
+    "address": "456 Oak Ave, New York, NY",
+    "price": "$850,000",
+    "raw_phone": "1384844929",
+    "clean_phone": "1384844929",
+    "whatsapp_link": "https://wa.me/1384844929?text=Hi%20Douglas%20Elliman%2C%20we%20saw%20your%20listing%20for%20456%20Oak%20Ave%2C%20New%20York%2C%20NY%20%28%24850%2C000%29.%20We%20are%20cash%20buyers%20ready%20to%20submit%20an%20offer%20and%20move%20fast.%20Do%20you%20have%2010%20mins%20for%20a%20quick%20Google%20Meet%20call%20this%20week%3F",
+    "sms_text": "Hi Douglas Elliman, we saw your listing for 456 Oak Ave, New York, NY ($850,000). We are cash buyers ready to submit an offer and move fast. Do you have 10 mins for a quick Google Meet call this week?"
   },
   {
-    "name": "Trading Places, South Manchester Estate Agent",
-    "phone": "01615247890",
-    "whatsapp_link": "https://wa.me/11615247890?text=Hi%20Trading%20Places,%20South%20Manchester%20Estate%20Agent,%20I'm%20reaching%20out%20about%20'Lynwood',%20Westminster%20Road,%20Ellesmere%20Park,%20Eccles,%20M30.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "'Lynwood', Westminster Road, Ellesmere Park, Eccles, M30"
+    "agent": "Engel & V\u00f6lkers",
+    "address": "Calle Mayor 1, Madrid, ES",
+    "price": "\u20ac350,000",
+    "raw_phone": "+1 (212) 234-3100",
+    "clean_phone": "12122343100",
+    "whatsapp_link": "https://wa.me/12122343100?text=Hi%20Engel%20%26%20V%C3%B6lkers%2C%20we%20saw%20your%20listing%20for%20Calle%20Mayor%201%2C%20Madrid%2C%20ES%20%28%E2%82%AC350%2C000%29.%20We%20are%20cash%20buyers%20ready%20to%20submit%20an%20offer%20and%20move%20fast.%20Do%20you%20have%2010%20mins%20for%20a%20quick%20Google%20Meet%20call%20this%20week%3F",
+    "sms_text": "Hi Engel & V\u00f6lkers, we saw your listing for Calle Mayor 1, Madrid, ES (\u20ac350,000). We are cash buyers ready to submit an offer and move fast. Do you have 10 mins for a quick Google Meet call this week?"
   },
   {
-    "name": "Open House Estate Agents, Nationwide Estate Agent",
-    "phone": "02039101882",
-    "whatsapp_link": "https://wa.me/12039101882?text=Hi%20Open%20House%20Estate%20Agents,%20Nationwide%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Gorton%20Lane,%20Manchester.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Gorton Lane, Manchester"
-  },
-  {
-    "name": "Pattinsons, Pattinsons Auction- National Auctioneer Estate Agent",
-    "phone": "01916250964",
-    "whatsapp_link": "https://wa.me/11916250964?text=Hi%20Pattinsons,%20Pattinsons%20Auction-%20National%20Auctioneer%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Gorton%20Lane,%20Manchester,%20Greater%20Manchester,%20M18%208EH.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Gorton Lane, Manchester, Greater Manchester, M18 8EH"
-  },
-  {
-    "name": "Jordan Fishwick, Didsbury Estate Agent",
-    "phone": "01615248937",
-    "whatsapp_link": "https://wa.me/11615248937?text=Hi%20Jordan%20Fishwick,%20Didsbury%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Barlow%20Moor%20Road,%20Didsbury.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Barlow Moor Road, Didsbury"
-  },
-  {
-    "name": "Bridgfords, Didsbury Estate Agent",
-    "phone": "01615244743",
-    "whatsapp_link": "https://wa.me/11615244743?text=Hi%20Bridgfords,%20Didsbury%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Goulden%20Road,%20Didsbury,%20Manchester,%20Greater%20Manchester,%20M20.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Goulden Road, Didsbury, Manchester, Greater Manchester, M20"
-  },
-  {
-    "name": "Trading Places, South Manchester Estate Agent",
-    "phone": "01615247890",
-    "whatsapp_link": "https://wa.me/11615247890?text=Hi%20Trading%20Places,%20South%20Manchester%20Estate%20Agent,%20I'm%20reaching%20out%20about%20101%20Manchester%20Road,%20M43.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "101 Manchester Road, M43"
-  },
-  {
-    "name": "WPF Properties Ltd, Manchester Estate Agent",
-    "phone": "01615249220",
-    "whatsapp_link": "https://wa.me/11615249220?text=Hi%20WPF%20Properties%20Ltd,%20Manchester%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Manchester%20Road,%20Droylsden.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Manchester Road, Droylsden"
-  },
-  {
-    "name": "Philip James Kennedy, Didsbury Estate Agent",
-    "phone": "01615244262",
-    "whatsapp_link": "https://wa.me/11615244262?text=Hi%20Philip%20James%20Kennedy,%20Didsbury%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Bamford%20Road,%20Didsbury,%20M20.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Bamford Road, Didsbury, M20"
-  },
-  {
-    "name": "Philip James Kennedy, Didsbury Estate Agent",
-    "phone": "01615244262",
-    "whatsapp_link": "https://wa.me/11615244262?text=Hi%20Philip%20James%20Kennedy,%20Didsbury%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Hart%20Road,%20Fallowfield,%20M14.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Hart Road, Fallowfield, M14"
-  },
-  {
-    "name": "Philip James Kennedy, Didsbury Estate Agent",
-    "phone": "01615244262",
-    "whatsapp_link": "https://wa.me/11615244262?text=Hi%20Philip%20James%20Kennedy,%20Didsbury%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Willoughby%20Avenue,%20Didsbury,%20M20.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Willoughby Avenue, Didsbury, M20"
-  },
-  {
-    "name": "Trading Places, Stretford Estate Agent",
-    "phone": "01615244179",
-    "whatsapp_link": "https://wa.me/11615244179?text=Hi%20Trading%20Places,%20Stretford%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Manchester%20Road,%20Chorlton,%20M21.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Manchester Road, Chorlton, M21"
-  },
-  {
-    "name": "MCR Move, Manchester Estate Agent",
-    "phone": "01612486277",
-    "whatsapp_link": "https://wa.me/11612486277?text=Hi%20MCR%20Move,%20Manchester%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Burton%20Road,%20Manchester.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Burton Road, Manchester"
-  },
-  {
-    "name": "Global 1, London Estate Agent",
-    "phone": "02039108302",
-    "whatsapp_link": "https://wa.me/12039108302?text=Hi%20Global%201,%20London%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Lancaster%20Gate,%20Kensington.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Lancaster Gate, Kensington"
-  },
-  {
-    "name": "Dixons, Erdington Estate Agent",
-    "phone": "01213876273",
-    "whatsapp_link": "https://wa.me/11213876273?text=Hi%20Dixons,%20Erdington%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Canterbury%20Close,%20Birmingham,%20West%20Midlands,%20B23.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Canterbury Close, Birmingham, West Midlands, B23"
-  },
-  {
-    "name": "Douglas Elliman",
-    "phone": "1384844929",
-    "whatsapp_link": "https://wa.me/11384844929?text=Hi%20Douglas%20Elliman,%20I'm%20reaching%20out%20about%20456%20Oak%20Ave,%20New%20York,%20NY.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "456 Oak Ave, New York, NY"
-  },
-  {
-    "name": "Global 1, London Estate Agent",
-    "phone": "02039108302",
-    "whatsapp_link": "https://wa.me/12039108302?text=Hi%20Global%201,%20London%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Lancaster%20Gate,%20Kensington.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Lancaster Gate, Kensington"
-  },
-  {
-    "name": "Cardwells Sales, Lettings, Management & Commercial, Bury Estate Agent",
-    "phone": "01615244970",
-    "whatsapp_link": "https://wa.me/11615244970?text=Hi%20Cardwells%20Sales,%20Lettings,%20Management%20&%20Commercial,%20Bury%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Blackley%20New%20Road,%20Manchester.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Blackley New Road, Manchester"
-  },
-  {
-    "name": "RW Invest, Manchester Estate Agent",
-    "phone": "01615244934",
-    "whatsapp_link": "https://wa.me/11615244934?text=Hi%20RW%20Invest,%20Manchester%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Fully%20Managed%20Urban%20Manchester%20Investment%20\u2013%206%%20Rental%20Yields%20|%20Turnkey%20Investment%20Opportunity.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Fully Managed Urban Manchester Investment \u2013 6% Rental Yields | Turnkey Investment Opportunity"
-  },
-  {
-    "name": "Godfrey And Barr, Hampstead Garden Suburb Estate Agent",
-    "phone": "02038666719",
-    "whatsapp_link": "https://wa.me/12038666719?text=Hi%20Godfrey%20And%20Barr,%20Hampstead%20Garden%20Suburb%20Estate%20Agent,%20I'm%20reaching%20out%20about%20The%20Bishops%20Avenue,%20London.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "The Bishops Avenue, London"
-  },
-  {
-    "name": "Andrews Estate Agents, Kingsbury Estate Agent",
-    "phone": "02038356325",
-    "whatsapp_link": "https://wa.me/12038356325?text=Hi%20Andrews%20Estate%20Agents,%20Kingsbury%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Colwyn%20Green,%20Snowdon%20Drive,%20London,%20NW9.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Colwyn Green, Snowdon Drive, London, NW9"
-  },
-  {
-    "name": "Genie Homes, Birmingham Estate Agent",
-    "phone": "01213876687",
-    "whatsapp_link": "https://wa.me/11213876687?text=Hi%20Genie%20Homes,%20Birmingham%20Estate%20Agent,%20I'm%20reaching%20out%20about%20City%20Road,%20Birmingham.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "City Road, Birmingham"
-  },
-  {
-    "name": "Godfrey And Barr, Hampstead Garden Suburb Estate Agent",
-    "phone": "02038666719",
-    "whatsapp_link": "https://wa.me/12038666719?text=Hi%20Godfrey%20And%20Barr,%20Hampstead%20Garden%20Suburb%20Estate%20Agent,%20I'm%20reaching%20out%20about%20The%20Bishops%20Avenue,%20London.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "The Bishops Avenue, London"
-  },
-  {
-    "name": "Smart Move, London Estate Agent",
-    "phone": "02045382310",
-    "whatsapp_link": "https://wa.me/12045382310?text=Hi%20Smart%20Move,%20London%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Clarges%20Mayfair,%20Clarges%20Street,%20W1J.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Clarges Mayfair, Clarges Street, W1J"
-  },
-  {
-    "name": "Liv International, London Estate Agent",
-    "phone": "02038721684",
-    "whatsapp_link": "https://wa.me/12038721684?text=Hi%20Liv%20International,%20London%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Westbourne%20Gardens,%20Westbourne%20Grove,%20W2.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Westbourne Gardens, Westbourne Grove, W2"
-  },
-  {
-    "name": "The Private Realtor, London Estate Agent",
-    "phone": "02039061624",
-    "whatsapp_link": "https://wa.me/12039061624?text=Hi%20The%20Private%20Realtor,%20London%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Westbourne%20Gardens,%20W2.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Westbourne Gardens, W2"
-  },
-  {
-    "name": "Smart Move, London Estate Agent",
-    "phone": "02045382310",
-    "whatsapp_link": "https://wa.me/12045382310?text=Hi%20Smart%20Move,%20London%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Clarges%20Mayfair,%20Clarges%20Street,%20W1J.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Clarges Mayfair, Clarges Street, W1J"
-  },
-  {
-    "name": "Liv International, London Estate Agent",
-    "phone": "02038721684",
-    "whatsapp_link": "https://wa.me/12038721684?text=Hi%20Liv%20International,%20London%20Estate%20Agent,%20I'm%20reaching%20out%20about%20Westbourne%20Gardens,%20Westbourne%20Grove,%20W2.%20We%20have%20cash%20buyers%20ready%20to%20close%20in%207-10%20days%20with%20zero%20fees.%20Are%20you%20open%20to%20a%20quick%20call?",
-    "address": "Westbourne Gardens, Westbourne Grove, W2"
+    "agent": "Century 21",
+    "address": "Avenida de la Constituci\u00f3n, Madrid, ES",
+    "price": "\u20ac550,000",
+    "raw_phone": "1-866-732-6139",
+    "clean_phone": "18667326139",
+    "whatsapp_link": "https://wa.me/18667326139?text=Hi%20Century%2021%2C%20we%20saw%20your%20listing%20for%20Avenida%20de%20la%20Constituci%C3%B3n%2C%20Madrid%2C%20ES%20%28%E2%82%AC550%2C000%29.%20We%20are%20cash%20buyers%20ready%20to%20submit%20an%20offer%20and%20move%20fast.%20Do%20you%20have%2010%20mins%20for%20a%20quick%20Google%20Meet%20call%20this%20week%3F",
+    "sms_text": "Hi Century 21, we saw your listing for Avenida de la Constituci\u00f3n, Madrid, ES (\u20ac550,000). We are cash buyers ready to submit an offer and move fast. Do you have 10 mins for a quick Google Meet call this week?"
   }
 ]

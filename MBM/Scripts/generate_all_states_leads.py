@@ -60,7 +60,7 @@ US_STATES = {
     "TN": {"name": "Tennessee", "metros": {"Nashville": ["615"], "Memphis": ["901"], "Knoxville": ["865"], "Chattanooga": ["423"]}, "zips": {"Nashville": [37201, 37299]}},
     "TX": {"name": "Texas", "metros": {"Houston": ["713", "281", "832"], "Dallas": ["214", "469", "972"], "San Antonio": ["210"], "Austin": ["512", "737"], "Fort Worth": ["817", "682"], "El Paso": ["915"]}, "zips": {"Houston": [77001, 77099], "Dallas": [75201, 75299]}},
     "UT": {"name": "Utah", "metros": {"Salt Lake City": ["801"], "Provo": ["801"], "West Valley City": ["801"], "Ogden": ["801"]}, "zips": {"Salt Lake City": [84101, 84199]}},
-    "VT": {"name": "Vermont", "metros": {"Burlington": ["802"], "Montpelier": ["802"], "Rutland": ["802"]}, "zips": {"Burlington": [05401, 05499]}},
+    "VT": {"name": "Vermont", "metros": {"Burlington": ["802"], "Montpelier": ["802"], "Rutland": ["802"]}, "zips": {"Burlington": [5401, 5499]}},
     "VA": {"name": "Virginia", "metros": {"Virginia Beach": ["757"], "Norfolk": ["757"], "Richmond": ["804"], "Arlington": ["703"]}, "zips": {"Virginia Beach": [23451, 23499]}},
     "WA": {"name": "Washington", "metros": {"Seattle": ["206", "253"], "Spokane": ["509"], "Tacoma": ["253"], "Bellevue": ["425"]}, "zips": {"Seattle": [98101, 98199]}},
     "WV": {"name": "West Virginia", "metros": {"Charleston": ["304"], "Huntington": ["304"], "Morgantown": ["304"], "Parkersburg": ["304"]}, "zips": {"Charleston": [25301, 25399]}},
@@ -156,10 +156,10 @@ def generate_address(metro, zips):
     }
 
 
-def generate_seller_lead(state_code, state_name, metro, metro_info, lead_id):
+def generate_seller_lead(state_code, state_name, metro, metro_info, state_data, lead_id):
     first = random.choice(FIRST_NAMES)
     last = random.choice(LAST_NAMES)
-    zips = state_info["zips"].get(metro, [0, 0])
+    zips = state_data.get("zips", {}).get(metro, [10000, 99999])
     addr = generate_address(metro, zips)
     phone = generate_phone(metro_info)
 
@@ -205,7 +205,7 @@ def generate_seller_lead(state_code, state_name, metro, metro_info, lead_id):
     }
 
 
-def generate_buyer_lead(state_code, state_name, metro, metro_info, lead_id):
+def generate_buyer_lead(state_code, state_name, metro, metro_info, state_data, lead_id):
     first = random.choice(FIRST_NAMES)
     last = random.choice(LAST_NAMES)
 
@@ -285,7 +285,7 @@ def main():
         for i in range(sellers_per_state):
             metro = random.choice(list(metros.keys()))
             metro_info = metros[metro]
-            lead = generate_seller_lead(state_code, state_name, metro, metro_info, lead_id_counter)
+            lead = generate_seller_lead(state_code, state_name, metro, metro_info, state_info, lead_id_counter)
             all_leads.append(lead)
             lead_id_counter += 1
             seller_count += 1
@@ -294,7 +294,7 @@ def main():
         for i in range(buyers_per_state):
             metro = random.choice(list(metros.keys()))
             metro_info = metros[metro]
-            lead = generate_buyer_lead(state_code, state_name, metro, metro_info, lead_id_counter)
+            lead = generate_buyer_lead(state_code, state_name, metro, metro_info, state_info, lead_id_counter)
             all_leads.append(lead)
             lead_id_counter += 1
             buyer_count += 1

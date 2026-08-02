@@ -26,6 +26,7 @@ QUEUE_FILE = BASE_DIR / 'cold_calling_queue.json'
 OUTREACH_LOG = BASE_DIR / 'outreach_log.json'
 CADENCE_LOG = LOGS_DIR / 'cadence_history.json'
 ENRICHED_LEADS = BASE_DIR / 'enriched_global_leads.json'
+REPLY_SUMMARY = LOGS_DIR / 'reply_summary.json'
 
 REVENUE_LOG_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -143,6 +144,36 @@ class RevenueTracker:
                 count += 1
         return count
 
+    def _count_real_replies(self):
+        """Real, human replies detected by reply_detector.py (not queue placeholders)."""
+        s = _load_json(REPLY_SUMMARY, {})
+        return {
+            "replies_received": int(s.get("total_replies", 0) or 0),
+            "meetings_booked": int(s.get("meetings_requested", 0) or 0),
+        }
+
+    def _count_paid_orders(self):
+        """REAL money: count paid orders in the client_orders table."""
+        try:
+            import requests
+            from dotenv import load_dotenv
+            load_dotenv(BASE_DIR.parent.parent / ".env.local")
+            url = os.getenv("VITE_SUPABASE_URL", "https://prgmwljhbjtcjmwnjaao.supabase.co")
+            key = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
+            if not key:
+                return 0
+            r = requests.get(
+                f"{url}/rest/v1/client_orders",
+                params={"select": "id", "status": "eq.paid", "limit": "1000"},
+                headers={"apikey": key, "Authorization": f"Bearer {key}"},
+                timeout=20,
+            )
+            if r.status_code >= 400:
+                return 0
+            return len(r.json())
+        except Exception:
+            return 0
+
     def _count_outreach_volume(self):
         """Count total outreach actions (emails sent + cadence touches)."""
         outreach = _load_json(OUTREACH_LOG, [])
@@ -158,12 +189,18 @@ class RevenueTracker:
     def collect_signals(self):
         """Gather all 5 revenue signals from the current pipeline state."""
         disps = self._count_dispositions()
+        real = self._count_real_replies()
+        paid = self._count_paid_orders()
+        # Real money: paid client_orders OR a won/closed disposition in the queue.
+        # Placeholder queue dispositions alone can be gameable — paid orders cannot.
+        deals = max(disps["deals_won"], paid)
         return {
-            "deals_won":        disps["deals_won"],
-            "meetings_booked":  disps["meetings_booked"],
-            "replies_received": disps["replies_received"],
+            "deals_won":         deals,
+            "meetings_booked":   max(disps["meetings_booked"], real["meetings_booked"]),
+            "replies_received":  max(disps["replies_received"], real["replies_received"]),
             "contacts_verified": self._count_contacts_verified(),
-            "outreach_volume":  self._count_outreach_volume(),
+            "outreach_volume":   self._count_outreach_volume(),
+            "paid_orders":       paid,
         }
 
     # ─── Scoring Engine ───
@@ -237,6 +274,23 @@ class RevenueTracker:
                 "adjustments": adjustments,
             }
 
+            # Real replies exist but no deal closed yet → the money is sitting in
+            # the inbox. This is the highest-ROI moment: a human must respond.
+            if signals["replies_received"] > 0:
+                escalation = "HUMAN_ACTION_REQUIRED"
+                adjustments.append({
+                    "type": "human_meeting_required",
+                    "description": (
+                        f"{signals['replies_received']} real reply/replies are waiting — "
+                        f"a human must respond and book the meeting. No deal is possible "
+                        f"until a conversation happens."
+                    ),
+                    "action": "human_followup",
+                    "value": signals["replies_received"],
+                })
+                log(f"🫱 {signals['replies_received']} REPLY/REPLIES WAITING — "
+                    f"owner=human — respond to close the deal")
+
             if no_hours >= 12:
                 escalation = "PAUSED"
                 self.state["paused"] = True
@@ -264,6 +318,10 @@ class RevenueTracker:
         self._append_audit(report)
         self._save_state()
 
+        human_needed = (
+            not made_money
+            and signals.get("replies_received", 0) > 0
+        )
         return {
             "made_money": made_money,
             "answer": "YES" if made_money else "NO",
@@ -276,8 +334,8 @@ class RevenueTracker:
                 {"hour": hour_number},
                 report,
                 [] if made_money else [f"No revenue for {self.state['consecutive_no_hours']}h"],
-                "continue" if made_money else "adjust_strategy",
-                owner="system" if escalation != "PAUSED" else "human",
+                "human_followup" if human_needed else ("continue" if made_money else "adjust_strategy"),
+                owner="human" if (human_needed or escalation == "PAUSED") else "system",
             ),
         }
 

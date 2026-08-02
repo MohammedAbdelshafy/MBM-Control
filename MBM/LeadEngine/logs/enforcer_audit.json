@@ -1,17 +1,17 @@
 {
-  "timestamp": "2026-07-27T12:20:56.342063+00:00",
+  "timestamp": "2026-08-02T08:40:28.060124+00:00",
   "overall_status": "NON_COMPLIANT",
   "kpi_metrics": {
     "volume_kpi": {
       "target": 30,
-      "actual": 32,
-      "status": "PASS"
+      "actual": 29,
+      "status": "FAIL (found 4/30)"
     },
     "enrichment_kpi": {
-      "total_leads": 32,
-      "enriched": 0,
-      "blank_cards": 32,
-      "status": "FAIL (32 blank cards found, rate: 0.0%)"
+      "total_leads": 4,
+      "enriched": 4,
+      "blank_cards": 0,
+      "status": "PASS"
     },
     "data_quality_kpi": {
       "queue_size": 29,
@@ -24,6 +24,6 @@
     }
   },
   "enforcement_actions_required": [
-    "Re-run Skip Tracing & Contact Enrichment module."
+    "Trigger Seeker Agent for aggressive discovery expansion."
   ]
 }

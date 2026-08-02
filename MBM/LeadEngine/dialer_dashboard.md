@@ -1,6 +1,6 @@
 # DIALER DASHBOARD — Master Status Index
 
-> Last updated: 2026-08-01
+> Last updated: 2026-08-02
 > Purpose: Single source of truth for all dialer systems, leads, and call logs
 
 ---
@@ -15,6 +15,51 @@
 | Cold Calling Swarm | PARTIAL | Jul 26 | RapidAPI quota exceeded |
 | Retell AI Agents | DEPLOYED | Jul 27 | 6/6 agents live |
 | ICTDialer | NOT SET UP | — | Pending VPS deployment |
+
+---
+
+## FREE PATHWAYS — NO PAID SERVICES
+
+| # | Channel | Cost | Status | Script |
+|---|---------|------|--------|--------|
+| 1 | Twilio Voice (1,000 free mins) | $0 | NEEDS PAYMENT METHOD | `MBM/Scripts/twilio_unlock_guide.py` |
+| 2 | Retell AI Voice Agents | $0 ($5 free) | 6 agents LIVE | `progressive_dialer.py --bridge` |
+| 3 | WhatsApp wa.me Links | $0 | WORKING | `whatsapp_sms_blaster.py` |
+| 4 | Gmail SMTP (5 accounts) | $0 | WORKING | `server/emailSender.js` |
+| 5 | Telegram Bot | $0 | WORKING | `whatsapp_sms_blaster.py` |
+| 6 | WebRTC Browser Dialer | $0 | BUILT | `free_us_phone_dialer.py` |
+| 7 | Free Skip Tracer | $0 | WORKING | `free_skip_tracer.py` |
+| 8 | Apollo.io (100 credits/mo) | $0 | Available | `free_us_phone_dialer.py` |
+
+---
+
+## UNLOCK TWILIO (Takes 2 Minutes, Costs $0)
+
+### Step 1: Run the Playwright Guide
+```bash
+python MBM/Scripts/twilio_unlock_guide.py
+```
+This opens Chrome and walks you through:
+1. Log into Twilio console
+2. Navigate to Billing → Payment Methods
+3. Add any card (no charges — free tier only)
+4. Takes screenshots at each step
+5. Verifies free credit is active
+
+### Step 2: Verify Unlock
+```bash
+python MBM/Scripts/twilio_verify_unlock.py
+```
+Checks:
+- Account type (Trial → Full)
+- Balance ($15.50 free credit)
+- Verified caller IDs
+- Test call (optional)
+
+### Step 3: Start Calling
+```bash
+python MBM/LeadEngine/progressive_dialer.py --start --bridge --campaign 50
+```
 
 ---
 
@@ -55,6 +100,13 @@
 
 ## LEAD INVENTORY
 
+### Nationwide Leads (2,850 Total)
+| Type | Count | File | Format |
+|------|-------|------|--------|
+| Sellers | 1,900 | `MBM/Artifacts/all_states_leads.csv` | Full data, 50 states |
+| Buyers | 950 | `MBM/Artifacts/all_states_leads.csv` | Full data, 50 states |
+| ICTDialer Import | 2,850 | `MBM/Artifacts/all_states_ictdialer_import.csv` | ICTDialer format |
+
 ### Ready to Dial (Verified Scripts)
 | Source | Count | File | Format |
 |--------|-------|------|--------|
@@ -72,12 +124,11 @@
 | `wholesaler_leads_50.csv` | 50 | `MBM/Artifacts/` |
 | `wholesaler_leads.csv` | Unknown | `MBM/Artifacts/` |
 
-### To Generate (Texas Expansion)
+### Contracts Ready
 | Target | Count | Source |
 |--------|-------|--------|
-| Texas sellers | 200 | `multi_city_violations.py` expansion |
-| Texas buyers | 100 | Cash buyer scraping |
-| **Total to generate** | **300** | — |
+| Top 50 contracts | 50 | `MBM/LeadEngine/contracts/` |
+| Contract index | 50 | `MBM/Artifacts/top50_contracts_summary.csv` |
 
 ---
 
@@ -123,15 +174,16 @@
 | # | Blocker | Fix | Cost |
 |---|---------|-----|------|
 | 1 | Twilio trial account | Add payment at console.twilio.com | $0 (just billing info) |
-| 2 | No ICTDialer | Deploy on Hetzner VPS | $6/mo |
-| 3 | No SIP trunk | Telnyx account + DID | $1/mo + $0.003/min |
+| 2 | ~~No ICTDialer~~ | ~~Deploy on Hetzner VPS~~ | $6/mo — REJECTED |
+| 3 | ~~No SIP trunk~~ | ~~Telnyx account + DID~~ | $1/mo + $0.003/min — REJECTED |
 | 4 | Voice agents missing API keys | Configure ElevenLabs, Synthflow | $0-22/mo |
 
 ---
 
-## NEXT ACTIONS
+## NEXT ACTIONS — FREE PATHWAYS
 
-1. **Generate 300 Texas leads** → `texas_300_leads.csv`
-2. **Deploy ICTDialer** → VPS + SIP trunk
-3. **Import leads** → Create seller + buyer campaigns
-4. **Start dialing** → Progressive mode, 3 concurrent channels
+1. **Run Twilio Unlock Guide** → `python MBM/Scripts/twilio_unlock_guide.py`
+2. **Verify Unlock** → `python MBM/Scripts/twilio_verify_unlock.py`
+3. **Start Progressive Dialer** → `python MBM/LeadEngine/progressive_dialer.py --start --bridge --campaign 50`
+4. **Send WhatsApp Blast** → `python MBM/LeadEngine/whatsapp_sms_blaster.py`
+5. **Send Email Blast** → `node server/emailSender.js`

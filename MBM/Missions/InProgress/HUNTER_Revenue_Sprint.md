@@ -369,6 +369,29 @@ timestamp: "2026-07-19"
 
 ## EXECUTION LOG
 
+### 2026-08-02 — WHY WE'RE NOT MAKING MONEY (root-cause audit)
+
+**Verdict gate was lying** — fixed. `revenue_tracker.py` now only says YES on `deals_won >= 1` (real money), never on outreach volume.
+
+**Root cause — outreach targets are fabricated.** Diagnostic run of the new `reply_detector.py` over 30 days of inbox:
+- **442 delivery-failure bounces**, **432 matched to emails we sent**. The "40% Cost Reduction for <fake company>" blast went to invented addresses (john@pioneerinvestments.com etc.) that hard-bounce. No real human receives them → 0 replies → 0 revenue.
+- The 300 most recent `email_queue` rows all share ONE subject (`Daily DFW Distressed Seller & Wholesaler Leads`) sent to the same fabricated list.
+- **Sender pool broken** — recent sends fail with `535 BadCredentials` (SMTP_SENDER_POOL accounts) and `550 daily limit exceeded` (Gmail 500/day cap). 114 failed rows in the last 1000.
+- **Money table missing** — `client_orders` (paid orders) does not exist in the remote Supabase DB; only `email_queue` does. No billing infrastructure. `lead_pipeline_logs`, `employees`, `voice_agents` migrations also never applied.
+
+**Enhancements shipped:**
+1. `reply_detector.py` — hourly IMAP scan; matches replies to sent emails, classifies intent, queues meeting-requests for interested replies, queues follow-ups for unanswered (non-bounced) sends, marks hard bounces so dead addresses are never re-targeted. Dedup via `email_queue.error` column.
+2. `revenue_tracker.py` — now counts REAL replies (`reply_summary.json`) and REAL money (`client_orders` paid, once migrated). When replies exist but no deal is closed → `HUMAN_ACTION_REQUIRED`, next_action `human_followup`, owner human.
+3. `emailSender.js` — preflights every sender account and drops bad creds before sending.
+4. `schedule.yml` — reply scan runs in the hourly revenue gate; summary shows Replies/Meetings/Bounces.
+5. `mbm-social.yml` — fixed invalid YAML (heredoc bodies unindented) that failed every run.
+
+**Next human actions:**
+- [ ] Apply `supabase/migrations/` to remote (need DB password + `supabase db push`) so `client_orders`/`email_replies` exist.
+- [ ] Fix `SMTP_SENDER_POOL` secret (accounts are 535-rejected) and rotate Gmail app passwords.
+- [ ] Replace fabricated lead lists with real targets (HUNTER P0 list above); stop mass-blasting invented addresses.
+- [ ] Reply to any `interested` replies surfaced in the `revenue-gate-outputs` artifact and book meetings.
+
 ### 2026-07-19 — Phase 1 Complete
 
 | Action | Result |

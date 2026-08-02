@@ -1,1 +1,16 @@
-{}
+{
+  "idealista_madrid_1": {
+    "touches": 1,
+    "last_touch": "2026-08-02 11:47:51",
+    "email": "info@evrealestate.com",
+    "agent": "Engel & V\u00f6lkers",
+    "address": "Calle Mayor 1, Madrid, ES"
+  },
+  "idealista_madrid_2": {
+    "touches": 1,
+    "last_touch": "2026-08-02 11:47:51",
+    "email": "jane.doe@century21.es",
+    "agent": "Century 21",
+    "address": "Avenida de la Constituci\u00f3n, Madrid, ES"
+  }
+}
