@@ -12,8 +12,9 @@ const senderPoolRaw = process.env.SMTP_SENDER_POOL || '';
 const senderAccounts = [];
 
 if (senderPoolRaw.includes(':')) {
-  // Multi-account mode: email:password pairs
-  for (const entry of senderPoolRaw.split(',').map(e => e.trim()).filter(Boolean)) {
+  // Multi-account mode: email:password pairs, separated by ',' or ';'
+  const entries = senderPoolRaw.split(/[,;]/).map(e => e.trim()).filter(Boolean);
+  for (const entry of entries) {
     const [email, ...passParts] = entry.split(':');
     senderAccounts.push({ email: email.trim(), pass: passParts.join(':').trim() });
   }
@@ -38,7 +39,28 @@ function getTransporter(email, pass) {
     maxConnections: parseInt(process.env.MAX_SMTP_CONNECTIONS || '10'),
     rateDelta: parseInt(process.env.SMTP_RATE_DELTA || '1000'),
     rateLimit: parseInt(process.env.SMTP_RATE_LIMIT || '0'),
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 30000,
   });
+}
+
+async function preflightAccounts() {
+  // Validate each sender account before sending. Bad credentials (535) or
+  // disabled accounts get dropped so we never waste the send budget on them.
+  const valid = [];
+  for (const acct of senderAccounts) {
+    const transporter = getTransporter(acct.email, acct.pass);
+    try {
+      await transporter.verify();
+      valid.push({ address: acct.email, transporter });
+      console.log(`[emailSender] ✅ Sender verified: ${acct.email}`);
+    } catch (err) {
+      console.log(`[emailSender] ⚠️ Sender REJECTED (dropped): ${acct.email} — ${err.message}`);
+      try { transporter.close(); } catch (_) {}
+    }
+  }
+  return valid;
 }
 
 function delay(ms) {
@@ -77,13 +99,14 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
     supabase = createClient(supabaseUrl, serviceRoleKey);
   }
 
-  // Build transporter pool with per-account credentials
-  const poolTransporters = senderAccounts.map(acct => ({
-    address: acct.email,
-    transporter: getTransporter(acct.email, acct.pass)
-  }));
+  // Build transporter pool with per-account credentials, then verify each
+  // account and drop the broken ones before any real send.
+  const poolTransporters = await preflightAccounts();
+  if (poolTransporters.length === 0) {
+    throw new Error('All sender accounts failed verification — fix SMTP_SENDER_POOL / SMTP_PASS');
+  }
 
-  console.log(`[emailSender] Multi-Account Pool: ${poolTransporters.length} accounts`);
+  console.log(`[emailSender] Active sender pool: ${poolTransporters.length} accounts`);
   poolTransporters.forEach(p => console.log(`  - ${p.address}`));
 
   const fromName = process.env.SMTP_FROM_NAME || 'Contech AI Agentic Teamz';

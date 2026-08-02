@@ -158,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [hourly-email-queue, hourly-hunter-queue, hourly-lead-pipeline, hourly-clipping-scan, hourly-video-posting]
     if: always()
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -169,6 +169,16 @@ jobs:
 
       - name: Install deps
         run: pip install python-dotenv requests 2>/dev/null || true
+
+      - name: "💬 Scan inbox for replies + bounces"
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+        run: |
+          cd MBM/LeadEngine
+          python reply_detector.py
 
       - name: "💰 REVENUE GATE — Have we made any money?"
         env:
@@ -211,6 +221,14 @@ jobs:
             SEEK_FOUND=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/seeker_opportunities.json')); print(d.get('total_found',0))" 2>/dev/null || echo "0")
             echo "- **Seeker Deals Found:** ${SEEK_FOUND}" >> $GITHUB_STEP_SUMMARY
           fi
+          if [ -f MBM/LeadEngine/logs/reply_summary.json ]; then
+            REPLIES=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/reply_summary.json')); print(d.get('total_replies',0))" 2>/dev/null || echo "0")
+            MEETINGS=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/reply_summary.json')); print(d.get('meetings_requested',0))" 2>/dev/null || echo "0")
+            BOUNCES=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/reply_summary.json')); print(d.get('bounces_detected',0))" 2>/dev/null || echo "0")
+            echo "- **Replies Detected:** ${REPLIES}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Meetings Requested:** ${MEETINGS}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Hard Bounces:** ${BOUNCES}" >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Upload Revenue Gate Outputs
         if: always()
@@ -221,4 +239,5 @@ jobs:
             /tmp/revenue_verdict.json
             MBM/LeadEngine/logs/*.json
             MBM/LeadEngine/logs/*.md
+            MBM/LeadEngine/reply_detector.log
           if-no-files-found: warn

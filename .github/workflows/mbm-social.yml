@@ -21,35 +21,35 @@ jobs:
       - name: Validate BrandRegistry.json
         run: |
           python3 << 'EOF'
-import json, sys
+          import json, sys
 
-with open('clipping-factory/MBM-Social/BrandRegistry.json') as f:
-    data = json.load(f)
+          with open('clipping-factory/MBM-Social/BrandRegistry.json') as f:
+              data = json.load(f)
 
-brands = data.get('brands', {})
-issues_found = 0
+          brands = data.get('brands', {})
+          issues_found = 0
 
-print(f'## Brand Validation')
-print(f'Total brands: {len(brands)}')
-print()
+          print(f'## Brand Validation')
+          print(f'Total brands: {len(brands)}')
+          print()
 
-for name, cfg in brands.items():
-    issues = []
-    if not cfg.get('display_name'): issues.append('missing display_name')
-    if not cfg.get('handle'): issues.append('missing handle')
-    if not cfg.get('active', False): issues.append('inactive')
-    if not cfg.get('config_path'): issues.append('missing config_path')
-    if issues:
-        issues_found += 1
-        print(f'- {name}: FAIL | {", ".join(issues)}')
-    else:
-        print(f'- {name}: OK')
+          for name, cfg in brands.items():
+              issues = []
+              if not cfg.get('display_name'): issues.append('missing display_name')
+              if not cfg.get('handle'): issues.append('missing handle')
+              if not cfg.get('active', False): issues.append('inactive')
+              if not cfg.get('config_path'): issues.append('missing config_path')
+              if issues:
+                  issues_found += 1
+                  print(f'- {name}: FAIL | {", ".join(issues)}')
+              else:
+                  print(f'- {name}: OK')
 
-if issues_found:
-    print()
-    print(f'Issues found: {issues_found}')
-    sys.exit(1)
-EOF
+          if issues_found:
+              print()
+              print(f'Issues found: {issues_found}')
+              sys.exit(1)
+          EOF
 
   check-brand-dirs:
     runs-on: ubuntu-latest
@@ -60,29 +60,29 @@ EOF
       - name: Verify brand config directories
         run: |
           python3 << 'EOF'
-import json, os
+          import json, os
 
-with open('clipping-factory/MBM-Social/BrandRegistry.json') as f:
-    data = json.load(f)
+          with open('clipping-factory/MBM-Social/BrandRegistry.json') as f:
+              data = json.load(f)
 
-missing = 0
-print('## Brand Config Directories')
+          missing = 0
+          print('## Brand Config Directories')
 
-for name, cfg in data.get('brands', {}).items():
-    path = cfg.get('config_path', '')
-    full = os.path.join('clipping-factory/MBM-Social', path)
-    exists = os.path.isdir(full)
-    if exists:
-        print(f'- {name}: {path} OK')
-    else:
-        missing += 1
-        print(f'- {name}: {path} MISSING')
+          for name, cfg in data.get('brands', {}).items():
+              path = cfg.get('config_path', '')
+              full = os.path.join('clipping-factory/MBM-Social', path)
+              exists = os.path.isdir(full)
+              if exists:
+                  print(f'- {name}: {path} OK')
+              else:
+                  missing += 1
+                  print(f'- {name}: {path} MISSING')
 
-if missing:
-    print()
-    print(f'{missing} missing directorie(s)')
-    exit(1)
-EOF
+          if missing:
+              print()
+              print(f'{missing} missing directorie(s)')
+              exit(1)
+          EOF
 
   test-pipeline-import:
     runs-on: ubuntu-latest
@@ -97,16 +97,16 @@ EOF
         run: |
           cd clipping-factory/MBM-Social
           python3 << 'EOF'
-import sys
-try:
-    from mbm_social.pipeline import Pipeline
-    from mbm_social.brand_router import BrandRouter
-    from mbm_social.brand_config import BrandConfig
-    from mbm_social.model_registry import ModelRegistry
-    from mbm_social.publish_package import PublishPackage
-    print('## Pipeline Import Test')
-    print('All imports OK')
-except ImportError as e:
-    print(f'Import failed: {e}')
-    sys.exit(1)
-EOF
+          import sys
+          try:
+              from mbm_social.pipeline import Pipeline
+              from mbm_social.brand_router import BrandRouter
+              from mbm_social.brand_config import BrandConfig
+              from mbm_social.model_registry import ModelRegistry
+              from mbm_social.publish_package import PublishPackage
+              print('## Pipeline Import Test')
+              print('All imports OK')
+          except ImportError as e:
+              print(f'Import failed: {e}')
+              sys.exit(1)
+          EOF
