@@ -38,7 +38,11 @@
     "lint": "eslint src/ --quiet",
     "lint:fix": "eslint src/ --fix",
     "typecheck": "tsc -p ./jsconfig.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "whop:monitor": "python MBM/Whop/whop_monetize.py monitor",
+    "whop:report": "python MBM/Whop/whop_monetize.py report",
+    "whop:publish": "python MBM/Whop/whop_monetize.py publish",
+    "whop:affiliate": "python MBM/Whop/whop_monetize.py affiliate"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^17.0.0",

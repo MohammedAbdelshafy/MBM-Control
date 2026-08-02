@@ -465,6 +465,115 @@ def cmd_status():
         print(f"memberships failed: {e}")
 
 
+# ─── monitor (churn + lifecycle engagement scan) ───
+# Risk/day thresholds. Tune after launch: most communities churn 10-15%/mo.
+MONITOR_RISK_DAYS = 7        # renewal/expiry within this window => at-risk
+MONITOR_DORMANT_DAYS = 14    # no payment/activity for this long on active => dormant
+MONITOR_WELCOME_DAYS = 2     # created within this window => brand new (needs onboarding)
+
+
+def _parse_ts(value):
+    """Best-effort parse of a Whop timestamp string -> aware datetime or None."""
+    if not value:
+        return None
+    try:
+        text = str(value).replace("Z", "+00:00")
+        return datetime.fromisoformat(text)
+    except Exception:
+        return None
+
+
+def _days_between(future_naive):
+    """Need days until an (possibly timezone-less) datetime."""
+    now = datetime.now(timezone.utc)
+    if future_naive.tzinfo is None:
+        future_naive = future_naive.replace(tzinfo=timezone.utc)
+    return (future_naive - now).days
+
+
+def _send_telegram(text):
+    """Push a message to the configured Telegram chat (no-op if unset)."""
+    token = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    chat = os.getenv("TELEGRAM_CHAT_ID", "")
+    if not token or not chat:
+        return False
+    try:
+        import requests
+        url = f"https://api.telegram.org/bot{token}/sendMessage"
+        requests.post(url, json={"chat_id": chat, "text": text, "parse_mode": "HTML"},
+                      timeout=15)
+        return True
+    except Exception as e:
+        log(f"telegram alert failed: {e}")
+        return False
+
+
+def _classify_membership(m):
+    """Bucket a membership into a lifecycle stage with risk flags."""
+    created = _parse_ts(m.get("created_at"))
+    expires = _parse_ts(m.get("expire_at") or m.get("expires_at") or m.get("expiry_at"))
+    status = str(m.get("status") or "unknown").lower()
+
+    if status in ("cancelled", "canceling", "expired", "refunded"):
+        return {"stage": "churned", "risk": "high", "reason": f"status={status}"}
+    if created is None and expires is None:
+        return {"stage": "unknown", "risk": "unknown", "reason": "no timestamps"}
+
+    now = datetime.now(timezone.utc)
+    age_days = (now - created).days if created else None
+    days_to_expiry = (expires - now).days if expires else None
+
+    if age_days is not None and age_days <= MONITOR_WELCOME_DAYS:
+        return {"stage": "new", "risk": "welcome", "reason": f"created {age_days}d ago"}
+    if expires is not None and 0 <= days_to_expiry <= MONITOR_RISK_DAYS:
+        return {"stage": "at_risk", "risk": "high", "reason": f"expires in {days_to_expiry}d"}
+    if created is not None and age_days >= MONITOR_DORMANT_DAYS:
+        return {"stage": "dormant", "risk": "medium", "reason": f"{age_days}d old, no touch"}
+    return {"stage": "stable", "risk": "low", "reason": "healthy"}
+
+
+def cmd_monitor():
+    """Scan memberships into lifecycle buckets, write ledger, Telegram alert at-risk."""
+    out = {"timestamp": datetime.now(timezone.utc).isoformat(),
+           "account_id": ACCOUNT_ID,
+           "total": 0, "by_stage": {}, "at_risk": [], "members": [], "new": [], "errors": []}
+    try:
+        res = run_whop(["memberships", "list", "--account_id", ACCOUNT_ID, "--first", "100"])
+        memberships = res.get("data") or []
+    except Exception as e:
+        out["errors"].append(f"memberships list: {e}")
+        memberships = []
+
+    for m in memberships:
+        out["total"] += 1
+        cls = _classify_membership(m)
+        out["by_stage"][cls["stage"]] = out["by_stage"].get(cls["stage"], 0) + 1
+        entry = {"membership_id": m.get("id"), "plan_id": m.get("plan_id") or m.get("plan"),
+                 "user_id": m.get("user_id"), "status": m.get("status"), **cls}
+        if cls["stage"] == "at_risk":
+            out["members"].append(entry)
+        if cls["stage"] == "new":
+            out["new"].append(entry)
+        # ledger: keep a rolling per-membership log for the scheduler
+        ledger = _load_json(LOGS_DIR / "whop_memberships.json")
+        records = ledger.get("records", [])
+        records.append({**entry, "scanned_at": out["timestamp"]})
+        _save_json(LOGS_DIR / "whop_memberships.json", {"records": records[-2000:]})
+
+    at_risk = out["members"]
+    if at_risk:
+        lines = [f"<b>🚨 Whop churn monitor</b> — {len(at_risk)} at-risk"]
+        for e in at_risk[:15]:
+            lines.append(f"• {e.get('membership_id')} | {e.get('reason')}")
+        if len(at_risk) > 15:
+            lines.append(f"… +{len(at_risk)-15} more")
+        _send_telegram("\n".join(lines))
+
+    print(f"WHOP MONITOR: total={out['total']} {json.dumps(out['by_stage'])}")
+    print(json.dumps(_contract("success" if not out["errors"] else "failure", out)))
+    return out
+
+
 def _contract(status, outputs, next_action="continue", owner="system"):
     return {
         "status": status,
@@ -493,7 +602,8 @@ def _save_json(path, data):
 
 
 COMMANDS = {"logo": cmd_logo, "publish": cmd_publish, "checkout": cmd_checkout,
-            "affiliate": cmd_affiliate, "report": cmd_report, "status": cmd_status}
+            "affiliate": cmd_affiliate, "report": cmd_report, "status": cmd_status,
+            "monitor": cmd_monitor}
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "status"
