@@ -18,6 +18,7 @@
 !/AGENTS.md
 !/CLAUDE.md
 !/IDENTITY.md
+!/REVENUE_CI_ENHANCEMENTS.md
 !/.claude/
 !/.claude/**
 /.claude/**/*.local*
@@ -117,3 +118,65 @@ clipping-factory/youtube_tokens.json
 clipping-factory/MBM-Social/youtube_tokens.json
 clipping-factory/MBM-Social/youtube_profile/
 clipping-factory/backend/youtube_profile/
+
+# Ops secrets / local LLM registry tokens (may embed API keys) — never commit
+openclaw-secrets-plan.json
+openclaw-workspace-state.json
+MBM/LeadEngine/master_ai_models_config.json
+MBM/OmniRoute-Deploy/
+
+# Runtime artifacts — agent logs, queue state, lead packs, dispositions.
+# These regenerate on every run; tracking them just bloats diffs and risks PII leaks.
+# (Use `git rm --cached <path>` to untrack already-committed files if you want to clean history.)
+MBM/LeadEngine/logs/*.json
+MBM/LeadEngine/logs/*.md
+MBM/LeadEngine/logs/*.png
+MBM/LeadEngine/logs/*.txt
+MBM/LeadEngine/cold_calling_queue.json
+MBM/LeadEngine/enriched_global_leads.json
+MBM/LeadEngine/global_leads.json
+MBM/LeadEngine/us_50_deep_prospect_intel.json
+MBM/LeadEngine/us_50_deep_prospect_intel.md
+MBM/LeadEngine/us_50_calling_list.json
+MBM/LeadEngine/lead_packs/*.csv
+MBM/LeadEngine/lead_packs/*.json
+MBM/Whop/logs/
+MBM/Config/heartbeat.json
+MBM/Config/telegram_chat_id.txt
+clipping-factory/MBM-Social/logs/
+clipping-factory/MBM-Social/publish_queue/*.json
+clipping-factory/MBM-Social/publish_queue/*.json.broken
+clipping-factory/MBM-Social/generated_videos/
+clipping-factory/backend/data/exports/
+
+# Revenue/lead state — PII + regenerated every run
+MBM/LeadEngine/logs/revenue/
+MBM/LeadPacks/
+MBM/Reports/
+MBM/Logs/
+MBM/Scripts/logs/
+MBM/Scripts/assets/
+MBM/API/
+MBM/DataVault/
+MBM/Clients/*.csv
+MBM/Artifacts/*.csv
+MBM/Artifacts/*.json
+MBM/LeadEngine/exports/
+MBM/LeadEngine/generated_ads/
+MBM/LeadEngine/blueprints/
+clipping-factory/MBM-Social/Databases/
+clipping-factory/MBM-Social/publish_queue/media/
+clipping-factory/MBM-Social/paced_state.json
+clipping-factory/MBM-Social/master_ai_models_config.json
+
+# Social account manifests + browser profile dumps (credentials!)
+clipping-factory/MBM-Social/social_media_accounts_manifest.json
+clipping-factory/MBM-Social/ChannelMetrics.json
+clipping-factory/MBM-Social/ChannelRegistry.json
+clipping-factory/MBM-Social/MasterAccount.json
+clipping-factory/MBM-Social/channel_verify_results.json
+clipping-factory/MBM-Social/harvested_channels.json
+clipping-factory/MBM-Social/instagram_profile_*/
+clipping-factory/MBM-Social/tiktok_profile_*/
+clipping-factory/MBM-Social/youtube_profile_*/
+clipping-factory/youtube_profile_*/

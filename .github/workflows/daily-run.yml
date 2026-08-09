@@ -68,3 +68,15 @@ jobs:
         with:
           name: lead-pipeline-state
           path: machine_state.json
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: lead-pipeline
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Alert on lead pipeline failure
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🛑 *BASE44 DAILY* lead pipeline FAILED\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

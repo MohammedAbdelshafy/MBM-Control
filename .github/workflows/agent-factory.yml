@@ -24,3 +24,15 @@ jobs:
         env:
           RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
         run: python MBM/LeadEngine/agent_factory.py --once
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: create-agent
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Alert on agent factory failure
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🛑 *BASE44 AGENT FACTORY* voice agent creation FAILED (15-min cycle broken)\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

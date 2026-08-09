@@ -1,0 +1,45 @@
+name: Security — Secret Scan
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  schedule:
+    # Weekly full-history scan catches secrets committed then later "fixed".
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: security-scan
+  cancel-in-progress: true
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: gitleaks — full history secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: 'true'
+
+      - name: Notify on leaked secrets
+        if: failure()
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🔓 *BASE44 SECRET LEAK DETECTED* — gitleaks found credentials in the repo.\nRevoke immediately. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Summary
+        if: always()
+        run: echo "## Secret scan ${{ job.status }}" >> $GITHUB_STEP_SUMMARY

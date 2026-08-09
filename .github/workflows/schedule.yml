@@ -1,5 +1,12 @@
 name: Scheduled Automations
 
+# Concurrency: cancel any in-flight run when a new scheduled/manual run starts.
+# Without this, overlapping cron ticks (e.g. schedule.yml + manual dispatch) pile up
+# and fight over shared state files (lead queue, agent persistence, email queue).
+concurrency:
+  group: schedule-automations
+  cancel-in-progress: true
+
 on:
   schedule:
     - cron: '0 * * * *'
@@ -45,12 +52,15 @@ jobs:
           SMTP_FROM: ${{ secrets.SMTP_FROM }}
           SMTP_FROM_NAME: ${{ secrets.SMTP_FROM_NAME }}
           DRY_RUN: ${{ github.event.inputs.dry_run == 'true' }}
+          # Outreach volume IS the pipeline. The script defaults to 5000; this
+          # raises the hourly drain cap from 21 to 400 so the queue actually moves.
+          BATCH_SIZE: ${{ github.event.inputs.dry_run == 'true' && '21' || '400' }}
         run: |
           if [ "$DRY_RUN" = "true" ]; then
             echo "DRY_RUN mode. No emails sent."
             node server/emailSender.js --batchSize=21 --dry-run
           else
-            node server/emailSender.js --batchSize=21
+            node server/emailSender.js --batchSize="${BATCH_SIZE}"
           fi
       - name: Summary
         if: always()
@@ -123,6 +133,57 @@ jobs:
         if: always()
         run: echo "scan_complete=true" >> $GITHUB_STEP_SUMMARY
 
+  hourly-npi-callsheet:
+    # Generate a FRESH verified-real-lead call sheet from the CMS NPI registry.
+    # The hygiene gate strips synthetic rows; live NPI pull adds real businesses.
+    # Runs twice a day (UTC 00 and 12). LIVE pull (no --no-net) so CI actually
+    # hits the free federal registry — offline mode only used as fallback.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install python-dotenv requests 2>/dev/null || true
+      - name: Check if generation window (hour 0 or 12 UTC)
+        id: window
+        run: echo "hour=$(date -u '+%H')" >> $GITHUB_OUTPUT
+      - name: Run Lead Hygiene gate
+        if: steps.window.outputs.hour == '00' || steps.window.outputs.hour == '12'
+        run: python MBM/Scripts/lead_hygiene.py --no-net
+      - name: Build NPI verified call sheet (live real businesses)
+        if: steps.window.outputs.hour == '00' || steps.window.outputs.hour == '12'
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 15
+          max_attempts: 3
+          command: |
+            # Live pull first (fresh real orgs from CMS NPI registry), cap 50/vertical-city.
+            python MBM/LeadEngine/npi_verified_callsheet.py --cap 50 \
+              || { echo "Live NPI pull failed; falling back to offline cache."; python MBM/LeadEngine/npi_verified_callsheet.py --cap 50 --no-net; }
+      - name: Upload real-lead call sheet
+        if: steps.window.outputs.hour == '00' || steps.window.outputs.hour == '12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: npi-verified-callsheet
+          path: |
+            MBM/Artifacts/npi_verified_callsheet.csv
+            MBM/Artifacts/npi_verified_callsheet.json
+            MBM/Artifacts/npi_discovered_log.json
+            MBM/Artifacts/lead_hygiene_report.csv
+            MBM/Artifacts/real_leads.csv
+          if-no-files-found: warn
+      - name: Notify Telegram on failure
+        if: failure()
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "⚠️ *BASE44* NPI callsheet FAILED — no fresh real leads today.\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      - name: Summary
+        if: failure()
+        run: echo "NPI callsheet generation failed. Check scripts for DNS/net errors." >> $GITHUB_STEP_SUMMARY
+
   hourly-whop:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -171,7 +232,9 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python MBM/Scripts/master_publisher.py
+        run: |
+          python MBM/Scripts/master_publisher.py
+          python register_instagram_tiktok_multichannel.py || true
       - name: Upload Video Posting Outputs
         if: always()
         uses: actions/upload-artifact@v4
@@ -211,23 +274,53 @@ jobs:
           cd MBM/LeadEngine
           python reply_detector.py
 
-      - name: "💰 REVENUE GATE — Have we made any money?"
+      - name: "🚨 Alert on new replies — speed-to-lead is the money"
+        if: always()
         env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
-          cd MBM/LeadEngine
-          python campaign_grabber_agent.py grab
-          python seller_monetization_agent.py
-          python platform_auto_connector.py
-          python upwork_monetization_hunter.py
-          python upwork_api_key_hunter.py
-          python upwork_auto_bidding_daemon.py
-          python voice_agency_enhancer.py
-          python tonight_10_call_list_skip_traced.py
-          python revenue_seeker.py seek
-          python revenue_enforcer.py audit
-          python revenue_tracker.py check | tee /tmp/revenue_verdict.json
+          python - <<'PYEOF'
+          import json, os, sys
+          sys.path.insert(0, "MBM/Scripts")
+          from notify_lib import send_and_log
+          f = "MBM/LeadEngine/logs/reply_summary.json"
+          if not os.path.exists(f):
+              raise SystemExit(0)
+          with open(f) as fh:
+              d = json.load(fh)
+          replies = d.get("total_replies", 0)
+          meetings = d.get("meetings_requested", 0)
+          if replies:
+              msg = (f"📥 *NEW REPLY* — call them NOW\n"
+                     f"Replies: {replies} | Meetings: {meetings}\n"
+                     f"Check: MBM/LeadEngine/logs/reply_summary.json")
+              send_and_log("reply:new", msg)
+          PYEOF
+
+      - name: "💰 REVENUE GATE — Have we made any money?"
+        uses: nick-fields/retry@v3
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: |
+            cd MBM/LeadEngine
+            python campaign_grabber_agent.py grab
+            python seller_monetization_agent.py
+            python platform_auto_connector.py
+            python upwork_monetization_hunter.py
+            python upwork_api_key_hunter.py
+            python upwork_auto_bidding_daemon.py
+            python voice_agency_enhancer.py
+            python tonight_10_call_list_skip_traced.py
+            python revenue_seeker.py seek
+            python revenue_enforcer.py audit
+            python revenue_tracker.py check --json-out /tmp/revenue_verdict.json
 
       - name: Revenue Summary
         if: always()
@@ -261,6 +354,41 @@ jobs:
             echo "- **Hard Bounces:** ${BOUNCES}" >> $GITHUB_STEP_SUMMARY
           fi
 
+      - name: "📉 Revenue STOP alert — escalate when money stalls"
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python - <<'PYEOF'
+          import json, os, subprocess, sys
+          sys.path.insert(0, "MBM/Scripts")
+          from notify_lib import send_and_log
+          f = "/tmp/revenue_verdict.json"
+          if not os.path.exists(f):
+              raise SystemExit(0)
+          with open(f) as fh:
+              d = json.load(fh)
+          answer = d.get("answer", "UNKNOWN")
+          score = d.get("score", 0)
+          level = d.get("escalation_level", "NORMAL")
+          hours_no_rev = d.get("cumulative_hours_without_revenue", 0)
+          signals = d.get("signals", {})
+          # Fire when the gate explicitly says NO money, or after 12+ hours stall.
+          if answer != "YES" and (hours_no_rev >= 12 or score < 40 or level != "NORMAL"):
+              print("Triggering self-healing protocol...")
+              subprocess.run(["python", "MBM/LeadEngine/revenue_self_healer.py"])
+
+              msg = (f"🛑 *REVENUE STALLED — ${score} score*\n"
+                     f"Hours without revenue: {hours_no_rev}\n"
+                     f"Escalation: {level}\n"
+                     f"deals={signals.get('deals_won',0)} meetings={signals.get('meetings_booked',0)} "
+                     f"replies={signals.get('replies_received',0)} orders={signals.get('paid_orders',0)}\n"
+                     f"Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}")
+              send_and_log("revenue:stall", msg)
+          PYEOF
+
       - name: Upload Revenue Gate Outputs
         if: always()
         uses: actions/upload-artifact@v4
@@ -272,3 +400,15 @@ jobs:
             MBM/LeadEngine/logs/*.md
             MBM/LeadEngine/reply_detector.log
           if-no-files-found: warn
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: [hourly-email-queue, hourly-hunter-queue, hourly-lead-pipeline, hourly-clipping-scan, hourly-npi-callsheet, hourly-whop, hourly-video-posting, hourly-revenue-gate]
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Alert on any failed hourly job
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🛑 *BASE44 HOURLY FAILURE*\nOne or more hourly automation jobs failed.\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

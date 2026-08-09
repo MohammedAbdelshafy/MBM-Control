@@ -1,6 +1,13 @@
 import os, sys, json, urllib.request, urllib.parse, mimetypes, time
 from datetime import datetime
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    from notify_lib import log_notification
+except Exception:
+    def log_notification(event, message, status="sent"):
+        return False
+
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 API = f"https://api.telegram.org/bot{TOKEN}"
 CHAT_ID_FILE = os.path.join(os.path.dirname(__file__), "..", "Config", "telegram_chat_id.txt")
@@ -16,6 +23,10 @@ def api_call(method, data=None):
         return {"ok": False, "error": str(e)}
 
 def get_chat_id():
+    # Priority: explicit env secret (CI) > local chat-id file > getUpdates sniff.
+    env_cid = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+    if env_cid:
+        return env_cid
     if os.path.exists(CHAT_ID_FILE):
         with open(CHAT_ID_FILE) as f:
             cid = f.read().strip()
@@ -37,7 +48,10 @@ def send_message(text, cid=None):
         return False
     data = {"chat_id": cid, "text": text, "parse_mode": "Markdown"}
     r = api_call("sendMessage", data)
-    return r.get("ok", False)
+    ok = r.get("ok", False)
+    if ok:
+        log_notification("telegram_notify", text, status="sent")
+    return ok
 
 def send_file(filepath, caption="", cid=None):
     if not cid: cid = get_chat_id()
@@ -176,6 +190,24 @@ def daily_digest():
     if lead_files and os.path.getmtime(lead_files[0]) >= cutoff:
         send_file(lead_files[0], f"Latest leads ({latest_lead_count})")
 
+    # Generate and send visual PPT digest report
+    try:
+        from contractor_services import ReportGenerator
+        import tempfile
+        gen = ReportGenerator()
+        digest_ppt = os.path.join(tempfile.gettempdir(), f"MBM_Digest_{now.strftime('%Y%m%d')}.pptx")
+        slides = [
+            {"title": "Engine Status", "content": f"Status: {hb_status}\nRuns (24h): {total_runs}\nLatest Leads: {latest_lead_count}\nHeartbeat Leads: {hb_leads}"},
+            {"title": "Today's Pack", "content": f"Pack Built: {'Yes' if pack_exists else 'Not yet'}\n{f'Error: {hb_error[:80]}' if hb_error else 'No errors'}"},
+        ]
+        result = gen.create_report_ppt("MBM Daily Digest", slides, digest_ppt)
+        if result.get("success"):
+            send_file(digest_ppt, "Visual Digest Report")
+    except ImportError:
+        pass
+    except Exception:
+        pass
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "test"
     if cmd == "test":
@@ -198,7 +230,12 @@ if __name__ == "__main__":
     elif cmd == "file":
         f = sys.argv[2] if len(sys.argv) > 2 else ""
         send_file(f, sys.argv[3] if len(sys.argv) > 3 else "")
+    elif cmd == "send":
+        text = sys.argv[2] if len(sys.argv) > 2 else ""
+        ok = send_message(text)
+        print(f"send_message: {'OK' if ok else 'FAILED'}")
+        sys.exit(0 if ok else 1)
     elif cmd == "daily_digest":
         daily_digest()
     else:
-        print("Usage: telegram_notify.py [test|start|notify_result|notify_error|file|daily_digest]")
+        print("Usage: telegram_notify.py [test|start|notify_result|notify_error|file|send|daily_digest]")

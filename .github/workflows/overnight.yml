@@ -20,20 +20,24 @@ jobs:
   create-agents:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    strategy:
-      matrix:
-        # Create 4 agents per run (different niches)
-        niche_index: [0, 1, 2, 3]
+    # Create all 4 niches sequentially in one job — the previous matrix fanned out to 4 runners
+    # that all stepped on each other (no niche file lock). agent_factory.py --once reads / writes
+    # MBM/LeadEngine/agent_persistence.json, so a single runner is the correct pattern.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
       - run: pip install requests python-dotenv
-      - name: Create voice agent
+      - name: Create 4 voice agents (sequential)
         env:
           RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
-        run: python MBM/LeadEngine/agent_factory.py --once
+        run: |
+          for niche in 0 1 2 3; do
+            echo "── niche ${niche} ──"
+            python MBM/LeadEngine/agent_factory.py --once --niche=${niche} 2>&1 | tail -5 || echo "niche ${niche} failed, continuing"
+          done
 
   # ═══════════════════════════════════════════════════════
   # PHASE 2: Enrich and qualify leads
@@ -104,7 +108,12 @@ jobs:
           SMTP_FROM_NAME: ${{ secrets.SMTP_FROM_NAME }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: node server/emailSender.js --batchSize=50
+        run: node server/emailSender.js --batchSize=1000
+      - name: Alert on email queue failure
+        if: failure()
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🛑 *BASE44 OVERNIGHT* email drain FAILED\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
   # ═══════════════════════════════════════════════════════
   # PHASE 5: Run revenue gate
@@ -121,17 +130,21 @@ jobs:
           python-version: '3.11'
       - run: pip install python-dotenv requests 2>/dev/null || true
       - name: Run revenue seekers
+        uses: nick-fields/retry@v3
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: |
-          cd MBM/LeadEngine
-          python campaign_grabber_agent.py grab 2>&1 | tail -5
-          python seller_monetization_agent.py 2>&1 | tail -5
-          python platform_auto_connector.py 2>&1 | tail -5
-          python voice_agency_enhancer.py 2>&1 | tail -5
-          python revenue_seeker.py seek 2>&1 | tail -5
-          python revenue_tracker.py check 2>&1 | tail -5
+        with:
+          timeout_minutes: 15
+          max_attempts: 3
+          command: |
+            cd MBM/LeadEngine
+            python campaign_grabber_agent.py grab 2>&1 | tail -5
+            python seller_monetization_agent.py 2>&1 | tail -5
+            python platform_auto_connector.py 2>&1 | tail -5
+            python voice_agency_enhancer.py 2>&1 | tail -5
+            python revenue_seeker.py seek 2>&1 | tail -5
+            python revenue_tracker.py check 2>&1 | tail -5
       - name: Upload Overnight Revenue Outputs
         if: always()
         uses: actions/upload-artifact@v4
@@ -143,11 +156,56 @@ jobs:
           if-no-files-found: warn
 
   # ═══════════════════════════════════════════════════════
+  # PHASE 5.5: Master Online Revenue Workflow
+  # Orchestrates Upwork bidding, high-ticket matcher, B2B audits, Shopify sync,
+  # Whop sync, and the revenue gate in one pass. WAS WIRED TO NO WORKFLOW.
+  # ═══════════════════════════════════════════════════════
+  master-revenue-workflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: revenue-gate
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install python-dotenv requests beautifulsoup4 2>/dev/null || true
+      - name: Run Master Online Revenue Workflow
+        uses: nick-fields/retry@v3
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          WHOP_API_KEY: ${{ secrets.WHOP_API_KEY }}
+          WHOP_ACCOUNT_ID: ${{ secrets.WHOP_ACCOUNT_ID }}
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        with:
+          timeout_minutes: 25
+          max_attempts: 3
+          command: |
+            cd MBM/LeadEngine
+            python master_online_revenue_workflow.py 2>&1 | tail -40
+      - name: Upload Master Workflow Summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: master-revenue-workflow
+          path: |
+            MBM/LeadEngine/logs/master_online_revenue_workflow_summary.json
+          if-no-files-found: warn
+      - name: Alert on master workflow failure
+        if: failure()
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🛑 *BASE44 OVERNIGHT* master revenue workflow FAILED\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+  # ═══════════════════════════════════════════════════════
   # PHASE 6: Summary report
   # ═══════════════════════════════════════════════════════
   summary:
     runs-on: ubuntu-latest
-    needs: [create-agents, enrich-leads, deploy-agents, send-emails, revenue-gate]
+    needs: [create-agents, enrich-leads, deploy-agents, send-emails, revenue-gate, master-revenue-workflow]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -160,6 +218,11 @@ jobs:
           echo "- **Agent Deployment:** ${{ needs.deploy-agents.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Email Queue:** ${{ needs.send-emails.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Revenue Gate:** ${{ needs.revenue-gate.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Master Revenue Workflow:** ${{ needs.master-revenue-workflow.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Agents created tonight" >> $GITHUB_STEP_SUMMARY
           echo "Check [agent-factory logs](../agent-factory.yml)" >> $GITHUB_STEP_SUMMARY
+      - name: Overnight digest to Telegram
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🌙 *BASE44 OVERNIGHT DIGEST*\nAgents: ${{ needs.create-agents.result }} | Enrich: ${{ needs.enrich-leads.result }} | Deploy: ${{ needs.deploy-agents.result }}\nEmail: ${{ needs.send-emails.result }} | Revenue Gate: ${{ needs.revenue-gate.result }} | Master WF: ${{ needs.master-revenue-workflow.result }}\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

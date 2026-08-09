@@ -1,0 +1,92 @@
+name: Revenue Dashboard
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # 07:00 UTC daily — after the overnight run
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: revenue-dashboard
+  cancel-in-progress: true
+
+jobs:
+  build-dashboard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate revenue dashboard HTML
+        run: python MBM/LeadEngine/revenue_dashboard_html.py --out /tmp/revenue_dashboard.html
+
+      - name: Upload Revenue Dashboard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: revenue-dashboard
+          path: /tmp/revenue_dashboard.html
+          if-no-files-found: warn
+
+      - name: Send dashboard to Telegram
+        if: success()
+        shell: bash
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python - <<'PYEOF'
+          import os, json, glob, sys
+          sys.path.insert(0, "MBM/Scripts")
+          from notify_lib import send_and_log, log_notification, send_telegram
+          tok = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+          cid = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+          if not tok or not cid:
+              print("Telegram secrets not set; skipping")
+              raise SystemExit(0)
+          # Send the rendered verdict as a message first.
+          import urllib.parse, urllib.request
+          verdicts = sorted(glob.glob("MBM/LeadEngine/logs/revenue/revenue_hourly_*.json"))
+          msg = "📊 *DAILY REVENUE DASHBOARD*"
+          if verdicts:
+              with open(verdicts[-1]) as fh:
+                  d = json.load(fh)
+              msg = (f"📊 *DAILY REVENUE DASHBOARD*\n"
+                     f"Answer: {d.get('answer','?')} | Score: {d.get('score',0)}\n"
+                     f"Hours without revenue: {d.get('cumulative_hours_without_revenue',0)}\n"
+                     f"Level: {d.get('escalation_level','?')}")
+          send_and_log("revenue:daily", msg)
+          # Multipart-upload the HTML file.
+          boundary = "----b44dash"
+          with open("/tmp/revenue_dashboard.html", "rb") as fh:
+              file_bytes = fh.read()
+          parts = (
+              f"--{boundary}\r\nContent-Disposition: form-data; name=\"chat_id\"\r\n\r\n{cid}\r\n"
+              f"--{boundary}\r\nContent-Disposition: form-data; name=\"caption\"\r\n\r\nRevenue dashboard\r\n"
+              f"--{boundary}\r\nContent-Disposition: form-data; name=\"document\"; filename=\"revenue_dashboard.html\"\r\n"
+              f"Content-Type: text/html\r\n\r\n"
+          ).encode("utf-8")
+          body = parts + file_bytes + f"\r\n--{boundary}--\r\n".encode("utf-8")
+          req = urllib.request.Request(
+              f"https://api.telegram.org/bot{tok}/sendDocument",
+              data=body, headers={"Content-Type": f"multipart/form-data; boundary={boundary}"})
+          try:
+              urllib.request.urlopen(req, timeout=60)
+              log_notification("revenue:dashboard-file", "revenue_dashboard.html delivered")
+          except Exception as e:
+              print(f"Dashboard file send failed: {e}")
+          print("Dashboard sent to Telegram")
+          PYEOF
+
+      - name: Notify on dashboard failure
+        if: failure()
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🛑 *BASE44* revenue dashboard build FAILED\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

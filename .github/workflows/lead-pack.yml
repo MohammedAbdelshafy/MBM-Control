@@ -1,0 +1,72 @@
+name: Monthly Lead Pack Subscription — Build & Ship
+
+on:
+  schedule:
+    - cron: '0 4 1 * *'   # 04:00 UTC on the 1st of every month
+  workflow_dispatch:
+    inputs:
+      month:
+        description: 'Pack month (YYYY-MM). Defaults to current.'
+        type: string
+        required: false
+      source:
+        description: 'Lead source (real_estate | outreach | lead engine | all)'
+        type: choice
+        default: real_estate
+        options:
+          - real_estate
+          - outreach
+          - lead engine
+          - all
+
+permissions:
+  contents: read
+
+jobs:
+  build-lead-pack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build monthly lead pack
+        id: build
+        env:
+          MONTH: ${{ github.event.inputs.month || '' }}
+          SOURCE: ${{ github.event.inputs.source || 'real_estate' }}
+        run: |
+          python MBM/LeadEngine/lead_pack_builder.py \
+            $(if [ -n "$MONTH" ]; then echo "--month $MONTH"; fi) \
+            --source "$SOURCE" \
+            > lead_pack_result.json
+          cat lead_pack_result.json
+
+      - name: Write gate summary
+        if: always()
+        run: |
+          echo "## Monthly Lead Pack" >> $GITHUB_STEP_SUMMARY
+          echo "job.status=${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          python3 MBM/LeadEngine/lead_pack_summary.py lead_pack_result.json >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Lead Pack deliverable
+        uses: actions/upload-artifact@v4
+        with:
+          name: lead-pack-2026-deliverable
+          path: |
+            MBM/LeadEngine/lead_packs/*.csv
+            MBM/LeadEngine/lead_packs/*.json
+          if-no-files-found: warn
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: build-lead-pack
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Alert on lead pack failure
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🛑 *BASE44 LEAD PACK* monthly deliverable build FAILED\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -91,3 +91,60 @@ jobs:
         with:
           commit_message: 'chore: auto-fix lint issues'
           branch: ${{ github.head_ref }}
+
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate all workflow files
+        uses: reviewdog/action-actionlint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-check
+          fail_on_error: true
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+  npm-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Audit production dependencies
+        run: |
+          echo "## Dependency Audit" >> $GITHUB_STEP_SUMMARY
+          npm audit --omit=dev --audit-level=high --json > /tmp/npm_audit.json 2>/dev/null || true
+          python3 - <<'PYEOF' >> $GITHUB_STEP_SUMMARY
+          import json
+          try:
+              with open("/tmp/npm_audit.json") as fh:
+                  d = json.load(fh)
+              meta = d.get("metadata", {}).get("vulnerabilities", {})
+              total = sum(meta.values())
+              print(f"- **Vulnerabilities:** {total}")
+              for sev, count in meta.items():
+                  if count:
+                      print(f"  - {sev}: {count}")
+              if total == 0:
+                  print("- ✅ No known production vulnerabilities")
+          except Exception as e:
+              print(f"- Audit parse skipped: {e}")
+          PYEOF

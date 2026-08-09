@@ -1,0 +1,26 @@
+name: Telegram Notify
+description: Send a Markdown message to the ops Telegram channel AND persist it in Supabase `notifications`. Safe no-op when secrets are unset.
+
+inputs:
+  message:
+    description: Markdown message text (keep to a single line; use \n escaped newlines)
+    required: true
+  event:
+    description: Notification event tag stored in Supabase (e.g. ci:hourly-failure)
+    required: false
+    default: ci:notification
+
+runs:
+  using: composite
+  steps:
+    - name: Send + persist notification
+      shell: bash
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      run: |
+        python MBM/Scripts/notify_lib.py \
+          --event "${{ inputs.event }}" \
+          --message "${{ inputs.message }}"

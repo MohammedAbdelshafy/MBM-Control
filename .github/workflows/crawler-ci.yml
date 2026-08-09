@@ -72,3 +72,15 @@ jobs:
         with:
           name: crawler-ci-state
           path: machine_state.json
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: clipping-scan
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Alert on crawler failure
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🛑 *BASE44 CRAWLER* clipping.com scan FAILED\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

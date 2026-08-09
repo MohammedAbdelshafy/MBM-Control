@@ -43,8 +43,35 @@ jobs:
           # We check if secrets are exposed in env context. 
           # GitHub Actions masks them, but we can check if they are set to empty.
           # Here we just document the expected secrets for future agents.
-          expected_secrets=("VITE_SUPABASE_URL" "SUPABASE_SERVICE_ROLE_KEY" "SMTP_HOST" "CLIPPING_EMAIL")
-          echo "- Expected Secrets: ${expected_secrets[*]}" >> $GITHUB_STEP_SUMMARY
+          # Document the full expected secrets so the report reflects what the pipeline actually needs.
+          # Tracked secrets MUST be set in repo settings — missing ones block jobs at runtime.
+          expected_secrets=(
+            # Supabase
+            "VITE_SUPABASE_URL"
+            "SUPABASE_SERVICE_ROLE_KEY"
+            # SMTP (email queue)
+            "SMTP_HOST"
+            "SMTP_PORT"
+            "SMTP_USER"
+            "SMTP_PASS"
+            "SMTP_FROM"
+            "SMTP_FROM_NAME"
+            "CLIPPING_EMAIL"
+            # Lead engine / voice
+            "RETELL_API_KEY"
+            "RAPIDAPI_KEY"
+            # Monetization
+            "WHOP_API_KEY"
+            "STRIPE_SECRET_KEY"
+            "STRIPE_WEBHOOK_SECRET"
+            "TWILIO_ACCOUNT_SID"
+            "TWILIO_AUTH_TOKEN"
+            "TWILIO_PHONE_NUMBER"
+            # Telegram alerts
+            "TELEGRAM_BOT_TOKEN"
+            "TELEGRAM_CHAT_ID"
+          )
+          echo "- Expected Secrets (${#expected_secrets[@]}): ${expected_secrets[*]}" >> $GITHUB_STEP_SUMMARY
           
           # Assuming missing secrets deduction (mock for reporting since secrets aren't available to this job without env injection)
           echo "- ✅ Secrets validation requires workflow dispatch or specific job context." >> $GITHUB_STEP_SUMMARY
@@ -106,3 +133,9 @@ jobs:
             health_report.md
             /tmp/health_score.txt
           if-no-files-found: warn
+
+      - name: Alert when repo health drops below 75
+        if: failure()
+        uses: ./.github/actions/telegram-notify
+        with:
+          message: "🏥 *BASE44 HEALTH* repo health score below 75 — review issues.\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
