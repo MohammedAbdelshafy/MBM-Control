@@ -13,11 +13,9 @@ import RoleRoute from '@/components/RoleRoute';
 import { LangProvider } from '@/lib/i18n';
 import { getHomeRoute } from '@/lib/roles';
 
-// Eagerly loaded — small, shown on first paint
 import Login from '@/pages/Login';
 import AppLayout from '@/components/layout/AppLayout';
 
-// Lazy-loaded pages
 const Register = lazy(() => import('@/pages/Register'));
 const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
@@ -49,6 +47,7 @@ const ClientHuntDashboard = lazy(() => import('@/pages/ClientHuntDashboard'));
 const VoiceAgentsStudio = lazy(() => import('@/pages/VoiceAgentsStudio'));
 const AffiliateAnalytics = lazy(() => import('@/pages/AffiliateAnalytics'));
 const AutoDialer = lazy(() => import('@/pages/AutoDialer'));
+const MobileDialer = lazy(() => import('@/pages/MobileDialer'));
 
 function PageLoader() {
   return (
@@ -93,7 +92,6 @@ const AuthenticatedApp = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/bawab-signup" element={<Navigate to="/doorman-signup" replace />} />
         <Route path="/doorman-signup" element={<DoormanSignup />} />
-        {/* Public Landing & Dashboards (No login required) */}
         <Route path="/" element={<MBMDashboard />} />
         <Route path="/demo" element={<DemoLandingPage />} />
         <Route path="/hunt" element={<ClientHuntDashboard />} />
@@ -101,6 +99,8 @@ const AuthenticatedApp = () => {
         <Route path="/voice-studio" element={<VoiceAgentsStudio />} />
         <Route path="/dialer" element={<AutoDialer />} />
         <Route path="/auto-dialer" element={<AutoDialer />} />
+        <Route path="/dialer/mobile" element={<MobileDialer />} />
+        <Route path="/mobile-dialer" element={<MobileDialer />} />
         <Route path="/affiliates" element={<AffiliateAnalytics />} />
         <Route path="/mbm" element={<MBMDashboard />} />
         <Route path="/mbm-dashboard" element={<MBMDashboard />} />
@@ -127,7 +127,6 @@ const AuthenticatedApp = () => {
             <Route path="/reports" element={<RoleRoute module="reports"><Reports /></RoleRoute>} />
           </Route>
         </Route>
-        {/* Mission Control (admin only) */}
         <Route path="/mission-control" element={<MissionControlDashboard />} />
         <Route path="/mission-control/:missionId" element={<MissionDetail />} />
         <Route path="/chronicle" element={<ChronicleSearch />} />
