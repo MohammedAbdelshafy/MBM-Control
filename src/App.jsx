@@ -49,106 +49,31 @@ const AutoDialer = lazy(() => import('@/pages/AutoDialer'));
 const MobileDialer = lazy(() => import('@/pages/MobileDialer'));
 
 function PageLoader() {
-  return (
-    <div className="flex items-center justify-center h-[50vh]">
-      <div className="text-center">
-        <div className="w-8 h-8 border-4 border-navy/20 border-t-navy rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-sm text-muted-foreground">Loading...</p>
-      </div>
-    </div>
-  );
+  return <div className="flex items-center justify-center h-[50vh]"><div className="text-center"><div className="w-8 h-8 border-4 border-navy/20 border-t-navy rounded-full animate-spin mx-auto mb-3" /><p className="text-sm text-muted-foreground">Loading...</p></div></div>;
+}
+
+function ResponsiveDialerHome() {
+  const isPhone = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+  return isPhone ? <MobileDialer /> : <MBMDashboard />;
 }
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
-
-  if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="w-10 h-10 border-4 border-navy/20 border-t-navy rounded-full animate-spin mx-auto mb-3"></div>
-          <p className="text-sm text-muted-foreground font-heading">dawrix</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (authError) {
-    if (authError.type === 'user_not_registered') return <UserNotRegisteredError />;
-    if (authError.type === 'auth_required') {
-      navigateToLogin();
-      return null;
-    }
-  }
-
-  return (
-    <Suspense fallback={<PageLoader />}>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/bawab-signup" element={<Navigate to="/doorman-signup" replace />} />
-        <Route path="/doorman-signup" element={<DoormanSignup />} />
-        <Route path="/" element={<MBMDashboard />} />
-        <Route path="/demo" element={<DemoLandingPage />} />
-        <Route path="/hunt" element={<ClientHuntDashboard />} />
-        <Route path="/voice-agents" element={<VoiceAgentsStudio />} />
-        <Route path="/voice-studio" element={<VoiceAgentsStudio />} />
-        <Route path="/dialer" element={<AutoDialer />} />
-        <Route path="/auto-dialer" element={<AutoDialer />} />
-        <Route path="/dialer/mobile" element={<MobileDialer />} />
-        <Route path="/mobile-dialer" element={<MobileDialer />} />
-        <Route path="/affiliates" element={<AffiliateAnalytics />} />
-        <Route path="/mbm" element={<MBMDashboard />} />
-        <Route path="/mbm-dashboard" element={<MBMDashboard />} />
-        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-          <Route element={<AppLayout />}>
-            <Route path="/my-work" element={<RoleRoute module="my_work"><MyWorkDashboard /></RoleRoute>} />
-            <Route path="/dashboard" element={<RoleRoute module="dashboard"><Dashboard /></RoleRoute>} />
-            <Route path="/kpis" element={<RoleRoute module="kpis"><Kpis /></RoleRoute>} />
-            <Route path="/buildings" element={<RoleRoute module="buildings"><Buildings /></RoleRoute>} />
-            <Route path="/pickups" element={<RoleRoute module="pickups"><Pickups /></RoleRoute>} />
-            <Route path="/todays-route" element={<RoleRoute module="todays_route"><TodaysRoute /></RoleRoute>} />
-            <Route path="/payments" element={<RoleRoute module="payments"><Payments /></RoleRoute>} />
-            <Route path="/commissions" element={<RoleRoute module="commissions"><Commissions /></RoleRoute>} />
-            <Route path="/warehouse" element={<RoleRoute module="warehouse"><Warehouse /></RoleRoute>} />
-            <Route path="/vehicles" element={<RoleRoute module="vehicles"><Vehicles /></RoleRoute>} />
-            <Route path="/sales-members" element={<RoleRoute module="sales_members"><SalesMembers /></RoleRoute>} />
-            <Route path="/users" element={<RoleRoute module="users"><UserManagement /></RoleRoute>} />
-            <Route path="/customers" element={<RoleRoute module="customers"><Customers /></RoleRoute>} />
-            <Route path="/dealing-room" element={<RoleRoute module="dealing_room"><DealingRoom /></RoleRoute>} />
-            <Route path="/drivers" element={<RoleRoute module="drivers"><Drivers /></RoleRoute>} />
-            <Route path="/new-requests" element={<RoleRoute module="new_requests"><NewRequests /></RoleRoute>} />
-            <Route path="/my-building" element={<RoleRoute module="my_building"><MyBuilding /></RoleRoute>} />
-            <Route path="/reports" element={<RoleRoute module="reports"><Reports /></RoleRoute>} />
-          </Route>
-        </Route>
-        <Route path="/mission-control" element={<MissionControlDashboard />} />
-        <Route path="/mission-control/:missionId" element={<MissionDetail />} />
-        <Route path="/chronicle" element={<ChronicleSearch />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </Suspense>
-  );
+  if (isLoadingPublicSettings || isLoadingAuth) return <div className="fixed inset-0 flex items-center justify-center bg-background"><div className="text-center"><div className="w-10 h-10 border-4 border-navy/20 border-t-navy rounded-full animate-spin mx-auto mb-3"></div><p className="text-sm text-muted-foreground font-heading">dawrix</p></div></div>;
+  if (authError) { if (authError.type === 'user_not_registered') return <UserNotRegisteredError />; if (authError.type === 'auth_required') { navigateToLogin(); return null; } }
+  return <Suspense fallback={<PageLoader />}><Routes>
+    <Route path="/login" element={<Login />} /><Route path="/register" element={<Register />} /><Route path="/forgot-password" element={<ForgotPassword />} /><Route path="/reset-password" element={<ResetPassword />} />
+    <Route path="/bawab-signup" element={<Navigate to="/doorman-signup" replace />} /><Route path="/doorman-signup" element={<DoormanSignup />} />
+    <Route path="/" element={<ResponsiveDialerHome />} /><Route path="/demo" element={<DemoLandingPage />} /><Route path="/hunt" element={<ClientHuntDashboard />} />
+    <Route path="/voice-agents" element={<VoiceAgentsStudio />} /><Route path="/voice-studio" element={<VoiceAgentsStudio />} />
+    <Route path="/dialer" element={<AutoDialer />} /><Route path="/auto-dialer" element={<AutoDialer />} /><Route path="/dialer/mobile" element={<MobileDialer />} /><Route path="/mobile-dialer" element={<MobileDialer />} />
+    <Route path="/affiliates" element={<AffiliateAnalytics />} /><Route path="/mbm" element={<MBMDashboard />} /><Route path="/mbm-dashboard" element={<MBMDashboard />} />
+    <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}><Route element={<AppLayout />}>
+      <Route path="/my-work" element={<RoleRoute module="my_work"><MyWorkDashboard /></RoleRoute>} /><Route path="/dashboard" element={<RoleRoute module="dashboard"><Dashboard /></RoleRoute>} /><Route path="/kpis" element={<RoleRoute module="kpis"><Kpis /></RoleRoute>} /><Route path="/buildings" element={<RoleRoute module="buildings"><Buildings /></RoleRoute>} /><Route path="/pickups" element={<RoleRoute module="pickups"><Pickups /></RoleRoute>} /><Route path="/todays-route" element={<RoleRoute module="todays_route"><TodaysRoute /></RoleRoute>} /><Route path="/payments" element={<RoleRoute module="payments"><Payments /></RoleRoute>} /><Route path="/commissions" element={<RoleRoute module="commissions"><Commissions /></RoleRoute>} /><Route path="/warehouse" element={<RoleRoute module="warehouse"><Warehouse /></RoleRoute>} /><Route path="/vehicles" element={<RoleRoute module="vehicles"><Vehicles /></RoleRoute>} /><Route path="/sales-members" element={<RoleRoute module="sales_members"><SalesMembers /></RoleRoute>} /><Route path="/users" element={<RoleRoute module="users"><UserManagement /></RoleRoute>} /><Route path="/customers" element={<RoleRoute module="customers"><Customers /></RoleRoute>} /><Route path="/dealing-room" element={<RoleRoute module="dealing_room"><DealingRoom /></RoleRoute>} /><Route path="/drivers" element={<RoleRoute module="drivers"><Drivers /></RoleRoute>} /><Route path="/new-requests" element={<RoleRoute module="new_requests"><NewRequests /></RoleRoute>} /><Route path="/my-building" element={<RoleRoute module="my_building"><MyBuilding /></RoleRoute>} /><Route path="/reports" element={<RoleRoute module="reports"><Reports /></RoleRoute>} />
+    </Route></Route>
+    <Route path="/mission-control" element={<MissionControlDashboard />} /><Route path="/mission-control/:missionId" element={<MissionDetail />} /><Route path="/chronicle" element={<ChronicleSearch />} /><Route path="*" element={<PageNotFound />} />
+  </Routes></Suspense>;
 };
 
-function App() {
-  return (
-    <LangProvider>
-      <AuthProvider>
-        <QueryClientProvider client={queryClientInstance}>
-          <ErrorBoundary>
-            <Router>
-              <ScrollToTop />
-              <AuthenticatedApp />
-            </Router>
-            <Toaster />
-          </ErrorBoundary>
-        </QueryClientProvider>
-      </AuthProvider>
-    </LangProvider>
-  )
-}
-
+function App() { return <LangProvider><AuthProvider><QueryClientProvider client={queryClientInstance}><ErrorBoundary><Router><ScrollToTop /><AuthenticatedApp /></Router><Toaster /></ErrorBoundary></QueryClientProvider></AuthProvider></LangProvider> }
 export default App
