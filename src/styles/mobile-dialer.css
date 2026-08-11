@@ -1,12 +1,14 @@
-/* MBM Dialer: hard-fit mobile density for portrait + landscape */
+/* MBM Dialer mobile reader/pan mode */
 .mobile-dialer-shell {
   width: 100%;
-  max-width: 100vw;
+  max-width: none;
   min-height: 100dvh;
-  overflow-x: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   box-sizing: border-box;
   --md-pad: 12px;
   --md-gap: 10px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mobile-dialer-shell,
@@ -14,10 +16,14 @@
   box-sizing: border-box;
 }
 
-/* Compact portrait density. */
+/* Portrait: keep the page compact, but allow deliberate sideways panning for wide data. */
 @media (max-width: 767px) and (orientation: portrait) {
   .mobile-dialer-shell {
     zoom: 0.92;
+  }
+  .mobile-dialer-shell > header,
+  .mobile-dialer-shell > main {
+    min-width: 420px;
   }
   .mobile-dialer-shell .md-header-title { font-size: 0.92rem; }
   .mobile-dialer-shell .md-header-subtitle { font-size: 0.62rem; }
@@ -27,16 +33,26 @@
   .mobile-dialer-shell .md-phone { padding: 9px; }
   .mobile-dialer-shell .md-primary-action { min-height: 40px; }
   .mobile-dialer-shell .md-secondary-action { min-height: 36px; }
-  .mobile-dialer-shell .md-script { font-size: 11px; line-height: 1.42; }
+  .mobile-dialer-shell .md-script { font-size: 11px; line-height: 1.5; }
+  .mobile-dialer-shell .md-script-box {
+    min-height: 55dvh;
+    max-height: 78dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
-/* Landscape is shorter, so squeeze the whole control surface harder. */
+/* Landscape: compact controls, horizontal panning remains available, script gets its own reader. */
 @media (max-width: 900px) and (orientation: landscape) {
   .mobile-dialer-shell {
     zoom: 0.76;
     min-height: 131.58dvh;
     --md-pad: 8px;
     --md-gap: 7px;
+  }
+  .mobile-dialer-shell > header,
+  .mobile-dialer-shell > main {
+    min-width: 760px;
   }
   .mobile-dialer-shell .md-header { padding-top: max(4px, env(safe-area-inset-top)); }
   .mobile-dialer-shell .md-header-inner { padding-top: 7px; padding-bottom: 7px; }
@@ -49,13 +65,20 @@
   .mobile-dialer-shell .md-actions { margin-top: 7px; gap: 6px; }
   .mobile-dialer-shell .md-primary-action { min-height: 34px; }
   .mobile-dialer-shell .md-secondary-action { min-height: 30px; }
-  .mobile-dialer-shell .md-script { font-size: 10px; line-height: 1.3; }
-  .mobile-dialer-shell .md-script-box { max-height: 48dvh; }
+  .mobile-dialer-shell .md-script { font-size: 10px; line-height: 1.35; }
+  .mobile-dialer-shell .md-script-box {
+    min-height: 58dvh;
+    max-height: 82dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   .mobile-dialer-shell .md-leads { gap: 7px; }
 }
 
-/* Very short landscape phones. */
 @media (max-height: 430px) and (orientation: landscape) {
   .mobile-dialer-shell { zoom: 0.68; }
-  .mobile-dialer-shell .md-script-box { max-height: 44dvh; }
+  .mobile-dialer-shell .md-script-box {
+    min-height: 60dvh;
+    max-height: 84dvh;
+  }
 }
