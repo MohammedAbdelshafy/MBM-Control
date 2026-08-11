@@ -6,9 +6,16 @@ import '@/styles/mobile-dialer.css';
 const API = '/api';
 
 function normalizePhone(value = '') {
-  const digits = String(value).replace(/[^\d+]/g, '');
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  const cleaned = raw.replace(/[^\d+]/g, '');
+  if (!cleaned) return '';
+  if (cleaned.startsWith('+')) return cleaned;
+  if (cleaned.startsWith('00')) return `+${cleaned.slice(2)}`;
+  const digits = cleaned.replace(/\D/g, '');
   if (!digits) return '';
-  return digits.startsWith('+') ? digits : `+1${digits.replace(/^1/, '')}`;
+  const national = digits.startsWith('1') ? digits.slice(1) : digits;
+  return `+1${national}`;
 }
 
 function buildPhoundLinks(phone) {
@@ -63,7 +70,7 @@ export default function MobileDialer() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return leads;
-    return leads.filter((lead) => [lead.prospect_name, lead.address, lead.city, lead.formatted_phone]
+    return leads.filter((lead) => [lead.prospect_name, lead.address, lead.city, lead.formatted_phone, lead.phone_number]
       .filter(Boolean)
       .join(' ')
       .toLowerCase()
@@ -113,8 +120,8 @@ export default function MobileDialer() {
                 return (
                   <article key={lead.id} className="md-card w-full overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-2.5 shadow-md shadow-black/10 sm:rounded-2xl sm:p-3.5">
                     <div className="flex min-w-0 items-start justify-between gap-2"><div className="min-w-0 flex-1"><h2 className="truncate text-xs font-semibold sm:text-sm">{lead.prospect_name || 'Prospect'}</h2><div className="mt-0.5 flex min-w-0 items-center gap-1 text-[9px] text-slate-400 sm:mt-1 sm:gap-1.5 sm:text-[11px]"><MapPin className="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" /><span className="truncate">{lead.address || lead.city || 'Address unavailable'}</span></div></div><span className="shrink-0 rounded-full bg-white/5 px-1.5 py-0.5 text-[8px] text-slate-500 sm:px-2 sm:py-1 sm:text-[10px]">{lead.distress_score || '—'}</span></div>
-                    <div className="md-phone mt-2 rounded-lg border border-white/5 bg-slate-950/80 p-2 sm:mt-3 sm:rounded-xl sm:p-3"><div className="text-[7px] uppercase tracking-[0.16em] text-slate-500 sm:text-[9px] sm:tracking-[0.18em]">Phone</div><div className="mt-0.5 break-all font-mono text-[11px] sm:mt-1 sm:text-sm">{lead.formatted_phone || lead.phone_number || 'No phone'}</div></div>
-                    <div className="md-actions mt-1.5 grid grid-cols-2 gap-1.5 sm:mt-2.5 sm:gap-2"><button disabled={!normalized} onClick={() => copy(normalized, 'Phone number')} className="md-primary-action inline-flex min-h-9 items-center justify-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-1.5 text-[9px] font-semibold disabled:opacity-40 sm:min-h-11 sm:gap-2 sm:rounded-xl sm:px-2 sm:text-xs"><Copy className="h-3 w-3 sm:h-4 sm:w-4" />Copy</button><button disabled={!normalized} onClick={() => openPhound(normalized)} className="md-primary-action inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-emerald-600 px-1.5 text-[9px] font-bold hover:bg-emerald-500 disabled:opacity-40 sm:min-h-11 sm:gap-2 sm:rounded-xl sm:px-2 sm:text-xs"><ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />Open Phound</button></div>
+                    <div className="md-phone mt-2 rounded-lg border border-white/5 bg-slate-950/80 p-2 sm:mt-3 sm:rounded-xl sm:p-3"><div className="text-[7px] uppercase tracking-[0.16em] text-slate-500 sm:text-[9px] sm:tracking-[0.18em]">US Phone (+1)</div><div className="mt-0.5 break-all font-mono text-[11px] sm:mt-1 sm:text-sm">{normalized || 'No phone'}</div></div>
+                    <div className="md-actions mt-1.5 grid grid-cols-2 gap-1.5 sm:mt-2.5 sm:gap-2"><button disabled={!normalized} onClick={() => copy(normalized, 'Phone number')} className="md-primary-action inline-flex min-h-9 items-center justify-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-1.5 text-[9px] font-semibold disabled:opacity-40 sm:min-h-11 sm:gap-2 sm:rounded-xl sm:px-2 sm:text-xs"><Copy className="h-3 w-3 sm:h-4 sm:w-4" />Copy +1</button><button disabled={!normalized} onClick={() => openPhound(normalized)} className="md-primary-action inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-emerald-600 px-1.5 text-[9px] font-bold hover:bg-emerald-500 disabled:opacity-40 sm:min-h-11 sm:gap-2 sm:rounded-xl sm:px-2 sm:text-xs"><ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />Open Phound</button></div>
                     <div className="md-actions mt-1.5 grid grid-cols-2 gap-1.5 sm:mt-2 sm:gap-2"><a href={tel || '#'} className="md-secondary-action inline-flex min-h-8 items-center justify-center gap-1 rounded-lg border border-white/10 px-1.5 text-[9px] text-slate-300 sm:min-h-10 sm:gap-2 sm:rounded-xl sm:px-2 sm:text-[11px]"><Phone className="h-3 w-3 sm:h-3.5 sm:w-3.5" />Phone</a><button onClick={() => setExpandedId(expanded ? null : lead.id)} className="md-secondary-action inline-flex min-h-8 items-center justify-center gap-1 rounded-lg border border-emerald-400/20 bg-emerald-400/[0.05] px-1.5 text-[9px] font-semibold text-emerald-200 sm:min-h-10 sm:gap-2 sm:rounded-xl sm:px-2 sm:text-[11px]">{expanded ? <ChevronUp className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> : <ChevronDown className="h-3 w-3 sm:h-3.5 sm:w-3.5" />}{expanded ? 'Hide' : 'Script'}</button></div>
                     {expanded && <div className="md-card mt-2 overflow-hidden rounded-xl border border-white/10 bg-slate-950/90 sm:mt-3 sm:rounded-2xl"><div className="flex items-center justify-between border-b border-white/10 px-2.5 py-2 sm:px-3 sm:py-2.5"><div className="text-[8px] font-bold uppercase tracking-[0.14em] text-emerald-300 sm:text-[10px] sm:tracking-[0.16em]">Call script</div><button onClick={() => copy(script, 'Script')} className="inline-flex min-h-7 items-center gap-1 rounded-md bg-white/[0.06] px-2 text-[9px] text-slate-200 sm:min-h-9 sm:gap-1.5 sm:rounded-lg sm:px-2.5 sm:text-[11px]"><Copy className="h-3 w-3 sm:h-3.5 sm:w-3.5" />Copy</button></div><pre className="md-script md-script-box overflow-y-auto whitespace-pre-wrap break-words px-2.5 py-2.5 text-[10px] leading-4 text-slate-200 font-sans sm:max-h-[55vh] sm:px-3 sm:py-3 sm:text-[12px] sm:leading-5">{script}</pre></div>}
                   </article>
