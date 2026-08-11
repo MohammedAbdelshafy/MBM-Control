@@ -42,14 +42,20 @@
     --sidebar-border: 222 55% 30%;
     --sidebar-ring: 110 62% 42%;
   }
+  html, body, #root {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+  body {
+    @apply bg-background text-foreground font-body;
+  }
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground font-body;
   }
 }
 
