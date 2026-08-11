@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Phone, PhoneOff, PhoneCall, User, MapPin, CheckCircle, XCircle,
-  Building, ExternalLink, Timer, Zap, ChevronRight, CalendarClock,
+  Building, ExternalLink, Zap, ChevronRight, CalendarClock,
   Search, Copy, Target, MessageSquare, ShieldCheck
 } from 'lucide-react';
 import { toast } from 'sonner';
