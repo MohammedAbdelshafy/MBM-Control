@@ -11,7 +11,6 @@ import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import RoleRoute from '@/components/RoleRoute';
 import { LangProvider } from '@/lib/i18n';
-import { getHomeRoute } from '@/lib/roles';
 
 import Login from '@/pages/Login';
 import AppLayout from '@/components/layout/AppLayout';
@@ -75,9 +74,8 @@ const AuthenticatedApp = () => {
   }
 
   if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
+    if (authError.type === 'user_not_registered') return <UserNotRegisteredError />;
+    if (authError.type === 'auth_required') {
       navigateToLogin();
       return null;
     }
@@ -104,7 +102,6 @@ const AuthenticatedApp = () => {
         <Route path="/affiliates" element={<AffiliateAnalytics />} />
         <Route path="/mbm" element={<MBMDashboard />} />
         <Route path="/mbm-dashboard" element={<MBMDashboard />} />
-
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           <Route element={<AppLayout />}>
             <Route path="/my-work" element={<RoleRoute module="my_work"><MyWorkDashboard /></RoleRoute>} />
@@ -130,7 +127,6 @@ const AuthenticatedApp = () => {
         <Route path="/mission-control" element={<MissionControlDashboard />} />
         <Route path="/mission-control/:missionId" element={<MissionDetail />} />
         <Route path="/chronicle" element={<ChronicleSearch />} />
-
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Suspense>
