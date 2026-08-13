@@ -15,14 +15,18 @@ from mbm_social.content_rewards import (
     _ledger_row,
     campaign_eligible,
     discover_campaigns,
+    economics_event,
     estimate_forecast,
     normalize_campaign,
     plan_campaigns,
+    plan_with_capacity,
     qa_candidate,
     record_verification,
     score_clip_candidate,
     submit,
+    transition_submission,
     update_rpm_priors,
+    verification_next,
 )
 
 PASS = 0
@@ -233,6 +237,119 @@ def test_plan() -> None:
     check("plan sorted desc", ranked[0][1].net_revenue_per_production_minute_usd >= ranked[1][1].net_revenue_per_production_minute_usd)
 
 
+def test_state_machine() -> None:
+    print("verification state machine")
+    check("planned -> submitted legal", verification_next("planned") == ["submitted"])
+    check("submitted -> verified legal", verification_next("submitted") == ["verified"])
+    check("verified is terminal", verification_next("verified") == [])
+    try:
+        verification_next("bogus_state")
+        check("unknown state fails closed", False)
+    except cr.ContentRewardsError:
+        check("unknown state fails closed", True)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmpd = Path(tmp)
+        ledger = RevenueLedger(path=tmpd / "ledger.jsonl")
+        c = normalize_campaign(RAW)
+        f = estimate_forecast(c, views_provider=_fake_views, priors={"dontwatchthis": 6.0})
+
+        def run():
+            order = submit(c, f, ledger=ledger, submissions_dir=tmpd / "subs")
+            row = transition_submission(ledger, order.submission_id, "submitted")
+            check("planned -> submitted", row["stage"] == "submitted")
+
+            try:
+                transition_submission(ledger, order.submission_id, "planned")
+                check("submitted -> planned illegal", False)
+            except cr.ContentRewardsError:
+                check("submitted -> planned illegal", True)
+
+            try:
+                transition_submission(ledger, order.submission_id, "verified", source="")
+                check("verified rejects empty source", False)
+            except cr.ContentRewardsError:
+                check("verified rejects empty source", True)
+
+            try:
+                transition_submission(ledger, order.submission_id, "verified", source="youtube_analytics")
+                check("verified requires numbers", False)
+            except cr.ContentRewardsError:
+                check("verified requires numbers", True)
+
+            row2 = transition_submission(
+                ledger, order.submission_id, "verified",
+                verified_views=50000.0, actual_revenue_usd=8.4, source="youtube_analytics",
+            )
+            check("submitted -> verified", row2["stage"] == "verified")
+            check("verified numbers stored", row2["verified_views"] == 50000.0 and row2["actual_revenue_usd"] == 8.4)
+
+            try:
+                transition_submission(ledger, order.submission_id, "submitted")
+                check("verified -> anything illegal", False)
+            except cr.ContentRewardsError:
+                check("verified -> anything illegal", True)
+
+        _patch_routing(run)
+
+
+def test_economics_events() -> None:
+    print("agent economics events")
+    c = normalize_campaign(RAW)
+    f = estimate_forecast(c, views_provider=_fake_views, priors={"dontwatchthis": 6.0})
+
+    ev = economics_event("campaign_planned", campaign=c, forecast=f)
+    check("event kind", ev["event"] == "campaign_planned")
+    check("event worker/brand", ev["worker"] == "content-rewards" and ev["brand"] == "dontwatchthis")
+    check("event campaign id", ev["campaign_id"] == c.id)
+    check("event keeps estimate separate", ev.get("actual_revenue_usd") is None)
+    check("event carries estimate", ev["expected_net_revenue_usd"] >= 0)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmpd = Path(tmp)
+        ledger = RevenueLedger(path=tmpd / "ledger.jsonl")
+
+        def run():
+            order = submit(c, f, ledger=ledger, submissions_dir=tmpd / "subs")
+            transition_submission(ledger, order.submission_id, "submitted")
+            row = transition_submission(
+                ledger, order.submission_id, "verified",
+                verified_views=50000.0, actual_revenue_usd=8.4, source="youtube_analytics",
+            )
+            ev2 = economics_event("campaign_verified", row=row)
+            check("verified event carries actual", ev2["actual_revenue_usd"] == 8.4)
+            check("verified event carries views", ev2["verified_views"] == 50000.0)
+            check("verified event carries source", ev2["verification_source"] == "youtube_analytics")
+
+            try:
+                economics_event("not_a_kind")
+                check("unknown event kind fails closed", False)
+            except cr.ContentRewardsError:
+                check("unknown event kind fails closed", True)
+
+        _patch_routing(run)
+
+
+def test_capacity_planning() -> None:
+    print("capacity-aware ranking")
+    c1 = normalize_campaign({**RAW, "production_minutes": 10.0})
+    c2 = normalize_campaign({**RAW, "topic": "mystery2", "brand": "cutedosage", "production_minutes": 20.0})
+    c3 = normalize_campaign({**RAW, "topic": "mystery3", "production_minutes": 30.0})
+    ranked = plan_campaigns([c1, c2, c3], priors={"dontwatchthis": 6.0, "cutedosage": 6.0}, views_provider=_fake_views)
+
+    chosen = plan_with_capacity(ranked, daily_production_minutes=30.0)
+    total = sum(t[1].production_minutes for t in chosen)
+    check("capacity respected", total <= 30.0 and len(chosen) <= 2)
+    check("deterministic", [t[1].production_minutes for t in chosen] == [t[1].production_minutes for t in plan_with_capacity(ranked, daily_production_minutes=30.0)])
+
+    capped = plan_with_capacity(ranked, daily_production_minutes=100.0, per_brand_cap=1)
+    brands = [t[0].brand for t in capped]
+    check("per-brand cap", len(set(brands)) == len(brands))
+
+    empty = plan_with_capacity(ranked, daily_production_minutes=0.0)
+    check("zero budget => empty", empty == [])
+
+
 def main() -> int:
     print("content_rewards tests")
     tests = [
@@ -243,6 +360,9 @@ def main() -> int:
         test_clip_qa,
         test_submit_verify_ledger,
         test_plan,
+        test_state_machine,
+        test_economics_events,
+        test_capacity_planning,
     ]
     for t in tests:
         try:

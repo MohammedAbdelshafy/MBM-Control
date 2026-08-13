@@ -612,6 +612,175 @@ def record_verification(
 
 
 # --------------------------------------------------------------------------
+# Verification state machine (queued -> submitted -> verified)
+# --------------------------------------------------------------------------
+
+VERIFICATION_TRANSITIONS = {
+    "planned": ("submitted",),
+    "submitted": ("verified",),
+    "verified": (),
+}
+
+
+def verification_next(from_state: str) -> list[str]:
+    """Legal successor states for a submission. Fails closed on unknown state."""
+    key = str(from_state or "").lower()
+    if key not in VERIFICATION_TRANSITIONS:
+        raise ContentRewardsError(
+            f"unknown verification state '{from_state}'; allowed: {sorted(VERIFICATION_TRANSITIONS)}"
+        )
+    return list(VERIFICATION_TRANSITIONS[key])
+
+
+def transition_submission(
+    ledger: RevenueLedger,
+    submission_id: str,
+    to_state: str,
+    *,
+    verified_views: Optional[float] = None,
+    actual_revenue_usd: Optional[float] = None,
+    source: str = "",
+) -> dict:
+    """
+    Deterministic state-machine transition for one submission.
+
+    Legal moves:
+      queued    -> submitted        (mark submitted to the platform)
+      submitted -> verified         (attach platform-reported numbers + source)
+      verified  -> <none>           (terminal; reject further moves)
+
+    Fails closed on:
+      - unknown submission
+      - illegal transition (e.g. queued -> verified, or verified -> anything)
+      - empty source when entering 'verified'
+      - verified numbers missing when entering 'verified'
+    """
+    to = str(to_state or "").lower()
+    if to not in VERIFICATION_TRANSITIONS:
+        raise ContentRewardsError(f"unknown target state '{to_state}'")
+
+    row = ledger.find(submission_id)
+    if row is None:
+        raise ContentRewardsError(f"no ledger row for submission '{submission_id}'")
+
+    legal = verification_next(row["stage"])
+    if to not in legal:
+        raise ContentRewardsError(
+            f"illegal transition '{row['stage']}' -> '{to}'; allowed: {legal or ['<terminal>']}"
+        )
+
+    if to == "submitted":
+        row["stage"] = "submitted"
+        row["timestamp_iso"] = _iso_now()
+        ledger.update(row)
+        return row
+
+    if to == "verified":
+        if not source or not source.strip():
+            raise ContentRewardsError("verification requires a non-empty source")
+        if verified_views is None or actual_revenue_usd is None:
+            raise ContentRewardsError("verification requires verified_views + actual_revenue_usd")
+        row["stage"] = "verified"
+        row["verified_views"] = float(verified_views)
+        row["actual_revenue_usd"] = float(actual_revenue_usd)
+        row["verification_source"] = source.strip()
+        row["timestamp_iso"] = _iso_now()
+        ledger.update(row)
+        return row
+
+    return row
+
+
+# --------------------------------------------------------------------------
+# Provider-neutral agent economics events
+# --------------------------------------------------------------------------
+
+ECONOMICS_EVENT_KINDS = ("campaign_planned", "campaign_submitted", "campaign_verified")
+
+
+def economics_event(
+    kind: str,
+    *,
+    campaign: Optional[Campaign] = None,
+    forecast: Optional[EconomicForecast] = None,
+    row: Optional[dict] = None,
+    worker: str = "content-rewards",
+    extra: Optional[dict] = None,
+) -> dict:
+    """
+    Emit a provider-neutral economics event (used by agent-accounting/ledgering).
+
+    Every event carries: kind, worker, brand, campaign_id, and the three
+    economics figures kept strictly separate:
+      expected_net_revenue_usd  (estimate; only when forecast is given)
+      verified_views            (platform-reported; only when row is verified)
+      actual_revenue_usd        (settled money; only when row is verified)
+    """
+    if kind not in ECONOMICS_EVENT_KINDS:
+        raise ContentRewardsError(f"unknown economics event kind '{kind}'")
+    brand = (campaign.brand if campaign else None) or (row or {}).get("brand") or ""
+    cid = (campaign.id if campaign else None) or (row or {}).get("campaign_id") or ""
+    ev: dict[str, Any] = {
+        "event": kind,
+        "worker": worker,
+        "brand": brand,
+        "campaign_id": cid,
+        "timestamp_iso": _iso_now(),
+    }
+    if forecast is not None:
+        ev["expected_net_revenue_usd"] = round(forecast.expected_net_revenue_usd, 2)
+        ev["net_revenue_per_production_minute_usd"] = round(
+            forecast.net_revenue_per_production_minute_usd, 4
+        )
+        ev["production_minutes"] = round(forecast.production_minutes, 2)
+        ev["basis"] = forecast.basis
+    if row is not None:
+        ev["stage"] = row.get("stage", "")
+        if row.get("stage") == "verified":
+            ev["verified_views"] = row.get("verified_views")
+            ev["actual_revenue_usd"] = row.get("actual_revenue_usd")
+            ev["verification_source"] = row.get("verification_source", "")
+    if extra:
+        ev.update({k: v for k, v in extra.items()})
+    return ev
+
+
+# --------------------------------------------------------------------------
+# JARVIS capacity-aware ranking
+# --------------------------------------------------------------------------
+
+
+def plan_with_capacity(
+    ranked: list[tuple[Campaign, EconomicForecast]],
+    daily_production_minutes: float,
+    per_brand_cap: Optional[int] = None,
+) -> list[tuple[Campaign, EconomicForecast]]:
+    """
+    Rank within a production budget. Takes the pre-ranked (by net/min) list and
+    returns the affordable prefix such that total production_minutes never
+    exceeds daily_production_minutes. Optional per-brand cap limits how many
+    campaigns any single brand may occupy.
+
+    Deterministic: stable order from the input ranking is preserved.
+    """
+    budget_remaining = max(float(daily_production_minutes), 0.0)
+    brand_counts: dict[str, int] = {}
+    selected: list[tuple[Campaign, EconomicForecast]] = []
+    for campaign, forecast in ranked:
+        if budget_remaining <= 0:
+            break
+        if per_brand_cap is not None and brand_counts.get(campaign.brand, 0) >= per_brand_cap:
+            continue
+        minutes = max(float(forecast.production_minutes), 0.5)
+        if minutes > budget_remaining:
+            continue
+        selected.append((campaign, forecast))
+        budget_remaining -= minutes
+        brand_counts[campaign.brand] = brand_counts.get(campaign.brand, 0) + 1
+    return selected
+
+
+# --------------------------------------------------------------------------
 # Learning (EWMA priors from verified actuals)
 # --------------------------------------------------------------------------
 
