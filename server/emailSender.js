@@ -13,10 +13,15 @@ const senderAccounts = [];
 
 if (senderPoolRaw.includes(':')) {
   // Multi-account mode: email:password pairs, separated by ',' or ';'
+  // Gmail app passwords are often pasted WITH spaces ("abcd efgh ijkl mnop") —
+  // strip all whitespace so a copy-paste app password survives verbatim.
   const entries = senderPoolRaw.split(/[,;]/).map(e => e.trim()).filter(Boolean);
   for (const entry of entries) {
     const [email, ...passParts] = entry.split(':');
-    senderAccounts.push({ email: email.trim(), pass: passParts.join(':').trim() });
+    senderAccounts.push({
+      email: email.trim(),
+      pass: passParts.join(':').replace(/\s+/g, '')
+    });
   }
 } else {
   // Single-account fallback
@@ -90,7 +95,8 @@ async function sendOne(transporter, supabase, email, fromAddress, fromName) {
   }
 }
 
-export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = false } = {}) {
+export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = false, dryRun = false } = {}) {
+  const isDryRun = dryRun || process.argv.includes('--dry-run') || process.env.EMAIL_DRY_RUN === 'true';
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!supabase) {
     if (!serviceRoleKey) {
@@ -101,9 +107,14 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
 
   // Build transporter pool with per-account credentials, then verify each
   // account and drop the broken ones before any real send.
-  const poolTransporters = await preflightAccounts();
+  let poolTransporters = await preflightAccounts();
   if (poolTransporters.length === 0) {
-    throw new Error('All sender accounts failed verification — fix SMTP_SENDER_POOL / SMTP_PASS');
+    if (isDryRun) {
+      console.log('[emailSender] ℹ️ Running in DRY-RUN mode (mocking SMTP delivery)');
+      poolTransporters = [{ address: 'dry-run@contecai.com', transporter: { sendMail: async () => ({ messageId: 'dry-run-id' }), close: () => {} } }];
+    } else {
+      throw new Error('All sender accounts failed verification — fix SMTP_SENDER_POOL / SMTP_PASS or use --dry-run');
+    }
   }
 
   console.log(`[emailSender] Active sender pool: ${poolTransporters.length} accounts`);
