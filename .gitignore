@@ -181,6 +181,10 @@ clipping-factory/MBM-Social/instagram_profile_*/
 clipping-factory/MBM-Social/tiktok_profile_*/
 clipping-factory/MBM-Social/youtube_profile_*/
 clipping-factory/MBM-Social/mbm_social/youtube_profile_*/
+clipping-factory/youtube_profile_*/
+clipping-factory/youtube_profile_*/**
+clipping-factory/MBM-Social/public/
+clipping-factory/MBM-Social/public/**
 clipping-factory/MBM-Social/chrome_debug/
 clipping-factory/MBM-Social/anty_shadowban_state/
 clipping-factory/MBM-Social/clips/
@@ -202,3 +206,4 @@ MBM/Shopify/logs/
 MBM/Pipeline/
 MBM/Artifacts/*.tsv
 MBM/Artifacts/recovery_backups/
+MBM/Clients/BAGA/

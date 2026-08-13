@@ -10,9 +10,13 @@ PARKING_LOT = r"C:\Users\omare\OneDrive\Desktop\AI\MBM\ParkingLot"
 def run_revenue_review():
     print("[*] Starting Revenue Review (Qualification & QA)...")
     
-    # Find the latest raw file
-    search_pattern = os.path.join(ARTIFACT_DIR, "raw_leads_Dallas_311_*.csv")
-    files = glob.glob(search_pattern)
+    # Find the latest raw file or fallback artifacts
+    files = glob.glob(os.path.join(ARTIFACT_DIR, "raw_leads_Dallas_311_*.csv"))
+    if not files:
+        for fallback in ["distressed_sellers.csv", "all_leads_master.csv", "wholesalers_final_qualified.csv"]:
+            p = os.path.join(ARTIFACT_DIR, fallback)
+            if os.path.exists(p):
+                files.append(p)
     if not files:
         print("[-] No raw leads found in Artifacts. Collector must run first.")
         return
@@ -25,11 +29,11 @@ def run_revenue_review():
     duds = 0
     
     try:
-        with open(latest_file, 'r', encoding='utf-8') as f:
+        with open(latest_file, 'r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 # Different dataset endpoints use different column names for address
-                address = row.get('address') or row.get('incident_address') or row.get('street_address') or row.get('location') or ""
+                address = row.get('Property_Address') or row.get('address') or row.get('incident_address') or row.get('street_address') or row.get('location') or ""
                 
                 # If it's a dict (like Socrata location object), parse it
                 if isinstance(address, dict) and 'human_address' in address:

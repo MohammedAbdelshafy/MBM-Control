@@ -171,6 +171,32 @@ Register-ScheduledTask `
 
 Write-Host "  [OK] MBM_TelegramListener registered (at login)" -ForegroundColor Green
 
+# ── Task 6: 100 Posts / Day Clipping Engine (Startup & 24/7) ────
+Write-Host "[6/6] Registering MBM_100Posts_ClippingEngine..." -ForegroundColor Yellow
+
+$existingTask6 = Get-ScheduledTask -TaskName "MBM_100Posts_ClippingEngine" -ErrorAction SilentlyContinue
+if ($existingTask6) {
+  Unregister-ScheduledTask -TaskName "MBM_100Posts_ClippingEngine" -Confirm:$false
+  Write-Host "  Removed existing task."
+}
+
+$Action6 = New-ScheduledTaskAction `
+  -Execute $Python `
+  -Argument "`"C:\Users\omare\OneDrive\Desktop\AI\start_100_posts_per_day_engine.py`"" `
+  -WorkingDirectory "C:\Users\omare\OneDrive\Desktop\AI"
+
+$Trigger6 = New-ScheduledTaskTrigger -AtLogOn
+
+Register-ScheduledTask `
+  -TaskName "MBM_100Posts_ClippingEngine" `
+  -Action $Action6 `
+  -Trigger $Trigger6 `
+  -Settings $Settings `
+  -Principal $Principal `
+  -Description "MBM 100 Posts / Day Clipping Engine: Runs 24/7 autonomous loop rendering and posting 100 videos/day for US audiences."
+
+Write-Host "  [OK] MBM_100Posts_ClippingEngine registered (24/7 startup task)" -ForegroundColor Green
+
 # ── Summary ──────────────────────────────────────────────────
 Write-Host ""
 Write-Host "============================================================" -ForegroundColor Cyan

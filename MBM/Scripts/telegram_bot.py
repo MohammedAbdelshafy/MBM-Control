@@ -101,16 +101,29 @@ def _cleanup_dedup():
 # ── HTTPS calls ──────────────────────────────────────────────
 import urllib.request, urllib.parse
 
+PROXY_URL = os.environ.get("TELEGRAM_PROXY") or os.environ.get("HTTPS_PROXY") or os.environ.get("HTTP_PROXY", "")
+
+def _get_httpx_client(timeout_sec: float = 30.0) -> httpx.AsyncClient:
+    timeout = httpx.Timeout(timeout_sec, connect=30.0)
+    if PROXY_URL:
+        return httpx.AsyncClient(timeout=timeout, proxy=PROXY_URL)
+    return httpx.AsyncClient(timeout=timeout)
+
 def _api_call(method, data=None):
     if not BOT_TOKEN:
         return {"ok": False, "error": "No token"}
     url = f"{API_BASE}/{method}"
     try:
+        if PROXY_URL:
+            proxy_handler = urllib.request.ProxyHandler({'http': PROXY_URL, 'https': PROXY_URL})
+            opener = urllib.request.build_opener(proxy_handler)
+        else:
+            opener = urllib.request.build_opener()
         if data:
             body = urllib.parse.urlencode(data).encode()
-            r = urllib.request.urlopen(url, data=body, timeout=15)
+            r = opener.open(url, data=body, timeout=30)
         else:
-            r = urllib.request.urlopen(url, timeout=15)
+            r = opener.open(url, timeout=30)
         return json.loads(r.read())
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -120,7 +133,7 @@ async def _api_post(method, json_data):
         return None
     url = f"{API_BASE}/{method}"
     try:
-        async with httpx.AsyncClient(timeout=30) as client:
+        async with _get_httpx_client(30.0) as client:
             resp = await client.post(url, json=json_data)
             if resp.status_code == 200:
                 return resp.json()
@@ -135,7 +148,7 @@ async def _api_post_file(method, data, files):
         return None
     url = f"{API_BASE}/{method}"
     try:
-        async with httpx.AsyncClient(timeout=60) as client:
+        async with _get_httpx_client(60.0) as client:
             resp = await client.post(url, data=data, files=files)
             if resp.status_code == 200:
                 return resp.json()
@@ -557,6 +570,7 @@ async def run_daemon():
     last_queue_check = 0
     last_heartbeat_check = 0
     last_digest_check = 0
+    consecutive_errors = 0
 
     while True:
         try:
@@ -566,51 +580,56 @@ async def run_daemon():
                 "timeout": 30,
                 "allowed_updates": json.dumps(["message"]),
             })
-            if updates.get("ok") and updates.get("result"):
-                for update in updates["result"]:
-                    last_update_id = update["update_id"]
-                    msg = update.get("message", {})
-                    chat_id = msg.get("chat", {}).get("id", "")
-                    text = msg.get("text", "").strip()
-                    configured_chat = get_chat_id()
-                    if str(chat_id) != str(configured_chat):
-                        continue
-                    if text.startswith("/"):
-                        parts = text[1:].lower().split()
-                        cmd = parts[0] if parts else ""
-                        if cmd == "ping":
-                            await _api_post("sendMessage", {"chat_id": chat_id, "text": "Pong! 🏓 I'm awake and listening.", "parse_mode": "Markdown"})
-                        elif cmd == "help":
-                            await _api_post("sendMessage", {"chat_id": chat_id, "text": handle_help(), "parse_mode": "Markdown"})
-                        elif cmd == "status":
-                            await _api_post("sendMessage", {"chat_id": chat_id, "text": handle_status(), "parse_mode": "Markdown"})
-                        elif cmd == "email_status":
-                            await _api_post("sendMessage", {"chat_id": chat_id, "text": handle_email_status(), "parse_mode": "Markdown"})
-                        elif cmd == "run_engine":
-                            resp = handle_run_engine()
-                            await _api_post("sendMessage", {"chat_id": chat_id, "text": resp, "parse_mode": "Markdown"})
-                        elif cmd == "latest_leads":
-                            await _api_post("sendMessage", {"chat_id": chat_id, "text": "Fetching latest leads...", "parse_mode": "Markdown"})
-                            await handle_latest_leads(None, chat_id)
-                        elif cmd == "recent_clips":
-                            resp = await handle_recent_clips(chat_id)
-                            await _api_post("sendMessage", {"chat_id": chat_id, "text": resp, "parse_mode": "Markdown"})
-                        elif cmd == "replies":
-                            resp = await handle_replies(chat_id)
-                            await _api_post("sendMessage", {"chat_id": chat_id, "text": resp, "parse_mode": "Markdown"})
-                        elif cmd == "digest":
-                            daily_digest()
-                            await _api_post("sendMessage", {"chat_id": chat_id, "text": "📊 Digest sent!", "parse_mode": "Markdown"})
+            if updates.get("ok"):
+                consecutive_errors = 0
+                if updates.get("result"):
+                    for update in updates["result"]:
+                        last_update_id = update["update_id"]
+                        msg = update.get("message", {})
+                        chat_id = msg.get("chat", {}).get("id", "")
+                        text = msg.get("text", "").strip()
+                        configured_chat = get_chat_id()
+                        if str(chat_id) != str(configured_chat):
+                            continue
+                        if text.startswith("/"):
+                            parts = text[1:].lower().split()
+                            cmd = parts[0] if parts else ""
+                            if cmd == "ping":
+                                await _api_post("sendMessage", {"chat_id": chat_id, "text": "Pong! 🏓 I'm awake and listening.", "parse_mode": "Markdown"})
+                            elif cmd == "help":
+                                await _api_post("sendMessage", {"chat_id": chat_id, "text": handle_help(), "parse_mode": "Markdown"})
+                            elif cmd == "status":
+                                await _api_post("sendMessage", {"chat_id": chat_id, "text": handle_status(), "parse_mode": "Markdown"})
+                            elif cmd == "email_status":
+                                await _api_post("sendMessage", {"chat_id": chat_id, "text": handle_email_status(), "parse_mode": "Markdown"})
+                            elif cmd == "run_engine":
+                                resp = handle_run_engine()
+                                await _api_post("sendMessage", {"chat_id": chat_id, "text": resp, "parse_mode": "Markdown"})
+                            elif cmd == "latest_leads":
+                                await _api_post("sendMessage", {"chat_id": chat_id, "text": "Fetching latest leads...", "parse_mode": "Markdown"})
+                                await handle_latest_leads(None, chat_id)
+                            elif cmd == "recent_clips":
+                                resp = await handle_recent_clips(chat_id)
+                                await _api_post("sendMessage", {"chat_id": chat_id, "text": resp, "parse_mode": "Markdown"})
+                            elif cmd == "replies":
+                                resp = await handle_replies(chat_id)
+                                await _api_post("sendMessage", {"chat_id": chat_id, "text": resp, "parse_mode": "Markdown"})
+                            elif cmd == "digest":
+                                daily_digest()
+                                await _api_post("sendMessage", {"chat_id": chat_id, "text": "📊 Digest sent!", "parse_mode": "Markdown"})
+                            else:
+                                await _api_post("sendMessage", {"chat_id": chat_id, "text": f"Unknown command `/{cmd}`. Try /help", "parse_mode": "Markdown"})
                         else:
-                            await _api_post("sendMessage", {"chat_id": chat_id, "text": f"Unknown command `/{cmd}`. Try /help", "parse_mode": "Markdown"})
-                    else:
-                        await _api_post("sendMessage", {"chat_id": chat_id, "text": f"✨ *Vibe Coding:*\n`{text}`", "parse_mode": "Markdown"})
-                        subprocess.Popen(
-                            ["opencode", "run", "--auto", text],
-                            cwd=str(MBM_ROOT),
-                            creationflags=subprocess.CREATE_NEW_CONSOLE,
-                            shell=True,
-                        )
+                            await _api_post("sendMessage", {"chat_id": chat_id, "text": f"✨ *Vibe Coding:*\n`{text}`", "parse_mode": "Markdown"})
+                            subprocess.Popen(
+                                ["opencode", "run", "--auto", text],
+                                cwd=str(MBM_ROOT),
+                                creationflags=subprocess.CREATE_NEW_CONSOLE,
+                                shell=True,
+                            )
+            else:
+                consecutive_errors += 1
+                LOG(f"TG API response error: {updates.get('error', 'unknown error')}")
 
             # ── Periodic tasks ──
             now = time.time()
@@ -625,8 +644,10 @@ async def run_daemon():
                 _cleanup_dedup()
 
         except Exception as e:
-            LOG(f"Daemon loop error: {e}")
-            await asyncio.sleep(10)
+            consecutive_errors += 1
+            LOG(f"Daemon loop error (attempt {consecutive_errors}): {e}")
+            backoff_sleep = min(60, 5 * (2 ** min(consecutive_errors - 1, 4)))
+            await asyncio.sleep(backoff_sleep)
 
 # ── CLI entry point ──────────────────────────────────────────
 if __name__ == "__main__":

@@ -9,6 +9,8 @@ import json
 import csv
 import smtplib
 from datetime import datetime
+from email.mime.base import MIMEBase
+from email import encoders
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -159,6 +161,28 @@ If you close ONE more deal per month, this pays for itself 10x over."
     }
 }
 
+# Portfolio PPT for outreach emails (auto-generated with contractor_services)
+PORTFOLIO_PPT = os.path.join(SCRIPTS_DIR, "assets", "MBM_AI_Portfolio.pptx")
+
+def _get_or_generate_portfolio():
+    """Get the portfolio PPT, generating it if it doesn't exist."""
+    if os.path.exists(PORTFOLIO_PPT):
+        return PORTFOLIO_PPT
+    try:
+        from contractor_services import ReportGenerator
+        os.makedirs(os.path.dirname(PORTFOLIO_PPT), exist_ok=True)
+        gen = ReportGenerator()
+        slides = [
+            {"title": "AI Lead Gen", "content": "Finds and qualifies prospects 24/7\nZero manual work\n347% response rate increase"},
+            {"title": "Auto Follow-up", "content": "Never miss a lead again\n5-touch sequence\n89% reduction in manual tasks"},
+            {"title": "Smart CRM", "content": "Zero data entry\nFull pipeline visibility\n2.5x more deals closed"},
+            {"title": "Investment", "content": "$2,500 setup + $500/month\n10x ROI in 90 days\nMoney-back guarantee"},
+        ]
+        gen.create_report_ppt("MBM AI Automation", slides, PORTFOLIO_PPT)
+        return PORTFOLIO_PPT
+    except Exception:
+        return None
+
 def send_outreach(pain_point):
     """Send Wolf of Wall Street outreach to a pain point."""
     
@@ -186,6 +210,9 @@ def send_outreach(pain_point):
     body = body.replace('[MONEY_1]', '$2,000+')
     body = body.replace('[PRICE]', deal_value.split('-')[0])
     
+    # Add portfolio mention to body
+    body += "\n\nP.P.S. I've attached a quick visual overview of our AI stack."
+    
     subject = template['subject'].replace('[COMPANY]', company)
     
     try:
@@ -195,13 +222,23 @@ def send_outreach(pain_point):
         msg['Subject'] = subject
         msg.attach(MIMEText(body, 'plain'))
         
+        # Attach portfolio PPT if available
+        portfolio = _get_or_generate_portfolio()
+        if portfolio and os.path.exists(portfolio):
+            with open(portfolio, 'rb') as f:
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(f.read())
+                encoders.encode_base64(part)
+                part.add_header('Content-Disposition', 'attachment; filename="MBM_AI_Portfolio.pptx"')
+                msg.attach(part)
+        
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()
         server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
         
-        print(f"  [OK] Sent to {company} ({email})")
+        print(f"  [OK] Sent to {company} ({email}) + portfolio PPT")
         return True
     except Exception as e:
         print(f"  [FAIL] {company}: {e}")

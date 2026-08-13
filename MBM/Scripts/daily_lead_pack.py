@@ -47,8 +47,30 @@ EMAIL_PASSWORD = os.environ.get("SMTP_PASS", "")
 PRICING = {
     "daily": "$25/day",
     "full_pack": "$40/day",
-    "monthly": "$500/month"
+    "enhanced": "$75/day",
+    "monthly": "$500/month",
+    "enhanced_monthly": "$1,500/month",
 }
+
+# Background image for enhanced reports (cached from PPT enhancement work)
+BG_IMAGE = os.path.join(os.path.dirname(__file__), "assets", "ppt_backgrounds", "futuristic_bg.png")
+
+def generate_enhanced_ppt_report(leads, pack_dir):
+    """Generate a visual PPT report for enhanced-tier subscribers."""
+    try:
+        from contractor_services import ReportGenerator
+        bg = BG_IMAGE if os.path.exists(BG_IMAGE) else None
+        gen = ReportGenerator(bg_image=bg)
+        output = os.path.join(pack_dir, f"LEAD_REPORT_{TODAY}.pptx")
+        result = gen.create_lead_pack_report(leads, output)
+        if result.get("success"):
+            print(f"  [PPT] Enhanced report generated: {os.path.basename(output)}")
+            return output
+    except ImportError:
+        print("  [PPT] contractor_services not available, skipping enhanced report")
+    except Exception as e:
+        print(f"  [PPT] Report generation failed: {e}")
+    return None
 
 def load_contacts():
     """Load wholesaler contacts from CSV."""
@@ -409,6 +431,13 @@ def generate_lead_pack():
     
     # Send to wholesalers
     contacts = load_contacts()
+    
+    # Generate enhanced PPT report (monetizable visual deliverable)
+    ppt_report = generate_enhanced_ppt_report(deduped, pack_dir)
+    if ppt_report:
+        manifest['files']['enhanced_report'] = ppt_report
+        print(f"  - {os.path.basename(ppt_report)} (ENHANCED)")
+    
     send_seller_pack(distressed, contacts, pack_dir)
     
     return pack_dir, manifest

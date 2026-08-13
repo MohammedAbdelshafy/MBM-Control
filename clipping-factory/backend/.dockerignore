@@ -1,0 +1,14 @@
+.venv
+.pytest_cache
+__pycache__
+*.pyc
+clipping_factory.db
+data/
+outputs/
+logs/
+sessions/
+youtube_profile/
+build_log.txt
+build_err.txt
+capture_log.txt
+capture_err.txt

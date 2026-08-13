@@ -93,11 +93,38 @@ def update_deal(company, stage, notes=""):
                 d['next_followup'] = (datetime.now() + timedelta(days=2)).strftime('%Y-%m-%d')
             elif stage == "call_scheduled":
                 d['next_followup'] = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')
+            elif stage == "proposal_sent":
+                # Auto-generate personalized proposal PPT
+                _generate_proposal(d)
             save_pipeline(deals)
             print(f"  Updated: {company} -> {stage}")
             return True
     print(f"  Not found: {company}")
     return False
+
+def _generate_proposal(deal):
+    """Auto-generate a professional proposal PPT for a deal."""
+    try:
+        from contractor_services import ReportGenerator
+        proposals_dir = os.path.join(PIPELINE_DIR, "proposals")
+        os.makedirs(proposals_dir, exist_ok=True)
+        gen = ReportGenerator()
+        output = os.path.join(proposals_dir, f"PROPOSAL_{deal['company'].replace(' ', '_')}_{TODAY}.pptx")
+        slides = [
+            {"title": f"AI Automation Proposal for {deal['company']}", "content": f"Prepared: {TODAY}\nBy: Mohammed Abdelshafy\nMBM AI Automation Agency"},
+            {"title": "The Challenge", "content": deal.get('notes', 'Operational bottlenecks identified')},
+            {"title": "Our Solution", "content": deal.get('solution', 'AI-powered automation stack')},
+            {"title": "Investment & ROI", "content": f"Deal Value: {deal.get('deal_value', 'TBD')}\nROI: 10x within 90 days\nGuarantee: Full refund if targets not met"},
+            {"title": "Next Steps", "content": "1. 15-min discovery call\n2. Custom demo build (48h)\n3. Pilot deployment (1 week)\n4. Full rollout"},
+        ]
+        result = gen.create_report_ppt(f"Proposal - {deal['company']}", slides, output)
+        if result.get("success"):
+            print(f"  [PPT] Proposal generated: {os.path.basename(output)}")
+            deal['notes'] = (deal.get('notes', '') + f" | Proposal: {os.path.basename(output)}").strip(' |')
+    except ImportError:
+        pass
+    except Exception as e:
+        print(f"  [PPT] Proposal generation failed: {e}")
 
 def get_pipeline_stats():
     """Get pipeline statistics."""

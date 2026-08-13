@@ -1,0 +1,374 @@
+{
+  "recipes": [
+    {
+      "id": "R-001",
+      "name": "AI Customer Intake",
+      "description": "Automated intake forms, lead verification, and verification flow",
+      "coreTechnologies": ["LLM summarization", "NLP entity extraction", "OCR"],
+      "inputs": ["application_json"],
+      "outputs": ["verified_lead"],
+      "estimated_roi_pct": 250,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-002",
+      "name": "AI Document Classification",
+      "description": "Classify incoming documents into categories",
+      "coreTechnologies": ["Text embedding", "ML classification", "Embeddings"],
+      "inputs": ["document_pdf"],
+      "outputs": ["category","confidence"],
+      "estimated_roi_pct": 300,
+      "complexity": "high"
+    },
+    {
+      "id": "R-003",
+      "name": "AI Lead Qualification",
+      "description": "Score and segment leads based on behavior",
+      "coreTechnologies": ["Behavior modeling", "Scoring", "Recommendation"],
+      "inputs": ["lead_json"],
+      "outputs": ["lead_score","lead_segment"],
+      "estimated_roi_pct": 200,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-004",
+      "name": "AI Document Extraction",
+      "description": "Extract structured data from invoices, forms, etc.",
+      "coreTechnologies": ["Optical character recognition", "Named entity recognition", "Layout analysis"],
+      "inputs": ["document_file"],
+      "outputs": ["structured_data_file"],
+      "estimated_roi_pct": 350,
+      "complexity": "high"
+    },
+    {
+      "id": "R-005",
+      "name": "AI Customer Support Chatbot",
+      "description": "Interactive support with self-learning responses",
+      "coreTechnologies": ["Conversational AI", "Intent recognition", "Generative LLM"],
+      "inputs": ["chat_message"],
+      "outputs": ["response_text","escalation_flag"],
+      "estimated_roi_pct": 280,
+      "complexity": "high"
+    },
+    {
+      "id": "R-006",
+      "name": "AI Content Generation",
+      "description": "Generate blog posts, ads, social media captions, and SEO metadata",
+      "coreTechnologies": ["Prompt generation", "LLM generation", "SEO keyword analysis"],
+      "inputs": ["brief_text"],
+      "outputs": ["content_file","metadata"],
+      "estimated_roi_pct": 320,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-007",
+      "name": "AI Executive Assistant",
+      "description": "Summarize meetings, emails, documents, and generate next actions",
+      "coreTechnologies": ["Document summarization", "Intent extraction", "Calendar integration"],
+      "inputs": ["meeting_transcript_file","email_file"],
+      "outputs": ["action_items_file","follow_up_emails"],
+      "estimated_roi_pct": 220,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-008",
+      "name": "AI Customer Sentiment Analyzer",
+      "description": "Analyze sentiment in feedback, reviews, and support tickets",
+      "coreTechnologies": ["Sentiment analysis", "Topic clustering", "Aspect extraction"],
+      "inputs": ["feedback_text"],
+      "outputs": ["sentiment","key_topics"],
+      "estimated_roi_pct": 220,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-009",
+      "name": "AI Inventory Manager",
+      "description": "Track inventory levels, forecast demand, place purchase orders",
+      "coreTechnologies": ["Demand forecasting", "Inventory modeling", "Optimization"],
+      "inputs": ["inventory_file"],
+      "outputs": ["order_suggestion","reorder_date"],
+      "estimated_roi_pct": 270,
+      "complexity": "high"
+    },
+    {
+      "id": "R-009",
+      "name": "AI Procurement Negotiator",
+      "description": "Automated negotiation with vendors based on historical contracts",
+      "coreTechnologies": ["Contract parsing", "Negotiation strategy models", "Budget optimization"],
+      "inputs": ["vendor_contract_file"],
+      "outputs": ["proposed_terms","cost_savings"],
+      "estimated_roi_pct": 180,
+      "complexity": "high"
+    },
+    {
+      "id": "R-010",
+      "name": "AI Inventory Forecasting",
+      "description": "Predict demand spikes using seasonality and external data",
+      "coreTechnologies": ["Time series forecasting", "Exogenous variable modeling", "Black-Scholes"],
+      "inputs": ["historical_inventory_file"],
+      "outputs": ["forecast_period","suggested_order"],
+      "estimated_roi_pct": 210,
+      "complexity": "high"
+    },
+    {
+      "id": "R-011",
+      "name": "AI Invoice Processing",
+      "description": "Auto-process invoices, extract amounts, validate, and post",
+      "coreTechnologies": ["OCR", "Table extraction", "Rule-based validation"],
+      "inputs": ["invoice_file"],
+      "outputs": ["extracted_amounts","validated_status"],
+      "estimated_roi_pct": 320,
+      "complexity": "high"
+    },
+    {
+      "id": "R-011",
+      "name": "AI Tax Compliance Checker",
+      "description": "Validate filings against jurisdiction rules",
+      "coreTechnologies": ["Rule-based reasoning", "External API integration"],
+      "inputs": ["tax_form_file"],
+      "outputs": ["compliance_status","risk_level"],
+      "estimated_roi_pct": 260,
+      "complexity": "high"
+    },
+    {
+      "id": "R-012",
+      "name": "AI Tax Filing Preparation",
+      "description": "Generate tax forms from structured data plus asset lists",
+      "coreTechnologies": ["Document generation", "Rule-based formatting"],
+      "inputs": ["financial_data_json"],
+      "outputs": ["tax_form_pdf"],
+      "estimated_roi_pct": 250,
+      "complexity": "high"
+    },
+    {
+      "id": "R-013",
+      "name": "AI Sales Enablement Coach",
+      "description": "Coach sales reps with personalized scripts and objections handling",
+      "coreTechnologies": ["Speech synthesis", "Conversation modeling"],
+      "inputs": ["rep_profile_json"],
+      "outputs": ["script","objection_handling"],
+      "estimated_roi_pct": 180,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-014",
+      "name": "AI Market Research Analyzer",
+      "description": "Scrape and analyze competitor activity, pricing, and positioning",
+      "coreTechnologies": ["Web scraping", "Similarweb integration", "Competitive clustering"],
+      "inputs": ["competitor_domains"],
+      "outputs": ["strengths","weaknesses","pricing_trends"],
+      "estimated_roi_pct": 180,
+      "complexity": "high"
+    },
+    {
+      "id": "R-015",
+      "name": "AI Customer Churn Predictor",
+      "description": "Predict likelihood of customer churn based on usage patterns",
+      "coreTechnologies": ["Predictive modeling", "Behavioral clustering"],
+      "inputs": ["usage_usage_logs"],
+      "outputs": ["churn_probability","risk_factors"],
+      "estimated_roi_pct": 180,
+      "complexity": "high"
+    },
+    {
+      "id": "R-016",
+      "name": "AI Pricing Optimizer",
+      "description": "Dynamically adjust pricing based on demand, competition, and inventory",
+      "coreTechnologies": ["Elasticity modeling", "Game theory simulations"],
+      "inputs": ["pricing_data_json"],
+      "outputs": ["suggested_new_prices"],
+      "estimated_roi_pct": 140,
+      "complexity": "high"
+    },
+    {
+      "id": "R-017",
+      "name": "AI Supply Chain Optimizer",
+      "description": "Automate procurement, inventory tracking, logistics scheduling",
+      "coreTechnologies": ["Logistics modeling", "Graph algorithms", "Simulation"],
+      "inputs": ["shipment_logs"],
+      "outputs": ["routing_plan","carrier_selection"],
+      "estimated_roi_pct": 210,
+      "complexity": "high"
+    },
+    {
+      "id": "R-018",
+      "name": "AI Candidate Scheduler",
+      "description": "Automated interview scheduling with recruiter availability",
+      "coreTechnologies": ["Datetime optimization", "Calendar integration", "Preference weighting"],
+      "inputs": ["applicant_profiles","recruiter_calendar"],
+      "outputs": ["schedule_json"],
+      "estimated_roi_pct": 260,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-019",
+      "name": "AI Contract Analyzer",
+      "description": "Parse contracts for key obligations and risks",
+      "coreTechnologies": ["Clause extraction", "Risk modeling", "Entity recognition"],
+      "inputs": ["contract_document"],
+      "outputs": ["obligations","risks","effective_dates"],
+      "estimated_roi_pct": 200,
+      "complexity": "high"
+    },
+    {
+      "id": "R-020",
+      "name": "AI Contract Draft Generator",
+      "description": "Generate boilerplate contracts from templates based on user specs",
+      "coreTechnologies": ["Natural language generation", "Template logic"],
+      "inputs": ["spec_dict"],
+      "outputs": ["contract_pdf"],
+      "estimated_roi_pct": 190,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-029",
+      "name": "AI Knowledge Base Builder",
+      "description": "Auto-create searchable knowledge base from tickets and docs",
+      "coreTechnologies": ["Text vectorization", "Document clustering", "Search engine"],
+      "inputs": ["document_list"],
+      "outputs": ["knowledge_index"],
+      "estimated_roi_pct": 180,
+      "complexity": "high"
+    },
+    {
+      "id": "R-030",
+      "name": "AI Trend Spotter",
+      "description": "Monitor industry trends via news and social feeds",
+      "coreTechnologies": ["News aggregation", "Topic modeling", "Trend detection"],
+      "inputs": ["news_api_data"],
+      "outputs": ["trend_themes","confidence_scores"],
+      "estimated_roi_pct": 170,
+      "complexity": "high"
+    },
+    {
+      "id": "R-031",
+      "name": "AI Upsell / Cross-Sell Engine",
+      "description": "Identify upsell opportunities from customer behavior and usage data",
+      "coreTechnologies": ["Behavior clustering", "Recommendation systems"],
+      "inputs": ["usage_metrics"],
+      "outputs": ["opportunity_score","recommended_product"],
+      "estimated_roi_pct": 170,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-032",
+      "name": "AI Personalized Email Campaign Creator",
+      "description": "Generate customized sales & marketing emails based on customer history",
+      "coreTechnologies": ["Personalization models", "Generative text models"],
+      "inputs": ["customer_history", "campaign_goals"],
+      "outputs": ["email_template"],
+      "estimated_roi_pct": 170,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-033",
+      "name": "AI Ad Copy Generator",
+      "description": "Generate high-converting ad copy variants",
+      "coreTechnologies": ["Content generation", "A/B testing models"],
+      "inputs": ["product_features", "target_audience"],
+      "outputs": ["ad-copy_series"],
+      "estimated_roi_pct": 210,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-034",
+      "name": "AI Social Media Post Generator",
+      "description": "Create platform-specific posts with hashtag optimization",
+      "coreTechnologies": ["Hashtag analysis", "Engagement prediction models"],
+      "inputs": ["brand_voice","campaign_goal"],
+      "outputs": ["post_text","hashtags"],
+      "estimated_roi_pct": 170,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-036",
+      "name": "AI Reputation Sentiment Monitor",
+      "description": "Monitor brand mentions across forums and social media for sentiment shifts",
+      "coreTechnologies": ["Sentiment analysis", "Web scraping", "Alert routing"],
+      "inputs": ["web_sources"],
+      "outputs": ["risk_alerts"],
+      "estimated_roi_pct": 180,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-037",
+      "name": "AI Feedback Loop Optimizer",
+      "description": "Analyze customer feedback to auto-update service scripts & SOPs",
+      "coreTechnologies": ["Feedback clustering", "Action recommendation"],
+      "inputs": ["feedback_texts"],
+      "outputs": ["script_updates","training_topics"],
+      "estimated_roi_pct": 170,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-038",
+      "name": "AI Survey Analyzer",
+      "description": "Automatically categorize survey responses and extract themes",
+      "coreTechnologies": ["Text clustering", "Aspect-based sentiment"],
+      "inputs": ["survey_responses"],
+      "outputs": ["topics","key_metrics"],
+      "estimated_roi_pct": 180,
+      "complexity": "high"
+    },
+    {
+      "id": "R-039",
+      "name": "AI Budget Analyzer",
+      "description": "Auto-create budget drafts from expense categories",
+      "coreTechnologies": ["Rule-based budgeting", "Constraint optimization"],
+      "inputs": ["expense_data_json"],
+      "outputs": ["draft_budget","variance"],
+      "estimated_roi_pct": 160,
+      "complexity": "medium"
+    },
+    {
+      "id": "R-040",
+      "name": "AI Invoice Processor",
+      "description": "Validate and reconcile invoices automatically",
+      "coreTechnologies": ["Invoice parsing", "Three-way matching", "Approval workflow"],
+      "inputs": ["invoice_list"],
+      "outputs": ["processed_invoices","discrepancies"],
+      "estimated_roi_pct": 250,
+      "complexity": "high"
+    },
+    {
+      "id": "R-042",
+      "name": "AI Budget Forecasting",
+      "description":"Project future cash flow based on historical trends and seasonality",
+      "coreTechnologies": ["Time series forecasting", "ARIMA"],
+      "inputs": ["financial_history"],
+      "outputs": ["forecast_12m","confidence_bounds"],
+      "estimated_roi_pct": 180,
+      "complexity": "high"
+    },
+    {
+      "id": "R-043",
+      "name": "AI Accounting Audits",
+      "description": "Automate compliance checks and discrepancy flags",
+      "coreTechnologies": ["Rule‐based validation","Anomaly detection"],
+      "inputs": ["financial_statements"],
+      "outputs": ["anomalies","audit_report"],
+      "estimated_roi_pct": 190,
+      "complexity": "high"
+    },
+    {
+      "id": "R-044",
+      "name": "AI ERP Integration Orchestrator",
+      "description": "Automatically sync data across ERP modules",
+      "coreTechnologies": ["Data mapping","ETL orchestration"],
+      "inputs": ["module_schemas"],
+      "outputs": ["synced_fields"],
+      "estimated_roi_pct": 170,
+      "complexity": "high"
+    },
+    {
+      "id": "R-039",
+      "name": "AI ERP Workflow Orchestrator",
+      "description": "Trigger steps across ERP modules based on events",
+      "coreTechnologies": ["Event-driven orchestration", "Business rule engine"],
+      "inputs": ["event_data"],
+      "outputs": ["executed_steps"],
+      "estimated_roi_pct": 175,
+      "complexity": "high"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "updated": "2026-07-15",
+  "master_account": "abdelshafyclapps@gmail.com",
+  "brands": {
+    "dontwatchthis": {
+      "display_name": "Don't Watch This",
+      "handle": "@DONTWATCHTHIS1",
+      "youtube_channel_id": "UC_DONTWATCHTHIS1",
+      "theme": "dark stories, chilling truths, mystery, suspense",
+      "social_handles": {"instagram": "@dontwatchthis_mystery", "tiktok": "@dontwatchthis_mystery"},
+      "active": true,
+      "config_path": "Brands/dontwatchthis/",
+      "instagram_handle": "@dontwatchthis_mystery",
+      "tiktok_handle": "@dontwatchthis_mystery",
+      "owner_email": "abdelshafyplay@gmail.com",
+      "multi_platform_active": true
+    },
+    "goalmachinez": {
+      "display_name": "Goal Machinez",
+      "handle": "@Goalmachinez",
+      "youtube_channel_id": "UC_Goalmachinez",
+      "theme": "football / soccer / sports highlights and commentary",
+      "social_handles": {"instagram": "@goalmachinez_fc", "tiktok": "@goalmachinez_fc"},
+      "active": true,
+      "config_path": "Brands/goalmachinez/",
+      "instagram_handle": "@goalmachinez_fc",
+      "tiktok_handle": "@goalmachinez_fc",
+      "owner_email": "abdelshafyplays@gmail.com",
+      "multi_platform_active": true
+    },
+    "cutedosage": {
+      "display_name": "Cute Dosage",
+      "handle": "@CuteDosage",
+      "youtube_channel_id": "UC_CuteDosage",
+      "theme": "cute, wholesome, family, pet, baby-style content",
+      "social_handles": {"instagram": "@cutedosage_official", "tiktok": "@cutedosage_official"},
+      "active": true,
+      "config_path": "Brands/cutedosage/",
+      "instagram_handle": "@cutedosage_official",
+      "tiktok_handle": "@cutedosage_official",
+      "owner_email": "moeaiagenticteamz@gmail.com",
+      "multi_platform_active": true
+    },
+    "clippingfactorymbm": {
+      "display_name": "ClippingFactoryMBM",
+      "handle": "@ClippingFactoryMBM",
+      "youtube_channel_id": "UC_ClippingFactoryMBM",
+      "theme": "MBM operations, clipping factory, build-in-public, internal brand",
+      "social_handles": {"instagram": "@clippingfactory_mbm", "tiktok": "@clippingfactory_mbm"},
+      "active": true,
+      "config_path": "Brands/clippingfactorymbm/",
+      "instagram_handle": "@clippingfactory_mbm",
+      "tiktok_handle": "@clippingfactory_mbm",
+      "owner_email": "abdelshafyclapps@gmail.com",
+      "multi_platform_active": true
+    },
+    "twistsrevealed": {
+      "display_name": "Twists Revealed",
+      "handle": "@TwistsRevealed",
+      "youtube_channel_id": "UC_TwistsRevealed",
+      "theme": "plot twists, reveals, shocking stories, suspense",
+      "social_handles": {"instagram": "@twistsrevealed_cinema", "tiktok": "@twistsrevealed_cinema"},
+      "active": true,
+      "config_path": "Brands/twistsrevealed/",
+      "instagram_handle": "@twistsrevealed_cinema",
+      "tiktok_handle": "@twistsrevealed_cinema",
+      "owner_email": "bigmoeshafy@gmail.com",
+      "multi_platform_active": true
+    }
+  },
+  "add_brand_steps": [
+    "Add an entry to tools/gen_brand_configs.py BRANDS and rerun it",
+    "Add a BrandRegistry entry here",
+    "Add a ChannelRegistry entry",
+    "Add a CampaignRouter routing rule if needed",
+    "No framework code changes required"
+  ]
+}

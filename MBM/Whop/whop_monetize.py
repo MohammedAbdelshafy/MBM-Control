@@ -32,7 +32,9 @@ LOGS_DIR = BASE_DIR / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 WHOP_API_URL = os.getenv("WHOP_API_URL", "https://api.whop.com/api/v1")
-ACCOUNT_ID = os.getenv("WHOP_ACCOUNT_ID", "biz_2VDyenKpD0KOyo")
+# SECURITY: never hardcode a real WHOP_ACCOUNT_ID. If env is missing, fail loud
+# (better: the CLI auth subcommand guides the user to set it).
+ACCOUNT_ID = os.getenv("WHOP_ACCOUNT_ID", "")
 WHOP_API_KEY = os.getenv("WHOP_API_KEY", "")
 
 def _load_env():
@@ -100,6 +102,43 @@ PRODUCTS = [
         "plans": [
             {"title": "One-time Audit", "initial_price": 149, "plan_type": "one_time", "billing_period": None},
             {"title": "Weekly", "initial_price": 497, "plan_type": "renewal", "billing_period": 30},
+        ],
+    },
+    {
+        "id": "prod_dfy_agency_team",
+        "headline": "Done-For-You AI Employee Suite & Monthly Executive Managed Retainer.",
+        "description": (
+            "Complete custom installation of all 15 AI agents: automated video clipping, "
+            "Retell AI telephony, lead hunting, and CRM revenue gate. Includes 24/7 priority support "
+            "and weekly optimization."
+        ),
+        "plans": [
+            {"title": "VIP DFY Setup", "initial_price": 2490, "plan_type": "one_time", "billing_period": None},
+            {"title": "Managed Retainer", "initial_price": 1997, "plan_type": "renewal", "billing_period": 30},
+        ],
+    },
+    {
+        "id": "prod_lead_stream_api",
+        "headline": "Live API Feed of Distressed Real Estate & B2B Buyer/Seller Opportunities.",
+        "description": (
+            "Direct API access to daily skip-traced lead packs (Dallas code violations, "
+            "wholesaler directories, commercial permits) with 100% verified phone/email data."
+        ),
+        "plans": [
+            {"title": "API Hobby Pass", "initial_price": 49, "plan_type": "renewal", "billing_period": 30},
+            {"title": "API Monthly Pass", "initial_price": 997, "plan_type": "renewal", "billing_period": 30},
+            {"title": "Annual Unlimited Pass", "initial_price": 2490, "plan_type": "renewal", "billing_period": 365},
+        ],
+    },
+    {
+        "id": "prod_crm_blueprints",
+        "headline": "Agent-Ready CRM Workflow Blueprints (Make.com/n8n).",
+        "description": (
+            "Exportable JSON blueprints to instantly connect your CRM (GoHighLevel/HubSpot) "
+            "to AI telephony and lead feeds."
+        ),
+        "plans": [
+            {"title": "Digital Blueprint Download", "initial_price": 299, "plan_type": "one_time", "billing_period": None},
         ],
     },
 ]
@@ -389,7 +428,7 @@ def cmd_affiliate():
     """Enable the account affiliate program and feature a flagship product."""
     featured = PRODUCTS[0]["id"]
     try:
-        run_whop(["accounts", "update", ACCOUNT_ID,
+        run_whop(["accounts", "update", "--account_id", ACCOUNT_ID,
                   "--affiliate_application_required", "false",
                   "--affiliate_instructions", AFFILIATE_INSTRUCTIONS,
                   "--featured_affiliate_product_id", featured,

@@ -93,7 +93,8 @@ function RunStepWithRetry {
     [string]$Name,
     [string]$Script,
     [string]$Type = "python",
-    [int]$Retries = $MaxRetries
+    [int]$Retries = $MaxRetries,
+    [string[]]$Args = @()
   )
 
   for ($attempt = 1; $attempt -le $Retries; $attempt++) {
@@ -101,7 +102,11 @@ function RunStepWithRetry {
     $stepStart = Get-Date
     try {
       if ($Type -eq "python") {
-        $result = & $Python "$ScriptsDir\$Script" 2>&1
+        if ($Args.Count -gt 0) {
+          $result = & $Python "$ScriptsDir\$Script" @Args 2>&1
+        } else {
+          $result = & $Python "$ScriptsDir\$Script" 2>&1
+        }
       } else {
         $result = powershell -ExecutionPolicy Bypass -File "$Script" 2>&1
       }
@@ -160,8 +165,8 @@ $r = RunStepWithRetry -Name "Revenue Review" -Script "revenue_review.py"
 $stepResults["revenue"] = $r
 if (-not $r.Success) { $errors += "Revenue Review" }
 
-# Step 3: Skip Trace
-$r = RunStepWithRetry -Name "Skip Trace" -Script "skip_trace_leads.py"
+# Step 3: Skip Trace (Master Orchestrator - all skiptracing tools)
+$r = RunStepWithRetry -Name "Skip Trace" -Script "..\LeadEngine\skip_trace_all.py" -Args @("--apply")
 $stepResults["skip_trace"] = $r
 if (-not $r.Success) { $errors += "Skip Trace" }
 
