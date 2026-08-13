@@ -4,6 +4,14 @@ Use this repository to run and edit the app locally, then publish changes back t
 
 Any change pushed to the repo will also be reflected in the Base44 Builder.
 
+## MBM Dialer
+
+Canonical live deployment: https://mbm-dialer.higgsfield.app/
+
+Mobile dialer route: https://mbm-dialer.higgsfield.app/dialer/mobile
+
+The mobile workflow is designed around Phound as the calling app: copy a lead's normalized number or hand off to Phound, then return to MBM for scripts, dispositions, notes, and follow-up.
+
 ## Prerequisites
 
 1. Clone the repository using the project's Git URL.
@@ -56,7 +64,7 @@ VITE_BASE44_APP_BASE_URL=https://your-app.base44.app
 
 `VITE_BASE44_APP_ID` identifies the Base44 app.
 
-`VITE_BASE44_APP_BASE_URL` tells the Base44 Vite plugin where to send local `/api` requests. Point it at your deployed Base44 app URL when you want the local frontend to use the hosted backend.
+`VITE_BASE44_APP_BASE_URL` tells the Base44 Vite plugin where to send local `/api` requests. Point it at your deployed Base44 app URL when you want the local frontend to use the hosted Base44 backend.
 
 When you use `base44 dev`, the command injects the local Base44 values for you, so `.env.local` is mainly needed for frontend-only workflows.
 

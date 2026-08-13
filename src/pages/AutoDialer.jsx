@@ -1,460 +1,226 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  PhoneOff, MapPin,
-  Zap,
-  FileText, Activity, Terminal
+  Phone, PhoneOff, PhoneCall, User, MapPin, CheckCircle, XCircle,
+  Building, ExternalLink, Zap, ChevronRight, CalendarClock,
+  Search, Copy, Target, MessageSquare, ShieldCheck
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API = '';
+const API = '/api';
 
 const WHOLESALER_RESOURCES = [
-  { name: 'Wholesaling Inc', url: 'https://www.wholesalinginc.com', phone: '(800) 594-4127', desc: 'Top wholesaling coaching' },
-  { name: 'BiggerPockets', url: 'https://www.biggerpockets.com', phone: '(888) 446-2121', desc: '#1 RE investor community' },
-  { name: 'REIPro', url: 'https://www.reipro.com', phone: '(800) 832-1120', desc: 'Wholesaling CRM & software' },
+  { name: 'Wholesaling Inc', url: 'https://www.wholesalinginc.com', phone: '(800) 594-4127', desc: 'Training, marketplace and deal resources' },
+  { name: 'BiggerPockets', url: 'https://www.biggerpockets.com', phone: '(888) 446-2121', desc: 'Investor community and marketplace' },
+  { name: 'REIPro', url: 'https://www.reipro.com', phone: '(800) 832-1120', desc: 'CRM and investor deal-management tools' },
 ];
-
 const CASH_BUYERS = [
-  { name: 'WeBuyHouses.com', url: 'https://www.webuyhouses.com', phone: '(800) 447-8960', desc: 'National cash buyer network' },
-  { name: 'HomeVestors', url: 'https://www.homevestors.com', phone: '(800) 444-1616', desc: 'We Buy Ugly Houses' },
-  { name: 'Offerpad', url: 'https://www.offerpad.com', phone: '(888) 890-1618', desc: 'iBuyer — instant cash offers' },
+  { name: 'WeBuyHouses.com', url: 'https://www.webuyhouses.com', desc: 'National buyer network' },
+  { name: 'HomeVestors', url: 'https://www.homevestors.com', desc: 'Investor franchise network' },
+  { name: 'Offerpad', url: 'https://www.offerpad.com', desc: 'iBuyer platform' },
+  { name: 'Opendoor', url: 'https://www.opendoor.com', desc: 'Digital home-buying platform' },
 ];
+const WHOLESALE_WEBSITES = [
+  { name: 'WholesalingRealEstate.com', url: 'https://www.wholesalingrealestate.com', desc: 'Education and buyer/seller resources' },
+  { name: 'DealMachine', url: 'https://www.dealmachine.com', desc: 'Property sourcing and lead management' },
+  { name: 'PropStream', url: 'https://www.propstream.com', desc: 'Real estate data and comps' },
+  { name: 'FlipComp', url: 'https://www.flipcomp.com', desc: 'Comparable-sales research' },
+];
+const STATUS_META = {
+  closed: { label: 'CLOSED', dot: 'bg-emerald-500', badge: 'bg-emerald-500/20 text-emerald-300' },
+  callback: { label: 'CALLBACK', dot: 'bg-amber-500', badge: 'bg-amber-500/20 text-amber-300' },
+  dead: { label: 'DEAD', dot: 'bg-red-500', badge: 'bg-red-500/20 text-red-300' },
+};
+const SCRIPT_TONE = {
+  emerald: { box: 'border-emerald-500/20 bg-emerald-500/5', title: 'text-emerald-300' },
+  sky: { box: 'border-sky-500/20 bg-sky-500/5', title: 'text-sky-300' },
+  violet: { box: 'border-violet-500/20 bg-violet-500/5', title: 'text-violet-300' },
+  amber: { box: 'border-amber-500/20 bg-amber-500/5', title: 'text-amber-300' },
+};
+
+const formatTime = (secs) => `${Math.floor(secs / 60).toString().padStart(2, '0')}:${(secs % 60).toString().padStart(2, '0')}`;
+const firstName = (name = 'there') => String(name).trim().split(/\s+/)[0] || 'there';
+
+function buildPlaybook(lead) {
+  const name = firstName(lead?.prospect_name);
+  const address = lead?.address || 'the property';
+  const type = lead?.property_type || 'property';
+  const asking = lead?.asking_price && lead.asking_price !== '$250,000' ? lead.asking_price : '';
+  const criteria = lead?.distress_or_criteria || '';
+  const score = lead?.distress_score || '';
+  return {
+    opener: `Hi ${name}, this is Mohammed with MBM. I’m reaching out about ${address}. Did I catch you with a quick minute?`,
+    bridge: `I’m trying to understand whether ${address} is something you’re actively holding, selling, or simply open to discussing. What’s the situation with it right now?`,
+    questions: [
+      'What has you considering a sale, if anything?',
+      `What is the current condition of the ${String(type).toLowerCase()}?`,
+      'Is there any timing pressure or ideal closing window?',
+      'Have you already received any offers, and what stood out about them?',
+    ],
+    transition: 'Based on what you’ve told me, the next step would be to look at the numbers rather than guess. If the deal makes sense for both sides, would you be open to reviewing a written offer?',
+    close: 'What would need to happen for you to feel comfortable taking the next step?',
+    voicemail: `Hi ${name}, this is Mohammed with MBM calling about ${address}. I had a quick question about the property and wanted to see whether a sale is something you’d consider. Call me back when you have a moment. Again, Mohammed with MBM.`,
+    objection: 'Totally fair. I’m not calling to force a decision. I just want to understand your situation and see whether the numbers are worth a second conversation.',
+    notes: [
+      asking ? `Known asking price: ${asking}. Verify before discussing.` : 'No verified asking price in the feed. Do not invent one.',
+      criteria ? `Lead signal: ${criteria}` : 'No explicit distress reason supplied. Discover the motivation live.',
+      score ? `Lead score: ${score}. Use it for prioritization, not as a fact about the owner.` : 'No lead score supplied.',
+    ],
+  };
+}
+
+function ScriptCard({ title, text, accent = 'emerald' }) {
+  const [copied, setCopied] = useState(false);
+  const tone = SCRIPT_TONE[accent] || SCRIPT_TONE.emerald;
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      toast.success('Script copied');
+      setTimeout(() => setCopied(false), 1200);
+    } catch {
+      toast.error('Copy failed');
+    }
+  };
+  return (
+    <div className={`rounded-xl border ${tone.box} p-4`}>
+      <div className="flex items-center justify-between gap-3 mb-2">
+        <div className={`text-xs uppercase tracking-wider font-bold ${tone.title}`}>{title}</div>
+        <button onClick={copy} className="text-slate-400 hover:text-white" title="Copy"><Copy className="w-4 h-4" /></button>
+      </div>
+      <p className="text-sm leading-6 text-slate-200">{text}</p>
+      {copied && <div className="text-[11px] text-emerald-300 mt-2">Copied</div>}
+    </div>
+  );
+}
 
 export default function AutoDialer() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentLead, setCurrentLead] = useState(null);
-  const [callState, setCallState] = useState('idle'); // idle | ringing | connected | ended
+  const [callState, setCallState] = useState('idle');
   const [callTimer, setCallTimer] = useState(0);
-  const [callStartTime, setCallStartTime] = useState(null);
   const [myPhone, setMyPhone] = useState('');
+  const [query, setQuery] = useState('');
+  const [marketFilter, setMarketFilter] = useState('all');
   const [showDisposition, setShowDisposition] = useState(false);
   const [showClosedResources, setShowClosedResources] = useState(false);
   const [dispositions, setDispositions] = useState({});
-  const [completedCount, setCompletedCount] = useState(0);
-  const [closedCount, setClosedCount] = useState(0);
-  const [callBackCount, setCallBackCount] = useState(0);
-  const [deadCount, setDeadCount] = useState(0);
+  const [notes, setNotes] = useState('');
+  const [callbackTime, setCallbackTime] = useState('');
+  const [activeScriptTab, setActiveScriptTab] = useState('core');
   const timerRef = useRef(null);
 
+  useEffect(() => { fetchLeads(); loadDispositions(); }, []);
   useEffect(() => {
-    fetchLeads();
-    loadDispositions();
-  }, []);
-
-  useEffect(() => {
-    if (callState === 'connected' || callState === 'ringing') {
-      timerRef.current = setInterval(() => {
-        setCallTimer(prev => prev + 1);
-      }, 1000);
-    }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
+    if (callState === 'connected' || callState === 'ringing') timerRef.current = setInterval(() => setCallTimer((v) => v + 1), 1000);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [callState]);
 
-  const fetchLeads = async () => {
+  async function fetchLeads() {
     try {
-      let res = await fetch(`${API}/api/dialer/re-queue`);
+      let res = await fetch(`${API}/dialer/re-queue`);
       let data = await res.json();
-      if (!data.prospects || !data.prospects.length) {
-        res = await fetch(`${API}/api/dialer/top50`);
-        data = await res.json();
-      }
-      if (data.prospects) {
-        setLeads(data.prospects);
-      }
+      if (!data.prospects?.length) { res = await fetch(`${API}/dialer/top50`); data = await res.json(); }
+      setLeads(data.prospects || []);
     } catch (err) {
-      console.error('Failed to load leads:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      console.error(err);
+      toast.error('Could not load the calling queue');
+    } finally { setLoading(false); }
+  }
 
-  const loadDispositions = async () => {
+  async function loadDispositions() {
     try {
-      const res = await fetch(`${API}/api/dialer/dispositions`);
+      const res = await fetch(`${API}/dialer/dispositions`);
       const data = await res.json();
-      if (data.dispositions) {
-        const map = {};
-        data.dispositions.forEach(d => {
-          map[d.lead_id] = d.disposition;
-        });
-        setDispositions(map);
-      }
-    } catch (err) {}
-  };
+      const map = {};
+      (data.dispositions || []).forEach((d) => { map[d.lead_id] = d.disposition; });
+      setDispositions(map);
+    } catch { /* queue remains usable */ }
+  }
 
-  const formatTime = (secs) => {
-    const m = Math.floor(secs / 60).toString().padStart(2, '0');
-    const s = (secs % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  };
+  const filteredLeads = useMemo(() => leads.filter((lead) => {
+    if (dispositions[lead.id]) return false;
+    const haystack = [lead.prospect_name, lead.address, lead.city, lead.property_type, lead.formatted_phone].filter(Boolean).join(' ').toLowerCase();
+    if (query && !haystack.includes(query.toLowerCase())) return false;
+    return marketFilter === 'all' || lead.city === marketFilter;
+  }), [leads, dispositions, query, marketFilter]);
+  const doneLeads = useMemo(() => leads.filter((l) => dispositions[l.id]), [leads, dispositions]);
+  const markets = useMemo(() => [...new Set(leads.map((l) => l.city).filter(Boolean))].sort(), [leads]);
+  const stats = useMemo(() => ({
+    called: doneLeads.length,
+    closed: doneLeads.filter((l) => dispositions[l.id] === 'closed').length,
+    callback: doneLeads.filter((l) => dispositions[l.id] === 'callback').length,
+    dead: doneLeads.filter((l) => dispositions[l.id] === 'dead').length,
+    remaining: filteredLeads.length,
+  }), [doneLeads, dispositions, filteredLeads.length]);
+  const playbook = currentLead ? buildPlaybook(currentLead) : null;
 
-  const startCall = async (lead) => {
-    if (!myPhone.trim()) {
-      toast.error('ENTER PHONE NUMBER IN MIDDLE PANE', { style: { background: 'black', color: '#39FF14', border: '1px solid #39FF14' }});
-      return;
-    }
-
-    setCurrentLead(lead);
-    setCallState('ringing');
-    setCallTimer(0);
-    setCallStartTime(null);
-
+  async function startCall(lead) {
+    if (!myPhone.trim()) { toast.error('Enter your phone number first'); return; }
+    setCurrentLead(lead); setCallState('ringing'); setCallTimer(0);
     try {
-      const res = await fetch(`${API}/api/dialer/call-bridge`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to_number: lead.phone_number,
-          prospect_name: lead.prospect_name,
-          my_phone: myPhone,
-        }),
-      });
+      const res = await fetch(`${API}/dialer/call-bridge`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ to_number: lead.phone_number, prospect_name: lead.prospect_name, my_phone: myPhone }) });
       const data = await res.json();
+      if (['ringing_your_phone', 'bridged', 'connected'].includes(data.status)) { toast.success(`Bridge started for ${lead.prospect_name}`); setCallState('connected'); }
+      else if (data.status === 'demo_mode') { toast.info('Demo mode: no live Twilio call was created'); setCallState('connected'); }
+      else throw new Error(data.error || 'Call failed');
+    } catch (err) { toast.error(err.message || 'Could not place call'); setCallState('idle'); setCurrentLead(null); }
+  }
 
-      if (data.status === 'ringing_your_phone') {
-        toast.success(`CONNECTING: ${lead.prospect_name}`, { style: { background: 'black', color: '#39FF14', border: '1px solid #39FF14' }});
-        setTimeout(() => {
-          setCallState('connected');
-          setCallStartTime(Date.now());
-        }, 5000);
-      } else if (data.status === 'demo_mode') {
-        toast.info('DEMO MODE: SIMULATING CONNECTION', { style: { background: 'black', color: '#39FF14', border: '1px solid #39FF14' }});
-        setTimeout(() => {
-          setCallState('connected');
-          setCallStartTime(Date.now());
-        }, 3000);
-      } else {
-        toast.error('FAILED TO PLACE CALL', { style: { background: 'black', color: 'red', border: '1px solid red' }});
-        setCallState('idle');
-      }
-    } catch (err) {
-      toast.error('API DISCONNECTED', { style: { background: 'black', color: 'red', border: '1px solid red' }});
-      setCallState('idle');
-    }
-  };
+  function endCall() { if (timerRef.current) clearInterval(timerRef.current); setCallState('ended'); setNotes(''); setCallbackTime(''); setShowDisposition(true); }
 
-  const endCall = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    setCallState('ended');
-    setShowDisposition(true);
-  };
-
-  const saveDisposition = async (disposition, notes = '', callbackTime = null) => {
+  async function saveDisposition(disposition) {
     if (!currentLead) return;
-
     try {
-      await fetch(`${API}/api/dialer/disposition`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lead_id: currentLead.id,
-          prospect_name: currentLead.prospect_name,
-          disposition,
-          notes,
-          callback_time: callbackTime,
-        }),
-      });
-    } catch (err) {}
+      const res = await fetch(`${API}/dialer/disposition`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lead_id: currentLead.id, prospect_name: currentLead.prospect_name, disposition, notes, callback_time: disposition === 'callback' ? callbackTime || null : null }) });
+      if (!res.ok) throw new Error('Failed to save disposition');
+    } catch (err) { toast.error(err.message); return; }
+    const id = currentLead.id;
+    setDispositions((prev) => ({ ...prev, [id]: disposition }));
+    if (disposition === 'closed') setShowClosedResources(true);
+    toast.success(`${currentLead.prospect_name}: ${STATUS_META[disposition]?.label || disposition}`);
+    setShowDisposition(false); setCallState('idle'); setCallTimer(0); setCurrentLead(null); setNotes(''); setCallbackTime('');
+  }
 
-    setDispositions(prev => ({ ...prev, [currentLead.id]: disposition }));
-    setShowDisposition(false);
-
-    if (disposition === 'closed') {
-      setClosedCount(prev => prev + 1);
-      setShowClosedResources(true);
-    } else if (disposition === 'callback') {
-      setCallBackCount(prev => prev + 1);
-    } else if (disposition === 'dead') {
-      setDeadCount(prev => prev + 1);
-    }
-
-    setCompletedCount(prev => prev + 1);
-    setCallState('idle');
-    setCallTimer(0);
-    setCurrentLead(null);
-  };
-
-  const nextLead = () => {
-    setShowClosedResources(false);
-    setShowDisposition(false);
-    setCallState('idle');
-    setCallTimer(0);
-    setCurrentLead(null);
-  };
-
-  const activeLeads = leads.filter(l => !dispositions[l.id]);
+  function nextLead() { setShowDisposition(false); setShowClosedResources(false); setCallState('idle'); setCallTimer(0); setCurrentLead(null); setNotes(''); setCallbackTime(''); }
 
   return (
-    <div className="min-h-screen bg-black text-[#39FF14] font-mono flex flex-col text-sm">
-      {/* Header (Bloomberg Style) */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-[#39FF14]/30 bg-black/90 backdrop-blur">
-        <div className="flex items-center gap-4">
-          <Terminal className="w-5 h-5 text-[#39FF14]" />
-          <span className="font-bold tracking-widest uppercase">MBM Dialer.SYS :: Terminal_01</span>
-          <span className="bg-[#39FF14]/10 text-[#39FF14] px-2 py-0.5 rounded text-xs border border-[#39FF14]/30 animate-pulse">
-            LIVE_LINK
-          </span>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+      <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-white/10 px-4 md:px-6 py-4">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-center gap-3"><div className="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-400/20 flex items-center justify-center"><PhoneCall className="w-5 h-5 text-emerald-300" /></div><div><div className="flex items-center gap-2"><h1 className="text-xl font-bold">MBM Dialer</h1><span className="text-[10px] px-2 py-1 rounded-full bg-white/5 text-slate-400">v2</span></div><p className="text-xs text-slate-400">Lead-aware calling · grounded scripts · faster follow-up</p></div></div>
+          <div className="grid grid-cols-5 gap-2 md:gap-5 text-center">{[['Called', stats.called, 'text-white'], ['Closed', stats.closed, 'text-emerald-300'], ['Callback', stats.callback, 'text-amber-300'], ['Dead', stats.dead, 'text-red-300'], ['Queue', stats.remaining, 'text-sky-300']].map(([label, value, cls]) => <div key={label}><div className={`text-lg md:text-2xl font-bold ${cls}`}>{value}</div><div className="text-[10px] text-slate-500">{label}</div></div>)}</div>
         </div>
-        <div className="flex items-center gap-6 text-xs font-bold">
-          <div className="flex items-center gap-2"><Activity className="w-4 h-4"/> LATENCY: 24ms</div>
-          <div>CALLED: {completedCount}</div>
-          <div className="text-emerald-300">CLOSED: {closedCount}</div>
-          <div className="text-amber-400">CB: {callBackCount}</div>
-          <div className="text-red-500">DEAD: {deadCount}</div>
-        </div>
-      </div>
+      </header>
 
-      {/* Main Tri-Pane Layout */}
-      <div className="flex-1 grid grid-cols-12 gap-px bg-[#39FF14]/20 p-px">
-        
-        {/* Left Pane: Queue */}
-        <div className="col-span-3 bg-black p-4 flex flex-col overflow-hidden h-[calc(100vh-45px)]">
-          <div className="uppercase font-bold border-b border-[#39FF14]/30 pb-2 mb-4 tracking-widest text-[#39FF14]/70">
-            [01] Prospect_Queue ({activeLeads.length})
-          </div>
-          <div className="flex-1 overflow-y-auto pr-2 space-y-2">
-            {loading ? (
-              <div className="animate-pulse">LOADING_DATA...</div>
-            ) : (
-              activeLeads.map((lead, i) => (
-                <div 
-                  key={lead.id} 
-                  className={`border border-[#39FF14]/20 p-2 text-xs cursor-pointer hover:bg-[#39FF14]/10 transition-colors ${currentLead?.id === lead.id ? 'bg-[#39FF14]/20 border-[#39FF14]' : ''}`}
-                  onClick={() => callState === 'idle' && startCall(lead)}
-                >
-                  <div className="flex justify-between font-bold mb-1">
-                    <span className="truncate">{lead.prospect_name.toUpperCase()}</span>
-                    <span>{lead.formatted_phone}</span>
-                  </div>
-                  <div className="text-[#39FF14]/60 truncate">{lead.address.toUpperCase()}</div>
-                  <div className="flex justify-between mt-2 text-[#39FF14]/50">
-                    <span>ASK: {lead.asking_price}</span>
-                    <span>COM: {lead.est_commission}</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6">
+        <section className="grid lg:grid-cols-[1.5fr_1fr] gap-4">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"><div className="flex items-center gap-2 mb-3"><Zap className="w-4 h-4 text-emerald-300" /><h2 className="font-semibold">Bridge setup</h2></div><div className="flex flex-col md:flex-row gap-3"><input type="tel" value={myPhone} onChange={(e) => setMyPhone(e.target.value)} placeholder="Your phone: +1 555 123 4567" className="flex-1 bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500/50" /><div className="flex items-center text-xs text-slate-400 px-2"><ShieldCheck className="w-4 h-4 text-emerald-300 mr-2" />Twilio bridge mode</div></div></div>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"><div className="flex items-center gap-2 mb-3"><Target className="w-4 h-4 text-sky-300" /><h2 className="font-semibold">Queue controls</h2></div><div className="flex gap-2"><div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, city, address..." className="w-full bg-slate-950/80 border border-white/10 rounded-xl pl-9 pr-3 py-3 text-sm outline-none" /></div><select value={marketFilter} onChange={(e) => setMarketFilter(e.target.value)} className="bg-slate-950 border border-white/10 rounded-xl px-3 py-3 text-sm"><option value="all">All markets</option>{markets.map((market) => <option key={market} value={market}>{market}</option>)}</select></div></div>
+        </section>
 
-        {/* Center Pane: Active Call Interface */}
-        <div className="col-span-6 bg-black p-6 flex flex-col h-[calc(100vh-45px)] relative">
-          <div className="uppercase font-bold border-b border-[#39FF14]/30 pb-2 mb-6 tracking-widest text-[#39FF14]/70">
-            [02] War_Room
-          </div>
-
-          {!currentLead ? (
-            <div className="flex-1 flex flex-col items-center justify-center opacity-50">
-              <Zap className="w-16 h-16 mb-4" />
-              <div className="text-xl tracking-widest">SYSTEM_IDLE</div>
-              <div className="mt-2 text-sm">SELECT TARGET FROM QUEUE TO INITIATE</div>
-              
-              <div className="mt-8 border border-[#39FF14]/30 p-4 w-full max-w-md">
-                <label className="block mb-2 text-xs font-bold uppercase">Verify Agent Bridge Number:</label>
-                <input
-                  type="tel"
-                  value={myPhone}
-                  onChange={(e) => setMyPhone(e.target.value)}
-                  placeholder="+1 (555) 123-4567"
-                  className="w-full bg-black border border-[#39FF14]/50 p-2 text-[#39FF14] placeholder-[#39FF14]/30 focus:outline-none focus:border-[#39FF14]"
-                />
-              </div>
+        <AnimatePresence>{currentLead && (callState === 'ringing' || callState === 'connected') && playbook && <motion.section initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="rounded-3xl border border-emerald-400/20 bg-gradient-to-br from-emerald-500/10 via-slate-900 to-slate-900 p-5 md:p-6 shadow-2xl">
+          <div className="flex flex-col xl:flex-row gap-5">
+            <div className="xl:w-[32%]"><div className="flex items-center gap-3 mb-4"><div className="relative w-14 h-14 rounded-2xl bg-emerald-500/15 flex items-center justify-center"><User className="w-7 h-7 text-emerald-200" />{callState === 'ringing' && <span className="absolute inset-0 rounded-2xl border-2 border-emerald-300/70 animate-ping" />}</div><div><h2 className="text-2xl font-bold">{currentLead.prospect_name}</h2><p className="text-sm text-slate-400">{currentLead.address || 'Address unavailable'}</p></div></div><div className="grid grid-cols-2 gap-2 mb-4"><div className="rounded-xl bg-black/20 p-3"><div className="text-xs text-slate-500">Asking</div><div className="font-semibold">{currentLead.asking_price || 'Unverified'}</div></div><div className="rounded-xl bg-black/20 p-3"><div className="text-xs text-slate-500">Lead score</div><div className="font-semibold text-emerald-300">{currentLead.distress_score || '—'}</div></div></div><div className="rounded-xl bg-black/20 p-4"><div className="flex items-center justify-between"><span className="text-xs uppercase tracking-wider text-slate-500">Call timer</span><span className="font-mono text-xl">{formatTime(callTimer)}</span></div><div className="text-xs text-slate-400 mt-2">{callState === 'ringing' ? 'Bridge is being established' : 'Live call'}</div></div></div>
+            <div className="flex-1"><div className="flex flex-wrap gap-2 mb-3">{[['core', 'Open'], ['questions', 'Discover'], ['objections', 'Objections'], ['voicemail', 'Voicemail']].map(([id, label]) => <button key={id} onClick={() => setActiveScriptTab(id)} className={`px-3 py-2 rounded-lg text-xs font-semibold ${activeScriptTab === id ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/20' : 'bg-white/5 text-slate-400'}`}>{label}</button>)}</div>
+              {activeScriptTab === 'core' && <div className="space-y-3"><ScriptCard title="Opener" text={playbook.opener} /><ScriptCard title="Bridge" text={playbook.bridge} accent="sky" /><ScriptCard title="Transition" text={playbook.transition} accent="violet" /><ScriptCard title="Close" text={playbook.close} accent="amber" /></div>}
+              {activeScriptTab === 'questions' && <div className="grid md:grid-cols-2 gap-3">{playbook.questions.map((q) => <ScriptCard key={q} title="Discovery question" text={q} accent="sky" />)}</div>}
+              {activeScriptTab === 'objections' && <div className="space-y-3"><ScriptCard title="Pressure-free response" text={playbook.objection} accent="amber" /><div className="rounded-xl bg-white/[0.03] border border-white/10 p-4"><div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 mb-2"><MessageSquare className="w-4 h-4" />Guardrails</div>{playbook.notes.map((n) => <div key={n} className="text-sm text-slate-300 py-1.5">• {n}</div>)}</div></div>}
+              {activeScriptTab === 'voicemail' && <ScriptCard title="Voicemail" text={playbook.voicemail} accent="violet" />}
             </div>
-          ) : (
-            <div className="flex-1 flex flex-col">
-              {/* Call Status Header */}
-              <div className="border border-[#39FF14] p-6 relative overflow-hidden bg-black shadow-[0_0_15px_rgba(57,255,20,0.1)]">
-                {callState === 'ringing' && (
-                  <motion.div 
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: [0, 0.5, 0] }} 
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                    className="absolute inset-0 bg-[#39FF14]/10" 
-                  />
-                )}
-                <div className="flex justify-between items-center relative z-10">
-                  <div>
-                    <h2 className="text-3xl font-bold mb-1 tracking-wider uppercase">{currentLead.prospect_name}</h2>
-                    <div className="text-[#39FF14]/70 flex items-center gap-2 group">
-                      <MapPin className="w-4 h-4"/> 
-                      <span>{currentLead.address.toUpperCase()}</span>
-                      <button 
-                        onClick={() => {
-                          navigator.clipboard.writeText(currentLead.address);
-                          toast.success('ADDRESS COPIED');
-                        }}
-                        className="ml-2 opacity-0 group-hover:opacity-100 bg-[#39FF14]/20 px-2 py-0.5 rounded text-[10px] hover:bg-[#39FF14] hover:text-black transition-all"
-                      >
-                        COPY
-                      </button>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-5xl font-bold tracking-tighter shadow-sm">{formatTime(callTimer)}</div>
-                    <div className="text-sm font-bold uppercase mt-1 animate-pulse">
-                      {callState === 'ringing' ? '>>> OUTBOUND_RINGING' : callState === 'connected' ? '>>> LINK_ESTABLISHED' : '>>> TERMINATED'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Data Grid */}
-              <div className="grid grid-cols-3 gap-px bg-[#39FF14]/20 p-px mt-6">
-                <div className="bg-black p-3">
-                  <div className="text-[#39FF14]/50 text-xs mb-1">PHONE</div>
-                  <div className="font-bold">{currentLead.formatted_phone}</div>
-                </div>
-                <div className="bg-black p-3">
-                  <div className="text-[#39FF14]/50 text-xs mb-1">DISTRESS_SCORE</div>
-                  <div className="font-bold">{currentLead.distress_score}/100</div>
-                </div>
-                <div className="bg-black p-3">
-                  <div className="text-[#39FF14]/50 text-xs mb-1">PROPERTY_TYPE</div>
-                  <div className="font-bold uppercase">{currentLead.property_type}</div>
-                </div>
-              </div>
-
-              {/* Script Box */}
-              <div className="mt-6 flex-1 border border-[#39FF14]/30 p-4 flex flex-col">
-                <div className="text-[#39FF14]/50 text-xs mb-3 flex items-center gap-2 border-b border-[#39FF14]/20 pb-2">
-                  <FileText className="w-4 h-4"/> EXECUTABLE_SCRIPT
-                </div>
-                <div className="flex-1 overflow-y-auto text-lg leading-relaxed whitespace-pre-wrap">
-                  {currentLead.cold_calling_script}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right Pane: Actions & Dispositions */}
-        <div className="col-span-3 bg-black p-4 flex flex-col h-[calc(100vh-45px)]">
-          <div className="uppercase font-bold border-b border-[#39FF14]/30 pb-2 mb-4 tracking-widest text-[#39FF14]/70">
-            [03] Action_Panel
           </div>
-          
-          <div className="flex-1">
-            {!currentLead ? (
-              <div className="text-[#39FF14]/40 text-center mt-10">AWAITING_CONNECTION...</div>
-            ) : (
-              <div className="space-y-4">
-                {callState !== 'ended' ? (
-                  <button
-                    onClick={endCall}
-                    className="w-full bg-red-600/20 border border-red-500 text-red-500 hover:bg-red-600 hover:text-black font-bold uppercase py-4 transition-colors tracking-widest flex items-center justify-center gap-2"
-                  >
-                    <PhoneOff className="w-5 h-5"/> TERMINATE_LINK
-                  </button>
-                ) : (
-                  <div className="space-y-3">
-                    <div className="text-xs uppercase text-[#39FF14]/50 mb-2">Awaiting Disposition:</div>
-                    <button
-                      onClick={() => saveDisposition('closed')}
-                      className="w-full bg-[#39FF14]/10 border border-[#39FF14] hover:bg-[#39FF14] hover:text-black font-bold uppercase py-3 transition-colors tracking-widest text-left px-4"
-                    >
-                      [1] DEAL_SECURED
-                    </button>
-                    <button
-                      onClick={() => saveDisposition('callback')}
-                      className="w-full bg-amber-500/10 border border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-black font-bold uppercase py-3 transition-colors tracking-widest text-left px-4"
-                    >
-                      [2] REQUIRE_CALLBACK
-                    </button>
-                    <button
-                      onClick={() => saveDisposition('dead')}
-                      className="w-full bg-red-500/10 border border-red-500 text-red-500 hover:bg-red-500 hover:text-black font-bold uppercase py-3 transition-colors tracking-widest text-left px-4"
-                    >
-                      [3] DEAD_LEAD
-                    </button>
-                  </div>
-                )}
+          <div className="flex flex-col sm:flex-row gap-3 mt-5"><button onClick={endCall} className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 px-5 py-3 rounded-xl font-semibold"><PhoneOff className="w-5 h-5" />End & Disposition</button><button onClick={nextLead} className="sm:w-40 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl font-semibold"><ChevronRight className="w-5 h-5" />Skip</button></div>
+        </motion.section>}</AnimatePresence>
 
-                <div className="mt-8 border-t border-[#39FF14]/30 pt-4">
-                  <div className="text-xs uppercase text-[#39FF14]/50 mb-2">Quick Intel:</div>
-                  <div className="space-y-2 text-xs">
-                    <div className="border border-[#39FF14]/20 p-2 flex justify-between">
-                      <span className="text-[#39FF14]/50">Zestimate:</span> 
-                      <span>{currentLead.zestimate || 'N/A'}</span>
-                    </div>
-                    <div className="border border-[#39FF14]/20 p-2 flex justify-between">
-                      <span className="text-[#39FF14]/50">Days on Market:</span> 
-                      <span>{currentLead.days_on_market || 'Off-Market'}</span>
-                    </div>
-                    <div className="border border-[#39FF14]/20 p-2 flex justify-between">
-                      <span className="text-[#39FF14]/50">Year Built:</span> 
-                      <span>{currentLead.year_built || 'Unknown'}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <section><div className="flex items-center justify-between mb-3"><div><h2 className="text-lg font-semibold">Ready to call</h2><p className="text-xs text-slate-500">{filteredLeads.length} leads match the current queue filters</p></div></div>{loading ? <div className="py-20 text-center text-slate-500">Loading calling queue...</div> : filteredLeads.length === 0 ? <div className="rounded-2xl border border-dashed border-white/10 p-10 text-center text-slate-500">No leads match these filters.</div> : <div className="space-y-2">{filteredLeads.map((lead, i) => <motion.div key={lead.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} className="rounded-2xl border border-white/10 bg-white/[0.025] hover:bg-white/[0.05] p-4 flex flex-col lg:flex-row lg:items-center gap-4"><div className="flex items-center gap-3 flex-1 min-w-0"><div className="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400">{i + 1}</div><div className="min-w-0"><div className="font-semibold truncate">{lead.prospect_name}</div><div className="text-xs text-slate-500 truncate flex items-center gap-1"><MapPin className="w-3 h-3" />{lead.address || 'No address'}</div><div className="text-[11px] text-slate-600 mt-0.5">{lead.property_type || 'Property'} · {lead.city || 'Unknown market'}</div></div></div><div className="grid grid-cols-3 lg:flex gap-4 text-right"><div><div className="text-[11px] text-slate-500">Price</div><div className="text-sm font-semibold">{lead.asking_price || '—'}</div></div><div><div className="text-[11px] text-slate-500">Score</div><div className="text-sm font-semibold text-emerald-300">{lead.distress_score || '—'}</div></div><div><div className="text-[11px] text-slate-500">Phone</div><div className="text-xs font-mono text-slate-300">{lead.formatted_phone || lead.phone_number}</div></div></div><button onClick={() => startCall(lead)} disabled={callState !== 'idle'} className="w-full lg:w-auto flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 px-5 py-2.5 rounded-xl font-semibold"><Phone className="w-4 h-4" />Call</button></motion.div>)}</div>}</section>
 
-      </div>
+        {doneLeads.length > 0 && <section><h2 className="text-lg font-semibold mb-3">Completed</h2><div className="space-y-2">{doneLeads.map((lead) => { const meta = STATUS_META[dispositions[lead.id]] || STATUS_META.dead; return <div key={lead.id} className="rounded-xl border border-white/5 bg-white/[0.02] p-3 flex items-center justify-between"><div className="flex items-center gap-3 min-w-0"><span className={`w-2 h-2 rounded-full ${meta.dot}`} /><span className="text-sm text-slate-400 truncate">{lead.prospect_name}</span><span className="text-xs text-slate-600 truncate hidden md:block">{lead.address}</span></div><span className={`text-[10px] px-2 py-1 rounded-full ${meta.badge}`}>{meta.label}</span></div>; })}</div></section>}
+      </main>
 
-      {/* Closed Modal Override */}
-      <AnimatePresence>
-        {showClosedResources && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 font-mono text-[#39FF14]"
-          >
-            <div className="border border-[#39FF14] p-8 max-w-4xl w-full bg-black shadow-[0_0_30px_rgba(57,255,20,0.2)]">
-              <div className="text-center mb-8 border-b border-[#39FF14]/30 pb-6">
-                <h2 className="text-4xl font-bold tracking-widest uppercase">{">>>"} CONTRACT_SECURED</h2>
-                <div className="mt-2 text-[#39FF14]/70">WHOLESALING RESOURCES UNLOCKED</div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-xl font-bold border-b border-[#39FF14]/50 pb-2 mb-4 uppercase">Buyer_Network</h3>
-                  <div className="space-y-3">
-                    {CASH_BUYERS.map((cb, i) => (
-                      <div key={i} className="border border-[#39FF14]/30 p-3 hover:bg-[#39FF14]/10">
-                        <div className="font-bold">{cb.name.toUpperCase()}</div>
-                        <div className="text-xs mt-1 text-[#39FF14]/70 flex justify-between">
-                          <span>{cb.phone || 'NO_PHONE'}</span>
-                          <a href={cb.url} target="_blank" className="underline">ACCESS_LINK</a>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold border-b border-[#39FF14]/50 pb-2 mb-4 uppercase">Wholesale_Desks</h3>
-                  <div className="space-y-3">
-                    {WHOLESALER_RESOURCES.map((ws, i) => (
-                      <div key={i} className="border border-[#39FF14]/30 p-3 hover:bg-[#39FF14]/10">
-                        <div className="font-bold">{ws.name.toUpperCase()}</div>
-                        <div className="text-xs mt-1 text-[#39FF14]/70 flex justify-between">
-                          <span>{ws.phone}</span>
-                          <a href={ws.url} target="_blank" className="underline">ACCESS_LINK</a>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+      <AnimatePresence>{showDisposition && currentLead && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4"><motion.div initial={{ scale: 0.96, y: 12 }} animate={{ scale: 1, y: 0 }} className="w-full max-w-xl rounded-3xl bg-slate-900 border border-white/10 p-6"><h2 className="text-2xl font-bold">What happened?</h2><p className="text-sm text-slate-500 mt-1">{currentLead.prospect_name} · {formatTime(callTimer)}</p><div className="grid md:grid-cols-3 gap-3 mt-5"><button onClick={() => saveDisposition('closed')} className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-left hover:bg-emerald-500/15"><CheckCircle className="w-6 h-6 text-emerald-300 mb-2" /><div className="font-semibold">Closed / Qualified</div><div className="text-xs text-slate-500 mt-1">Move to deal follow-up.</div></button><button onClick={() => saveDisposition('callback')} className="rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-left hover:bg-amber-500/15"><CalendarClock className="w-6 h-6 text-amber-300 mb-2" /><div className="font-semibold">Callback</div><div className="text-xs text-slate-500 mt-1">Keep the conversation alive.</div></button><button onClick={() => saveDisposition('dead')} className="rounded-2xl border border-red-400/20 bg-red-500/10 p-4 text-left hover:bg-red-500/15"><XCircle className="w-6 h-6 text-red-300 mb-2" /><div className="font-semibold">Not a Fit</div><div className="text-xs text-slate-500 mt-1">Archive from active queue.</div></button></div><div className="mt-4 grid md:grid-cols-2 gap-3"><textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Call notes, motivation, objection, price talk..." className="min-h-24 bg-slate-950 border border-white/10 rounded-xl p-3 text-sm outline-none" /><div className="space-y-3"><input value={callbackTime} onChange={(e) => setCallbackTime(e.target.value)} placeholder="Callback time (optional)" className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-3 text-sm" /><div className="rounded-xl bg-white/[0.03] border border-white/10 p-3 text-xs text-slate-500">Save the reason, next step, and any verified number discussed.</div></div></div><button onClick={() => { setShowDisposition(false); setCallState('idle'); setCurrentLead(null); }} className="mt-4 w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300">Cancel</button></motion.div></motion.div>}</AnimatePresence>
 
-              <div className="mt-8 text-center">
-                <button
-                  onClick={nextLead}
-                  className="bg-[#39FF14] text-black hover:bg-white font-bold uppercase py-3 px-8 transition-colors tracking-widest"
-                >
-                  ACKNOWLEDGE_AND_CONTINUE
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AnimatePresence>{showClosedResources && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/80 overflow-y-auto p-4"><div className="max-w-4xl mx-auto my-8 rounded-3xl bg-slate-900 border border-emerald-400/20 p-6"><div className="text-center mb-7"><div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/15 flex items-center justify-center mb-3"><CheckCircle className="w-8 h-8 text-emerald-300" /></div><h2 className="text-3xl font-bold">Deal Follow-up Hub</h2><p className="text-slate-500 mt-1">Move from “closed” to a concrete next action.</p></div><div className="grid md:grid-cols-2 gap-3 mb-6">{WHOLESALE_WEBSITES.map((site) => <a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer" className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.06]"><div className="flex items-center justify-between"><div className="font-semibold">{site.name}</div><ExternalLink className="w-4 h-4 text-slate-500" /></div><div className="text-xs text-slate-500 mt-1">{site.desc}</div></a>)}</div><div className="space-y-2 mb-6">{CASH_BUYERS.map((buyer) => <div key={buyer.name} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex items-center justify-between"><div><div className="font-semibold">{buyer.name}</div><div className="text-xs text-slate-500">{buyer.desc}</div></div><a href={buyer.url} target="_blank" rel="noopener noreferrer" className="text-xs text-sky-300 hover:text-sky-200">Open</a></div>)}</div><div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 mb-6"><div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 mb-2"><Building className="w-4 h-4" /> Wholesaler resources</div>{WHOLESALER_RESOURCES.map((r) => <div key={r.name} className="flex items-center justify-between py-2 border-t border-white/5 first:border-t-0"><div><div className="text-sm font-medium">{r.name}</div><div className="text-xs text-slate-500">{r.desc}</div></div>{r.phone && <div className="text-xs font-mono text-slate-400">{r.phone}</div>}</div>)}</div><button onClick={nextLead} className="w-full bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl font-semibold">Continue to Next Lead</button></div></motion.div>}</AnimatePresence>
     </div>
   );
 }

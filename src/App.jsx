@@ -12,11 +12,9 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import RoleRoute from '@/components/RoleRoute';
 import { LangProvider } from '@/lib/i18n';
 
-// Eagerly loaded — small, shown on first paint
 import Login from '@/pages/Login';
 import AppLayout from '@/components/layout/AppLayout';
 
-// Lazy-loaded pages
 const Register = lazy(() => import('@/pages/Register'));
 const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
@@ -51,16 +49,15 @@ const AutoDialer = lazy(() => import('@/pages/AutoDialer'));
 const OfferPage = lazy(() => import('@/pages/OfferPage'));
 const ShopifyStorefront = lazy(() => import('@/components/ShopifyStorefront'));
 const AgencyDashboard = lazy(() => import('@/pages/AgencyDashboard'));
+const MobileDialer = lazy(() => import('@/pages/MobileDialer'));
 
 function PageLoader() {
-  return (
-    <div className="flex items-center justify-center h-[50vh]">
-      <div className="text-center">
-        <div className="w-8 h-8 border-4 border-navy/20 border-t-navy rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-sm text-muted-foreground">Loading...</p>
-      </div>
-    </div>
-  );
+  return <div className="flex items-center justify-center h-[50vh]"><div className="text-center"><div className="w-8 h-8 border-4 border-navy/20 border-t-navy rounded-full animate-spin mx-auto mb-3" /><p className="text-sm text-muted-foreground">Loading...</p></div></div>;
+}
+
+function ResponsiveDialerHome() {
+  const isPhone = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+  return isPhone ? <MobileDialer /> : <MBMDashboard />;
 }
 
 const AuthenticatedApp = () => {
@@ -96,16 +93,18 @@ const AuthenticatedApp = () => {
         <Route path="/bawab-signup" element={<Navigate to="/doorman-signup" replace />} />
         <Route path="/doorman-signup" element={<DoormanSignup />} />
         {/* Public Landing & Dashboards (No login required) */}
-        <Route path="/" element={<MBMDashboard />} />
+        <Route path="/" element={<ResponsiveDialerHome />} />
         <Route path="/demo" element={<DemoLandingPage />} />
         <Route path="/hunt" element={<ClientHuntDashboard />} />
         <Route path="/voice-agents" element={<VoiceAgentsStudio />} />
         <Route path="/voice-studio" element={<VoiceAgentsStudio />} />
-        <Route path="/dialer" element={<AutoDialer />} />
-        <Route path="/auto-dialer" element={<AutoDialer />} />
+        <Route path="/dialer" element={<ResponsiveDialerHome />} />
+        <Route path="/auto-dialer" element={<ResponsiveDialerHome />} />
+        <Route path="/dialer/mobile" element={<MobileDialer />} />
+        <Route path="/mobile-dialer" element={<MobileDialer />} />
         <Route path="/affiliates" element={<AffiliateAnalytics />} />
-        <Route path="/mbm" element={<MBMDashboard />} />
-        <Route path="/mbm-dashboard" element={<MBMDashboard />} />
+        <Route path="/mbm" element={<ResponsiveDialerHome />} />
+        <Route path="/mbm-dashboard" element={<ResponsiveDialerHome />} />
         <Route path="/offer/:offerId" element={<OfferPage />} />
         <Route path="/store" element={<ShopifyStorefront />} />
         <Route path="/storefront" element={<ShopifyStorefront />} />
@@ -144,22 +143,5 @@ const AuthenticatedApp = () => {
   );
 };
 
-function App() {
-  return (
-    <LangProvider>
-      <AuthProvider>
-        <QueryClientProvider client={queryClientInstance}>
-          <ErrorBoundary>
-            <Router>
-              <ScrollToTop />
-              <AuthenticatedApp />
-            </Router>
-            <Toaster />
-          </ErrorBoundary>
-        </QueryClientProvider>
-      </AuthProvider>
-    </LangProvider>
-  )
-}
-
+function App() { return <LangProvider><AuthProvider><QueryClientProvider client={queryClientInstance}><ErrorBoundary><Router><ScrollToTop /><AuthenticatedApp /></Router><Toaster /></ErrorBoundary></QueryClientProvider></AuthProvider></LangProvider> }
 export default App
