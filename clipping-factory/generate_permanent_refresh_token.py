@@ -23,7 +23,7 @@ ROOT_DIR = BASE_DIR.parent
 TOKENS_PATH = BASE_DIR / "MBM-Social" / "youtube_tokens.json"
 
 CLIENT_ID = "708112125852-6c9bg1ddn88g3e3puaus8bi288upsr5l.apps.googleusercontent.com"
-CLIENT_SECRET = "GOOGLE_OAUTH_CLIENT_SECRET_REDACTED"
+CLIENT_SECRET = os.getenv("YOUTUBE_CLIENT_SECRET", "")
 
 
 def main():

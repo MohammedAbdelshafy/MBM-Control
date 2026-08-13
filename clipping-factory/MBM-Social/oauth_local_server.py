@@ -1,3 +1,4 @@
+import os
 import urllib.parse
 import http.server
 import threading
@@ -8,7 +9,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 client_id = "708112125852-6c9bg1ddn88g3e3puaus8bi288upsr5l.apps.googleusercontent.com"
-client_secret = "GOOGLE_OAUTH_CLIENT_SECRET_REDACTED"
+client_secret = os.getenv("YOUTUBE_CLIENT_SECRET", "")
 redirect_uri = "http://localhost:8090"
 scope = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube"
 

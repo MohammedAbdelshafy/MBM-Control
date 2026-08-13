@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import sys
 import time
@@ -33,7 +34,7 @@ TOKENS_PATH = MBM_SOCIAL_DIR / "youtube_tokens.json"
 REGISTRY_PATH = MBM_SOCIAL_DIR / "ChannelRegistry.json"
 
 CLIENT_ID = "708112125852-6c9bg1ddn88g3e3puaus8bi288upsr5l.apps.googleusercontent.com"
-CLIENT_SECRET = "GOOGLE_OAUTH_CLIENT_SECRET_REDACTED"
+CLIENT_SECRET = os.getenv("YOUTUBE_CLIENT_SECRET", "")
 SCOPE = "https://www.googleapis.com/auth/youtube.upload"
 
 BRANDS = ["clippingfactorymbm", "cutedosage", "dontwatchthis", "goalmachinez", "twistsrevealed"]

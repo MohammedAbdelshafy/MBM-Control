@@ -19,6 +19,7 @@ Features:
 Run:
   python clipping-factory/multi_account_channel_integrator.py
 """
+import os
 
 import json
 import os
@@ -41,7 +42,7 @@ LOGS_DIR = ROOT_DIR / "MBM" / "LeadEngine" / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 CLIENT_ID = "708112125852-6c9bg1ddn88g3e3puaus8bi288upsr5l.apps.googleusercontent.com"
-CLIENT_SECRET = "GOOGLE_OAUTH_CLIENT_SECRET_REDACTED"
+CLIENT_SECRET = os.getenv("YOUTUBE_CLIENT_SECRET", "")
 
 
 def log(msg):

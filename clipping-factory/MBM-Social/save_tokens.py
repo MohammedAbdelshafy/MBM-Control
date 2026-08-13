@@ -1,10 +1,11 @@
+import os
 import json
 import requests
 from pathlib import Path
 
 TOKENS_FILE = Path(__file__).resolve().parent / "youtube_tokens.json"
 client_id = "708112125852-6c9bg1ddn88g3e3puaus8bi288upsr5l.apps.googleusercontent.com"
-client_secret = "GOOGLE_OAUTH_CLIENT_SECRET_REDACTED"
+client_secret = os.getenv("YOUTUBE_CLIENT_SECRET", "")
 redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
 
 brands = {
