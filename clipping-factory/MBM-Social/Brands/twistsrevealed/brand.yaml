@@ -1,19 +1,32 @@
+active: true
 slug: twistsrevealed
 display_name: Twists Revealed
 handle: '@TwistsRevealed'
-youtube_channel_id: UC_TwistsRevealed
+gmail_account: bigmoeshafy@gmail.com
 master_account: abdelshafyclapps@gmail.com
-theme: plot twists, reveals, shocking stories, suspense
-voice: narrative, shock-reveal, suspense-first
-visual_style: narrative stills, tension-building, reveal moment highlighted
-hook_style: shock reveal
-emoji_policy: minimal
 primary_category: Entertainment
+niche: Action & Thriller Movie Summaries & Insane Plot Twists
+theme: Action & Thriller movie summaries, insane plot twists, suspense recaps
+voice: High-suspense narrative, dramatic shock-reveal
 keywords:
 - plot twist
-- reveal
-- shocking
-- story
-- suspense
-created: '2026-07-15'
-active: true
+- action movie summary
+- thriller recap
+- cinema ending
+- shocking reveal
+- Hollywood twist
+target_region: US
+default_language: en-US
+hashtags:
+- '#PlotTwist'
+- '#MovieRecap'
+- '#ActionMovies'
+- '#Thriller'
+- '#HollywoodEnding'
+- '#USATrending'
+- '#MovieClips'
+- '#CinemaTok'
+- '#MovieMindBlowing'
+- '#Shorts'
+- '#USA'
+neteller_wallet: 'abdelshafyclapps@gmail.com (Account: 4599228811)'

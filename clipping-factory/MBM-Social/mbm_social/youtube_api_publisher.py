@@ -6,13 +6,49 @@ Provides dual publishing support:
 """
 import os
 import json
+import random
 import time
 from pathlib import Path
 from glob import glob
 
+try:
+    from .human_behavior import human_delay, mouse_move_random, type_human
+except Exception:
+    human_delay = lambda *a, **k: time.sleep(random.uniform(1, 3))
+    mouse_move_random = lambda *a, **k: None
+    type_human = lambda page, text, **k: page.keyboard.type(text)
+
 QUEUE_DIR = Path(__file__).resolve().parent.parent / "publish_queue"
-USER_DATA_DIR = Path(__file__).resolve().parent.parent / "youtube_profile"
 TOKENS_PATH = Path(__file__).resolve().parent.parent / "youtube_tokens.json"
+CHANNEL_REGISTRY_PATH = Path(__file__).resolve().parent.parent / "ChannelRegistry.json"
+
+def get_user_data_dir(brand):
+    """Get brand-specific Chrome profile directory."""
+    if not brand:
+        return Path(__file__).resolve().parent.parent / "youtube_profile"
+    slug = str(brand).strip().lower().replace(" ", "").replace("-", "_")
+    return Path(__file__).resolve().parent.parent / f"youtube_profile_{slug}"
+
+
+def resolve_channel_id(brand):
+    """Look up the YouTube channel id for a brand slug from ChannelRegistry.json."""
+    if not brand:
+        return None
+    slug = str(brand).strip().lower().replace(" ", "").replace("-", "_")
+    try:
+        registry = json.loads(CHANNEL_REGISTRY_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    for channel in registry.get("channels", []):
+        if str(channel.get("brand", "")).strip().lower().replace(" ", "").replace("-", "_") == slug:
+            return channel.get("youtube_channel_id")
+    return None
+
+
+def tokens_exist_for(brand):
+    """True when youtube_tokens.json holds a scoped, refreshable token entry for the brand."""
+    entry, err = _load_token_entry(brand) if brand else (None, "no brand")
+    return bool(entry) and not err
 
 def get_pending_drafts():
     """Retrieve all draft publish packages from queue."""
@@ -41,8 +77,49 @@ def mark_published(filepath, data, video_id=None):
         json.dump(data, f, indent=2)
     print(f"[YOUTUBE PUBLISHER] Marked as published: {filepath}")
 
-def publish_via_api(video_path, title, description, channel_id=None):
-    """Publish via YouTube Data API v3 using OAuth2 tokens."""
+def _load_token_entry(brand, channel_id=None):
+    """Resolve the OAuth token entry for a brand, refusing cross-brand fallthrough.
+
+    Returns (entry dict, error string). A token entry is ONLY used when it is
+    explicitly scoped to this brand AND (if a real channel id was requested) the
+    entry claims that exact channel. Never reaches into another brand's token.
+    """
+    if not TOKENS_PATH.exists():
+        return None, f"No tokens file found at {TOKENS_PATH}"
+    try:
+        with open(TOKENS_PATH, 'r', encoding="utf-8") as f:
+            tokens_data = json.load(f)
+    except Exception as e:
+        return None, f"Failed to read tokens: {e}"
+    if not tokens_data or not isinstance(tokens_data, dict):
+        return None, "Invalid tokens data"
+
+    entries = {k: v for k, v in tokens_data.items() if isinstance(v, dict) and not str(k).startswith("_")}
+
+    key = None
+    if brand:
+        key = str(brand).strip().lower().replace(" ", "").replace("-", "_")
+    elif channel_id and channel_id in entries:
+        key = channel_id
+    if not key or key not in entries:
+        return None, (f"No token entry for brand '{brand}' (keys: {sorted(entries)[:6]}). "
+                      "Run the one-time OAuth flow per brand before using API publishing.")
+
+    info = entries[key]
+    entry_channel = info.get("channel_id") or ""
+    if channel_id and entry_channel and entry_channel != channel_id:
+        return None, (f"Token '{key}' is scoped to channel {entry_channel}, not {channel_id}. "
+                      "Refusing cross-brand publish.")
+    return info, ""
+
+
+def publish_via_api(video_path, title, description, brand=None, channel_id=None):
+    """Publish via YouTube Data API v3 using the BRAND's OWN OAuth token.
+
+    The token is resolved strictly by brand (never another brand's token), and
+    the live session is verified against the requested channel before upload so
+    content can never land on the wrong channel.
+    """
     try:
         from google.oauth2.credentials import Credentials
         from google.auth.transport.requests import Request
@@ -51,58 +128,65 @@ def publish_via_api(video_path, title, description, channel_id=None):
     except ImportError:
         print("[YOUTUBE PUBLISHER] google-api-python-client not installed. Run: pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib")
         return False, None
-    
-    if not TOKENS_PATH.exists():
-        print(f"[YOUTUBE PUBLISHER] No tokens file found at {TOKENS_PATH}")
+
+    if not Path(video_path).exists():
+        print(f"[YOUTUBE PUBLISHER] Video file not found: {video_path}")
         return False, None
-    
-    try:
-        with open(TOKENS_PATH, 'r') as f:
-            tokens_data = json.load(f)
-    except Exception as e:
-        print(f"[YOUTUBE PUBLISHER] Failed to read tokens: {e}")
+
+    info, err = _load_token_entry(brand, channel_id)
+    if not info:
+        print(f"[YOUTUBE PUBLISHER] {err}")
         return False, None
-    
-    if not tokens_data or not isinstance(tokens_data, dict):
-        print("[YOUTUBE PUBLISHER] Invalid tokens data")
-        return False, None
-    
-    if channel_id and channel_id not in tokens_data:
-        print(f"[YOUTUBE PUBLISHER] No tokens for channel {channel_id}")
-    
-    cid = channel_id or next(iter(tokens_data), None)
-    if not cid:
-        print("[YOUTUBE PUBLISHER] No channel specified and no tokens available")
-        return False, None
-    
-    info = tokens_data.get(cid, {})
+
     access_token = info.get("access_token")
     refresh_token = info.get("refresh_token")
     client_id = info.get("client_id")
     client_secret = info.get("client_secret")
     token_uri = info.get("token_uri", "https://oauth2.googleapis.com/token")
-    
-    if not all([access_token, refresh_token, client_id, client_secret]):
-        print(f"[YOUTUBE PUBLISHER] Incomplete OAuth credentials for channel {cid}")
+
+    if not refresh_token and not access_token:
+        print(f"[YOUTUBE PUBLISHER] No credentials for brand '{brand}' — need at least refresh_token")
         return False, None
-    
+
     try:
-        creds = Credentials(
-            token=access_token,
-            refresh_token=refresh_token,
-            token_uri=token_uri,
-            client_id=client_id,
-            client_secret=client_secret,
-            scopes=["https://www.googleapis.com/auth/youtube.upload"],
-        )
-        
-        if creds.expired or not creds.valid:
-            creds.refresh(Request())
-            tokens_data[cid]["access_token"] = creds.token
-            with open(TOKENS_PATH, 'w') as f:
-                json.dump(tokens_data, f, indent=2)
-        
+        if refresh_token and client_id and client_secret:
+            creds = Credentials(
+                token=access_token,
+                refresh_token=refresh_token,
+                token_uri=token_uri,
+                client_id=client_id,
+                client_secret=client_secret,
+                scopes=["https://www.googleapis.com/auth/youtube.upload"],
+            )
+            if creds.expired:
+                try:
+                    creds.refresh(Request())
+                except Exception as re:
+                    print(f"[YOUTUBE PUBLISHER] Token refresh notice: {re}")
+        elif access_token:
+            creds = Credentials(token=access_token)
+        else:
+            print(f"[YOUTUBE PUBLISHER] Incomplete credentials for brand '{brand}'")
+            return False, None
+
         youtube = build("youtube", "v3", credentials=creds)
+
+        # Live verification: the authenticated session MUST manage the channel we
+        # are about to post to. Without this, a stale token would silently leak
+        # the video onto the wrong brand's channel.
+        try:
+            mine = youtube.channels().list(part="id,snippet", mine=True).execute()
+            owned = [c.get("id") for c in mine.get("items", [])]
+        except Exception as ve:
+            print(f"[YOUTUBE PUBLISHER] Token not usable (invalid_grant or revoked): {ve}")
+            return False, None
+        if channel_id and channel_id not in owned:
+            print(f"[YOUTUBE PUBLISHER] Token for brand '{brand}' does not own channel {channel_id}. "
+                  f"Owns: {owned or 'none'}. Refusing cross-channel publish.")
+            return False, None
+        if not owned:
+            print(f"[YOUTUBE PUBLISHER] Token for brand '{brand}' returned no channels (revoked?).")
+            return False, None
         
         body = {
             "snippet": {
@@ -136,56 +220,97 @@ def publish_via_api(video_path, title, description, channel_id=None):
         print(f"[YOUTUBE PUBLISHER] API upload failed: {e}")
         return False, None
 
-def publish_via_playwright(video_path, title, description):
-    """Publish using Playwright YouTube Studio automation with actual video upload."""
+def publish_via_playwright(video_path, title, description, brand=None, channel_id=None, prefer_api=True):
+    """Publish a video to YouTube.
+
+    Priority: OAuth Data API (when the brand has a valid token) -> Playwright
+    Studio automation. Falls back to Studio automation when no token exists.
+    """
     if not os.path.exists(video_path):
         print(f"[YOUTUBE PUBLISHER] Video file does not exist: {video_path}")
         return False, None
-    
-    youtube_api_key = os.getenv("YOUTUBE_API_KEY")
-    if youtube_api_key and not youtube_api_key.startswith("your_"):
-        print(f"[YOUTUBE PUBLISHER] Publishing '{title}' via YouTube Data API v3...")
-        return publish_via_api(video_path, title, description)
+
+    resolved_channel = channel_id or resolve_channel_id(brand)
+    if prefer_api and tokens_exist_for(brand):
+        print(f"[YOUTUBE PUBLISHER] Publishing '{title}' via YouTube Data API v3 (brand token found)...")
+        ok, video_id = publish_via_api(video_path, title, description, brand=brand, channel_id=resolved_channel)
+        if ok:
+            return True, video_id
+        print(f"[YOUTUBE PUBLISHER] API publish failed for '{title}'; falling back to Studio automation.")
+    elif prefer_api:
+        print(f"[YOUTUBE PUBLISHER] No OAuth token for brand '{brand or 'default'}'; using Studio automation.")
     
     try:
         from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+        try:
+            from playwright_stealth import Stealth
+        except ImportError:
+            Stealth = None
     except ImportError:
         print("[YOUTUBE PUBLISHER] Playwright not installed. Install with: pip install playwright")
         return False, None
     
     print(f"[YOUTUBE PUBLISHER] Using Playwright Studio automation for: '{title}'")
     
+    user_data_dir = get_user_data_dir(brand)
+    print(f"[YOUTUBE PUBLISHER] Using profile: {user_data_dir}")
+    
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch_persistent_context(
-                user_data_dir=str(USER_DATA_DIR),
+                user_data_dir=str(user_data_dir),
                 headless=False,
-                args=["--disable-blink-features=AutomationControlled"]
+                args=[
+                    "--disable-blink-features=AutomationControlled",
+                    "--disable-web-security",
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--disable-gpu",
+                    f"--window-size={random.randint(1200, 1920)}x{random.randint(700, 1080)}",
+                ]
             )
             
             page = browser.new_page()
+            if Stealth:
+                try:
+                    Stealth().apply_stealth_sync(page)
+                except Exception:
+                    pass
+            try:
+                from .human_behavior import apply_browser_fingerprints
+                apply_browser_fingerprints(page)
+            except Exception:
+                pass
             page.goto("https://studio.youtube.com/", timeout=30000)
             
             if "accounts.google.com" in page.url:
                 print("[YOUTUBE PUBLISHER] Authentication required - login page shown")
                 print("[YOUTUBE PUBLISHER] Please log in to YouTube Studio in the browser window")
-                print("[YOUTUBE PUBLISHER] Session will be saved after login")
-                browser.close()
-                return False, None
+                print("[YOUTUBE PUBLISHER] Press ENTER here after you've logged in and see the YouTube Studio dashboard...")
+                input()  # Wait for user to complete login
+                # Re-check after login
+                page.goto("https://studio.youtube.com/", timeout=30000)
+                if "accounts.google.com" in page.url:
+                    print("[YOUTUBE PUBLISHER] Still not logged in. Skipping.")
+                    browser.close()
+                    return False, None
             
             print("[YOUTUBE PUBLISHER] Connected to YouTube Studio")
             
-            time.sleep(3)
-            
             try:
+                human_delay(2, 5)
+                mouse_move_random(page)
                 page.locator("ytcp-button#upload-button").first.click(timeout=10000)
             except Exception:
                 try:
+                    human_delay(1, 2)
+                    mouse_move_random(page)
                     page.get_by_text("Upload videos", exact=True).first.click(timeout=5000)
                 except Exception:
                     pass
 
-            time.sleep(2)
+            human_delay(3, 6)
             
             file_selected = False
             file_input = None
@@ -230,45 +355,50 @@ def publish_via_playwright(video_path, title, description):
                 browser.close()
                 return False, None
             
-            time.sleep(5)
+            human_delay(4, 8)
             
             try:
                 title_box = page.locator('div#textbox[aria-label="Add a title that describes your video"], #title-textarea #textbox')
                 title_box.first.click()
+                human_delay(0.5, 1)
                 page.keyboard.press("Control+A")
                 page.keyboard.press("Backspace")
-                page.keyboard.type(title[:100])
+                human_delay(0.5, 1)
+                type_human(page, title[:100])
             except Exception as e:
                 print(f"[YOUTUBE PUBLISHER] Could not fill title: {e}")
             
-            time.sleep(1)
+            human_delay(2, 5)
             
             try:
                 desc_box = page.locator('div#textbox[aria-label="Tell viewers about your video"], #description-textarea')
                 desc_box.first.click()
-                page.keyboard.type(description[:5000])
+                human_delay(0.5, 1)
+                type_human(page, description[:5000])
             except Exception as e:
                 print(f"[YOUTUBE PUBLISHER] Could not fill description: {e}")
             
-            time.sleep(1)
+            human_delay(2, 5)
             
             try:
+                mouse_move_random(page)
                 page.locator('tp-yt-paper-radio-button[name="VIDEO_MADE_FOR_KIDS_NOT_MFK"]').first.click(timeout=5000)
             except Exception:
                 pass
             
-            time.sleep(1)
+            human_delay(2, 4)
             
             for _ in range(3):
                 try:
+                    mouse_move_random(page)
                     page.locator('ytcp-button#next-button, ytcp-button[aria-label="Next"]').first.click(timeout=5000)
                 except Exception:
                     pass
-                time.sleep(1)
             
-            time.sleep(2)
+            time.sleep(1)
             
             try:
+                mouse_move_random(page)
                 page.locator('tp-yt-paper-radio-button[name="PUBLIC"], #privacy-radio-public').first.click(timeout=5000)
             except Exception:
                 try:
@@ -276,7 +406,7 @@ def publish_via_playwright(video_path, title, description):
                 except Exception:
                     pass
             
-            time.sleep(1)
+            human_delay(3, 6)
             
             try:
                 page.locator('ytcp-button#done-button, #done-button').first.click(timeout=10000)
@@ -301,10 +431,15 @@ def run_auto_publisher():
     """Main automated runner: inspects queue and publishes pending items."""
     print("=== MBM-SOCIAL YOUTUBE AUTOMATED PUBLISHER ===")
     drafts = get_pending_drafts()
-    print(f"[YOUTUBE PUBLISHER] Found {len(drafts)} draft packages in queue.")
+    
+    # Filter to only brands with Chrome profiles
+    VALID_BRANDS = {"clippingfactorymbm", "cutedosage", "dontwatchthis", "goalmachinez", "twistsrevealed"}
+    filtered_drafts = [(fp, pkg) for fp, pkg in drafts if pkg.get("brand", "").strip().lower().replace(" ", "").replace("-", "_") in VALID_BRANDS]
+    
+    print(f"[YOUTUBE PUBLISHER] Found {len(drafts)} total drafts, {len(filtered_drafts)} for configured brands.")
     
     published_count = 0
-    for filepath, package in drafts:
+    for filepath, package in filtered_drafts:
         video_path = package.get("video_path", "")
         title = package.get("title", "Untitled Short")
         description = package.get("description", "")
@@ -321,7 +456,7 @@ def run_auto_publisher():
             print(f"[YOUTUBE PUBLISHER] Skipping - video file not found: {video_path}")
             continue
         
-        success, video_id = publish_via_playwright(video_path, title, description)
+        success, video_id = publish_via_playwright(video_path, title, description, brand=brand, channel_id=channel_id)
         if success:
             mark_published(filepath, package, video_id)
             published_count += 1

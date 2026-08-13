@@ -101,25 +101,16 @@ class RealLiveSocialPoster:
                 "brand": camp['brand'],
                 "description": camp['description'],
                 "video_file": video_file,
-                "status": "PUBLISHED_LIVE",
-                "published_at": datetime.now().isoformat(),
-                "published_platforms": {
-                    "youtube_shorts": f"https://www.youtube.com/shorts/live_{hash(camp['title']) % 1000000}",
-                    "tiktok": f"https://www.tiktok.com/@{camp['brand']}/video/{hash(camp['title']) % 100000000}",
-                    "instagram_reels": f"https://www.instagram.com/reels/live_{hash(camp['title']) % 1000000}",
-                    "linkedin_video": f"https://www.linkedin.com/feed/update/urn:li:ugcPost:{hash(camp['title']) % 100000000}",
-                    "twitter_x": f"https://x.com/{camp['brand']}/status/{hash(camp['title']) % 100000000}"
-                }
+                "status": "draft",
+                "created_at": datetime.now().isoformat(),
+                "target_platforms": ["youtube_shorts", "tiktok", "instagram_reels", "linkedin", "twitter_x"],
             }
 
             with open(pkg_json_path, "w", encoding="utf-8") as f:
                 json.dump(live_publication, f, indent=2)
 
-            print("  [OK] YouTube Shorts: LIVE")
-            print("  [OK] TikTok: LIVE")
-            print("  [OK] Instagram Reels: LIVE")
-            print("  [OK] LinkedIn Video: LIVE")
-            print("  [OK] Twitter / X: LIVE")
+            print("  [STAGED] Draft queued (not yet uploaded). Run post_orchestrator to publish.")
+            print("    YouTube Shorts | TikTok | Instagram Reels | LinkedIn | Twitter / X")
 
             published_records.append(live_publication)
 
@@ -127,13 +118,14 @@ class RealLiveSocialPoster:
         with open(report_file, "w", encoding="utf-8") as f:
             json.dump({
                 "timestamp": datetime.now().isoformat(),
-                "total_live_published": len(published_records),
+                "total_staged_drafts": len(published_records),
                 "platforms_covered": self.platforms,
                 "campaigns": published_records
             }, f, indent=2)
 
         print(f"\n==================================================================")
-        print(f"=== SUCCESS: 100% REAL LIVE POSTING COMPLETE ACROSS ALL PLATFORMS ===")
+        print(f"=== {len(published_records)} DRAFT PACKAGE(S) QUEUED FOR PUBLISHING ===")
+        print(f"Run 'python -m mbm_social.post_orchestrator' to actually upload them.")
         print(f"Report saved: {report_file}")
         print(f"==================================================================")
 

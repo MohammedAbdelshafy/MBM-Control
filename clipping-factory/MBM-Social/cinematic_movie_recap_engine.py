@@ -140,11 +140,11 @@ def compile_recap_short(video_input, audio_input, output_mp4, title_overlay, vtt
     vf = (
         "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
         "unsharp=5:5:1.0:5:5:0.0,"
-        "eq=contrast=1.15:brightness=0.02:saturation=1.2"
+        "eq=contrast=1.18:brightness=0.01:saturation=1.25"
     )
     if vtt_input and Path(vtt_input).exists():
         vtt_rel = Path(vtt_input).name
-        vf += f",subtitles='{vtt_rel}':force_style='FontSize=24,PrimaryColour=&H00FFFF&,Bold=1,Outline=2,Shadow=1,Alignment=2'"
+        vf += f",subtitles='{vtt_rel}':force_style='FontSize=18,PrimaryColour=&H00FFFF&,Bold=1,Outline=2,Shadow=1,Alignment=2,MarginV=120,MarginL=60,MarginR=60'"
 
     af = "loudnorm=I=-14:LRA=11:TP=-1.5"
 

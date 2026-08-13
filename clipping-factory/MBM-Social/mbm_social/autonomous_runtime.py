@@ -242,9 +242,22 @@ def stage_quality_control(clip_id: str, db) -> dict:
     return {"passed": r.success, "qc_data": r.data, "error": r.error}
 
 
-def stage_publishing_queue(package: dict) -> dict:
-    """Save package to publish_queue/ as draft."""
+def stage_publishing_queue(package: dict, profile: dict = None) -> dict:
+    """Save package to publish_queue/ as draft, or client_approval/ for external."""
     path = publish_package.save_package(package)
+    import shutil
+    from pathlib import Path
+    
+    mode = profile.get("client_mode", "internal") if profile else "internal"
+    
+    if mode == "external":
+        approval_dir = ROOT / "client_approval"
+        approval_dir.mkdir(exist_ok=True)
+        dest = approval_dir / Path(path).name
+        shutil.move(str(path), str(dest))
+        print(f"[Agency] Routed package to client approval: {dest}")
+        return {"queue_path": str(dest), "status": "pending_client_approval"}
+        
     return {"queue_path": str(path), "status": "draft"}
 
 
@@ -260,8 +273,12 @@ def stage_publisher(queue_path: str, mode: str) -> dict:
         video_path = data.get("video_path") or data.get("clip_file_path", "")
         title = data.get("title", "")
         description = data.get("description", "")
+        brand = data.get("brand") or data.get("slug", "")
+        channel_id = data.get("youtube_channel_id")
         if video_path and Path(video_path).exists():
-            success, video_id = publish_via_playwright(video_path, title, description)
+            success, video_id = publish_via_playwright(
+                video_path, title, description, brand=brand, channel_id=channel_id
+            )
             return {"published": success, "video_id": video_id}
         return {"published": False, "reason": "no_video_file"}
     except Exception as e:
@@ -439,18 +456,18 @@ def run_autonomous_campaign(
 
         # Stage 11: Publishing Queue
         _log("11/14", "Publishing Queue...")
-        r11 = _run_stage("publishing_queue", stage_publishing_queue, package)
+        r11 = _run_stage("publishing_queue", stage_publishing_queue, package, profile)
         run.stages.append(r11)
         queue_path = r11.data.get("queue_path", "")
 
         # Stage 12: Publisher
-        if not dry_run:
+        if not dry_run and mode != "external":
             _log("12/14", "Publisher...")
             r12 = _run_stage("publisher", stage_publisher, queue_path, mode)
             run.stages.append(r12)
             run.published = r12.data.get("published", False)
         else:
-            _log("12/14", "Publisher (dry run - skipped)")
+            _log("12/14", f"Publisher (skipped - dry_run={dry_run}, mode={mode})")
 
         # Stage 13: Analytics
         _log("13/14", "Analytics recording...")

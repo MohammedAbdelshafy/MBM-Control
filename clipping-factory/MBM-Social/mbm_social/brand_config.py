@@ -55,6 +55,29 @@ def channel_for_brand(slug: str) -> Optional[dict]:
     return None
 
 
+def social_handles_for_brand(slug: str) -> dict:
+    """Return the cross-platform social handles (instagram/tiktok/youtube) for a brand."""
+    ch = channel_for_brand(slug)
+    if ch and ch.get("social_handles"):
+        return dict(ch["social_handles"])
+    registry = load_registry("BrandRegistry.json")
+    brand = registry.get("brands", {}).get(slug)
+    if brand and brand.get("social_handles"):
+        return dict(brand["social_handles"])
+    try:
+        return dict(load_brand(slug).get("social_handles", {}))
+    except Exception:
+        return {}
+
+
+def shortform_session_dirs(slug: str) -> dict:
+    """Return Playwright profile dir names for instagram/tiktok for a brand."""
+    ch = channel_for_brand(slug)
+    if ch and ch.get("shortform_sessions"):
+        return dict(ch["shortform_sessions"])
+    return {"instagram": f"instagram_profile_{slug}", "tiktok": f"tiktok_profile_{slug}"}
+
+
 def active_brands() -> list[dict]:
     reg = load_registry("BrandRegistry.json")
     return [b for b in reg["brands"].values() if b.get("active")]

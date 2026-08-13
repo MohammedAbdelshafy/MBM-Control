@@ -1,7 +1,9 @@
-cadence: 2x daily
-timezone: America/Chicago
-windows:
-- 09:00
-- '17:00'
-approval_gate: true
-brand_aware: true
+auto_publish: true
+cadence: 20x daily
+interval_minutes: 72
+platforms:
+- youtube_shorts
+- instagram_reels
+- tiktok
+posts_per_day: 20
+virality_mode: max_reach_v2

@@ -21,6 +21,11 @@
     "quality_gate": {"type": "object"},
     "status": {"type": "string", "enum": ["draft", "queued", "published", "failed"]},
     "generated_by": {"type": "string"},
-    "models_used": {"type": "object"}
+    "models_used": {"type": "object"},
+    "shortform_results": {
+      "type": "object",
+      "description": "per-platform publish outcome (instagram/tiktok) recorded by shortform_publisher",
+      "additionalProperties": {"type": "boolean"}
+    }
   }
 }

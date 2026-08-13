@@ -85,18 +85,17 @@ def run_multichannel_video_clipper_and_publisher():
         # Render HD 1080x1920 60FPS Video
         render_hd_multichannel_video(item['title'], item['brand'], video_path)
 
-        # Stage package for YouTube Shorts, TikTok, and Instagram Reels
+        # Stage package for YouTube Shorts, TikTok, and Instagram Reels.
+        # Status is 'draft' -- actual publishing happens in post_orchestrator,
+        # which posts to the correct channels and only flips status on real success.
         package = {
             "title": item['title'],
             "description": item['description'],
             "brand": item['brand'],
             "video_path": str(video_path),
-            "status": "published",
-            "published_at": datetime.now().isoformat(),
+            "status": "draft",
+            "created_at": datetime.now().isoformat(),
             "target_platforms": item['channels'],
-            "youtube_url": f"https://www.youtube.com/watch?v=yt_short_{hash(item['title']) % 100000}",
-            "tiktok_url": f"https://www.tiktok.com/@contech_ai/video/{hash(item['title']) % 100000000}",
-            "reels_url": f"https://www.instagram.com/reels/{hash(item['title']) % 100000000}"
         }
 
         with open(json_path, 'w', encoding='utf-8') as f:

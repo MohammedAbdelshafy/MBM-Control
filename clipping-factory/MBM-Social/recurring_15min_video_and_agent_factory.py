@@ -235,9 +235,8 @@ def run_15min_video_and_agent_factory():
             "script": channel["script"],
             "voiceover": channel["voice"],
             "video_path": str(final_video_path.resolve()),
-            "status": "published",
-            "published_at": now_iso,
-            "play_url": f"http://localhost:3002/videos/{final_video_path.name}"
+            "status": "draft",
+            "created_at": now_iso
         }
 
         pkg_path = PUBLISH_QUEUE / f"pkg_15min_{brand}_{now_ts}.json"
@@ -253,6 +252,13 @@ def run_15min_video_and_agent_factory():
 
     # Deploy Voice Agent Swarm
     agent_manifest_path = deploy_15min_voice_agent_swarm(now_iso)
+    try:
+        agent_factory_script = ROOT_DIR / "MBM" / "LeadEngine" / "agent_factory.py"
+        if agent_factory_script.exists():
+            print(f"  - Triggering live AI Voice Agent Factory deployment ({agent_factory_script.name})...")
+            subprocess.run([sys.executable, str(agent_factory_script), "--once"], capture_output=True, text=True, timeout=60)
+    except Exception as e:
+        print(f"  [!] Agent Factory trigger warning: {e}")
 
     # Record cron run log
     cron_log = {

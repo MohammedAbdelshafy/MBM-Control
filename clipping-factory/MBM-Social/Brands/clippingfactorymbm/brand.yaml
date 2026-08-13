@@ -1,19 +1,31 @@
+active: true
 slug: clippingfactorymbm
 display_name: ClippingFactoryMBM
 handle: '@ClippingFactoryMBM'
-youtube_channel_id: UC_ClippingFactoryMBM
+gmail_account: abdelshafyclapps@gmail.com
 master_account: abdelshafyclapps@gmail.com
-theme: MBM operations, clipping factory, build-in-public, internal brand
-voice: behind-the-scenes, proof-of-work, technical
-visual_style: screen captures, pipeline diagrams, real metrics on screen
-hook_style: curiosity / proof
-emoji_policy: minimal
-primary_category: Science & Technology
+primary_category: Technology & Business
+niche: AI Agent Swarms, Company Automation, & Video Clipping
+theme: AI agent swarms, SaaS company automation, high-speed video clipping
+voice: Futuristic, authoritative, high-efficiency tech
 keywords:
-- clipping
+- AI agents
 - automation
-- AI
+- SaaS automation
+- video clipping
 - build in public
-- passive income
-created: '2026-07-15'
-active: true
+target_region: US
+default_language: en-US
+hashtags:
+- '#AIAgents'
+- '#Automation'
+- '#SaaS'
+- '#BuildInPublic'
+- '#AIStartups'
+- '#SiliconValley'
+- '#VideoClipping'
+- '#TechTok'
+- '#USATech'
+- '#Shorts'
+- '#USA'
+neteller_wallet: 'abdelshafyclapps@gmail.com (Account: 4599228811)'

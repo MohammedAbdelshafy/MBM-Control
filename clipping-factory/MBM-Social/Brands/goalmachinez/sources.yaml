@@ -1,10 +1,10 @@
-long_form_sources:
-- type: youtube
-  value: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-  role: primary
-  notes: Primary football highlights source.
-ingest:
-  strategy: next_approved
-  min_duration_sec: 60
-  max_duration_sec: 7200
-approval_required: true
+niche: High-Energy Football & Physics-Defying Soccer Goals
+keywords:
+- soccer goals
+- knuckleball free kick
+- football highlights
+- physics defying goal
+- Ronaldo free kick
+preferred_aspect_ratio: '9:16'
+target_fps: 60
+target_resolution: 1080x1920

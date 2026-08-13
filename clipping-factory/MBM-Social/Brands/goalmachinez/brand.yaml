@@ -1,20 +1,30 @@
+active: true
 slug: goalmachinez
 display_name: Goal Machinez
 handle: '@Goalmachinez'
-youtube_channel_id: UC_Goalmachinez
+gmail_account: abdelshafyplays@gmail.com
 master_account: abdelshafyclapps@gmail.com
-theme: football / soccer / sports highlights and commentary
-voice: sports-first, energetic, fan-native
-visual_style: fast cuts, stadium energy, bright pitch colors
-hook_style: sports-first
-emoji_policy: allowed-if-performance
 primary_category: Sports
+niche: High-Energy Football & Physics-Defying Soccer Goals
+theme: Knuckleball free kicks, impossible football goals, high-energy soccer plays
+voice: Energetic, hype, legendary sports commentary
 keywords:
-- football
-- soccer
-- goal
-- highlight
-- match
-- tactic
-created: '2026-07-15'
-active: true
+- soccer goals
+- knuckleball free kick
+- football highlights
+- physics defying goal
+- Ronaldo free kick
+target_region: US
+default_language: en-US
+hashtags:
+- '#Knuckleball'
+- '#SoccerGoals'
+- '#FootballHighlights'
+- '#PhysicsDefying'
+- '#GoalMachinez'
+- '#RonaldoFreeKick'
+- '#USASports'
+- '#FutbolTok'
+- '#Shorts'
+- '#USA'
+neteller_wallet: 'abdelshafyclapps@gmail.com (Account: 4599228811)'

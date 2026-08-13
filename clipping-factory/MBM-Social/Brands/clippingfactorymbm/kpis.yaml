@@ -1,5 +1,4 @@
-target_views_30d: 150000
-target_ctr: 0.05
-target_avg_view_pct: 0.4
-target_subs_per_post: 150
-priority_metric: ' authority / leads'
+daily_target_posts: 20
+monthly_target_views: 1000000
+target_conversion_rate: 2.5%
+primary_monetization: Neteller Payout (4599228811)

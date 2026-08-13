@@ -502,6 +502,66 @@ def mission_repository_backup() -> dict:
     return report
 
 
+def mission_anty_shadowban_schedule() -> dict:
+    """Generate anti-shadowban posting schedule for next 24h across all brands.
+
+    Integrates the AnTyShadowbanAgent to produce a shadowban-safe schedule
+    targeting US audiences only (EST/EDT timezone optimized windows).
+    """
+    from mbm_social import anty_shadowban_agent as asa
+    from mbm_social import social_account_discovery as sad
+
+    _log("ANTY_SHADOWBAN", "Generating US-targeted anti-shadowban schedule...")
+
+    # Step 1: Generate fresh content packages for all brands
+    discovery = sad.run(dry_run=False)
+    _log("ANTY_SHADOWBAN", f"Content discovery: {discovery.get('total_packages', 0)} packages generated")
+
+    # Step 2: Generate 3-day shadowban-safe schedule
+    schedule_result = asa.run(schedule_days=3, dry_run=True)
+    all_schedules = schedule_result.get("output", {}).get("channels", {})
+
+    total_scheduled = 0
+    channels_report = {}
+
+    for channel, data in all_schedules.items():
+        posts = data.get("posts", [])
+        total_scheduled += len(posts)
+
+        longform = [p for p in posts if p["type"] == "longform"]
+        shorts = [p for p in posts if p["type"] == "shorts"]
+
+        channels_report[channel] = {
+            "total_posts": len(posts),
+            "longform": len(longform),
+            "shorts": len(shorts),
+            "next_post_utc": posts[0]["time_utc"] if posts else None,
+        }
+        _log("ANTY_SHADOWBAN",
+             f"  {channel}: {len(longform)} long-form + {len(shorts)} Shorts "
+             f"= {len(posts)} total posts scheduled")
+
+    report = {
+        "status": "success" if total_scheduled > 0 else "skipped",
+        "total_scheduled": total_scheduled,
+        "channels": channels_report,
+        "content_generated": discovery.get("total_packages", 0),
+        "target_audience": "US (EST/EDT)",
+        "rules_enforced": [
+            "R1: max 2 long-form + 2 shorts per channel per day",
+            "R2: >=120 min gap between uploads per channel",
+            "R3: <=3 subscriber notifications per 24h",
+            "R4: warmup ramp 0.14→0.29→1→2 posts/week",
+            "R5: >=3 content pillars per channel",
+            "R6: US-active-time windows with jitter",
+            "R7: global cooldown for shared-IP safety",
+        ],
+    }
+
+    _save_report(report, "anty_shadowban_schedule")
+    return report
+
+
 # ─── Main runner ─────────────────────────────────────────────────────
 
 def run_all_missions() -> dict:
@@ -521,6 +581,7 @@ def run_all_missions() -> dict:
         ("platform_health", mission_platform_health),
         ("opportunity_scan", mission_opportunity_scan),
         ("repository_backup", mission_repository_backup),
+        ("anty_shadowban_schedule", mission_anty_shadowban_schedule),
     ]
 
     for name, fn in missions:

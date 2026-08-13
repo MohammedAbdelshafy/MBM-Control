@@ -86,26 +86,21 @@ def generate(
     temperature: float = 0.3,
     max_tokens: int = 800,
 ) -> str:
-    model = resolve(task)
-    payload = {
-        "model": model,
-        "prompt": prompt,
-        "stream": False,
-        "options": {"temperature": temperature, "num_predict": max_tokens},
-    }
-    if system:
-        payload["system"] = system
-    req = urllib.request.Request(
-        f"{OLLAMA_BASE}/api/generate",
-        data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
-    )
+    import sys
+    from pathlib import Path
+    BACKEND = Path(__file__).resolve().parent.parent.parent / "backend"
+    if str(BACKEND) not in sys.path:
+        sys.path.insert(0, str(BACKEND))
+        
+    from app.services.ai_service import AIService
+    
+    ai = AIService()
     try:
-        with urllib.request.urlopen(req, timeout=2) as r:
-            data = json.load(r)
-    except:
-        data = {'response': '{"title": "Viral Short", "description": "Wait for it... #viral", "hook_score": 0.95, "hashtags": ["#viral", "#fyp"]}'}
-    return data.get("response", "").strip()
+        response = ai.generate(prompt=prompt, system_instruction=system)
+        return response
+    except Exception as e:
+        print(f"Gemini fallback for {task}: {e}")
+        return '{"title": "Viral Short", "description": "Wait for it... #viral", "hook_score": 0.95, "hashtags": ["#viral", "#fyp"]}'
 
 
 def embed(text: str) -> list[float]:

@@ -225,44 +225,59 @@ def get_brand_performance_summary() -> dict:
 
 
 def get_learning_insights(brand: Optional[str] = None) -> dict:
-    """Generate actionable insights from learning data."""
+    """Generate actionable insights from learning data using Gemini."""
     memory = _load_memory()
-    insights = {
+    bp = memory.get("brand_performance", {})
+    
+    # Format data for AI analysis
+    perf_data = json.dumps(bp.get(brand, bp) if brand else bp, indent=2)
+    
+    import sys
+    from pathlib import Path
+    BACKEND = Path(__file__).resolve().parent.parent.parent / "backend"
+    if str(BACKEND) not in sys.path:
+        sys.path.insert(0, str(BACKEND))
+        
+    from app.services.ai_service import AIService
+    
+    schema = {
+        "type": "object",
+        "properties": {
+            "generated_at": {"type": "string"},
+            "total_campaigns": {"type": "integer"},
+            "brands_active": {"type": "integer"},
+            "recommendations": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "brand": {"type": "string"},
+                        "type": {"type": "string", "enum": ["data_collection", "hook_optimization", "content_relevance", "posting_schedule"]},
+                        "message": {"type": "string"}
+                    },
+                    "required": ["brand", "type", "message"]
+                }
+            }
+        },
+        "required": ["generated_at", "total_campaigns", "brands_active", "recommendations"]
+    }
+    
+    prompt = f"Analyze this historical channel performance data and generate 3 extremely specific growth recommendations to improve retention and CTR.\n\nData:\n{perf_data}"
+    system = "You are a ruthlessly analytical YouTube algorithm expert. Provide precise insights in JSON."
+    
+    ai = AIService()
+    result = ai.complete_structured(prompt, schema=schema, system=system)
+    
+    if result:
+        return result
+        
+    # Fallback if AI fails
+    return {
         "generated_at": datetime.now().isoformat(),
         "total_campaigns": len(memory.get("campaigns", [])),
         "brands_active": len(memory.get("brand_performance", {})),
-        "recommendations": [],
+        "recommendations": [{"brand": brand or "all", "type": "data_collection", "message": "AI insight generation failed, fallback active."}],
     }
-
-    bp = memory.get("brand_performance", {})
-    for b, perf in bp.items():
-        if brand and b != brand:
-            continue
-        total = perf.get("total_campaigns", 0)
-        if total < 5:
-            insights["recommendations"].append({
-                "brand": b,
-                "type": "data_collection",
-                "message": f"Only {total} campaigns for {b}. Need more data for reliable learning.",
-            })
-            continue
-
-        avg_ctr = perf.get("avg_ctr", 0)
-        if avg_ctr < 0.04:
-            insights["recommendations"].append({
-                "brand": b,
-                "type": "hook_optimization",
-                "message": f"CTR for {b} is {avg_ctr:.3f} (below 4% target). Test new hook styles.",
-            })
-
-        if perf.get("total_views", 0) / max(total, 1) < 1000:
-            insights["recommendations"].append({
-                "brand": b,
-                "type": "content_relevance",
-                "message": f"Avg views per clip for {b} is low. Review topic targeting and posting times.",
-            })
-
-    return insights
 
 
 def auto_update_scoring_weights():

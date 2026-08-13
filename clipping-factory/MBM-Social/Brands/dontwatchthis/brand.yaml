@@ -1,19 +1,30 @@
+active: true
 slug: dontwatchthis
 display_name: Don't Watch This
 handle: '@DONTWATCHTHIS1'
-youtube_channel_id: UC_DONTWATCHTHIS1
+gmail_account: abdelshafyplay@gmail.com
 master_account: abdelshafyclapps@gmail.com
-theme: dark stories, chilling truths, mystery, suspense
-voice: suspense-heavy, dark, mysterious
-visual_style: dark visuals, high contrast, desaturated
-hook_style: suspense-heavy
-emoji_policy: minimal
-primary_category: Entertainment
+primary_category: Horror & Mystery
+niche: Extremely Frightening Turkish Horror Movie Summaries & Massive Ocean Waves
+theme: Terrifying Turkish horror recaps, dark atmosphere, colossal sea waves breaking
+voice: Chilling, eerie, mysterious, high-retention horror
 keywords:
-- mystery
-- suspense
-- dark story
-- true crime lite
-- chilling
-created: '2026-07-15'
-active: true
+- Turkish horror
+- scary movie summary
+- ocean waves breaking
+- frightening recaps
+- spooky mystery
+target_region: US
+default_language: en-US
+hashtags:
+- '#TurkishHorror'
+- '#ScaryMovieRecap'
+- '#OceanWaves'
+- '#TerrifyingMoments'
+- '#MegaWaves'
+- '#HorrorTok'
+- '#DontWatchThis'
+- '#HauntedStories'
+- '#Shorts'
+- '#USA'
+neteller_wallet: 'abdelshafyclapps@gmail.com (Account: 4599228811)'

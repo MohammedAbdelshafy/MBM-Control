@@ -4,6 +4,8 @@ import time
 from glob import glob
 from pathlib import Path
 from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+from playwright_stealth import Stealth
+import random
 
 QUEUE_DIR = Path(__file__).resolve().parent.parent / "publish_queue"
 USER_DATA_DIR = Path(__file__).resolve().parent.parent / "youtube_profile"
@@ -33,7 +35,29 @@ def mark_published(filepath, data, video_id=None):
 def upload_to_youtube(video_path, title, description, brand=None):
     print(f"[PUBLISHER] Preparing to upload '{title}' to YouTube (Brand: {brand or 'default'})...")
     
+
+    import re
+    import shutil
+    import tempfile
+    
+    # Extract tags from description
+    tags = re.findall(r'#(\w+)', description)
+    tags_string = ", ".join(tags)
+    
+    # Sanitize video path
+    safe_name = re.sub(r'[^a-zA-Z0-9_\-\.]', '', Path(video_path).name)
+    if not safe_name.endswith('.mp4'):
+        safe_name += '.mp4'
+    safe_video_path = Path(tempfile.gettempdir()) / f"safe_{safe_name}"
+    
+    try:
+        shutil.copy(video_path, safe_video_path)
+        video_path = str(safe_video_path)
+    except Exception as e:
+        print(f"[PUBLISHER] Failed to create safe copy: {e}")
+
     if not Path(video_path).exists():
+
         print(f"[PUBLISHER] Video file not found: {video_path}")
         return False
     
@@ -49,16 +73,28 @@ def upload_to_youtube(video_path, title, description, brand=None):
     if youtube_api_key and not youtube_api_key.startswith("your_"):
         print(f"[PUBLISHER] Using YouTube Data API... (set up tokens for real upload)")
         return False
+
+    # OAuth tokens take priority over Studio automation when present for the brand.
+    try:
+        from mbm_social import youtube_api_publisher as api
+
+        if api.tokens_exist_for(brand):
+            print(f"[PUBLISHER] Brand token found for '{brand}'; using OAuth Data API...")
+            ok, video_id = api.publish_via_api(video_path, title, description, brand=brand, channel_id=api.resolve_channel_id(brand))
+            return (True, video_id) if ok else False
+    except Exception as e:
+        print(f"[PUBLISHER] OAuth API publisher unavailable ({e}); falling back to Studio automation.")
     
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch_persistent_context(
                 user_data_dir=str(profile_dir),
-                headless=False,
+                headless=True,
                 args=["--disable-blink-features=AutomationControlled", "--no-sandbox"]
             )
             
-            page = browser.contexts[0].new_page() if browser.contexts else browser.new_page()
+            page = browser.new_page()
+            Stealth().apply_stealth_sync(page)
             page.goto("https://studio.youtube.com/", timeout=30000)
             
             if "accounts.google.com" in page.url:
@@ -75,13 +111,18 @@ def upload_to_youtube(video_path, title, description, brand=None):
             time.sleep(2)
             
             try:
-                upload_btn = page.locator("ytcp-button#create-icon, #create-icon, ytcp-button#create-icon").first
+                page.wait_for_selector("ytcp-button#create-icon, #create-icon, ytcp-icon-button[aria-label='Create']", timeout=20000)
+                upload_btn = page.locator("ytcp-button#create-icon, #create-icon, ytcp-icon-button[aria-label='Create']").first
                 if upload_btn.count() > 0:
                     upload_btn.click()
-                    print("[PUBLISHER] Clicked upload button")
+                    print("[PUBLISHER] Clicked create button")
+                    time.sleep(2)
+                    upload_menu = page.locator("tp-yt-paper-item#text-item-0, tp-yt-paper-item:has-text('Upload video'), tp-yt-paper-item").first
+                    upload_menu.click()
+                    print("[PUBLISHER] Clicked Upload videos menu item")
                 else:
                     page.click("body")
-                    print("[PUBLISHER] Attempted to trigger upload")
+                    print("[PUBLISHER] Attempted to trigger upload fallback")
             except Exception as e:
                 print(f"[PUBLISHER] Could not click upload button: {e}")
             
@@ -134,7 +175,7 @@ def upload_to_youtube(video_path, title, description, brand=None):
                 title_box = page.locator('div#textbox[aria-label="Add a title that describes your video"], #title-textarea').first
                 if title_box.count() > 0:
                     title_box.click()
-                    title_box.fill(title[:100])
+                    title_box.press_sequentially(title[:100], delay=random.randint(30, 70))
                     print(f"[PUBLISHER] Set title: {title[:50]}...")
             except Exception as e:
                 print(f"[PUBLISHER] Could not fill title: {e}")
@@ -145,7 +186,7 @@ def upload_to_youtube(video_path, title, description, brand=None):
                 desc_box = page.locator('div#textbox[aria-label="Tell viewers about your video"], #description-textarea').first
                 if desc_box.count() > 0:
                     desc_box.click()
-                    desc_box.fill(description[:5000])
+                    desc_box.press_sequentially(description[:5000], delay=random.randint(10, 40))
             except Exception as e:
                 print(f"[PUBLISHER] Could not fill description: {e}")
             
@@ -154,8 +195,23 @@ def upload_to_youtube(video_path, title, description, brand=None):
             try:
                 page.locator('tp-yt-paper-radio-button[name="VIDEO_MADE_FOR_KIDS_NOT_MFK"]').first.click()
                 print("[PUBLISHER] Set audience: Not made for kids")
-            except Exception:
-                pass
+                
+                time.sleep(1)
+                show_more = page.locator('ytcp-button#toggle-button').first
+                if show_more.count() > 0:
+                    show_more.click()
+                    print("[PUBLISHER] Clicked Show more")
+                    time.sleep(2)
+                    
+                    if tags_string:
+                        tags_input = page.locator('input[aria-label="Tags"], #tags-container #text-input').first
+                        if tags_input.count() > 0:
+                            tags_input.click()
+                            tags_input.press_sequentially(tags_string, delay=random.randint(20, 50))
+                            tags_input.press("Enter")
+                            print(f"[PUBLISHER] Added tags: {tags_string}")
+            except Exception as e:
+                print(f"[PUBLISHER] Error in audience/tags flow: {e}")
             
             time.sleep(1)
             

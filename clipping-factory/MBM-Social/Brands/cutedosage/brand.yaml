@@ -1,20 +1,30 @@
+active: true
 slug: cutedosage
 display_name: Cute Dosage
 handle: '@CuteDosage'
-youtube_channel_id: UC_CuteDosage
+gmail_account: moeaiagenticteamz@gmail.com
 master_account: abdelshafyclapps@gmail.com
-theme: cute, wholesome, family, pet, baby-style content
-voice: warm, wholesome, family-safe
-visual_style: clean, bright, soft pastel thumbnails
-hook_style: warm
-emoji_policy: soft-allowed
-primary_category: People & Blogs
+primary_category: Family & Pets
+niche: Cute Baby Videos, Adorable Moments, & Wholesome Family Clips
+theme: Cute baby laughs, wholesome family moments, adorable baby clips
+voice: Warm, uplifting, heartwarming, joyful
 keywords:
-- cute
-- wholesome
-- pets
-- babies
-- family
-- feel good
-created: '2026-07-15'
-active: true
+- cute baby
+- baby laughing
+- adorable baby
+- wholesome moments
+- heartwarming family
+target_region: US
+default_language: en-US
+hashtags:
+- '#CuteBabies'
+- '#BabyMoments'
+- '#Wholesome'
+- '#CuteBabiesOfTikTok'
+- '#BabyLaugh'
+- '#USAFamily'
+- '#AdorableBabies'
+- '#Heartwarming'
+- '#Shorts'
+- '#USA'
+neteller_wallet: 'abdelshafyclapps@gmail.com (Account: 4599228811)'
