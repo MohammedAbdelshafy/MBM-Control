@@ -19,13 +19,14 @@ Modules:
   content_rewards   - Content Rewards economics pipeline (estimated|verified|actual)
   agent_economics   - Per-task model cost / latency / failure / revenue capture
   asset_lineage     - One source -> asset family, lineage edges, near-dup, render retries
+  youtube_analytics - Honest YouTube publish + analytics tracking (reported, never fabricated)
 """
 from . import model_registry, brand_config, brand_router, publish_package
 from . import autonomous_runtime, learning_engine, night_operations
-from . import content_rewards, agent_economics, asset_lineage
+from . import content_rewards, agent_economics, asset_lineage, youtube_analytics
 
 __all__ = [
     "model_registry", "brand_config", "brand_router", "publish_package",
     "autonomous_runtime", "learning_engine", "night_operations",
-    "content_rewards", "agent_economics", "asset_lineage",
+    "content_rewards", "agent_economics", "asset_lineage", "youtube_analytics",
 ]
