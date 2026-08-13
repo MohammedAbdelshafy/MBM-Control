@@ -20,8 +20,8 @@ jobs:
   create-agents:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # Create all 4 niches sequentially in one job — the previous matrix fanned out to 4 runners
-    # that all stepped on each other (no niche file lock). agent_factory.py --once reads / writes
+    # Create all 8 niches sequentially in one job — the previous matrix fanned out to 4 runners
+    # that all stepped on each other (no niche file lock). agent_factory.py --once --niche reads / writes
     # MBM/LeadEngine/agent_persistence.json, so a single runner is the correct pattern.
     steps:
       - uses: actions/checkout@v4
@@ -30,11 +30,11 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install requests python-dotenv
-      - name: Create 4 voice agents (sequential)
+      - name: Create 8 voice agents (sequential)
         env:
           RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
         run: |
-          for niche in 0 1 2 3; do
+          for niche in 0 1 2 3 4 5 6 7; do
             echo "── niche ${niche} ──"
             python MBM/LeadEngine/agent_factory.py --once --niche=${niche} 2>&1 | tail -5 || echo "niche ${niche} failed, continuing"
           done

@@ -233,6 +233,7 @@ jobs:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
+          cd clipping-factory/MBM-Social && python -m mbm_social.multi_agent_workflow && cd ../..
           python MBM/Scripts/master_publisher.py
           python register_instagram_tiktok_multichannel.py || true
       - name: Upload Video Posting Outputs

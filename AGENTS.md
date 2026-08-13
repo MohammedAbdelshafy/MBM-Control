@@ -19,6 +19,28 @@ Monorepo with four subsystems:
 
 Default: **plan**. Switch with `/opencode build` or `/opencode verify`.
 
+## Real-Lead Pipeline (Track 1-4, profit sprint)
+
+The old feeds (`propertyleads.com` personas, generated phones) were fabricated and produced 0 conversions. The honest path uses the **free US government CMS NPI registry** — every row is a real, licensed business with a real phone.
+
+```bash
+npm run leads:hygiene        # Gate: strip synthetic rows (phone+DNS+persona) -> Artifacts
+npm run leads:callsheet       # Pull fresh REAL healthcare businesses from NPI registry
+npm run leads:recover         # Report;  --apply purges fake rows from live queues (backup first)
+npm run leads:dial            # Dry-run ranked dial list (rings your mobile via Twilio bridge)
+npm run leads:dial:live       # Place real calls -> your phone, bridged to real clinic
+npm run leads:sellers         # Dry-run hybrid seller skip-trace (DCAD->RapidAPI->GMaps->free). --apply writes (backup .bak)
+npm run leads:gate:audit      # Audit every dialer queue against the verification gate
+npm run leads:all             # hygiene + fresh callsheet in one shot
+```
+
+New scripts: `MBM/Scripts/lead_hygiene.py`, `MBM/Scripts/revenue_recovery.py`,
+`MBM/LeadEngine/npi_verified_callsheet.py`, `MBM/LeadEngine/close_queue_dialer.py`,
+`MBM/LeadEngine/seller_skip_tracer.py`, `MBM/LeadEngine/dialer_verification_gate.py`.
+`schedule.yml` runs `hourly-npi-callsheet` (once/day at UTC 00) to keep a fresh
+verified call sheet. Twilio Lookup (number-level verify) returned 401 — account
+needs the separate Lookup product enabled; NPI-registry phones are already real.
+
 ## Key Boundaries
 
 - **Base44**: See `base44/` config. Use `base44 dev` for local backend.

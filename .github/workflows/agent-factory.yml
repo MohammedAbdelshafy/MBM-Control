@@ -1,8 +1,8 @@
-name: Agent Factory - Create Voice Agent Every 15 Min
+name: Agent Factory - Voice Agent Batch (Every 5 Min)
 
 on:
   schedule:
-    - cron: '*/15 * * * *'  # Every 15 minutes
+    - cron: '*/5 * * * *'  # Every 5 minutes
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
@@ -20,10 +20,10 @@ jobs:
       - name: Install dependencies
         run: pip install requests python-dotenv
       
-      - name: Create new voice agent
+      - name: Create voice agent batch
         env:
           RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
-        run: python MBM/LeadEngine/agent_factory.py --once
+        run: python MBM/LeadEngine/agent_factory.py --count 2
 
   notify-failure:
     runs-on: ubuntu-latest
@@ -35,4 +35,4 @@ jobs:
       - name: Alert on agent factory failure
         uses: ./.github/actions/telegram-notify
         with:
-          message: "🛑 *BASE44 AGENT FACTORY* voice agent creation FAILED (15-min cycle broken)\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          message: "🛑 *BASE44 AGENT FACTORY* voice agent batch FAILED (5-min cycle broken)\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -90,7 +90,9 @@
     "leads:export": "python MBM/LeadEngine/dialer_export.py",
     "leads:export:airtable": "python MBM/LeadEngine/dialer_export.py --airtable",
     "leads:scripts": "python MBM/LeadEngine/cgpt_script_generator.py --refresh-missing",
-    "leads:scripts:apply": "python MBM/LeadEngine/cgpt_script_generator.py --refresh-missing --update-json"
+    "leads:scripts:apply": "python MBM/LeadEngine/cgpt_script_generator.py --refresh-missing --update-json",
+    "nvidia:models": "python MBM/LeadEngine/nvidia_model_registry.py --list",
+    "nvidia:test": "python MBM/LeadEngine/nvidia_model_registry.py --test"
   },
   "dependencies": {
     "@capacitor/core": "^8.5.0",
