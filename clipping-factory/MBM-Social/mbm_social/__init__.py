@@ -16,11 +16,14 @@ Modules:
   night_operations  - Automated overnight maintenance missions
   publisher         - Playwright YouTube Studio publisher
   youtube_api_publisher - YouTube Data API v3 publisher
+  content_rewards   - Content Rewards economics pipeline (estimated|verified|actual)
 """
 from . import model_registry, brand_config, brand_router, publish_package
 from . import autonomous_runtime, learning_engine, night_operations
+from . import content_rewards
 
 __all__ = [
     "model_registry", "brand_config", "brand_router", "publish_package",
     "autonomous_runtime", "learning_engine", "night_operations",
+    "content_rewards",
 ]
