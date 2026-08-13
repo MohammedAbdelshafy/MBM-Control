@@ -21,9 +21,13 @@ import time
 from pathlib import Path
 from typing import Optional
 
-TOKENS_PATH = Path(__file__).parent.parent.parent / "clipping-factory" / "backend" / "youtube_tokens.json"
-if not TOKENS_PATH.exists():
-    TOKENS_PATH = Path(__file__).parent.parent / "youtube_tokens.json"
+_backend_dir = Path(__file__).resolve().parent.parent.parent  # clipping-factory/backend/
+_clipping_dir = _backend_dir.parent                          # clipping-factory/
+_search_paths = [
+    _backend_dir / "youtube_tokens.json",
+    _clipping_dir / "MBM-Social" / "youtube_tokens.json",
+]
+TOKENS_PATH = next((p for p in _search_paths if p.exists()), _search_paths[-1])
 
 
 class YouTubeUploader:

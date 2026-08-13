@@ -71,7 +71,7 @@ class AIService:
                 if provider == "anthropic":
                     return self._anthropic_complete(prompt, _model, _max_tokens, _temp, system, _cache)
                 elif provider == "gemini":
-                    return self._compat_complete(prompt, settings.gemini_model, _max_tokens, _temp, system, self._get_gemini())
+                    return self._gemini_complete(prompt, settings.gemini_model, _max_tokens, _temp, system)
                 elif provider == "ollama":
                     return self._compat_complete(prompt, settings.ollama_model, _max_tokens, _temp, system, self._get_ollama())
                 elif provider == "openai":
@@ -99,7 +99,7 @@ class AIService:
                 if provider == "anthropic":
                     return self._anthropic_structured(prompt, schema, _model, system, _cache)
                 elif provider == "gemini":
-                    return self._compat_structured(prompt, schema, settings.gemini_model, system, self._get_gemini())
+                    return self._gemini_structured(prompt, schema, settings.gemini_model, system)
                 elif provider == "ollama":
                     return self._compat_structured(prompt, schema, settings.ollama_model, system, self._get_ollama())
                 elif provider == "openai":
@@ -283,7 +283,47 @@ class AIService:
         return answer, thinking
 
     # ------------------------------------------------------------------
-    # OpenAI-compatible implementation (Gemini, Ollama, OpenAI)
+    # Native Google GenAI SDK (Gemini) implementation
+    # ------------------------------------------------------------------
+
+    def _gemini_complete(self, prompt: str, model: str, max_tokens: int, temperature: float, system: str | None) -> str:
+        from google.genai import types
+        client = self._get_gemini()
+        config_kwargs = {"temperature": temperature}
+        if system:
+            config_kwargs["system_instruction"] = system
+        if max_tokens:
+            config_kwargs["max_output_tokens"] = max_tokens
+        
+        response = client.models.generate_content(
+            model=model or "gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(**config_kwargs)
+        )
+        return response.text or ""
+
+    def _gemini_structured(self, prompt: str, schema: dict[str, Any], model: str, system: str | None) -> dict | None:
+        from google.genai import types
+        import json
+        client = self._get_gemini()
+        config_kwargs = {
+            "response_mime_type": "application/json",
+            "response_schema": schema
+        }
+        if system:
+            config_kwargs["system_instruction"] = system
+            
+        response = client.models.generate_content(
+            model=model or "gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(**config_kwargs)
+        )
+        if response.text:
+            return json.loads(response.text)
+        return None
+
+    # ------------------------------------------------------------------
+    # OpenAI-compatible implementation (Ollama, OpenAI)
     # ------------------------------------------------------------------
 
     def _compat_complete(
@@ -419,11 +459,8 @@ class AIService:
 
     def _get_gemini(self):
         if self._gemini_client is None:
-            import openai
-            self._gemini_client = openai.OpenAI(
-                api_key=settings.gemini_api_key,
-                base_url=settings.gemini_base_url,
-            )
+            from google import genai
+            self._gemini_client = genai.Client(api_key=settings.gemini_api_key)
         return self._gemini_client
 
     def _get_ollama(self):

@@ -21,6 +21,7 @@ import os
 import sys
 import io
 import csv
+import re
 import subprocess
 from pathlib import Path
 from datetime import datetime
@@ -82,6 +83,14 @@ def _load_existing(path: Path) -> list:
         q = data["queue"]
         return q if isinstance(q, list) else list(q.values())
     return []
+
+
+def _is_phone_like(value) -> bool:
+    """True only for strings that actually contain a number (>=7 digits).
+    Placeholder tokens like 'npi/registry' must never be treated as phones."""
+    if not value:
+        return False
+    return len(re.sub(r"\D", "", str(value))) >= 7
 
 
 def _lead_key(row: dict) -> str:
@@ -199,6 +208,7 @@ def main():
     # -------------------------------------------------------------------------
     swarm_queue = []
     for lead in qualified:
+        details = lead.get("details") or {}
         swarm_queue.append({
             "id": lead.get("id"),
             "name": lead.get("contact"),
@@ -212,7 +222,19 @@ def main():
             "status": "QUEUED_FOR_AI_AGENT",
             "priority": "TIER_A" if lead.get("_gate_source") in (
                 "skip_trace_verified", "npi_registry", "npi_callsheet",
-                "npi_cold_call_queue") else "TIER_B"
+                "npi_cold_call_queue") else "TIER_B",
+            # ── NPI/registry evidence — carried through so the strict
+            # verification gate can PROVE these rows (previously dropped,
+            # which left 0/2763 queue rows NPI-identifiable).
+            "npi": lead.get("npi_number") or details.get("npi_number", ""),
+            "npi_number": lead.get("npi_number") or details.get("npi_number", ""),
+            "source": lead.get("source") or details.get("source", ""),
+            "authorized_official_name": (lead.get("authorized_official_name")
+                                         or details.get("authorized_official_name", "")),
+            "verified_phone": (lead.get("verified_phone") or details.get("verified_phone", "")
+                               if _is_phone_like(lead.get("verified_phone") or details.get("verified_phone", ""))
+                               else ""),
+            "details": details,
         })
     # MERGE, don't clobber: carry over dialer-persisted state (disposition,
     # stage, last_touch, notes, attempts, priority, status) from the existing

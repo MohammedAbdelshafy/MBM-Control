@@ -181,8 +181,8 @@ class EnhancementAgent(BaseAgent):
         except Exception as exc:
             self.logger.debug(f"Telegram enhancement notification skipped: {exc}")
 
-        from app.workers.video_tasks import quality_check_clip
-        quality_check_clip.apply_async(args=[clip_id], queue="video")
+        from app.workers.video_tasks import ensure_virality
+        ensure_virality.apply_async(args=[clip_id], queue="video")
 
         return AgentResult.ok({"clip_id": clip_id, "enhancements": enhancements})
 

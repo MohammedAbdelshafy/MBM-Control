@@ -176,6 +176,40 @@ def enhance_clip(self, clip_id: str):
 
 
 @celery_app.task(
+    name="app.workers.video_tasks.ensure_virality",
+    base=JobTrackedTask,
+    bind=True,
+    max_retries=2,
+    default_retry_delay=60,
+    queue="video",
+    soft_time_limit=1800,
+)
+def ensure_virality(self, clip_id: str):
+    """Run the virality predictor and enhance with seedance if score is low."""
+    from app.core.database import SyncSessionLocal
+    from app.agents.virality_agent import ViralityAgent
+
+    db = SyncSessionLocal()
+    try:
+        agent = ViralityAgent(db=db)
+        result = agent._safe_run(clip_id=clip_id)
+        if not result.success:
+            raise ValueError(result.error)
+        db.commit()
+        return result.data
+    except Exception as exc:
+        db.rollback()
+        logger.error(f"Virality task failed for clip {clip_id}: {exc}")
+        try:
+            raise self.retry(exc=exc)
+        except MaxRetriesExceededError:
+            _mark_clip_failed(clip_id, str(exc))
+            return {"error": str(exc)}
+    finally:
+        db.close()
+
+
+@celery_app.task(
     name="app.workers.video_tasks.quality_check_clip",
     base=JobTrackedTask,
     bind=True,

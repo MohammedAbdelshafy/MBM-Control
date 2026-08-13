@@ -939,7 +939,7 @@ class ClipEditorQualityAgent(BaseAgent):
             fixed = Path(tmpdir) / "fixed_h264.mp4"
             cmd = [
                 ffmpeg, "-y", "-i", str(current),
-                "-c:v", "libx264", "-crf", "16", "-preset", "veryslow",
+                "-c:v", "libx264", "-crf", "16", "-preset", self.settings.enhancement_preset,
                 "-tune", "film",
                 "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
                 str(fixed),

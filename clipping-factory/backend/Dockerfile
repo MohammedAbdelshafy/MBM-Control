@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM mcr.microsoft.com/playwright/python:v1.47.0-noble
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -8,10 +8,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     libgl1 \
     libglib2.0-0 \
+    jq \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Playwright
-RUN pip install playwright && playwright install chromium --with-deps
+# Install Higgsfield CLI
+RUN curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh
 
 WORKDIR /app
 

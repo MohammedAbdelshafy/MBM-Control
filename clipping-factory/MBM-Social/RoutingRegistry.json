@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "updated": "2026-08-11",
+  "description": "Canonical routing registry: maps every publishable asset to an explicit account+platform. Destination is NEVER inferred from filenames.",
+  "accounts": {
+    "yt_clippingfactorymbm": {
+      "account_id": "yt_clippingfactorymbm",
+      "platform": "youtube",
+      "brand_id": "clippingfactorymbm",
+      "channel_id": "UCSZ80c0lE5gqkkbfHKrGkGA",
+      "display_name": "ClippingFactoryMBM",
+      "handle": "@ClippingFactoryMBM",
+      "gmail_account": "abdelshafyclapps@gmail.com",
+      "profile_dir": "youtube_profile_clippingfactorymbm",
+      "auth_method": "persistent_chrome_profile",
+      "oauth_token_key": "clippingfactorymbm",
+      "publish_enabled": true
+    },
+    "yt_cutedosage": {
+      "account_id": "yt_cutedosage",
+      "platform": "youtube",
+      "brand_id": "cutedosage",
+      "channel_id": "UCNnWrWmMuZDy4LSg95stEOQ",
+      "display_name": "Cute Dosage",
+      "handle": "@CuteDosage",
+      "gmail_account": "moeaiagenticteamz@gmail.com",
+      "profile_dir": "youtube_profile_cutedosage",
+      "auth_method": "persistent_chrome_profile",
+      "oauth_token_key": "cutedosage",
+      "publish_enabled": true
+    },
+    "yt_dontwatchthis": {
+      "account_id": "yt_dontwatchthis",
+      "platform": "youtube",
+      "brand_id": "dontwatchthis",
+      "channel_id": "UCZi1tOA71rDrin5DyNVNKOA",
+      "display_name": "Don't Watch This",
+      "handle": "@DONTWATCHTHIS1",
+      "gmail_account": "abdelshafyplay@gmail.com",
+      "profile_dir": "youtube_profile_dontwatchthis",
+      "auth_method": "persistent_chrome_profile",
+      "oauth_token_key": "dontwatchthis",
+      "publish_enabled": true
+    },
+    "yt_goalmachinez": {
+      "account_id": "yt_goalmachinez",
+      "platform": "youtube",
+      "brand_id": "goalmachinez",
+      "channel_id": "UCV3i2caQ-JXey0by8H1_5tg",
+      "display_name": "Goal Machinez",
+      "handle": "@Goalmachinez",
+      "gmail_account": "abdelshafyplays@gmail.com",
+      "profile_dir": "youtube_profile_goalmachinez",
+      "auth_method": "persistent_chrome_profile",
+      "oauth_token_key": "goalmachinez",
+      "publish_enabled": true
+    },
+    "yt_twistsrevealed": {
+      "account_id": "yt_twistsrevealed",
+      "platform": "youtube",
+      "brand_id": "twistsrevealed",
+      "channel_id": "UCknUgK7LEQOoXk_44juSfzw",
+      "display_name": "Twists Revealed",
+      "handle": "@TwistsRevealed",
+      "gmail_account": "bigmoeshafy@gmail.com",
+      "profile_dir": "youtube_profile_twistsrevealed",
+      "auth_method": "persistent_chrome_profile",
+      "oauth_token_key": "twistsrevealed",
+      "publish_enabled": true
+    },
+    "tt_clippingfactorymbm": {
+      "account_id": "tt_clippingfactorymbm",
+      "platform": "tiktok",
+      "brand_id": "clippingfactorymbm",
+      "tiktok_username": "clippingfactory_mbm",
+      "handle": "@clippingfactory_mbm",
+      "gmail_account": "abdelshafyclapps@gmail.com",
+      "profile_dir": "tiktok_profile_clippingfactorymbm",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "tt_cutedosage": {
+      "account_id": "tt_cutedosage",
+      "platform": "tiktok",
+      "brand_id": "cutedosage",
+      "tiktok_username": "cutedosage_official",
+      "handle": "@cutedosage_official",
+      "gmail_account": "moeaiagenticteamz@gmail.com",
+      "profile_dir": "tiktok_profile_cutedosage",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "tt_dontwatchthis": {
+      "account_id": "tt_dontwatchthis",
+      "platform": "tiktok",
+      "brand_id": "dontwatchthis",
+      "tiktok_username": "dontwatchthis09",
+      "handle": "@dontwatchthis09",
+      "gmail_account": "abdelshafyplay@gmail.com",
+      "profile_dir": "tiktok_profile_dontwatchthis",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "tt_goalmachinez": {
+      "account_id": "tt_goalmachinez",
+      "platform": "tiktok",
+      "brand_id": "goalmachinez",
+      "tiktok_username": "goalmachinez",
+      "handle": "@goalmachinez",
+      "gmail_account": "abdelshafyplays@gmail.com",
+      "profile_dir": "tiktok_profile_goalmachinez",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "tt_twistsrevealed": {
+      "account_id": "tt_twistsrevealed",
+      "platform": "tiktok",
+      "brand_id": "twistsrevealed",
+      "tiktok_username": "twistsrevealed_cinema",
+      "handle": "@twistsrevealed_cinema",
+      "gmail_account": "bigmoeshafy@gmail.com",
+      "profile_dir": "tiktok_profile_twistsrevealed",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "ig_clippingfactorymbm": {
+      "account_id": "ig_clippingfactorymbm",
+      "platform": "instagram",
+      "brand_id": "clippingfactorymbm",
+      "handle": "@clippingfactory_mbm",
+      "gmail_account": "abdelshafyclapps@gmail.com",
+      "profile_dir": "instagram_profile_clippingfactorymbm",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "ig_cutedosage": {
+      "account_id": "ig_cutedosage",
+      "platform": "instagram",
+      "brand_id": "cutedosage",
+      "handle": "@cutedosage_official",
+      "gmail_account": "moeaiagenticteamz@gmail.com",
+      "profile_dir": "instagram_profile_cutedosage",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "ig_dontwatchthis": {
+      "account_id": "ig_dontwatchthis",
+      "platform": "instagram",
+      "brand_id": "dontwatchthis",
+      "handle": "@dontwatchthis_mystery",
+      "gmail_account": "abdelshafyplay@gmail.com",
+      "profile_dir": "instagram_profile_dontwatchthis",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "ig_goalmachinez": {
+      "account_id": "ig_goalmachinez",
+      "platform": "instagram",
+      "brand_id": "goalmachinez",
+      "handle": "@goalmachinez_fc",
+      "gmail_account": "abdelshafyplays@gmail.com",
+      "profile_dir": "instagram_profile_goalmachinez",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "ig_twistsrevealed": {
+      "account_id": "ig_twistsrevealed",
+      "platform": "instagram",
+      "brand_id": "twistsrevealed",
+      "handle": "@twistsrevealed_cinema",
+      "gmail_account": "bigmoeshafy@gmail.com",
+      "profile_dir": "instagram_profile_twistsrevealed",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "ig_plaqueboymax": {
+      "account_id": "ig_plaqueboymax",
+      "platform": "instagram",
+      "brand_id": "plaqueboymax",
+      "handle": "@plaqueboymax",
+      "gmail_account": "abdelshafyclapps@gmail.com",
+      "profile_dir": "instagram_profile_plaqueboymax",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    }
+  },
+  "brands": {
+    "clippingfactorymbm": {
+      "display_name": "ClippingFactoryMBM",
+      "handle": "@ClippingFactoryMBM",
+      "youtube_channel_id": "UCSZ80c0lE5gqkkbfHKrGkGA",
+      "gmail_account": "abdelshafyclapps@gmail.com",
+      "social_handles": {
+        "youtube": "@ClippingFactoryMBM",
+        "instagram": "@clippingfactory_mbm",
+        "tiktok": "@clippingfactory_mbm"
+      }
+    },
+    "cutedosage": {
+      "display_name": "Cute Dosage",
+      "handle": "@CuteDosage",
+      "youtube_channel_id": "UCNnWrWmMuZDy4LSg95stEOQ",
+      "gmail_account": "moeaiagenticteamz@gmail.com",
+      "social_handles": {
+        "youtube": "@CuteDosage",
+        "instagram": "@cutedosage_official",
+        "tiktok": "@cutedosage_official"
+      }
+    },
+    "dontwatchthis": {
+      "display_name": "Don't Watch This",
+      "handle": "@DONTWATCHTHIS1",
+      "youtube_channel_id": "UCZi1tOA71rDrin5DyNVNKOA",
+      "gmail_account": "abdelshafyplay@gmail.com",
+      "social_handles": {
+        "youtube": "@DONTWATCHTHIS1",
+        "instagram": "@dontwatchthis_mystery",
+        "tiktok": "@dontwatchthis09"
+      }
+    },
+    "goalmachinez": {
+      "display_name": "Goal Machinez",
+      "handle": "@Goalmachinez",
+      "youtube_channel_id": "UCV3i2caQ-JXey0by8H1_5tg",
+      "gmail_account": "abdelshafyplays@gmail.com",
+      "social_handles": {
+        "youtube": "@Goalmachinez",
+        "instagram": "@goalmachinez_fc",
+        "tiktok": "@goalmachinez"
+      }
+    },
+    "twistsrevealed": {
+      "display_name": "Twists Revealed",
+      "handle": "@TwistsRevealed",
+      "youtube_channel_id": "UCknUgK7LEQOoXk_44juSfzw",
+      "gmail_account": "bigmoeshafy@gmail.com",
+      "social_handles": {
+        "youtube": "@TwistsRevealed",
+        "instagram": "@twistsrevealed_cinema",
+        "tiktok": "@twistsrevealed_cinema"
+      }
+    },
+    "plaqueboymax": {
+      "display_name": "PlaqueBoyMax",
+      "handle": "@PlaqueBoyMax",
+      "gmail_account": "abdelshafyclapps@gmail.com",
+      "social_handles": {
+        "instagram": "@plaqueboymax"
+      }
+    }
+  },
+  "platform_defaults": {
+    "youtube_shorts": "youtube",
+    "youtube": "youtube",
+    "tiktok": "tiktok",
+    "instagram_reels": "instagram",
+    "instagram": "instagram"
+  }
+}

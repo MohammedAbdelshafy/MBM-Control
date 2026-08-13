@@ -35,6 +35,7 @@ ENV_NAMES = {
     "reach_cat": "REACHCAT_SESSION_STATE",
     "clip_affiliates": "CLIPAFFILIATES_SESSION_STATE",
     "clipping_net": "CLIPPINGNET_SESSION_STATE",
+    "content_rewards": "CONTENTREWARDS_SESSION_STATE",
 }
 
 

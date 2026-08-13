@@ -45,6 +45,8 @@ PLATFORMS = [
     ("clip_affiliates", "ClipAffiliates", "https://clipaffiliates.com"),
     ("muslim_clippers", "Muslim Clippers", "https://muslimclippers.com"),
     ("halalclipping", "HalalClipping.com", "https://halalclipping.com"),
+    ("content_rewards", "ContentRewards.com", "https://contentrewards.com"),
+    ("crayo_ai", "Crayo.ai", "https://crayo.ai"),
 ]
 
 ENV_NAMES = {
@@ -56,6 +58,8 @@ ENV_NAMES = {
     "clip_affiliates": "CLIPAFFILIATES_SESSION_STATE",
     "muslim_clippers": "MUSLIM_CLIPPERS_SESSION_STATE",
     "halalclipping": "HALALCLIPPING_SESSION_STATE",
+    "content_rewards": "CONTENTREWARDS_SESSION_STATE",
+    "crayo_ai": "CRAYO_SESSION_STATE",
 }
 
 AUTO_CAPTURE_SECONDS = int(os.environ.get("AUTO_CAPTURE_SECONDS", 15 * 60))

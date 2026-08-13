@@ -415,5 +415,15 @@
     ],
     "hook_style": "wisdom_deep",
     "status": "PIPELINE_ACTIVE"
+  },
+  {
+    "id": "CAMP-CONTENTREWARDS-030",
+    "name": "ContentRewards.com Creator Bounties & UGC Rewards",
+    "campaign_url": "https://contentrewards.com/c/creator-bounties",
+    "platform": "ContentRewards.com",
+    "monthly_bounty_usd": 5000.0,
+    "niche": "ugc_creator_bounties",
+    "hook_style": "viral_hook",
+    "status": "PIPELINE_ACTIVE"
   }
 ]

@@ -125,6 +125,8 @@ class Settings(BaseSettings):
     clippingcom_session_state: str = ""
     muslim_clippers_session_state: str = ""
     halalclipping_session_state: str = ""
+    contentrewards_session_state: str = ""
+    crayo_session_state: str = ""
 
     @property
     def publish_platform_list(self) -> list[str]:
@@ -178,6 +180,10 @@ class Settings(BaseSettings):
             "clip_affiliates": self.clipaffiliates_session_state,
             "muslim_clippers": self.muslim_clippers_session_state,
             "halalclipping": self.halalclipping_session_state,
+            "content_rewards": self.contentrewards_session_state,
+            "contentrewards": self.contentrewards_session_state,
+            "crayo": self.crayo_session_state,
+            "crayo_ai": self.crayo_session_state,
         }.get(platform, "")
         if env_val:
             return env_val
@@ -246,7 +252,7 @@ class Settings(BaseSettings):
     enhancement_upscale_model: str = "realesrgan-x4plus"
     enhancement_upscale_scale: int = 2
     enhancement_crf: int = 16                           # was 18 — near-lossless
-    enhancement_preset: str = "veryslow"                # was slow — best compression
+    enhancement_preset: str = "medium"                  # was veryslow — ~4-5x faster, small size tradeoff
 
     # Real-ESRGAN path (empty = auto-resolve)
     real_esrgan_path: str = "realesrgan-ncnn-vulkan"

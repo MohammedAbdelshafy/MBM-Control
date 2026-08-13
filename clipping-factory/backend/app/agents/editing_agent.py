@@ -439,7 +439,7 @@ class EditingAgent(BaseAgent):
                 f"scale={width}:{height}:flags=lanczos:force_original_aspect_ratio=increase,"
                 f"crop={width}:{height}"
             ),
-            "-c:v", "libx264", "-crf", "16", "-preset", "veryslow",
+            "-c:v", "libx264", "-crf", "16", "-preset", self.settings.enhancement_preset,
             "-tune", "film",
             "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
             str(dst),
@@ -507,7 +507,7 @@ class EditingAgent(BaseAgent):
             self.settings.ffmpeg_path, "-y",
             "-i", str(src),
             "-vf", f"scale={width}:{height}:flags=lanczos",
-            "-c:v", "libx264", "-crf", "16", "-preset", "veryslow",
+            "-c:v", "libx264", "-crf", "16", "-preset", self.settings.enhancement_preset,
             "-tune", "film",
             "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
             str(dst),
@@ -522,7 +522,7 @@ class EditingAgent(BaseAgent):
             "-i", str(src),
             "-vf", f"setpts={1.0/speed}*PTS",
             "-af", f"atempo={max(0.5, min(100.0, atempo))}",
-            "-c:v", "libx264", "-crf", "16", "-preset", "veryslow",
+            "-c:v", "libx264", "-crf", "16", "-preset", self.settings.enhancement_preset,
             "-tune", "film",
             "-c:a", "aac", "-b:a", "320k",
             str(dst),
@@ -559,7 +559,7 @@ class EditingAgent(BaseAgent):
             self.settings.ffmpeg_path, "-y",
             "-i", str(src),
             "-vf", vf,
-            "-c:v", "libx264", "-crf", "16", "-preset", "veryslow",
+            "-c:v", "libx264", "-crf", "16", "-preset", self.settings.enhancement_preset,
             "-tune", "film",
             "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
             str(dst),
@@ -576,7 +576,7 @@ class EditingAgent(BaseAgent):
             self.settings.ffmpeg_path, "-y",
             "-i", str(src),
             "-vf", f"subtitles={str(srt_path).replace(chr(92), '/')}:force_style='{force_style}'",
-            "-c:v", "libx264", "-crf", "16", "-preset", "veryslow",
+            "-c:v", "libx264", "-crf", "16", "-preset", self.settings.enhancement_preset,
             "-tune", "film",
             "-c:a", "aac", "-b:a", "320k",
             str(dst),
@@ -585,9 +585,9 @@ class EditingAgent(BaseAgent):
 
     def _caption_style_string(self, style: str) -> str:
         styles = {
-            "bold_white": "FontName=Arial,FontSize=20,Bold=1,PrimaryColour=&HFFFFFF,OutlineColour=&H000000,BorderStyle=3,Outline=2,Shadow=1,Alignment=2,MarginV=60",
-            "minimal": "FontName=Arial,FontSize=16,Bold=0,PrimaryColour=&HFFFFFF,OutlineColour=&H000000,Outline=1,Alignment=2,MarginV=60",
-            "yellow": "FontName=Arial,FontSize=20,Bold=1,PrimaryColour=&H00FFFF,OutlineColour=&H000000,BorderStyle=3,Outline=2,Shadow=1,Alignment=2,MarginV=60",
+            "bold_white": "FontName=Arial,FontSize=18,Bold=1,PrimaryColour=&HFFFFFF,OutlineColour=&H000000,BorderStyle=1,Outline=2,Shadow=1,Alignment=2,MarginV=120,MarginL=60,MarginR=60",
+            "minimal": "FontName=Arial,FontSize=16,Bold=0,PrimaryColour=&HFFFFFF,OutlineColour=&H000000,Outline=1,Alignment=2,MarginV=120,MarginL=60,MarginR=60",
+            "yellow": "FontName=Arial,FontSize=18,Bold=1,PrimaryColour=&H00FFFF,OutlineColour=&H000000,BorderStyle=1,Outline=2,Shadow=1,Alignment=2,MarginV=120,MarginL=60,MarginR=60",
         }
         return styles.get(style, styles["bold_white"])
 

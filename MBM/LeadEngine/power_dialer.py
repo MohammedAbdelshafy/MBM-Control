@@ -85,11 +85,20 @@ def normalize_lead(lead):
     Different feeds use different keys (phone_number/contact_name/company_name
     vs phone/name/company). This keeps names attached to the RIGHT number so
     the dialer never shows a mismatched name or a value the phone can't dial.
+    Phone selection skips candidates that don't normalize to a dialable E.164
+    (e.g. the 'npi/registry' marker that some feeds store in verified_phone).
     """
     lead = dict(lead or {})
-    phone = _pick(lead, "verified_phone", "phone_number", "phone",
-                  "primary_phone", "contact_phone", default="")
-    phone = normalize_phone(phone) or ""
+    phone = ""
+    for k in ("verified_phone", "phone_number", "phone",
+              "primary_phone", "contact_phone"):
+        v = lead.get(k)
+        if v is None or not str(v).strip():
+            continue
+        p = normalize_phone(str(v))
+        if p:
+            phone = p
+            break
     lead["phone"] = phone
     lead["contact_name"] = _pick(lead, "contact_name", "name", "prospect_name",
                                  "owner_name", "company_name", "company",

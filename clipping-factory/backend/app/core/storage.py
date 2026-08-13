@@ -47,8 +47,6 @@ def _make_client():
                 connect_timeout=10,
                 read_timeout=300,
                 retries={"max_attempts": 3, "mode": "adaptive"},
-                multipart_threshold=8 * 1024 * 1024,
-                multipart_chunksize=8 * 1024 * 1024,
             ),
             use_ssl=settings.storage_use_ssl,
         )
@@ -148,17 +146,16 @@ def upload_file(
     if metadata:
         extra["Metadata"] = {k: str(v) for k, v in metadata.items()}
 
-    # Open the file ourselves and pass an explicit ContentLength so MinIO
-    # multipart uploads never fail with IncompleteBody (Content-Length
-    # mismatch). Retry on that specific error a few times.
+    # Open the file ourselves and pass ContentType + Metadata as ExtraArgs
+    # (ContentLength is auto-derived by boto3 from the file size). Retry on
+    # IncompleteBody / connection errors a few times.
     for attempt in range(1, _STORAGE_RETRIES + 1):
         try:
             with open(str(local_path), "rb") as fh:
-                size = os.fstat(fh.fileno()).st_size
                 fh.seek(0)
                 client.upload_fileobj(
                     fh, bucket, key,
-                    ExtraArgs={**extra, "ContentLength": size},
+                    ExtraArgs=extra,
                 )
             return key
         except ClientError as exc:
@@ -230,6 +227,8 @@ def download_file(bucket: str, key: str, local_path: str | Path) -> Path:
     if result is None:
         if local_fp.exists():
             shutil.copy2(str(local_fp), str(local_path))
+            return local_path
+        if local_path.exists():
             return local_path
         raise ConnectionError("Failed to download from storage after retries")
     if local_fp.exists():

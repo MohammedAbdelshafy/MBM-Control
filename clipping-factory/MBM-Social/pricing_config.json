@@ -1,0 +1,48 @@
+{
+  "currency": "USD",
+  "plans": {
+    "lead_pack_daily": {
+      "name": "Single Day Lead Pack",
+      "price": 18,
+      "description": "Daily delivery of high-converting leads.",
+      "stripe_price_id_env": "STRIPE_LEAD_PACK_DAILY"
+    },
+    "lead_pack_monthly": {
+      "name": "Monthly Lead Retainer",
+      "price": 375,
+      "description": "Monthly subscription for daily leads and outreach.",
+      "stripe_price_id_env": "STRIPE_LEAD_PACK_MONTHLY"
+    },
+    "ai_email": {
+      "name": "AI Email Hunter",
+      "price": 499,
+      "description": "Full AI email outreach automation for scaling your agency.",
+      "stripe_price_id_env": "STRIPE_AI_EMAIL"
+    },
+    "ai_full_stack": {
+      "name": "Full Stack AI Rep",
+      "price": 997,
+      "description": "Voice, email, and social media AI automation.",
+      "stripe_price_id_env": "STRIPE_AI_FULL_STACK"
+    },
+    "ai_enterprise": {
+      "name": "Enterprise White-label Suite",
+      "price": 1500,
+      "description": "$1,500 setup + usage limits for agencies.",
+      "stripe_price_id_env": "STRIPE_AI_ENTERPRISE",
+      "setup_fee": 1500
+    }
+  },
+  "instant_cash_addons": {
+    "video_clipping": {
+      "name": "Viral Shorts Clipping",
+      "cost_per_clip": 0.10,
+      "min_clips": 3
+    },
+    "cold_call_swarm": {
+      "name": "Cold Calling Swarm",
+      "cost_per_call": 0.50,
+      "min_calls": 20
+    }
+  }
+}
