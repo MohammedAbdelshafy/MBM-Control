@@ -133,6 +133,7 @@ MBM/LeadEngine/logs/*.md
 MBM/LeadEngine/logs/*.png
 MBM/LeadEngine/logs/*.txt
 MBM/LeadEngine/cold_calling_queue.json
+MBM/LeadEngine/us_re_dialer_queue.json
 MBM/LeadEngine/enriched_global_leads.json
 MBM/LeadEngine/global_leads.json
 MBM/LeadEngine/us_50_deep_prospect_intel.json
