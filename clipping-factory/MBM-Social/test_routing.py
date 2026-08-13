@@ -99,6 +99,44 @@ def test_compute_asset_id() -> None:
         check("stable for same file", a == b and len(a) == 12)
 
 
+def test_known_tiktok_accounts() -> None:
+    print("known TikTok accounts (issue #16 rule 7)")
+    if not _registry_ok():
+        check("skipped (no registry)", True)
+        return
+    reg = routing._load_registry()
+    accounts = reg.get("accounts", {})
+    registered = {
+        routing._normalize_tiktok(acct.get("tiktok_username", acct.get("handle", "")))
+        for acct in accounts.values()
+        if acct.get("platform") == "tiktok"
+    }
+    for handle in sorted(routing.KNOWN_TIKTOK_ACCOUNTS):
+        present = routing._normalize_tiktok(handle) in registered
+        check(f"known handle '{handle}' surfaced ({'registered' if present else 'missing'})", True)
+
+
+def test_audit_surfaces_missing() -> None:
+    print("audit surfaces missing known accounts")
+    if not _registry_ok():
+        check("skipped (no registry)", True)
+        return
+    audit = routing.run_audit()
+    issues = "\n".join(audit["issues"])
+    # The audit MUST surface every known handle that is not yet in the registry
+    # (issue #16: sixth active account discovered from local config + surfaced).
+    reg = routing._load_registry()
+    accounts = reg.get("accounts", {})
+    registered = {
+        routing._normalize_tiktok(acct.get("tiktok_username", acct.get("handle", "")))
+        for acct in accounts.values()
+        if acct.get("platform") == "tiktok"
+    }
+    for handle in sorted(routing.KNOWN_TIKTOK_ACCOUNTS):
+        if routing._normalize_tiktok(handle) not in registered:
+            check(f"missing '{handle}' reported as ISSUE", f"'{handle}' MISSING" in issues)
+
+
 def main() -> int:
     print("routing tests")
     for t in (
@@ -107,6 +145,8 @@ def main() -> int:
         test_fail_closed,
         test_brand_normalization,
         test_compute_asset_id,
+        test_known_tiktok_accounts,
+        test_audit_surfaces_missing,
     ):
         try:
             t()

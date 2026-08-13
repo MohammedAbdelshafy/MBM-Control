@@ -31,6 +31,17 @@ ROOT = Path(__file__).resolve().parent.parent
 REGISTRY_PATH = ROOT / "RoutingRegistry.json"
 QUEUE_DIR = ROOT / "publish_queue"
 
+# Known TikTok accounts from issue #16 (user-owned handles). Every handle here
+# MUST be present in the registry; the audit surfaces any that are missing so
+# a sixth/discovered account is caught instead of silently dropping output.
+KNOWN_TIKTOK_ACCOUNTS = {
+    "dontwatchthis09",
+    "mohammed.abdelsha21",
+    "mohammed.omar.abd2",
+    "goalmachinez",
+    "moevirals",
+}
+
 
 class RoutingError(Exception):
     """Raised when routing cannot be resolved or is ambiguous."""
@@ -366,6 +377,20 @@ def run_audit() -> dict:
             full_path = ROOT / profile_dir
             if not full_path.exists():
                 issues.append(f"Account '{acct_id}' profile missing: {full_path}")
+
+    # 4. Issue #16: every KNOWN TikTok handle must be in the registry.
+    #    Missing handles are surfaced so the "sixth active account" discovery
+    #    never silently drops an owned destination.
+    registered_tiktok = {
+        _normalize_tiktok(acct.get("tiktok_username", acct.get("handle", "")))
+        for acct in accounts.values()
+        if acct.get("platform") == "tiktok"
+    }
+    for handle in sorted(KNOWN_TIKTOK_ACCOUNTS):
+        if _normalize_tiktok(handle) in registered_tiktok:
+            passed.append(f"Known TikTok account '{handle}' registered")
+        else:
+            issues.append(f"Known TikTok account '{handle}' MISSING from registry")
 
     print(f"\nChecks passed: {len(passed)}")
     print(f"Issues found: {len(issues)}")
