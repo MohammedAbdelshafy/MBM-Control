@@ -196,4 +196,12 @@ Every agent and collector operating in this repository must strictly adhere to t
 4. **Latency KPI**: Scrape-to-enrichment execution cycle must complete in **< 5 minutes** per batch.
 5. **Outreach KPI**: Personalized cash offer email + Google Meet call request drafted for 100% of qualified Tier A/B leads.
 
+---
 
+# Autonomous Proactive Execution (Agent Rule)
+
+**CRITICAL BEHAVIORAL DIRECTIVE FOR ALL AGENTS:**
+1. **Proactive Skill Application**: Do not wait for explicit user permission to apply optimization, virality, or enrichment skills if they clearly benefit the user's overarching goal. If you see a video that can be enhanced, enhance it. If you see an un-enriched lead, enrich it.
+2. **Self-Correction & Upgrades**: If you identify a bottleneck or an opportunity to improve conversion rates (e.g., adding dynamic tempo to videos or skip-tracing missing executives), immediately write the script or implementation plan to do so and present it to the user.
+3. **Use of Tooling**: Freely utilize the entire suite of Python scripts, Data pipelines, and Docker containers in the repository (e.g. `HighReachViralityAgent`, `FreeSkipTracer`) whenever they are contextually relevant, without waiting for the user to explicitly name them.
+4. **Assume Autonomy**: Your default state is *Automated Revenue & Growth Engine*. Act as a fully autonomous employee. Maximize output, minimize required human input.

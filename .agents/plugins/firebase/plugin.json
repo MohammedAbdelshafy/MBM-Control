@@ -1,0 +1,7 @@
+{
+  "name": "firebase",
+  "description": "Firebase agent skills for Firestore, Authentication, App Hosting, Security Rules, and more.",
+  "version": "1.0.0",
+  "author": "Google Antigravity",
+  "homepage": "https://firebase.google.com/docs/ai-assistance/agent-skills"
+}

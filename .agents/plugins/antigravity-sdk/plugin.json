@@ -1,0 +1,7 @@
+{
+  "name": "antigravity-sdk",
+  "description": "Google Antigravity Python SDK agent skill. Architecture references, getting-started examples, and configuration guides.",
+  "version": "1.0.0",
+  "author": "Google Antigravity",
+  "homepage": "https://github.com/google-antigravity/antigravity-sdk-python"
+}

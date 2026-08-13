@@ -1,0 +1,7 @@
+{
+  "name": "chrome-devtools",
+  "description": "Agent skills for Chrome DevTools and Puppeteer: debugging a11y, Core Web Vitals, visual automation, memory leak diagnosis.",
+  "version": "1.0.0",
+  "author": "Google Antigravity",
+  "homepage": "https://github.com/ChromeDevTools/chrome-devtools-mcp"
+}

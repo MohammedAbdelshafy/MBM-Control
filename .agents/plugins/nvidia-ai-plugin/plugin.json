@@ -1,0 +1,9 @@
+{
+  "name": "nvidia-ai-plugin",
+  "version": "1.0.0",
+  "description": "NVIDIA AI Foundation Models, NIM Microservices, Riva Speech & NeMo Guardrails Plugin.",
+  "author": "Google DeepMind / JARVIS OS",
+  "skills": [
+    "nvidia-ai-suite"
+  ]
+}
