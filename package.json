@@ -81,6 +81,8 @@
     "leads:sellers": "python MBM/LeadEngine/seller_skip_tracer.py",
     "leads:sellers:apply": "python MBM/LeadEngine/seller_skip_tracer.py --apply",
     "leads:gate:audit": "python MBM/LeadEngine/dialer_verification_gate.py --audit",
+    "leads:score": "python MBM/LeadEngine/lead_quality_scorer.py",
+    "leads:score:apply": "python MBM/LeadEngine/lead_quality_scorer.py --apply",
     "leads:all": "python MBM/Scripts/lead_hygiene.py && python MBM/LeadEngine/npi_verified_callsheet.py",
     "leads:skiptrace": "python MBM/LeadEngine/skip_trace_all.py",
     "leads:skiptrace:all": "python MBM/LeadEngine/skip_trace_all.py --apply --dispatch --audit",
