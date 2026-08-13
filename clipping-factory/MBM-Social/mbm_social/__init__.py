@@ -18,13 +18,14 @@ Modules:
   youtube_api_publisher - YouTube Data API v3 publisher
   content_rewards   - Content Rewards economics pipeline (estimated|verified|actual)
   agent_economics   - Per-task model cost / latency / failure / revenue capture
+  asset_lineage     - One source -> asset family, lineage edges, near-dup, render retries
 """
 from . import model_registry, brand_config, brand_router, publish_package
 from . import autonomous_runtime, learning_engine, night_operations
-from . import content_rewards, agent_economics
+from . import content_rewards, agent_economics, asset_lineage
 
 __all__ = [
     "model_registry", "brand_config", "brand_router", "publish_package",
     "autonomous_runtime", "learning_engine", "night_operations",
-    "content_rewards", "agent_economics",
+    "content_rewards", "agent_economics", "asset_lineage",
 ]
