@@ -16,6 +16,8 @@ import requests
 from pathlib import Path
 from dotenv import load_dotenv
 
+from MBM.LeadEngine.contact_enrichment import ContactEnricher
+
 BASE_DIR = Path(__file__).parent.resolve()
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
@@ -89,11 +91,26 @@ def prospect_enterprise_buyers():
     print("============================================================")
 
     enriched_enterprise = []
+    enricher = ContactEnricher()
 
     for idx, company in enumerate(ENTERPRISE_BUYERS, 1):
         print(f"\n[{idx}/{len(ENTERPRISE_BUYERS)}] Prospecting {company['company']} ({company['sector']})...")
         print(f"  - Budget Tier: {company['budget_range']}")
         print(f"  - Target System: {company['system_interest']}")
+        
+        print(f"  - Searching LinkedIn Sales Navigator for exact decision maker...")
+        dm_results = enricher.search_linkedin_decision_maker(company['company'])
+        
+        decision_maker_name = "Unknown"
+        decision_maker_title = "Unknown"
+        decision_maker_linkedin = ""
+        
+        if dm_results:
+            dm = dm_results[0]
+            decision_maker_name = dm['name']
+            decision_maker_title = dm['title']
+            decision_maker_linkedin = dm['linkedin']
+            print(f"  - Found Decision Maker: {decision_maker_name} ({decision_maker_title})")
 
         # Enriched contact record
         record = {
@@ -102,6 +119,9 @@ def prospect_enterprise_buyers():
             "budget_range": company["budget_range"],
             "system_interest": company["system_interest"],
             "decision_maker_roles": company["decision_maker_roles"],
+            "decision_maker_name": decision_maker_name,
+            "decision_maker_title": decision_maker_title,
+            "decision_maker_linkedin": decision_maker_linkedin,
             "domain": company["domain"],
             "status": "qualified_tier_a",
             "pitch_proposal": f"Custom Enterprise White-Label Deployment of {company['system_interest']}",

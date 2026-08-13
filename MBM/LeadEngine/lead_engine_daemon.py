@@ -80,8 +80,13 @@ def run_pipeline(args):
         return output_contract("failure", {"cities": cities, "target": target},
                                None, phase_errors + ["No leads discovered"], "adjust_markets")
 
+    log("PHASE 1.5 SKIP TRACE: Running FreeSkipTracer on fresh leads...")
+    import subprocess
+    tracer_script = os.path.join(os.path.dirname(__file__), 'free_skip_tracer.py')
+    subprocess.run([sys.executable, tracer_script, '--enrich', output_path, '--output', output_path])
+    
     cold_call = ColdCallingSwarmOS()
-    log("PHASE 2 ENRICH: Cold-calling swarm skip-tracing phones and generating scripts...")
+    log("PHASE 2 ENRICH: Cold-calling swarm verifying phones and generating scripts...")
     enrich_result = cold_call.run_lead_enrichment_swarm(output_path)
 
     log(f"PHASE 2 ENRICH: {enrich_result['outputs'].get('enriched', 0) if enrich_result.get('outputs') else 0} leads enriched")
@@ -110,7 +115,7 @@ def run_pipeline(args):
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="Lead Engine — Find → Enrich → Call pipeline")
+    parser = argparse.ArgumentParser(description="Lead Engine Daemon - Scrape, Enrich, Output")
     parser.add_argument("--cities", type=str, default="manchester,london,birmingham,liverpool,leeds,new york,madrid",
                         help="Comma-separated cities to scrape")
     parser.add_argument("--target-deals", type=int, default=30,

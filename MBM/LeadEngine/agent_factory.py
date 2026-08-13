@@ -33,7 +33,7 @@ try:
 except ImportError:
     pass
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 LOGS_DIR = ROOT / "MBM" / "LeadEngine" / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 AGENTS_FILE = LOGS_DIR / "factory_agents.json"
@@ -45,6 +45,12 @@ RETELL_API_KEY = os.getenv("RETELL_API_KEY")
 VOICE_IDS = [
     "retell-Willa",
     "retell-Cimo",
+    "retell-Alejandro",
+    "retell-Nico",
+    "retell-Cleo",
+    "retell-Adam",
+    "retell-Hailey",
+    "retell-Brian",
 ]
 
 # Industry niches with scripts
@@ -310,32 +316,295 @@ NICHES = [
         "rate": 0.40,
         "tags": ["insulation", "energy", "home-improvement"]
     },
+    {
+        "name": "Commercial Roofing",
+        "persona": "Professional commercial roofing estimator",
+        "hook": "Hi! I'm calling about your commercial roofing maintenance. Are you still interested in scheduling an inspection before the next storm season?",
+        "qualify": ["What type of building?", "Flat or sloped roof?", "Any known leaks?", "Who handles your property maintenance?"],
+        "close": "I'll have our estimator call you within 1 hour with inspection times. What's the best number?",
+        "rate": 0.55,
+        "tags": ["commercial", "roofing", "b2b"]
+    },
+    {
+        "name": "Commercial HVAC Maintenance",
+        "persona": "Experienced commercial HVAC account manager",
+        "hook": "Hi! I'm following up on your commercial HVAC service request. Are you still looking for a maintenance plan?",
+        "qualify": ["How many units?", "What type of building?", "Are you on a current maintenance plan?", "Who's your facility manager?"],
+        "close": "I'll send over a preventative maintenance quote today. What email works best?",
+        "rate": 0.55,
+        "tags": ["commercial", "hvac", "b2b"]
+    },
+    {
+        "name": "Medical Billing Services",
+        "persona": "Knowledgeable medical billing consultant",
+        "hook": "Hi! I'm calling about your practice's medical billing. Are you still looking to improve your claim approval rates?",
+        "qualify": ["What specialty is the practice?", "What's your current approval rate?", "How many providers?", "Which billing software do you use?"],
+        "close": "I'll schedule a free revenue cycle review. When works for you?",
+        "rate": 0.60,
+        "tags": ["healthcare", "billing", "b2b"]
+    },
+    {
+        "name": "Dental Practice Growth",
+        "persona": "Dental practice growth specialist",
+        "hook": "Hi! I'm following up on your dental practice inquiry. Are you still looking to fill more appointments?",
+        "qualify": ["How many chairs?", "Which services are underbooked?", "What's your current no-show rate?", "Who handles scheduling now?"],
+        "close": "I'll put together a growth plan for your practice. Can we do a 15-minute call?",
+        "rate": 0.60,
+        "tags": ["dental", "healthcare", "b2b"]
+    },
+    {
+        "name": "Commercial Janitorial Contracts",
+        "persona": "Facilities services account executive",
+        "hook": "Hi! I'm calling about your office cleaning service. Are you still looking for a commercial janitorial provider?",
+        "qualify": ["What's your square footage?", "How often do you need service?", "What industry is the facility?", "Do you need daily or nightly cleaning?"],
+        "close": "I'll prepare a custom cleaning proposal today. What's the best email?",
+        "rate": 0.55,
+        "tags": ["janitorial", "facilities", "b2b"]
+    },
+    {
+        "name": "IT Managed Services",
+        "persona": "IT solutions consultant",
+        "hook": "Hi! I'm following up on your IT support inquiry. Are you still looking for managed IT services?",
+        "qualify": ["How many employees?", "Who handles your IT now?", "Any compliance requirements?", "What's your biggest IT pain point?"],
+        "close": "I'll schedule a free IT assessment. When works for a quick call?",
+        "rate": 0.65,
+        "tags": ["it-services", "msp", "b2b"]
+    },
+    {
+        "name": "Industrial Recycling & Waste",
+        "persona": "Industrial waste management specialist",
+        "hook": "Hi! I'm calling about your facility's recycling program. Are you still looking to reduce waste disposal costs?",
+        "qualify": ["What materials do you generate?", "What's your monthly volume?", "Who's your current hauler?", "Any hauling contracts expiring?"],
+        "close": "I'll put together a savings estimate. What's the best email?",
+        "rate": 0.65,
+        "tags": ["recycling", "industrial", "b2b"]
+    },
+    {
+        "name": "Freight & Logistics Brokerage",
+        "persona": "Freight brokerage account manager",
+        "hook": "Hi! I'm following up on your shipping needs. Are you still looking for reliable freight carriers?",
+        "qualify": ["What do you ship?", "What's your monthly volume?", "What are your current lanes?", "Any recurring pain points?"],
+        "close": "I'll match you with vetted carriers this week. What lane should we start with?",
+        "rate": 0.65,
+        "tags": ["logistics", "freight", "b2b"]
+    },
+    {
+        "name": "Restaurant Equipment Repair",
+        "persona": "Commercial kitchen service coordinator",
+        "hook": "Hi! I'm calling about your commercial kitchen equipment. Are you still looking for repair service?",
+        "qualify": ["What equipment needs service?", "Gas, electric, or refrigeration?", "Do you have a service contract?", "When does the issue occur?"],
+        "close": "A certified tech will call you within 30 minutes. What's the best number?",
+        "rate": 0.55,
+        "tags": ["restaurant", "equipment", "b2b"]
+    },
+    {
+        "name": "Commercial Refrigeration",
+        "persona": "Commercial refrigeration specialist",
+        "hook": "Hi! I'm following up on your refrigeration service request. Are you still having temperature issues?",
+        "qualify": ["What type of unit?", "What temperature issue?", "Walk-in or reach-in?", "Is product at risk?"],
+        "close": "I'll dispatch a tech today. What's the best number?",
+        "rate": 0.60,
+        "tags": ["refrigeration", "commercial", "b2b"]
+    },
+    {
+        "name": "Warehouse Staffing",
+        "persona": "Staffing agency account manager",
+        "hook": "Hi! I'm calling about your hiring needs. Are you still looking to fill warehouse positions?",
+        "qualify": ["How many positions?", "What are the shift requirements?", "What's the pay range?", "When do you need them?"],
+        "close": "I'll send over qualified candidates this week. How many do you need?",
+        "rate": 0.55,
+        "tags": ["staffing", "warehouse", "b2b"]
+    },
+    {
+        "name": "Fulfillment & 3PL Services",
+        "persona": "E-commerce fulfillment consultant",
+        "hook": "Hi! I'm following up on your fulfillment inquiry. Are you still looking for a 3PL partner?",
+        "qualify": ["What's your monthly order volume?", "What are your product dimensions?", "Any kitting or returns?", "What's your current pick-and-pack cost?"],
+        "close": "I'll prepare a fulfillment rate sheet today. What email works best?",
+        "rate": 0.60,
+        "tags": ["fulfillment", "ecommerce", "b2b"]
+    },
+    {
+        "name": "Merchant Services & Payments",
+        "persona": "Payments solutions advisor",
+        "hook": "Hi! I'm calling about your payment processing. Are you still looking to lower your card processing fees?",
+        "qualify": ["What's your average ticket?", "What's your monthly volume?", "Who's your current processor?", "Any chargeback issues?"],
+        "close": "I'll run a no-obligation rate comparison. What's the best email?",
+        "rate": 0.65,
+        "tags": ["payments", "merchant-services", "b2b"]
+    },
+    {
+        "name": "Payroll & HR Services",
+        "persona": "Payroll services consultant",
+        "hook": "Hi! I'm following up on your payroll inquiry. Are you still looking to streamline payroll and HR?",
+        "qualify": ["How many employees?", "Who's your current payroll provider?", "Weekly, bi-weekly, or monthly?", "Any HR compliance needs?"],
+        "close": "I'll schedule a free payroll audit. When works for you?",
+        "rate": 0.65,
+        "tags": ["payroll", "hr", "b2b"]
+    },
+    {
+        "name": "Fire & Life Safety Inspection",
+        "persona": "Fire safety compliance specialist",
+        "hook": "Hi! I'm calling about your fire and life safety inspection. Are you still looking to schedule one?",
+        "qualify": ["What type of facility?", "When does your inspection expire?", "Which systems need testing?", "Who handles compliance now?"],
+        "close": "I'll book your inspection this week. What day works best?",
+        "rate": 0.60,
+        "tags": ["fire-safety", "compliance", "b2b"]
+    },
+    {
+        "name": "Commercial Security Systems",
+        "persona": "Commercial security consultant",
+        "hook": "Hi! I'm following up on your security system inquiry. Are you still looking to upgrade your surveillance?",
+        "qualify": ["What type of facility?", "What's your current camera system?", "How many entry points?", "Any alarm monitoring?"],
+        "close": "I'll prepare a security proposal today. What's the best email?",
+        "rate": 0.60,
+        "tags": ["security", "surveillance", "b2b"]
+    },
+    {
+        "name": "Parking Lot Maintenance",
+        "persona": "Parking lot maintenance coordinator",
+        "hook": "Hi! I'm calling about your parking lot. Are you still looking for striping and sealcoating services?",
+        "qualify": ["What's the lot size?", "Any cracking or faded lines?", "Do you need ADA compliance?", "When was the last sealcoat?"],
+        "close": "I'll send over a quote this week. What's the best email?",
+        "rate": 0.55,
+        "tags": ["parking-lot", "maintenance", "b2b"]
+    },
+    {
+        "name": "Water Damage Restoration",
+        "persona": "Emergency restoration coordinator",
+        "hook": "Hi! I'm following up on your water damage claim. Is the situation still active?",
+        "qualify": ["Where's the damage?", "How long has it been wet?", "Have you contacted your insurer?", "What materials were affected?"],
+        "close": "A restoration crew can be dispatched today. What's the best number?",
+        "rate": 0.55,
+        "tags": ["restoration", "emergency", "home-services"]
+    },
+    {
+        "name": "Mold Remediation",
+        "persona": "Mold remediation specialist",
+        "hook": "Hi! I'm calling about the mold issue you reported. Are you still looking to get it remediated?",
+        "qualify": ["Where's the mold?", "Any visible growth?", "Has it been tested?", "What's the affected area size?"],
+        "close": "I'll schedule a free inspection this week. What day works best?",
+        "rate": 0.60,
+        "tags": ["mold", "remediation", "home-services"]
+    },
+    {
+        "name": "Elevator & Escalator Maintenance",
+        "persona": "Vertical transportation service manager",
+        "hook": "Hi! I'm calling about your elevator service. Are you still looking for a maintenance contract?",
+        "qualify": ["How many elevators?", "Who's your current service provider?", "Any code violations?", "What's the building height and usage?"],
+        "close": "I'll prepare a maintenance proposal. What's the best email?",
+        "rate": 0.65,
+        "tags": ["elevator", "commercial", "b2b"]
+    },
+    {
+        "name": "Off-Market Real Estate Acquisition",
+        "persona": "Real estate acquisitions specialist",
+        "hook": "Hi! I'm following up on your property inquiry. Are you still looking to sell?",
+        "qualify": ["What's the property address?", "What's your timeline?", "Any liens or tenants?", "What's the current condition?"],
+        "close": "We can make a cash offer this week. What's the best number?",
+        "rate": 0.75,
+        "tags": ["real-estate", "acquisitions", "high-ticket"]
+    },
+    {
+        "name": "Business Working Capital",
+        "persona": "Business funding advisor",
+        "hook": "Hi! I'm calling about your business financing inquiry. Are you still looking for working capital?",
+        "qualify": ["What's your monthly revenue?", "How long in business?", "What's the funding amount?", "What will the capital be used for?"],
+        "close": "I'll check today's pre-qualification rates. What's the best email?",
+        "rate": 0.70,
+        "tags": ["financing", "working-capital", "b2b"]
+    },
+    {
+        "name": "Commercial Solar",
+        "persona": "Commercial solar development consultant",
+        "hook": "Hi! I'm following up on your commercial solar inquiry. Are you still exploring solar for your facility?",
+        "qualify": ["What's your monthly utility spend?", "What's your facility square footage?", "Roof or ground-mount?", "Any energy goals or rebates?"],
+        "close": "I'll prepare a commercial solar savings model. What email works best?",
+        "rate": 0.65,
+        "tags": ["solar", "commercial", "energy"]
+    },
+    {
+        "name": "Home Warranty Claims",
+        "persona": "Home warranty claims coordinator",
+        "hook": "Hi! I'm calling about your home warranty claim. Are you still needing service on your covered system?",
+        "qualify": ["What's your policy number?", "Which system failed?", "Have you filed a claim yet?", "What's the model and age?"],
+        "close": "I'll escalate your claim for faster service. What's the best number?",
+        "rate": 0.50,
+        "tags": ["home-warranty", "insurance", "home-services"]
+    },
 ]
+
+
+def _salvage_json_array(raw):
+    """Recover the last complete JSON array from corrupt/concatenated data."""
+    idx = raw.rfind("]")
+    while idx != -1:
+        try:
+            data = json.loads(raw[: idx + 1])
+            if isinstance(data, list):
+                return data
+        except (json.JSONDecodeError, ValueError):
+            pass
+        idx = raw.rfind("]", 0, idx)
+    return None
 
 
 def load_deployed():
     if DEPLOYED_FILE.exists():
-        with open(DEPLOYED_FILE, "r") as f:
-            return json.load(f)
+        try:
+            with open(DEPLOYED_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return data if isinstance(data, list) else []
+        except (json.JSONDecodeError, ValueError, UnicodeDecodeError):
+            raw = DEPLOYED_FILE.read_text(encoding="utf-8", errors="replace")
+            salvaged = _salvage_json_array(raw)
+            if salvaged is not None:
+                corrupt_bak = DEPLOYED_FILE.with_suffix(".corrupt.json")
+                if not corrupt_bak.exists():
+                    corrupt_bak.write_text(raw, encoding="utf-8")
+                save_deployed(salvaged)
+                print(f"[!] Repaired corrupt {DEPLOYED_FILE.name}: recovered {len(salvaged)} agent(s), backup saved")
+                return salvaged
+            print(f"[!] {DEPLOYED_FILE.name} is unreadable; starting fresh")
+            return []
     return []
 
 
 def save_deployed(deployed):
-    with open(DEPLOYED_FILE, "w") as f:
+    with open(DEPLOYED_FILE, "w", encoding="utf-8") as f:
         json.dump(deployed, f, indent=2)
 
 
-def get_next_niche():
+def get_next_niche(exclude=None):
     """Pick a niche that hasn't been deployed yet, or cycle back"""
     deployed = load_deployed()
     deployed_names = {d["niche"] for d in deployed}
+    exclude = exclude or set()
+    deployed_names = deployed_names | set(exclude)
 
     available = [n for n in NICHES if n["name"] not in deployed_names]
     if not available:
-        # All deployed, pick random one
+        # All deployed, pick random one (still avoid within-batch repeats)
+        available = [n for n in NICHES if n["name"] not in exclude]
+    if not available:
         available = NICHES
 
     return random.choice(available)
+
+
+def resolve_niche(value):
+    """Resolve a niche selector (0-based index or exact name) to a NICHES entry."""
+    try:
+        idx = int(value)
+        if 0 <= idx < len(NICHES):
+            return NICHES[idx]
+        return None
+    except ValueError:
+        pass
+    for n in NICHES:
+        if n["name"].lower() == str(value).strip().lower():
+            return n
+    return None
 
 
 def create_agent(niche):
@@ -384,7 +653,7 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
 
     # Step 2: Create agent with LLM
     agent_payload = {
-        "agent_name": f"MBM-{niche['name'].replace(' ', '-')}-{datetime.now().strftime('%H%M')}",
+        "agent_name": f"MBM-{niche['name'].replace(' ', '-')}-{datetime.now().strftime('%H%M%S')}",
         "voice_id": voice_id,
         "response_engine": {
             "type": "retell-llm",
@@ -415,9 +684,10 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
         return None
 
 
-def generate_one():
-    """Generate and deploy one agent"""
-    niche = get_next_niche()
+def generate_one(niche=None):
+    """Generate and deploy one agent (optionally pinned to a specific niche)"""
+    if niche is None:
+        niche = get_next_niche()
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Creating agent for: {niche['name']}")
 
     result = create_agent(niche)
@@ -480,33 +750,65 @@ def show_status():
 
 
 def generate_all():
-    """Generate agents for ALL available niches."""
+    """Generate agents for ALL available niches (skips already-deployed ones)."""
     print(f"\n[+] Generating voice agents for all {len(NICHES)} industry niches...")
+    deployed = load_deployed()
+    existing = {d["niche"] for d in deployed}
+    created = 0
     for idx, niche in enumerate(NICHES):
+        if niche["name"] in existing:
+            print(f"  [{idx+1}/{len(NICHES)}] Skipped (already deployed): {niche['name']}")
+            continue
         agent = create_agent(niche)
-        name = agent.get('name', niche['name']) if agent else niche['name']
-        print(f"  [{idx+1}/{len(NICHES)}] Configured Agent: '{name}' (${niche['rate']}/min)")
-        time.sleep(0.05)
+        if agent:
+            deployed.append(agent)
+            created += 1
+            print(f"  [{idx+1}/{len(NICHES)}] Deployed: {niche['name']} (${niche['rate']}/min)")
+        else:
+            print(f"  [{idx+1}/{len(NICHES)}] Failed: {niche['name']}")
+    if created:
+        save_deployed(deployed)
+    print(f"[+] Batch complete: {created} new agent(s) deployed")
     show_status()
 
 def main():
     parser = argparse.ArgumentParser(description="MBM Voice Agent Factory")
     parser.add_argument("--once", action="store_true", help="Generate 1 agent now")
     parser.add_argument("--all", action="store_true", help="Generate agents for ALL niches")
+    parser.add_argument("--count", type=int, default=1, help="Number of agents to generate")
+    parser.add_argument("--niche", help="Generate a specific niche (index or name)")
     parser.add_argument("--loop", action="store_true", help="Generate every 15 minutes")
     parser.add_argument("--status", action="store_true", help="Show deployed agents")
     args = parser.parse_args()
 
     if args.status:
         show_status()
-    elif args.all:
-        generate_all()
-    elif args.loop:
+        return
+
+    if args.loop:
         run_loop()
-    elif args.once:
-        generate_one()
-    else:
+        return
+
+    if args.niche:
+        niche = resolve_niche(args.niche)
+        if not niche:
+            print(f"[!] Niche not found: {args.niche}")
+            sys.exit(1)
+        result = generate_one(niche=niche)
+        sys.exit(0 if result else 1)
+
+    if args.all:
         generate_all()
+        return
+
+    # default / --once / --count batch
+    made = 0
+    for _ in range(max(1, args.count)):
+        if generate_one():
+            made += 1
+    if made:
+        print(f"[+] Batch complete: {made} agent(s) deployed this run")
+    sys.exit(0 if made else 1)
 
 
 if __name__ == "__main__":

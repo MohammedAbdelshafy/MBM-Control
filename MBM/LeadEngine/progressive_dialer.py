@@ -25,6 +25,7 @@ import os
 import sys
 import json
 import csv
+import re
 import time
 import signal
 import argparse
@@ -128,10 +129,17 @@ def _save_state(state):
 
 
 def _clean_phone(phone):
-    phone = phone.strip().replace("-", "").replace("(", "").replace(")", "").replace(" ", "").replace(".", "")
-    if not phone.startswith("+"):
-        phone = "+1" + phone
-    return phone
+    """Normalize any US number to dialable E.164 (+1XXXXXXXXXX)."""
+    if not phone:
+        return ""
+    digits = re.sub(r"\D", "", str(phone))
+    if digits.startswith("1") and len(digits) == 11:
+        digits = digits[1:]
+    if len(digits) != 10:
+        return ""
+    if digits[3:6] in {"555", "000"}:
+        return ""
+    return "+1" + digits
 
 
 def _detect_agent_type(lead):
@@ -154,14 +162,27 @@ def _get_next_leads(state, count=50):
         if i < state.get("index", 0):
             continue
         stage = lead.get("stage", "").lower()
-        phone = lead.get("phone", "").strip()
+        phone = _clean_phone(_pick(lead, "verified_phone", "phone_number", "phone",
+                                   "primary_phone", "contact_phone"))
         if stage in ("converted", "closed_won", "closed_lost", "unqualified", "do_not_call"):
             continue
         if not phone:
             continue
+        lead["phone"] = phone
         available.append((i, lead))
         if len(available) >= count:
             break
+
+    # ── Verification gate: only verified owner numbers pass ──
+    try:
+        from dialer_verification_gate import filter_for_dialer
+        raw_leads = [lead for _, lead in available]
+        verified = filter_for_dialer(raw_leads, quiet=True)
+        verified_set = set(id(l) for l in verified)
+        available = [(i, lead) for i, lead in available if id(lead) in verified_set]
+    except ImportError:
+        _log("WARNING: dialer_verification_gate not found — skipping verification", "WARN")
+
     return available, leads
 
 
@@ -180,9 +201,18 @@ def _build_bridge_twiml(agent_type, lead):
     return twiml
 
 
+def _pick(lead, *keys, default=""):
+    for k in keys:
+        v = lead.get(k)
+        if v is not None and str(v).strip():
+            return v
+    return default
+
+
 def make_call(lead, index, twilio_client, bridge=False, agent_type=None):
-    phone = _clean_phone(lead.get("phone", ""))
-    company = lead.get("company", "Unknown")
+    phone = _clean_phone(_pick(lead, "verified_phone", "phone_number", "phone",
+                               "primary_phone", "contact_phone"))
+    company = _pick(lead, "company", "company_name", "contact_name", default="Unknown")
 
     try:
         if bridge:
@@ -481,7 +511,8 @@ def cmd_dry_run(args):
     available = []
     for i, lead in enumerate(leads):
         stage = lead.get("stage", "").lower()
-        phone = lead.get("phone", "").strip()
+        phone = _clean_phone(_pick(lead, "verified_phone", "phone_number", "phone",
+                                   "primary_phone", "contact_phone"))
         if stage in ("converted", "closed_won", "closed_lost", "unqualified", "do_not_call"):
             continue
         if not phone:
@@ -494,7 +525,8 @@ def cmd_dry_run(args):
     print(f"  DRY RUN — {mode} — {len(available)} leads")
     print(f"{'='*50}")
     for i, (idx, lead, agent) in enumerate(available[:20], 1):
-        phone = _clean_phone(lead.get("phone", ""))
+        phone = _clean_phone(_pick(lead, "verified_phone", "phone_number", "phone",
+                                   "primary_phone", "contact_phone"))
         agent_tag = f" [{agent}]" if args.bridge else ""
         print(f"  {i:3d}. {lead.get('company','?'):30s} {phone}{agent_tag}")
     if len(available) > 20:

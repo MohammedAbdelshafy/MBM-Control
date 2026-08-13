@@ -70,10 +70,90 @@ def conference_twiml(room, caller_id=None):
             f"</Dial></Response>")
 
 
+def _pick(lead, *keys, default=None):
+    """First non-empty value among candidate key names (field-alias safe)."""
+    for k in keys:
+        v = lead.get(k)
+        if v is not None and str(v).strip():
+            return v
+    return default
+
+
+def normalize_lead(lead):
+    """Map any queue schema onto the canonical dial fields.
+
+    Different feeds use different keys (phone_number/contact_name/company_name
+    vs phone/name/company). This keeps names attached to the RIGHT number so
+    the dialer never shows a mismatched name or a value the phone can't dial.
+    """
+    lead = dict(lead or {})
+    phone = _pick(lead, "verified_phone", "phone_number", "phone",
+                  "primary_phone", "contact_phone", default="")
+    phone = normalize_phone(phone) or ""
+    lead["phone"] = phone
+    lead["contact_name"] = _pick(lead, "contact_name", "name", "prospect_name",
+                                 "owner_name", "company_name", "company",
+                                 default="")
+    lead["company"] = _pick(lead, "company", "company_name",
+                            "organization_name", default="")
+    return lead
+
+
+def _persist_dispositions(pool, queue_path):
+    """
+    Write session dispositions back into the queue file so they survive the
+    run. Matches by phone (verified_phone fallback phone), only touches rows
+    that actually got a disposition, and writes atomically so a concurrent
+    reader never sees a half-written file.
+    """
+    if not pool or not queue_path or not os.path.exists(queue_path):
+        return 0
+    try:
+        with open(queue_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        return 0
+    rows = data if isinstance(data, list) else data.get("queue", data.get("leads", []))
+    if not isinstance(rows, list):
+        return 0
+
+    by_phone = {}
+    for l in pool:
+        if not l.get("disposition"):
+            continue
+        ph = normalize_phone(l.get("verified_phone") or l.get("phone"))
+        if ph:
+            by_phone[ph] = l
+
+    updated = 0
+    today = datetime.datetime.now().strftime("%Y-%m-%d")
+    for row in rows:
+        ph = normalize_phone(row.get("verified_phone") or row.get("phone"))
+        src = by_phone.get(ph)
+        if not src:
+            continue
+        row["disposition"] = src["disposition"]
+        if src.get("bridge_command"):
+            row["bridge_command"] = src["bridge_command"]
+        if src.get("triggered_by"):
+            row["triggered_by"] = src["triggered_by"]
+        row["last_touch"] = today
+        updated += 1
+
+    if not updated:
+        return 0
+    tmp = queue_path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, default=str)
+    os.replace(tmp, queue_path)
+    return updated
+
+
 def load_leads(file_path=None, phone=None, name=None):
     """Load leads from a queue file, or build a single-lead list."""
     if phone:
-        return [{"contact_name": name or phone, "phone": phone, "status": "manual"}]
+        e164 = normalize_phone(phone) or phone
+        return [{"contact_name": name or e164, "phone": e164, "status": "manual"}]
     if not file_path:
         file_path = ROOT / "MBM" / "LeadEngine" / "cold_calling_queue.json"
     with open(file_path, "r", encoding="utf-8") as f:
@@ -82,6 +162,17 @@ def load_leads(file_path=None, phone=None, name=None):
     if isinstance(data, dict) and "queue" in data and not isinstance(data.get("queue"), list):
         # allow {queue: {id: lead}} shape
         leads = list(data["queue"].values())
+
+    # Canonicalize field names first so verification reads the RIGHT phone.
+    leads = [normalize_lead(l) for l in leads]
+
+    # ── Verification gate: only verified owner numbers pass ──
+    try:
+        from dialer_verification_gate import filter_for_dialer
+        leads = filter_for_dialer(list(leads))
+    except ImportError:
+        print("[WARN] dialer_verification_gate not found — skipping verification")
+
     return list(leads)
 
 
@@ -141,19 +232,46 @@ def dial_lead(client, lead, index, session_logs):
         return "invalid_number"
 
     name = lead.get("contact_name") or lead.get("name") or lead.get("prospect_name") or "Lead"
-    print(f"\n[{index}] Dialing {name} ({e164}) ...")
-    room = f"mbm_{int(time.time())}_{index}"
+    retell_key = os.getenv("RETELL_API_KEY", "").strip()
+    if retell_key:
+        print(f"[{index}] Retell AI Swarm Calling: {name} ({e164}) ...")
+        try:
+            import requests
+            r = requests.post(
+                "https://api.retellai.com/v2/create-web-call",
+                headers={"Authorization": f"Bearer {retell_key}", "Content-Type": "application/json"},
+                json={"agent_id": "agent_728edb006e021ef7e40cbaba38"},
+                timeout=10
+            )
+            if r.status_code in (200, 201):
+                data = r.json()
+                call_id = data.get("call_id")
+                access_token = data.get("access_token")
+                print(f"  [+] SUCCESS: Dispatched Retell AI Voice Agent (Call ID: {call_id})")
+                print(f"  [+] Token: {access_token[:30]}...")
+                lead["disposition"] = "retell_ai_dispatched"
+                lead["status"] = "called"
+                lead["retell_call_id"] = call_id
+                session_logs.append({
+                    "contact": name,
+                    "phone": e164,
+                    "call_sid": f"retell_{call_id}",
+                    "disposition": "retell_ai_dispatched",
+                    "duration_seconds": 0,
+                })
+                return "retell_ai_dispatched"
+            else:
+                print(f"  [-] Retell AI response: {r.status_code} {r.text[:100]}")
+        except Exception as re_err:
+            print(f"  [-] Retell AI dispatch error: {re_err}")
 
     try:
         lead_call, agent_call = place_calls(client, e164, room)
     except Exception as e:
         msg = str(e)
-        print(f"[{index}] ERROR placing call: {msg}")
+        print(f"[{index}] ERROR placing Twilio call: {msg[:100]}")
         if "Trial" in msg or "unverified" in msg.lower():
-            print("\n  BLOCKED BY TRIAL ACCOUNT. To dial real numbers you must UPGRADE your Twilio account:")
-            print("    1. Go to https://console.twilio.com")
-            print("    2. Add a payment method (billing) — converts Trial -> full, unlocks calling any number")
-            print("    3. Run the dialer again.")
+            print("  BLOCKED BY TRIAL ACCOUNT: Add billing on console.twilio.com to unlock live calls.")
         lead["disposition"] = "failed"
         lead["status"] = "failed"
         return "failed"
@@ -405,6 +523,16 @@ def main():
         }
         for l in (buyers + wholesalers) if l.get("disposition") in ("contacted", "live")
     ]
+
+    # Persist dispositions back into the source queue so they survive the run.
+    persist_path = a.leads if a.leads else (
+        ROOT / "MBM" / "LeadEngine" / "cold_calling_queue.json")
+    try:
+        n = _persist_dispositions(buyers + leads + wholesalers, str(persist_path))
+        if n:
+            print(f"\nPersisted {n} dispositions to {persist_path}")
+    except Exception as e:
+        print(f"Could not persist dispositions: {e}")
 
     desktop = Path(r"C:\Users\omare\Desktop\power_dialer_report.json")
     try:

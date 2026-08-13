@@ -100,8 +100,12 @@ class RevenueEnforcer:
         enrichment_passed = blank_cards == 0 and total_leads > 0
         enrichment_status = "PASS" if enrichment_passed else f"FAIL ({blank_cards} blank cards found, rate: {enrichment_rate:.1f}%)"
 
-        # 3. Data Quality KPI Check
-        valid_phones = sum(1 for q in queue if q.get('phone') and str(q['phone']).replace('+', '').isdigit())
+        # 3. Data Quality KPI Check — accept formatted US phones (+1 xxx-xxx-xxxx, etc.)
+        import re as _re
+        def _phone_valid(p):
+            digits = _re.sub(r'\D', '', str(p))
+            return len(digits) >= 10  # at least 10 digits = valid US number
+        valid_phones = sum(1 for q in queue if q.get('phone') and _phone_valid(q['phone']))
         quality_passed = valid_phones == total_queue if total_queue > 0 else True
         quality_status = "PASS" if quality_passed else f"FAIL ({total_queue - valid_phones} invalid phones in queue)"
 

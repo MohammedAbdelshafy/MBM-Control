@@ -173,6 +173,55 @@ class ContactEnricher:
         print(f"No 100% verified public email found for {agent_name}. Skipping to prevent bounces.")
         return None
 
+    def search_linkedin_decision_maker(self, company_name):
+        """
+        Uses DuckDuckGo Search to find B2B decision makers on LinkedIn.
+        """
+        print(f"Searching LinkedIn via DuckDuckGo for decision makers at: {company_name}...")
+        query = f'site:linkedin.com/in/ "{company_name}" ("Manager" OR "Director" OR "Owner" OR "Founder" OR "CEO")'
+        url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
+        
+        try:
+            time.sleep(1) # Prevent rate limiting
+            res = requests.get(url, headers=self.headers, timeout=10)
+            if res.status_code == 200:
+                if BeautifulSoup:
+                    soup = BeautifulSoup(res.text, 'html.parser')
+                    links = soup.find_all('a', class_='result__url', limit=5)
+                    snippets = soup.find_all('a', class_='result__snippet', limit=5)
+                    
+                    decision_makers = []
+                    for link, snippet in zip(links, snippets):
+                        href = link.get('href')
+                        if href and 'linkedin.com/in/' in href:
+                            if href.startswith('//'):
+                                href = 'https:' + href
+                            
+                            # Extract name from URL (e.g. linkedin.com/in/john-doe-123)
+                            try:
+                                parts = href.split('linkedin.com/in/')[1].split('/')[0].split('?')[0]
+                                name = " ".join([p.capitalize() for p in parts.split('-') if not p.isdigit() and len(p) > 1])
+                            except:
+                                name = "Executive"
+                                
+                            title_text = snippet.get_text().strip()
+                            
+                            decision_makers.append({
+                                "name": name,
+                                "title": title_text[:60] + ("..." if len(title_text) > 60 else ""),
+                                "linkedin": href
+                            })
+                    
+                    if decision_makers:
+                        print(f"Found {len(decision_makers)} decision makers via DuckDuckGo LinkedIn Search.")
+                        return decision_makers
+                else:
+                    print("BeautifulSoup not available for DuckDuckGo scraping.")
+        except Exception as e:
+            print(f"DuckDuckGo LinkedIn search failed: {e}")
+            
+        return []
+
 if __name__ == "__main__":
     enricher = ContactEnricher()
     email = enricher.search_agency_email("Philip James Kennedy", "Didsbury")

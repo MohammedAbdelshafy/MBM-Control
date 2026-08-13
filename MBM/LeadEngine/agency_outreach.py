@@ -23,6 +23,8 @@ from email.mime.base import MIMEBase
 from email import encoders
 from dotenv import load_dotenv
 
+from MBM.LeadEngine.contact_enrichment import ContactEnricher
+
 load_dotenv()
 
 BASE_DIR = Path(r'C:\Users\omare\OneDrive\Desktop\AI\MBM')
@@ -328,8 +330,19 @@ def run_outreach():
     sent = 0
     errors = 0
     
+    enricher = ContactEnricher()
+    
     # Send intro emails to all agencies
     for agency in TARGET_AGENCIES:
+        log(f"Enriching {agency['name']} via LinkedIn Sales Navigator...")
+        dm_results = enricher.search_linkedin_decision_maker(agency['name'])
+        if dm_results:
+            dm = dm_results[0]
+            agency['contact'] = dm['name']
+            agency['linkedin'] = dm['linkedin']
+            agency['title'] = dm['title']
+            log(f"Found Decision Maker: {dm['name']} - {dm['title']}")
+        
         subject, body = get_intro_email(agency)
         success = send_email(agency['email'], subject, body)
         

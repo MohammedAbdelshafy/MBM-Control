@@ -140,6 +140,21 @@ class CampaignsGrabberAgent:
             "rules": "15-60s vertical video, mandatory animated captions, strong 3s hook."
           },
           {
+            "id": "clip-camp-contentrewards-75",
+            "platform": "ContentRewards.com",
+            "brand": "ContentRewards Creator Hub",
+            "title": "ContentRewards.com UGC & Creator Bounties ($75/100K)",
+            "rate_per_100k": "$75.00",
+            "payout_numeric": 75.0,
+            "min_views_to_qualify": "10K",
+            "duration_days": 30,
+            "status": "Active",
+            "target_platforms": ["TikTok", "Instagram Reels", "YouTube Shorts"],
+            "aspect_ratio": "9:16",
+            "hook_style": "High-converting UGC hooks & product showcases",
+            "rules": "9:16 vertical, animated captions, clear call to action, fast pacing."
+          },
+          {
             "id": "clip-camp-drake-40",
             "platform": "Clipping.net",
             "brand": "Drake",
