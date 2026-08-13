@@ -1,9 +1,9 @@
 $brands = @{
-    "clippingfactorymbm" = "YOUTUBE_REFRESH_CLIPPINGFACTORYMBM_REDACTED"
-    "cutedosage" = "YOUTUBE_REFRESH_CUTEDOSAGE_REDACTED"
-    "dontwatchthis" = "YOUTUBE_REFRESH_DONTWATCHTHIS_REDACTED"
-    "goalmachinez" = "YOUTUBE_REFRESH_GOALMACHINEZ_REDACTED"
-    "twistsrevealed" = "YOUTUBE_REFRESH_TWISTSREVEALED_REDACTED"
+    "clippingfactorymbm" = "$env:YOUTUBE_REFRESH_CLIPPINGFACTORYMBM"
+    "cutedosage" = "$env:YOUTUBE_REFRESH_CUTEDOSAGE"
+    "dontwatchthis" = "$env:YOUTUBE_REFRESH_DONTWATCHTHIS"
+    "goalmachinez" = "$env:YOUTUBE_REFRESH_GOALMACHINEZ"
+    "twistsrevealed" = "$env:YOUTUBE_REFRESH_TWISTSREVEALED"
 }
 
 $client_id = "708112125852-6c9bg1ddn88g3e3puaus8bi288upsr5l.apps.googleusercontent.com"
