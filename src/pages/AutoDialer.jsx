@@ -1,90 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Phone, PhoneOff, PhoneCall, User, MapPin, DollarSign,
-  CheckCircle, XCircle,
-  Home, Building, ExternalLink, RotateCcw, Timer, Zap, ChevronRight,
-  CalendarClock, FileText
+  PhoneOff, MapPin,
+  Zap,
+  FileText, Activity, Terminal
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API = 'http://localhost:3002';
+const API = '';
 
 const WHOLESALER_RESOURCES = [
-  {
-    name: 'Wholesaling Inc',
-    url: 'https://www.wholesalinginc.com',
-    phone: '(800) 594-4127',
-    desc: 'Top wholesaling coaching & deal marketplace',
-  },
-  {
-    name: 'BiggerPockets',
-    url: 'https://www.biggerpockets.com',
-    phone: '(888) 446-2121',
-    desc: '#1 real estate investor community & marketplace',
-  },
-  {
-    name: 'REIPro',
-    url: 'https://www.reipro.com',
-    phone: '(800) 832-1120',
-    desc: 'Wholesaling CRM & deal management software',
-  },
+  { name: 'Wholesaling Inc', url: 'https://www.wholesalinginc.com', phone: '(800) 594-4127', desc: 'Top wholesaling coaching' },
+  { name: 'BiggerPockets', url: 'https://www.biggerpockets.com', phone: '(888) 446-2121', desc: '#1 RE investor community' },
+  { name: 'REIPro', url: 'https://www.reipro.com', phone: '(800) 832-1120', desc: 'Wholesaling CRM & software' },
 ];
 
 const CASH_BUYERS = [
-  {
-    name: 'WeBuyHouses.com',
-    url: 'https://www.webuyhouses.com',
-    phone: '(800) 447-8960',
-    desc: 'National cash buyer network',
-  },
-  {
-    name: 'HomeVestors',
-    url: 'https://www.homevestors.com',
-    phone: '(800) 444-1616',
-    desc: 'We Buy Ugly Houses franchise buyers',
-  },
-  {
-    name: 'Offerpad',
-    url: 'https://www.offerpad.com',
-    phone: '(888) 890-1618',
-    desc: 'iBuyer — instant cash offers',
-  },
-  {
-    name: 'OpenDoor',
-    url: 'https://www.opendoor.com',
-    phone: '(888) 554-4433',
-    desc: 'iBuyer — quick cash sales',
-  },
-  {
-    name: 'MyHouseDeals Cash Buyers List',
-    url: 'https://www.myhousedeals.com/cash-buyers/recent.asp',
-    phone: '',
-    desc: 'Free list of active cash buyers',
-  },
-];
-
-const WHOLESALE_WEBSITES = [
-  {
-    name: 'WholesalingRealEstate.com',
-    url: 'https://www.wholesalingrealestate.com',
-    desc: 'Education, deals, and buyer/seller matching',
-  },
-  {
-    name: 'DealMachine',
-    url: 'https://www.dealmachine.com',
-    desc: 'Find distressed properties & skip trace leads',
-  },
-  {
-    name: 'PropStream',
-    url: 'https://www.propstream.com',
-    desc: 'Real estate data & cash buyer lists',
-  },
-  {
-    name: 'FlipComp',
-    url: 'https://www.flipcomp.com',
-    desc: 'Real estate comps for wholesalers',
-  },
+  { name: 'WeBuyHouses.com', url: 'https://www.webuyhouses.com', phone: '(800) 447-8960', desc: 'National cash buyer network' },
+  { name: 'HomeVestors', url: 'https://www.homevestors.com', phone: '(800) 444-1616', desc: 'We Buy Ugly Houses' },
+  { name: 'Offerpad', url: 'https://www.offerpad.com', phone: '(888) 890-1618', desc: 'iBuyer — instant cash offers' },
 ];
 
 export default function AutoDialer() {
@@ -98,20 +32,17 @@ export default function AutoDialer() {
   const [showDisposition, setShowDisposition] = useState(false);
   const [showClosedResources, setShowClosedResources] = useState(false);
   const [dispositions, setDispositions] = useState({});
-  const [callQueue, setCallQueue] = useState([]);
   const [completedCount, setCompletedCount] = useState(0);
   const [closedCount, setClosedCount] = useState(0);
   const [callBackCount, setCallBackCount] = useState(0);
   const [deadCount, setDeadCount] = useState(0);
   const timerRef = useRef(null);
 
-  // Load leads
   useEffect(() => {
     fetchLeads();
     loadDispositions();
   }, []);
 
-  // Call timer
   useEffect(() => {
     if (callState === 'connected' || callState === 'ringing') {
       timerRef.current = setInterval(() => {
@@ -163,7 +94,7 @@ export default function AutoDialer() {
 
   const startCall = async (lead) => {
     if (!myPhone.trim()) {
-      toast.error('Enter your phone number first — Twilio will ring you, then connect to the lead');
+      toast.error('ENTER PHONE NUMBER IN MIDDLE PANE', { style: { background: 'black', color: '#39FF14', border: '1px solid #39FF14' }});
       return;
     }
 
@@ -185,24 +116,23 @@ export default function AutoDialer() {
       const data = await res.json();
 
       if (data.status === 'ringing_your_phone') {
-        toast.success(`Your phone is ringing! Answer to connect to ${lead.prospect_name}`);
-        // Simulate connected after a few seconds
+        toast.success(`CONNECTING: ${lead.prospect_name}`, { style: { background: 'black', color: '#39FF14', border: '1px solid #39FF14' }});
         setTimeout(() => {
           setCallState('connected');
           setCallStartTime(Date.now());
         }, 5000);
       } else if (data.status === 'demo_mode') {
-        toast.info('Demo mode — Twilio not configured. Simulating call...');
+        toast.info('DEMO MODE: SIMULATING CONNECTION', { style: { background: 'black', color: '#39FF14', border: '1px solid #39FF14' }});
         setTimeout(() => {
           setCallState('connected');
           setCallStartTime(Date.now());
         }, 3000);
       } else {
-        toast.error(data.error || 'Failed to place call');
+        toast.error('FAILED TO PLACE CALL', { style: { background: 'black', color: 'red', border: '1px solid red' }});
         setCallState('idle');
       }
     } catch (err) {
-      toast.error('Could not connect to dialer server');
+      toast.error('API DISCONNECTED', { style: { background: 'black', color: 'red', border: '1px solid red' }});
       setCallState('idle');
     }
   };
@@ -238,10 +168,8 @@ export default function AutoDialer() {
       setShowClosedResources(true);
     } else if (disposition === 'callback') {
       setCallBackCount(prev => prev + 1);
-      toast.success(`${currentLead.prospect_name} marked for CALLBACK`);
     } else if (disposition === 'dead') {
       setDeadCount(prev => prev + 1);
-      toast.info(`${currentLead.prospect_name} marked as DEAD LEAD`);
     }
 
     setCompletedCount(prev => prev + 1);
@@ -251,475 +179,282 @@ export default function AutoDialer() {
   };
 
   const nextLead = () => {
-    setShowDisposition(false);
     setShowClosedResources(false);
+    setShowDisposition(false);
     setCallState('idle');
     setCallTimer(0);
     setCurrentLead(null);
   };
 
-  const getLeadStatus = (lead) => {
-    const d = dispositions[lead.id];
-    if (d === 'closed') return { color: 'bg-emerald-500', icon: CheckCircle, text: 'CLOSED' };
-    if (d === 'callback') return { color: 'bg-amber-500', icon: RotateCcw, text: 'CALLBACK' };
-    if (d === 'dead') return { color: 'bg-red-500', icon: XCircle, text: 'DEAD' };
-    return null;
-  };
-
   const activeLeads = leads.filter(l => !dispositions[l.id]);
-  const doneLeads = leads.filter(l => dispositions[l.id]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-700/50 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
-              <PhoneCall className="w-5 h-5 text-emerald-400" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold">Auto-Dialer</h1>
-              <p className="text-sm text-slate-400">Real Estate Dialer — US Prospect Queue</p>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="flex items-center gap-6">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">{completedCount}</div>
-              <div className="text-xs text-slate-400">Called</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-emerald-400">{closedCount}</div>
-              <div className="text-xs text-slate-400">Closed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-amber-400">{callBackCount}</div>
-              <div className="text-xs text-slate-400">Callback</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-red-400">{deadCount}</div>
-              <div className="text-xs text-slate-400">Dead</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-slate-300">{activeLeads.length}</div>
-              <div className="text-xs text-slate-400">Remaining</div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-black text-[#39FF14] font-mono flex flex-col text-sm">
+      {/* Header (Bloomberg Style) */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-[#39FF14]/30 bg-black/90 backdrop-blur">
+        <div className="flex items-center gap-4">
+          <Terminal className="w-5 h-5 text-[#39FF14]" />
+          <span className="font-bold tracking-widest uppercase">MBM Dialer.SYS :: Terminal_01</span>
+          <span className="bg-[#39FF14]/10 text-[#39FF14] px-2 py-0.5 rounded text-xs border border-[#39FF14]/30 animate-pulse">
+            LIVE_LINK
+          </span>
+        </div>
+        <div className="flex items-center gap-6 text-xs font-bold">
+          <div className="flex items-center gap-2"><Activity className="w-4 h-4"/> LATENCY: 24ms</div>
+          <div>CALLED: {completedCount}</div>
+          <div className="text-emerald-300">CLOSED: {closedCount}</div>
+          <div className="text-amber-400">CB: {callBackCount}</div>
+          <div className="text-red-500">DEAD: {deadCount}</div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        {/* Phone Input */}
-        {!callStartTime && (
-          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4 mb-6">
-            <label className="block text-sm font-medium text-slate-300 mb-2">
-              Your Phone Number (Twilio will ring you first, then connect to prospect)
-            </label>
-            <div className="flex gap-3">
-              <input
-                type="tel"
-                value={myPhone}
-                onChange={(e) => setMyPhone(e.target.value)}
-                placeholder="+1 (555) 123-4567"
-                className="flex-1 bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-              <div className="flex items-center gap-2 text-sm text-slate-400">
-                <Zap className="w-4 h-4 text-emerald-400" />
-                Bridge Mode — Your number must be verified in Twilio
+      {/* Main Tri-Pane Layout */}
+      <div className="flex-1 grid grid-cols-12 gap-px bg-[#39FF14]/20 p-px">
+        
+        {/* Left Pane: Queue */}
+        <div className="col-span-3 bg-black p-4 flex flex-col overflow-hidden h-[calc(100vh-45px)]">
+          <div className="uppercase font-bold border-b border-[#39FF14]/30 pb-2 mb-4 tracking-widest text-[#39FF14]/70">
+            [01] Prospect_Queue ({activeLeads.length})
+          </div>
+          <div className="flex-1 overflow-y-auto pr-2 space-y-2">
+            {loading ? (
+              <div className="animate-pulse">LOADING_DATA...</div>
+            ) : (
+              activeLeads.map((lead, i) => (
+                <div 
+                  key={lead.id} 
+                  className={`border border-[#39FF14]/20 p-2 text-xs cursor-pointer hover:bg-[#39FF14]/10 transition-colors ${currentLead?.id === lead.id ? 'bg-[#39FF14]/20 border-[#39FF14]' : ''}`}
+                  onClick={() => callState === 'idle' && startCall(lead)}
+                >
+                  <div className="flex justify-between font-bold mb-1">
+                    <span className="truncate">{lead.prospect_name.toUpperCase()}</span>
+                    <span>{lead.formatted_phone}</span>
+                  </div>
+                  <div className="text-[#39FF14]/60 truncate">{lead.address.toUpperCase()}</div>
+                  <div className="flex justify-between mt-2 text-[#39FF14]/50">
+                    <span>ASK: {lead.asking_price}</span>
+                    <span>COM: {lead.est_commission}</span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Center Pane: Active Call Interface */}
+        <div className="col-span-6 bg-black p-6 flex flex-col h-[calc(100vh-45px)] relative">
+          <div className="uppercase font-bold border-b border-[#39FF14]/30 pb-2 mb-6 tracking-widest text-[#39FF14]/70">
+            [02] War_Room
+          </div>
+
+          {!currentLead ? (
+            <div className="flex-1 flex flex-col items-center justify-center opacity-50">
+              <Zap className="w-16 h-16 mb-4" />
+              <div className="text-xl tracking-widest">SYSTEM_IDLE</div>
+              <div className="mt-2 text-sm">SELECT TARGET FROM QUEUE TO INITIATE</div>
+              
+              <div className="mt-8 border border-[#39FF14]/30 p-4 w-full max-w-md">
+                <label className="block mb-2 text-xs font-bold uppercase">Verify Agent Bridge Number:</label>
+                <input
+                  type="tel"
+                  value={myPhone}
+                  onChange={(e) => setMyPhone(e.target.value)}
+                  placeholder="+1 (555) 123-4567"
+                  className="w-full bg-black border border-[#39FF14]/50 p-2 text-[#39FF14] placeholder-[#39FF14]/30 focus:outline-none focus:border-[#39FF14]"
+                />
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Active Call Banner */}
-        <AnimatePresence>
-          {(callState === 'ringing' || callState === 'connected') && currentLead && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl p-6 mb-6 border border-emerald-500/30"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <div className="w-16 h-16 bg-emerald-500/30 rounded-full flex items-center justify-center">
-                      <User className="w-8 h-8 text-white" />
-                    </div>
-                    {callState === 'ringing' && (
-                      <div className="absolute inset-0 rounded-full border-2 border-emerald-300 animate-ping" />
-                    )}
-                  </div>
+          ) : (
+            <div className="flex-1 flex flex-col">
+              {/* Call Status Header */}
+              <div className="border border-[#39FF14] p-6 relative overflow-hidden bg-black shadow-[0_0_15px_rgba(57,255,20,0.1)]">
+                {callState === 'ringing' && (
+                  <motion.div 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: [0, 0.5, 0] }} 
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="absolute inset-0 bg-[#39FF14]/10" 
+                  />
+                )}
+                <div className="flex justify-between items-center relative z-10">
                   <div>
-                    <h2 className="text-2xl font-bold">{currentLead.prospect_name}</h2>
-                    <p className="text-emerald-100">{currentLead.address}</p>
-                    <p className="text-sm text-emerald-200 mt-1">{currentLead.property_type}</p>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Timer className="w-5 h-5 text-emerald-200" />
-                    <span className="text-4xl font-mono font-bold text-white">{formatTime(callTimer)}</span>
-                  </div>
-                  <div className="text-sm text-emerald-200">
-                    {callState === 'ringing' ? 'Ringing...' : 'Connected — You are live!'}
-                  </div>
-                  <div className="text-lg font-bold text-emerald-100 mt-1">
-                    Asking Price: {currentLead.asking_price} | Est. Commission: {currentLead.est_commission}
-                  </div>
-                </div>
-              </div>
-
-              {/* Calling Script */}
-              <div className="mt-4 bg-emerald-800/50 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <FileText className="w-4 h-4 text-emerald-300" />
-                  <span className="text-xs font-medium text-emerald-300">CALLING SCRIPT</span>
-                </div>
-                <p className="text-sm text-emerald-100">{currentLead.cold_calling_script}</p>
-              </div>
-
-              <div className="mt-4 flex gap-3">
-                <button
-                  onClick={endCall}
-                  className="flex items-center gap-2 bg-red-600 hover:bg-red-700 px-8 py-3 rounded-xl font-semibold transition-colors"
-                >
-                  <PhoneOff className="w-5 h-5" />
-                  End Call & Disposition
-                </button>
-                <button
-                  onClick={nextLead}
-                  className="flex items-center gap-2 bg-emerald-800 hover:bg-emerald-900 px-6 py-3 rounded-xl font-medium transition-colors"
-                >
-                  Skip to Next
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Disposition Modal */}
-        <AnimatePresence>
-          {showDisposition && currentLead && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"
-            >
-              <motion.div
-                initial={{ scale: 0.9, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 20 }}
-                className="bg-slate-800 rounded-2xl border border-slate-600 p-8 max-w-lg w-full"
-              >
-                <h2 className="text-2xl font-bold mb-2">Call Disposition</h2>
-                <p className="text-slate-400 mb-6">
-                  {currentLead.prospect_name} — {formatTime(callTimer)} call
-                </p>
-
-                <div className="space-y-3">
-                  {/* CLOSED */}
-                  <button
-                    onClick={() => saveDisposition('closed')}
-                    className="w-full flex items-center gap-4 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 rounded-xl p-5 text-left transition-colors group"
-                  >
-                    <div className="w-14 h-14 bg-emerald-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <CheckCircle className="w-7 h-7 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-emerald-400">Lead Closed</h3>
-                      <p className="text-sm text-slate-400">
-                        Deal secured — view wholesaling resources & cash buyers
-                      </p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-emerald-400" />
-                  </button>
-
-                  {/* CALL BACK */}
-                  <button
-                    onClick={() => saveDisposition('callback')}
-                    className="w-full flex items-center gap-4 bg-amber-600/20 hover:bg-amber-600/40 border border-amber-500/30 rounded-xl p-5 text-left transition-colors group"
-                  >
-                    <div className="w-14 h-14 bg-amber-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <CalendarClock className="w-7 h-7 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-amber-400">Call Back</h3>
-                      <p className="text-sm text-slate-400">
-                        Interested but not ready — schedule follow-up
-                      </p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-amber-400" />
-                  </button>
-
-                  {/* DEAD LEAD */}
-                  <button
-                    onClick={() => saveDisposition('dead')}
-                    className="w-full flex items-center gap-4 bg-red-600/20 hover:bg-red-600/40 border border-red-500/30 rounded-xl p-5 text-left transition-colors group"
-                  >
-                    <div className="w-14 h-14 bg-red-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <XCircle className="w-7 h-7 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-red-400">Dead Lead</h3>
-                      <p className="text-sm text-slate-400">
-                        Not interested — mark as dead and move on
-                      </p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-red-400" />
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Closed Resources Modal */}
-        <AnimatePresence>
-          {showClosedResources && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto"
-            >
-              <motion.div
-                initial={{ scale: 0.9, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 20 }}
-                className="bg-slate-800 rounded-2xl border border-emerald-500/30 p-8 max-w-3xl w-full my-8"
-              >
-                <div className="text-center mb-8">
-                  <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle className="w-10 h-10 text-white" />
-                  </div>
-                  <h2 className="text-3xl font-bold text-emerald-400">Deal Closed!</h2>
-                  <p className="text-slate-400 mt-2">
-                    Here are your wholesaling resources and cash buyer contacts
-                  </p>
-                </div>
-
-                {/* Wholesaler Websites */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <Home className="w-5 h-5 text-emerald-400" />
-                    Wholesaling Platforms
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {WHOLESALE_WEBSITES.map((site, i) => (
-                      <a
-                        key={i}
-                        href={site.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 bg-slate-700/50 rounded-lg p-3 hover:bg-slate-700 transition-colors group"
+                    <h2 className="text-3xl font-bold mb-1 tracking-wider uppercase">{currentLead.prospect_name}</h2>
+                    <div className="text-[#39FF14]/70 flex items-center gap-2 group">
+                      <MapPin className="w-4 h-4"/> 
+                      <span>{currentLead.address.toUpperCase()}</span>
+                      <button 
+                        onClick={() => {
+                          navigator.clipboard.writeText(currentLead.address);
+                          toast.success('ADDRESS COPIED');
+                        }}
+                        className="ml-2 opacity-0 group-hover:opacity-100 bg-[#39FF14]/20 px-2 py-0.5 rounded text-[10px] hover:bg-[#39FF14] hover:text-black transition-all"
                       >
-                        <ExternalLink className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                        <div>
-                          <div className="font-medium text-white group-hover:text-emerald-400">{site.name}</div>
-                          <div className="text-xs text-slate-400">{site.desc}</div>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 3 Wholesalers */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <Building className="w-5 h-5 text-amber-400" />
-                    Top Wholesalers
-                  </h3>
-                  <div className="space-y-3">
-                    {WHOLESALER_RESOURCES.map((ws, i) => (
-                      <div key={i} className="bg-slate-700/50 rounded-lg p-4 flex items-center justify-between">
-                        <div>
-                          <div className="font-bold text-white">{ws.name}</div>
-                          <div className="text-sm text-slate-400">{ws.desc}</div>
-                        </div>
-                        <div className="text-right">
-                          {ws.phone && <div className="text-emerald-400 font-mono">{ws.phone}</div>}
-                          <a
-                            href={ws.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-blue-400 hover:text-blue-300"
-                          >
-                            Visit Website
-                          </a>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Cash Buyers */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <DollarSign className="w-5 h-5 text-emerald-400" />
-                    Cash Buyers Network
-                  </h3>
-                  <div className="space-y-3">
-                    {CASH_BUYERS.map((cb, i) => (
-                      <div key={i} className="bg-slate-700/50 rounded-lg p-4 flex items-center justify-between">
-                        <div>
-                          <div className="font-bold text-white">{cb.name}</div>
-                          <div className="text-sm text-slate-400">{cb.desc}</div>
-                        </div>
-                        <div className="text-right">
-                          {cb.phone && <div className="text-emerald-400 font-mono">{cb.phone}</div>}
-                          <a
-                            href={cb.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-blue-400 hover:text-blue-300"
-                          >
-                            Visit Website
-                          </a>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Instagram reference */}
-                <div className="bg-slate-700/30 rounded-lg p-4 mb-6 border border-slate-600">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                      IG
-                    </div>
-                    <div>
-                      <a
-                        href="https://www.instagram.com/wholesalingrealestate"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-bold text-white hover:text-pink-400"
-                      >
-                        @wholesalingrealestate
-                      </a>
-                      <div className="text-sm text-slate-400">Follow for deals, tips & buyer connections</div>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  onClick={nextLead}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl font-semibold text-white transition-colors"
-                >
-                  Continue to Next Lead
-                </button>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Lead List */}
-        {loading ? (
-          <div className="text-center py-20">
-            <div className="w-8 h-8 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-slate-400">Loading prospects...</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {activeLeads.length > 0 && (
-              <div className="mb-4">
-                <h3 className="text-sm font-medium text-slate-400 mb-3">
-                  Ready to Call ({activeLeads.length} remaining)
-                </h3>
-                {activeLeads.map((lead, i) => (
-                  <motion.div
-                    key={lead.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.03 }}
-                    className="bg-slate-800/60 hover:bg-slate-800 rounded-xl border border-slate-700/30 p-4 mb-2 flex items-center justify-between transition-all"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center text-sm font-bold text-slate-300">
-                        {i + 1}
-                      </div>
-                      <div>
-                        <div className="font-semibold text-white">{lead.prospect_name}</div>
-                        <div className="text-sm text-slate-400 flex items-center gap-2">
-                          <MapPin className="w-3 h-3" />
-                          {lead.address}
-                        </div>
-                        <div className="text-xs text-slate-500 mt-0.5">{lead.property_type}</div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-6">
-                      <div className="text-right">
-                        <div className="text-sm text-slate-300">{lead.asking_price}</div>
-                        <div className="text-xs text-emerald-400 font-semibold">
-                          Est: {lead.est_commission}
-                        </div>
-                        <div className="text-xs text-slate-500">
-                          Distress: {lead.distress_score}
-                        </div>
-                      </div>
-
-                      <div className="text-right">
-                        <div className="text-sm font-mono text-slate-300">
-                          {lead.formatted_phone}
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => startCall(lead)}
-                        disabled={callState !== 'idle'}
-                        className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed px-5 py-2.5 rounded-lg font-semibold text-sm transition-colors"
-                      >
-                        <Phone className="w-4 h-4" />
-                        Call
+                        COPY
                       </button>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-
-            {doneLeads.length > 0 && (
-              <div className="mt-8">
-                <h3 className="text-sm font-medium text-slate-400 mb-3">
-                  Completed ({doneLeads.length})
-                </h3>
-                {doneLeads.map((lead, i) => {
-                  const status = getLeadStatus(lead);
-                  const StatusIcon = status?.icon;
-                  return (
-                    <div
-                      key={lead.id}
-                      className="bg-slate-800/30 rounded-xl border border-slate-700/20 p-3 mb-2 flex items-center justify-between opacity-60"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-2 h-2 rounded-full ${status?.color || 'bg-slate-500'}`} />
-                        <span className="text-sm text-slate-400">{lead.prospect_name}</span>
-                        <span className="text-xs text-slate-500">{lead.address}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {StatusIcon && (
-                          <span className={`text-xs font-medium px-2 py-1 rounded ${
-                            status.text === 'CLOSED' ? 'bg-emerald-500/20 text-emerald-400' :
-                            status.text === 'CALLBACK' ? 'bg-amber-500/20 text-amber-400' :
-                            'bg-red-500/20 text-red-400'
-                          }`}>
-                            {status.text}
-                          </span>
-                        )}
-                      </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-5xl font-bold tracking-tighter shadow-sm">{formatTime(callTimer)}</div>
+                    <div className="text-sm font-bold uppercase mt-1 animate-pulse">
+                      {callState === 'ringing' ? '>>> OUTBOUND_RINGING' : callState === 'connected' ? '>>> LINK_ESTABLISHED' : '>>> TERMINATED'}
                     </div>
-                  );
-                })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Data Grid */}
+              <div className="grid grid-cols-3 gap-px bg-[#39FF14]/20 p-px mt-6">
+                <div className="bg-black p-3">
+                  <div className="text-[#39FF14]/50 text-xs mb-1">PHONE</div>
+                  <div className="font-bold">{currentLead.formatted_phone}</div>
+                </div>
+                <div className="bg-black p-3">
+                  <div className="text-[#39FF14]/50 text-xs mb-1">DISTRESS_SCORE</div>
+                  <div className="font-bold">{currentLead.distress_score}/100</div>
+                </div>
+                <div className="bg-black p-3">
+                  <div className="text-[#39FF14]/50 text-xs mb-1">PROPERTY_TYPE</div>
+                  <div className="font-bold uppercase">{currentLead.property_type}</div>
+                </div>
+              </div>
+
+              {/* Script Box */}
+              <div className="mt-6 flex-1 border border-[#39FF14]/30 p-4 flex flex-col">
+                <div className="text-[#39FF14]/50 text-xs mb-3 flex items-center gap-2 border-b border-[#39FF14]/20 pb-2">
+                  <FileText className="w-4 h-4"/> EXECUTABLE_SCRIPT
+                </div>
+                <div className="flex-1 overflow-y-auto text-lg leading-relaxed whitespace-pre-wrap">
+                  {currentLead.cold_calling_script}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right Pane: Actions & Dispositions */}
+        <div className="col-span-3 bg-black p-4 flex flex-col h-[calc(100vh-45px)]">
+          <div className="uppercase font-bold border-b border-[#39FF14]/30 pb-2 mb-4 tracking-widest text-[#39FF14]/70">
+            [03] Action_Panel
+          </div>
+          
+          <div className="flex-1">
+            {!currentLead ? (
+              <div className="text-[#39FF14]/40 text-center mt-10">AWAITING_CONNECTION...</div>
+            ) : (
+              <div className="space-y-4">
+                {callState !== 'ended' ? (
+                  <button
+                    onClick={endCall}
+                    className="w-full bg-red-600/20 border border-red-500 text-red-500 hover:bg-red-600 hover:text-black font-bold uppercase py-4 transition-colors tracking-widest flex items-center justify-center gap-2"
+                  >
+                    <PhoneOff className="w-5 h-5"/> TERMINATE_LINK
+                  </button>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="text-xs uppercase text-[#39FF14]/50 mb-2">Awaiting Disposition:</div>
+                    <button
+                      onClick={() => saveDisposition('closed')}
+                      className="w-full bg-[#39FF14]/10 border border-[#39FF14] hover:bg-[#39FF14] hover:text-black font-bold uppercase py-3 transition-colors tracking-widest text-left px-4"
+                    >
+                      [1] DEAL_SECURED
+                    </button>
+                    <button
+                      onClick={() => saveDisposition('callback')}
+                      className="w-full bg-amber-500/10 border border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-black font-bold uppercase py-3 transition-colors tracking-widest text-left px-4"
+                    >
+                      [2] REQUIRE_CALLBACK
+                    </button>
+                    <button
+                      onClick={() => saveDisposition('dead')}
+                      className="w-full bg-red-500/10 border border-red-500 text-red-500 hover:bg-red-500 hover:text-black font-bold uppercase py-3 transition-colors tracking-widest text-left px-4"
+                    >
+                      [3] DEAD_LEAD
+                    </button>
+                  </div>
+                )}
+
+                <div className="mt-8 border-t border-[#39FF14]/30 pt-4">
+                  <div className="text-xs uppercase text-[#39FF14]/50 mb-2">Quick Intel:</div>
+                  <div className="space-y-2 text-xs">
+                    <div className="border border-[#39FF14]/20 p-2 flex justify-between">
+                      <span className="text-[#39FF14]/50">Zestimate:</span> 
+                      <span>{currentLead.zestimate || 'N/A'}</span>
+                    </div>
+                    <div className="border border-[#39FF14]/20 p-2 flex justify-between">
+                      <span className="text-[#39FF14]/50">Days on Market:</span> 
+                      <span>{currentLead.days_on_market || 'Off-Market'}</span>
+                    </div>
+                    <div className="border border-[#39FF14]/20 p-2 flex justify-between">
+                      <span className="text-[#39FF14]/50">Year Built:</span> 
+                      <span>{currentLead.year_built || 'Unknown'}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
-        )}
+        </div>
+
       </div>
+
+      {/* Closed Modal Override */}
+      <AnimatePresence>
+        {showClosedResources && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 font-mono text-[#39FF14]"
+          >
+            <div className="border border-[#39FF14] p-8 max-w-4xl w-full bg-black shadow-[0_0_30px_rgba(57,255,20,0.2)]">
+              <div className="text-center mb-8 border-b border-[#39FF14]/30 pb-6">
+                <h2 className="text-4xl font-bold tracking-widest uppercase">{">>>"} CONTRACT_SECURED</h2>
+                <div className="mt-2 text-[#39FF14]/70">WHOLESALING RESOURCES UNLOCKED</div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-xl font-bold border-b border-[#39FF14]/50 pb-2 mb-4 uppercase">Buyer_Network</h3>
+                  <div className="space-y-3">
+                    {CASH_BUYERS.map((cb, i) => (
+                      <div key={i} className="border border-[#39FF14]/30 p-3 hover:bg-[#39FF14]/10">
+                        <div className="font-bold">{cb.name.toUpperCase()}</div>
+                        <div className="text-xs mt-1 text-[#39FF14]/70 flex justify-between">
+                          <span>{cb.phone || 'NO_PHONE'}</span>
+                          <a href={cb.url} target="_blank" className="underline">ACCESS_LINK</a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold border-b border-[#39FF14]/50 pb-2 mb-4 uppercase">Wholesale_Desks</h3>
+                  <div className="space-y-3">
+                    {WHOLESALER_RESOURCES.map((ws, i) => (
+                      <div key={i} className="border border-[#39FF14]/30 p-3 hover:bg-[#39FF14]/10">
+                        <div className="font-bold">{ws.name.toUpperCase()}</div>
+                        <div className="text-xs mt-1 text-[#39FF14]/70 flex justify-between">
+                          <span>{ws.phone}</span>
+                          <a href={ws.url} target="_blank" className="underline">ACCESS_LINK</a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 text-center">
+                <button
+                  onClick={nextLead}
+                  className="bg-[#39FF14] text-black hover:bg-white font-bold uppercase py-3 px-8 transition-colors tracking-widest"
+                >
+                  ACKNOWLEDGE_AND_CONTINUE
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

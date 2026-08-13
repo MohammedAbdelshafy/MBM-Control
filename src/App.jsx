@@ -11,7 +11,6 @@ import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import RoleRoute from '@/components/RoleRoute';
 import { LangProvider } from '@/lib/i18n';
-import { getHomeRoute } from '@/lib/roles';
 
 // Eagerly loaded — small, shown on first paint
 import Login from '@/pages/Login';
@@ -49,6 +48,9 @@ const ClientHuntDashboard = lazy(() => import('@/pages/ClientHuntDashboard'));
 const VoiceAgentsStudio = lazy(() => import('@/pages/VoiceAgentsStudio'));
 const AffiliateAnalytics = lazy(() => import('@/pages/AffiliateAnalytics'));
 const AutoDialer = lazy(() => import('@/pages/AutoDialer'));
+const OfferPage = lazy(() => import('@/pages/OfferPage'));
+const ShopifyStorefront = lazy(() => import('@/components/ShopifyStorefront'));
+const AgencyDashboard = lazy(() => import('@/pages/AgencyDashboard'));
 
 function PageLoader() {
   return (
@@ -104,6 +106,10 @@ const AuthenticatedApp = () => {
         <Route path="/affiliates" element={<AffiliateAnalytics />} />
         <Route path="/mbm" element={<MBMDashboard />} />
         <Route path="/mbm-dashboard" element={<MBMDashboard />} />
+        <Route path="/offer/:offerId" element={<OfferPage />} />
+        <Route path="/store" element={<ShopifyStorefront />} />
+        <Route path="/storefront" element={<ShopifyStorefront />} />
+        <Route path="/agency" element={<AgencyDashboard />} />
 
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           <Route element={<AppLayout />}>

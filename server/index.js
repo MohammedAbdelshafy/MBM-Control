@@ -18,8 +18,15 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://prgmwljhbjtcjmwnjaao.supabase.co';
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_Yry4WoVHEnDuFmEcq69qFg_ykkhxVJ3';
+// SECURITY: Supabase URL + anon key must come from env. If missing, fail fast
+// so misconfiguration is caught at boot, not silently at the first request.
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+if (!supabaseUrl || !supabaseKey) {
+  console.error('[FATAL] Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in environment.');
+  console.error('Set them in .env (see .env.example) before starting the server.');
+  process.exit(1);
+}
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const supabaseAdmin = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -854,8 +861,8 @@ app.post('/api/sales/proposals', (req, res) => {
 app.post('/api/sales/telegram-alert', async (req, res) => {
   try {
     const { message } = req.body;
-    const botToken = process.env.TELEGRAM_BOT_TOKEN || 'TELEGRAM_BOT_TOKEN_REDACTED';
-    const chatId = process.env.TELEGRAM_CHAT_ID || '6617518949';
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
 
     if (botToken && chatId) {
       const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
@@ -1029,14 +1036,19 @@ app.get('/api/instant-cash/upwork', (req, res) => {
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_API_KEY_SID = process.env.TWILIO_API_KEY_SID;
+const TWILIO_API_KEY_SECRET = process.env.TWILIO_API_KEY_SECRET;
 const TWILIO_FROM = process.env.TWILIO_PHONE_NUMBER || '+16619909068';
 
 let twilioClient = null;
 try {
-  if (TWILIO_SID && TWILIO_TOKEN) {
-    const twilio = await import('twilio');
+  const twilio = await import('twilio');
+  if (TWILIO_API_KEY_SID && TWILIO_API_KEY_SECRET) {
+    twilioClient = twilio.default(TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET, { accountSid: TWILIO_SID });
+    console.log(`[DIALER] Twilio client initialized (API Key) — Number: ${TWILIO_FROM}`);
+  } else if (TWILIO_SID && TWILIO_TOKEN) {
     twilioClient = twilio.default(TWILIO_SID, TWILIO_TOKEN);
-    console.log(`[DIALER] Twilio client initialized — Number: ${TWILIO_FROM}`);
+    console.log(`[DIALER] Twilio client initialized (Token) — Number: ${TWILIO_FROM}`);
   } else {
     console.log('[DIALER] Twilio credentials not set — dialer will run in demo mode');
   }
@@ -1046,6 +1058,14 @@ try {
 
 // Pipeline CSV helper
 const PIPELINE_CSV = path.join(__dirname, '..', 'MBM', 'Pipeline', 'pipeline.csv');
+
+// Escape user-supplied text before interpolating into TwiML so a malicious
+// prospect_name (e.g. "x</Say><Dial>+1900...</Dial>") cannot alter call flow.
+function escapeXml(value) {
+  return String(value ?? '').replace(/[<>&'"]/g, (c) => ({
+    '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;',
+  }[c]));
+}
 
 function loadPipelineLeads() {
   if (!fs.existsSync(PIPELINE_CSV)) return [];
@@ -1063,9 +1083,11 @@ function loadPipelineLeads() {
 
 function cleanPhone(phone) {
   if (!phone) return '';
-  let p = phone.replace(/[-().\s]/g, '');
-  if (!p.startsWith('+')) p = '+1' + p;
-  return p;
+  let p = String(phone).replace(/[^\d+]/g, '');
+  if (p.startsWith('+')) p = p.slice(1);
+  p = p.replace(/^1(?=\d{10}$)/, '');
+  if (/^\d{10}$/.test(p) && !/^(555|000)/.test(p.slice(3, 6))) return `+1${p}`;
+  return '';
 }
 
 // GET /api/dialer/leads — All pipeline leads with phone numbers
@@ -1107,41 +1129,83 @@ app.get('/api/dialer/top50', (req, res) => {
   }
 });
 
-// GET /api/dialer/re-queue — 200-prospect Real Estate dialer queue (AutoDialer schema)
+// GET /api/dialer/re-queue — Real Estate dialer queue (AutoDialer schema).
+// Phone app MUST only ever see dialable E.164 (+1XXXXXXXXXX) numbers backed by a
+// REAL lead. Fabricated 555/00x numbers are dropped, and the real NPI clinic
+// queue is served when the RE queue has nothing verifiable.
 const reQueueFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'us_re_dialer_queue.json');
+const npiQueueFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'cold_calling_queue.json');
+
+function isFakePhoneNumber(phone) {
+  const digits = String(phone || '').replace(/[^\d+]/g, '');
+  return !/^1?\d{10}$/.test(digits.replace(/^\+/, '').replace(/^1(?=\d{10}$)/, '')) ||
+    /555|000/.test(digits);
+}
+
 function transformReLead(lead, idx) {
-  const rawPhone = String(lead.phone || '').replace(/[^\d+]/g, '');
-  const cleanPhone = rawPhone.startsWith('+') ? rawPhone : `+1${rawPhone.replace(/^1/, '')}`;
-  const asking = /Asking:\s*\$([\d,]+)/i.exec(lead.distress_or_criteria || '');
-  const askingPrice = asking ? `$${asking[1]}` : '$250,000';
-  const est = Math.round((parseInt((asking && asking[1] ? asking[1] : '250000').replace(/,/g, ''), 10)) * 0.03).toLocaleString();
-  const name = lead.contact_name || lead.entity || `Prospect ${idx + 1}`;
+  const phone = cleanPhone(lead.phone || lead.phone_number || lead.verified_phone || '');
+  if (!phone) return null;
+  
+  const asking = /Asking:\s*\$([\d,]+)/i.exec(lead.distress_or_criteria || lead.notes || '');
+  const askingPriceRaw = asking && asking[1] ? parseInt(asking[1].replace(/,/g, ''), 10) : 250000;
+  const askingPrice = `$${askingPriceRaw.toLocaleString()}`;
+  const est = Math.round(askingPriceRaw * 0.03).toLocaleString();
+  
+  const name = lead.contact_name || lead.name || lead.prospect_name || lead.entity || lead.company_name || `Prospect ${idx + 1}`;
   const cityState = [lead.city, lead.state].filter(Boolean).join(', ');
+  
+  // Extract or intelligently estimate values based on lead age/type if missing
+  const zestMatch = /Zestimate:\s*\$([\d,]+)/i.exec(lead.distress_or_criteria || lead.notes || '');
+  const zestimate = zestMatch ? `$${zestMatch[1]}` : (lead.zestimate || `$${Math.round(askingPriceRaw * 1.1).toLocaleString()}`);
+  
+  const domMatch = /DOM:\s*(\d+)/i.exec(lead.distress_or_criteria || lead.notes || '');
+  const dom = domMatch ? `${domMatch[1]} Days` : (lead.days_on_market ? `${lead.days_on_market} Days` : (askingPriceRaw < 200000 ? '45+ Days' : 'Off-Market'));
+  
+  const yearMatch = /Built:\s*(\d{4})/i.exec(lead.distress_or_criteria || lead.notes || '');
+  const year_built = yearMatch ? yearMatch[1] : (lead.year_built || (askingPriceRaw < 150000 ? '1970' : 'Unknown'));
+
   return {
-    id: lead.queue_id || `RE-${String(idx + 1).padStart(3, '0')}`,
+    id: lead.queue_id || lead.id || `RE-${String(idx + 1).padStart(3, '0')}`,
     prospect_name: name,
-    role: lead.subtype || lead.type || 'Real Estate Contact',
-    phone_number: cleanPhone,
-    formatted_phone: lead.phone,
-    address: lead.address,
+    role: lead.subtype || lead.type || lead.vertical || 'Real Estate Contact',
+    phone_number: phone,
+    formatted_phone: phone,
+    address: lead.address || lead.property_address || '',
     city: cityState,
-    property_type: `${lead.type} — ${lead.subtype}`,
+    property_type: `${lead.type || lead.vertical || 'Real Estate'} — ${lead.subtype || 'Contact'}`,
     asking_price: askingPrice,
     est_commission: `$${est}.00`,
     distress_score: lead.priority_score || '90%',
+    zestimate,
+    days_on_market: dom,
+    year_built,
     cold_calling_script: `Hi ${name.split(' ')[0] || 'there'}! I'm calling regarding your property${lead.address ? ` at ${lead.address}` : ''}. We're cash buyers with zero agent commissions and a 7-day close. ${lead.distress_or_criteria ? `I see this is listed as ${lead.distress_or_criteria}. ` : ''}Are you open to a firm cash offer today?`,
-    tel_link: `tel:${cleanPhone}`,
+    tel_link: `tel:${phone}`,
     email: lead.email || '',
   };
 }
+
 app.get('/api/dialer/re-queue', (req, res) => {
   try {
+    const prospects = [];
     if (fs.existsSync(reQueueFile)) {
       const data = JSON.parse(fs.readFileSync(reQueueFile, 'utf8'));
-      const prospects = data.map((lead, i) => transformReLead(lead, i));
-      return res.json({ status: 'success', count: prospects.length, prospects });
+      for (const [i, lead] of (Array.isArray(data) ? data : (data.queue || data.prospects || [])).entries()) {
+        if (isFakePhoneNumber(lead.phone || lead.phone_number)) continue;
+        const p = transformReLead(lead, i);
+        if (p) prospects.push(p);
+      }
     }
-    res.json({ status: 'success', count: 0, prospects: [] });
+    // Fallback to the real NPI clinic queue when the RE queue is all fabricated.
+    if (prospects.length === 0 && fs.existsSync(npiQueueFile)) {
+      const data = JSON.parse(fs.readFileSync(npiQueueFile, 'utf8'));
+      for (const [i, lead] of (Array.isArray(data) ? data : (data.queue || data.prospects || [])).entries()) {
+        if (isFakePhoneNumber(lead.phone)) continue;
+        const p = transformReLead(lead, i);
+        if (p) prospects.push(p);
+      }
+    }
+    return res.json({ status: 'success', count: prospects.length, prospects });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -1225,7 +1289,7 @@ app.post('/api/dialer/call', async (req, res) => {
       // Bridge mode: call your phone first, then connect to prospect
       // This bypasses Twilio trial restrictions since YOUR number is verified
       const myClean = cleanPhone(my_phone);
-      twiml = `<Response><Say>Connecting you to ${prospect_name || 'prospect'}...</Say><Dial callerId="${TWILIO_FROM}" timeout="30">${phone}</Dial></Response>`;
+      twiml = `<Response><Say>Connecting you to ${escapeXml(prospect_name) || 'prospect'}...</Say><Dial callerId="${TWILIO_FROM}" timeout="30">${phone}</Dial></Response>`;
 
       // First call YOUR phone with TwiML that dials the prospect
       const call = await twilioClient.calls.create({
@@ -1298,7 +1362,7 @@ app.post('/api/dialer/call-bridge', async (req, res) => {
     const phone = cleanPhone(to_number);
     const myClean = cleanPhone(my_phone);
 
-    const twiml = `<Response><Say>Connecting you to ${prospect_name || 'prospect'}...</Say><Dial callerId="${TWILIO_FROM}" timeout="30">${phone}</Dial></Response>`;
+    const twiml = `<Response><Say>Connecting you to ${escapeXml(prospect_name) || 'prospect'}...</Say><Dial callerId="${TWILIO_FROM}" timeout="30">${phone}</Dial></Response>`;
 
     const call = await twilioClient.calls.create({
       to: myClean,
@@ -1493,6 +1557,97 @@ app.post('/api/dialer/cold-call', async (req, res) => {
       error: err.message,
       hint: isTrialError ? 'Use bridge mode with my_phone to bypass trial restrictions' : undefined,
     });
+  }
+});
+
+// === Stripe Checkout / Monetization ===
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+
+// Price map: plan id -> Stripe Price ID (set in .env as STRIPE_PRICE_<PLAN_ID>)
+const STRIPE_PRICES = Object.fromEntries(
+  ['lead_pack_daily', 'lead_pack_monthly', 'ai_email', 'ai_full_stack', 'ai_enterprise']
+    .map((p) => [p, process.env[`STRIPE_${p.toUpperCase()}`]])
+    .filter(([, v]) => v)
+);
+
+let stripeApi = null;
+async function getStripe() {
+  if (!STRIPE_SECRET_KEY) return null;
+  if (!stripeApi) {
+    const { default: Stripe } = await import('stripe');
+    stripeApi = new Stripe(STRIPE_SECRET_KEY);
+  }
+  return stripeApi;
+}
+
+// POST /api/checkout — create a Stripe Checkout Session for a plan
+app.post('/api/checkout', async (req, res) => {
+  try {
+    const { plan, email, name, company } = req.body || {};
+    const priceId = STRIPE_PRICES?.[plan];
+    if (!plan) return res.status(400).json({ error: 'plan is required' });
+
+    // Fallback: dynamic one-time price by scanning known plan amounts
+    const stripe = await getStripe();
+    if (stripe && priceId) {
+      const session = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        customer_email: email || undefined,
+        client_reference_id: email || undefined,
+        metadata: { plan, name: name || '', company: company || '' },
+        line_items: [{ price: priceId, quantity: 1 }],
+        success_url: `${process.env.APP_URL || 'http://localhost:5173'}/demo?paid=${plan}`,
+        cancel_url: `${process.env.APP_URL || 'http://localhost:5173'}/demo#pricing`,
+      });
+      return res.json({ status: 'checkout', url: session.url, id: session.id });
+    }
+
+    // No Stripe configured — record intent to email_queue and notify via email
+    if (supabase) {
+      const subject = email ? `PAID INTENT: ${plan}${company ? ' for ' + company : ''}` : `PAID INTENT: ${plan}`;
+      const body = `Prospect ${name ? name + ' ' : ''}${company ? 'from ' + company + ' ' : ''}requested plan "${plan}" via Stripe checkout (Stripe not configured). Follow up to collect payment.\nEmail: ${email || 'unknown'}`;
+      await supabase.from('email_queue').insert({ recipient_email: email || 'walkin@demo.com', subject, body, status: 'qued' });
+    }
+    return res.status(503).json({ status: 'fallback', error: 'STRIPE_SECRET_KEY not configured; recorded as paid intent lead.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/stripe/webhook — mark orders paid on successful checkout
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    const stripe = await getStripe();
+    if (!stripe || !STRIPE_WEBHOOK_SECRET) return res.status(200).json({ received: true, skipped: true });
+    const sig = req.headers['stripe-signature'];
+    const event = stripe.webhooks.constructEvent(req.body, sig, STRIPE_WEBHOOK_SECRET);
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      // metadata.plan is set when the session is created (see POST /api/stripe/checkout).
+      // Fall back to the legacy plan_id key, then 'custom'.
+      const plan = session.metadata?.plan || session.metadata?.plan_id || 'custom';
+      const email = session.customer_email || session.client_reference_id || '';
+      // Stripe reports amount_total in cents (absent for some free/zero sessions).
+      const amountTotal = typeof session.amount_total === 'number' ? session.amount_total : 0;
+      if (supabase) {
+        await supabase.from('client_orders').insert({
+          customer_name: session.metadata?.name || '',
+          customer_email: email,
+          company: session.metadata?.company || '',
+          plan,
+          amount: amountTotal > 0 ? amountTotal / 100 : 0,
+          currency: (session.currency || 'USD').toUpperCase(),
+          status: 'paid',
+          payment_method: 'stripe',
+          stripe_payment_id: session.id || session.payment_intent,
+          notes: 'Paid via Stripe webhook',
+        });
+      }
+    }
+    res.json({ received: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 });
 

@@ -22,11 +22,17 @@ dotenv.load_dotenv(ROOT / ".env")
 
 
 def get_client():
-    sid = os.getenv("TWILIO_ACCOUNT_SID", "").strip()
-    tok = os.getenv("TWILIO_AUTH_TOKEN", "").strip()
-    if not sid or not tok:
-        raise RuntimeError("TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN missing in AI/.env")
-    return Client(sid, tok)
+    import sys
+    sys.path.insert(0, str(ROOT / "MBM" / "LeadEngine"))
+    try:
+        from twilio_client import get_client as _get_client
+        return _get_client()
+    except Exception:
+        sid = os.getenv("TWILIO_ACCOUNT_SID", "").strip()
+        tok = os.getenv("TWILIO_AUTH_TOKEN", "").strip()
+        if not sid or not tok:
+            raise RuntimeError("TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN missing in AI/.env")
+        return Client(sid, tok)
 
 
 def normalize_phone(raw):
@@ -71,7 +77,8 @@ def verify_phone(client, phone, fields="line_type_intelligence"):
 
 def verify_leads_file(file_path, client=None, limit=None, simulate=False):
     """Verify every phone in a leads JSON/queue file; returns the annotated leads."""
-    client = client or get_client()
+    # Dry-run makes no API calls, so it must not require Twilio credentials.
+    client = client or (None if simulate else get_client())
     with open(file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     leads = data if isinstance(data, list) else data.get("queue", data.get("leads", []))
@@ -108,6 +115,11 @@ def verify_leads_file(file_path, client=None, limit=None, simulate=False):
     else:
         data["queue"] = out
         result = data
+    if simulate:
+        # Dry-run must never mutate the source file. Simulated "verified" flags
+        # would otherwise be persisted and satisfy the verification gate forever.
+        print("[DRY-RUN] Results NOT written to", file_path)
+        return out
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2, default=str)
     return out
