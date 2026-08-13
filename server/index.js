@@ -1202,24 +1202,33 @@ function isFakePhoneNumber(phone) {
 function transformReLead(lead, idx) {
   const phone = cleanPhone(lead.phone || lead.phone_number || lead.verified_phone || '');
   if (!phone) return null;
-  
+
+  // REAL data only. Missing values become 'Unknown' — never invented. The old
+  // code defaulted asking price to $250,000 and fabricated Zestimate/DOM/
+  // year_built/90% distress from it, which produced fictional deal cards.
   const asking = /Asking:\s*\$([\d,]+)/i.exec(lead.distress_or_criteria || lead.notes || '');
-  const askingPriceRaw = asking && asking[1] ? parseInt(asking[1].replace(/,/g, ''), 10) : 250000;
-  const askingPrice = `$${askingPriceRaw.toLocaleString()}`;
-  const est = Math.round(askingPriceRaw * 0.03).toLocaleString();
-  
+  const askingPriceRaw = asking
+    ? parseInt(asking[1].replace(/,/g, ''), 10)
+    : (lead.asking_price || lead.askingPrice || 0);
+  const askingPrice = askingPriceRaw ? `$${Number(askingPriceRaw).toLocaleString()}` : 'Unknown';
+  const est = askingPriceRaw ? Math.round(Number(askingPriceRaw) * 0.03).toLocaleString() : null;
+
   const name = lead.contact_name || lead.name || lead.prospect_name || lead.entity || lead.company_name || `Prospect ${idx + 1}`;
   const cityState = [lead.city, lead.state].filter(Boolean).join(', ');
-  
-  // Extract or intelligently estimate values based on lead age/type if missing
+
   const zestMatch = /Zestimate:\s*\$([\d,]+)/i.exec(lead.distress_or_criteria || lead.notes || '');
-  const zestimate = zestMatch ? `$${zestMatch[1]}` : (lead.zestimate || `$${Math.round(askingPriceRaw * 1.1).toLocaleString()}`);
-  
+  const zestimate = zestMatch ? `$${zestMatch[1]}` : (lead.zestimate || lead.zestimate_value || 'Unknown');
+
   const domMatch = /DOM:\s*(\d+)/i.exec(lead.distress_or_criteria || lead.notes || '');
-  const dom = domMatch ? `${domMatch[1]} Days` : (lead.days_on_market ? `${lead.days_on_market} Days` : (askingPriceRaw < 200000 ? '45+ Days' : 'Off-Market'));
-  
+  const dom = domMatch ? `${domMatch[1]} Days` : (lead.days_on_market ? `${lead.days_on_market} Days` : 'Unknown');
+
   const yearMatch = /Built:\s*(\d{4})/i.exec(lead.distress_or_criteria || lead.notes || '');
-  const year_built = yearMatch ? yearMatch[1] : (lead.year_built || (askingPriceRaw < 150000 ? '1970' : 'Unknown'));
+  const year_built = yearMatch ? yearMatch[1] : (lead.year_built || 'Unknown');
+
+  const scriptIntro = `Hi ${name.split(' ')[0] || 'there'}! I'm calling regarding your property${lead.address || lead.property_address ? ` at ${lead.address || lead.property_address}` : ''}.`;
+  const scriptHook = lead.distress_or_criteria
+    ? ` We're cash buyers with a 7-day close. I see this is listed as ${lead.distress_or_criteria}.`
+    : ` We're cash buyers with a 7-day close.`;
 
   return {
     id: lead.queue_id || lead.id || `RE-${String(idx + 1).padStart(3, '0')}`,
@@ -1231,12 +1240,12 @@ function transformReLead(lead, idx) {
     city: cityState,
     property_type: `${lead.type || lead.vertical || 'Real Estate'} — ${lead.subtype || 'Contact'}`,
     asking_price: askingPrice,
-    est_commission: `$${est}.00`,
-    distress_score: lead.priority_score || '90%',
+    est_commission: est ? `$${est}.00` : 'Unknown',
+    distress_score: lead.priority_score || lead.distress_score || 'Unknown',
     zestimate,
     days_on_market: dom,
     year_built,
-    cold_calling_script: `Hi ${name.split(' ')[0] || 'there'}! I'm calling regarding your property${lead.address ? ` at ${lead.address}` : ''}. We're cash buyers with zero agent commissions and a 7-day close. ${lead.distress_or_criteria ? `I see this is listed as ${lead.distress_or_criteria}. ` : ''}Are you open to a firm cash offer today?`,
+    cold_calling_script: `${scriptIntro}${scriptHook} Are you open to a firm cash offer today?`,
     tel_link: `tel:${phone}`,
     email: lead.email || '',
   };
