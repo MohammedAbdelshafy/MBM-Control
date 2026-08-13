@@ -27,7 +27,7 @@ class MultiTouchCadenceEngine:
         self.smtp_server = "smtp.gmail.com"
         self.smtp_port = 587
         self.sender_email = os.getenv("MASTER_GMAIL", "abdelshafyclapps@gmail.com")
-        self.sender_password = os.getenv("GMAIL_APP_PASSWORD", "kmmskgfswwhfsssl")
+        self.sender_password = os.getenv("GMAIL_APP_PASSWORD", "")
         self.gemini_key = os.getenv("GEMINI_API_KEY")
         self.history = self._load_history()
 

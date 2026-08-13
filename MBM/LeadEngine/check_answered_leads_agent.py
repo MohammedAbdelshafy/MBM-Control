@@ -23,7 +23,7 @@ REPLIES_FILE = LOGS_DIR / 'checked_replies.json'
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env'))
 
 GMAIL_USER = os.getenv("MASTER_GMAIL", "abdelshafyclapps@gmail.com")
-GMAIL_PASS = os.getenv("GMAIL_APP_PASSWORD", "enahvqoshdtnayib")
+GMAIL_PASS = os.getenv("GMAIL_APP_PASSWORD", "")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "TELEGRAM_BOT_TOKEN_REDACTED")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "6617518949")
 
