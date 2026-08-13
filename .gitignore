@@ -145,7 +145,7 @@ MBM/Whop/logs/
 MBM/Config/heartbeat.json
 MBM/Config/telegram_chat_id.txt
 clipping-factory/MBM-Social/logs/
-clipping-factory/MBM-Social/publish_queue/*.json
+clipping-factory/MBM-Social/publish_queue/
 clipping-factory/MBM-Social/publish_queue/*.json.broken
 clipping-factory/MBM-Social/generated_videos/
 clipping-factory/backend/data/exports/
@@ -180,4 +180,25 @@ clipping-factory/MBM-Social/harvested_channels.json
 clipping-factory/MBM-Social/instagram_profile_*/
 clipping-factory/MBM-Social/tiktok_profile_*/
 clipping-factory/MBM-Social/youtube_profile_*/
-clipping-factory/youtube_profile_*/
+clipping-factory/MBM-Social/mbm_social/youtube_profile_*/
+clipping-factory/MBM-Social/chrome_debug/
+clipping-factory/MBM-Social/anty_shadowban_state/
+clipping-factory/MBM-Social/clips/
+clipping-factory/MBM-Social/oauth_url.txt
+clipping-factory/MBM-Social/orchestrator_output.txt
+
+# Lead runtime queues + config state (regenerated; PII)
+MBM/LeadEngine/multi_touch_queue.json
+MBM/LeadEngine/real_estate_calling_queue.json
+MBM/LeadEngine/ulio_voice_queue.json
+MBM/LeadEngine/distressed_wholesale_leads.json
+MBM/LeadEngine/whatsapp_sms_campaign.json
+MBM/LeadEngine/logs/*.html
+MBM/LeadEngine/logs/*.jsonl
+MBM/Scripts/Config/
+MBM/Config/whatsapp_messages.jsonl
+MBM/PainPoints/
+MBM/Shopify/logs/
+MBM/Pipeline/
+MBM/Artifacts/*.tsv
+MBM/Artifacts/recovery_backups/
