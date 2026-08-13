@@ -1,5 +1,5 @@
 import express from 'express';
-import cors from 'cors';
+import crypto from 'crypto';
 import fs from 'fs';
 import { createClient } from '@supabase/supabase-js';
 import multer from 'multer';
@@ -33,7 +33,64 @@ const supabaseAdmin = process.env.SUPABASE_SERVICE_ROLE_KEY
   ? createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY)
   : null;
 
-app.use(cors());
+// ── SECURITY: CORS allowlist + optional bearer-token auth ──────────────────
+// Never wildcard CORS: only the frontend origin(s) may call from a browser.
+// Requests without an Origin header (curl, server-to-server, CI) pass through.
+// Default allowlist covers the Vite dev server; extend via CORS_ORIGINS
+// (comma-separated) for other deployments.
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
+  .split(',').map(s => s.trim()).filter(Boolean);
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Vary', 'Origin');
+    } else {
+      return res.status(403).json({ error: 'origin_not_allowed' });
+    }
+  }
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
+
+// Optional API bearer token. When API_BEARER_TOKEN is set, PROTECTED_PREFIXES
+// require `Authorization: Bearer <token>` (constant-time compare). When unset
+// the server logs a loud warning and stays open so the dashboard keeps working
+// in local dev — set the token before exposing the server to a network.
+const API_BEARER_TOKEN = process.env.API_BEARER_TOKEN || '';
+if (API_BEARER_TOKEN) {
+  console.log('[SECURITY] API_BEARER_TOKEN set — sensitive /api routes require Authorization: Bearer <token>');
+} else {
+  console.warn('[SECURITY] WARNING: API_BEARER_TOKEN is NOT set. Sensitive /api routes '
+    + '(dialer PII, Twilio call endpoints, orders, payout, telegram-alert) are UNPROTECTED. '
+    + 'Set API_BEARER_TOKEN in env before exposing this server beyond localhost.');
+}
+
+const PROTECTED_PREFIXES = [
+  '/api/dialer', '/api/orders', '/api/creator/payout', '/api/sales/telegram-alert',
+  '/api/checkout', '/api/voice-agents/place-call', '/api/instant-cash/cold-calling',
+];
+
+const requireApiAuth = (req, res, next) => {
+  if (!API_BEARER_TOKEN) return next();
+  const auth = req.headers.authorization || '';
+  const supplied = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+  const ok = supplied.length > 0
+    && supplied.length === API_BEARER_TOKEN.length
+    && crypto.timingSafeEqual(Buffer.from(supplied), Buffer.from(API_BEARER_TOKEN));
+  if (!ok) return res.status(401).json({ error: 'unauthorized' });
+  next();
+};
+
+for (const prefix of PROTECTED_PREFIXES) {
+  app.use(prefix, requireApiAuth);
+}
+
+app.use(express.json({ limit: '10mb' }));
 app.use(express.json({ limit: '10mb' }));
 app.use('/videos', express.static(path.join(__dirname, '..', 'clipping-factory', 'MBM-Social', 'generated_videos')));
 app.use('/publish-queue', express.static(path.join(__dirname, '..', 'clipping-factory', 'MBM-Social', 'publish_queue', 'media')));
