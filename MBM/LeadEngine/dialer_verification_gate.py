@@ -11,7 +11,11 @@ A lead MUST pass ALL of these checks to be dialed:
      - skip_trace_status == "VERIFIED" or "ENRICHED" (with alt phone)
      - verification_status starts with "VERIFIED_"
      - source == "NPI" (government registry)
-     - vertical == "Clinics" AND status == "QUEUED_FOR_AI_AGENT" (NPI cold call queue)
+     - vertical == "Clinics" AND status == "QUEUED_FOR_AI_AGENT" AND NPI
+       evidence present (npi number or NPI/CMS source). Status alone is NOT
+       proof. GATE_ALLOW_UNPROVEN=1 restores lenient status-only acceptance
+       for manual debugging; CI dialers must never set it.
+     - NPI callsheet row carrying authorized_official_name + npi
 
 Usage as module:
     from dialer_verification_gate import filter_for_dialer
@@ -181,18 +185,17 @@ def is_verified(lead: dict) -> tuple[bool, str]:
 
     # 5. NPI cold calling queue (vertical=Clinics from npi_verified_callsheet).
     #    A vertical + self-assigned workflow status is NOT proof of anything —
-    #    any producer can stamp "QUEUED_FOR_AI_AGENT". Under strict mode
-    #    (GATE_REQUIRE_PROOF=1) the row must also carry NPI evidence: an NPI
-    #    number or an NPI/CMS source. Default stays lenient so current dialing
-    #    is not silently disabled, but `--audit` always reports the strict
-    #    numbers so the rubber-stamp is visible.
+    #    any producer can stamp "QUEUED_FOR_AI_AGENT". STRICT by default: the
+    #    row must also carry NPI evidence (an NPI number or NPI/CMS source).
+    #    GATE_ALLOW_UNPROVEN=1 restores the old lenient behavior for manual
+    #    debugging only — CI dialers must never set it.
     vertical = (lead.get("vertical") or lead.get("vertical_tag") or "").lower()
     status = (lead.get("status") or (lead.get("details") or {}).get("status") or "").upper()
     vertical = vertical or ((lead.get("details") or {}).get("vertical_tag") or "").lower()
     if vertical in ("clinics", "dentistry", "optometry", "chiropractic",
                      "physical therapy", "podiatry", "mental health",
                      "pharmacy", "nursing") and status == "QUEUED_FOR_AI_AGENT":
-        if os.getenv("GATE_REQUIRE_PROOF", "").strip().lower() == "1":
+        if os.getenv("GATE_ALLOW_UNPROVEN", "").strip().lower() != "1":
             if not _has_npi_proof(lead):
                 return False, "npi_cold_call_queue_no_proof"
         return True, "npi_cold_call_queue"
@@ -348,16 +351,17 @@ def audit_file(path: Path, label: str = ""):
         if r["verified_ok"]:
             by_source[r["verified_source"]] = by_source.get(r["verified_source"], 0) + 1
 
-    # Strict-mode projection: how many would pass if every rule required
-    # NPI/registry evidence (as reported by is_verified with GATE_REQUIRE_PROOF=1).
-    strict_ok = 0
-    os.environ["GATE_REQUIRE_PROOF"] = "1"
+    # Lenient projection — how many would pass if rule #5 accepted the
+    # self-assigned workflow status without NPI evidence (GATE_ALLOW_UNPROVEN=1).
+    # Strict is the default; this makes the rubber-stamp count visible.
+    lenient_ok = 0
+    os.environ["GATE_ALLOW_UNPROVEN"] = "1"
     try:
         for l in leads:
             ok, _ = is_verified(l)
-            strict_ok += 1 if ok else 0
+            lenient_ok += 1 if ok else 0
     finally:
-        os.environ.pop("GATE_REQUIRE_PROOF", None)
+        os.environ.pop("GATE_ALLOW_UNPROVEN", None)
 
     print(f"\n{'='*60}")
     print(f"  [AUDIT] {label}")
@@ -368,7 +372,7 @@ def audit_file(path: Path, label: str = ""):
     print(f"  BLOCKED — bad name:  {name_fail}")
     print(f"  BLOCKED — unverified:{verify_fail}")
     print(f"  Pass rate:           {passed/max(1,len(leads))*100:.1f}%")
-    print(f"  -- strict mode (NPI proof required) would pass: {strict_ok}")
+    print(f"  -- lenient rule #5 (status-only, no NPI proof) would pass: {lenient_ok}")
     print(f"  Verified-by-source:  " + (", ".join(
         f"{k}={v}" for k, v in sorted(by_source.items(), key=lambda x: -x[1]))
         if by_source else "NONE"))
