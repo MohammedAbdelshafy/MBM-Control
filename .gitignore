@@ -206,6 +206,11 @@ MBM/LeadEngine/whatsapp_sms_campaign.json
 MBM/LeadEngine/logs/*.html
 MBM/LeadEngine/logs/*.jsonl
 MBM/Scripts/Config/
+# OneDrive placeholder installers (0-byte until materialized; cannot commit)
+MBM/Scripts/install_master_revenue_schedule.ps1
+MBM/Scripts/install_persistent_background_services.ps1
+MBM/Scripts/install_whop_scheduler.ps1
+.git-rewrite/
 MBM/Config/whatsapp_messages.jsonl
 MBM/PainPoints/
 MBM/Shopify/logs/
