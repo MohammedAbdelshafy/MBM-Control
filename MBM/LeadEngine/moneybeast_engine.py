@@ -508,7 +508,7 @@ def refresh(source: Optional[Path] = None, out_dir: Optional[Path] = None) -> di
     except Exception as e:
         step_report["blocked_sources"].append({"source": str(src), "error": str(e)})
         step_report["ingested"] = 0
-        return _finalize_report(step_report, [], [], [])
+        return _finalize_report(step_report, [], [], [], src)
 
     step_report["ingested"] = len(raw)
     unique = dedupe(raw)
@@ -524,11 +524,11 @@ def refresh(source: Optional[Path] = None, out_dir: Optional[Path] = None) -> di
     export_csv(growth200, growth_path)
     export_csv(unique, all_path)
 
-    return _finalize_report(step_report, unique, hot100, growth200)
+    return _finalize_report(step_report, unique, hot100, growth200, src)
 
 
 def _finalize_report(
-    step_report: dict, all_records: list, hot100: list, growth200: list
+    step_report: dict, all_records: list, hot100: list, growth200: list, source: Path = None
 ) -> dict:
     statuses = {}
     for r in all_records:
@@ -549,7 +549,7 @@ def _finalize_report(
 
     report = {
         "generated_at": _iso_now(),
-        "source": str(DEFAULT_SOURCE),
+        "source": str(source or DEFAULT_SOURCE),
         "counts": step_report,
         "status_breakdown": statuses,
         "top_ranked": top_reasons,
