@@ -9,6 +9,7 @@ Integrates deal-specific imagery into call scripts and call queuing.
 import os
 import sys
 import json
+import csv
 import subprocess
 from pathlib import Path
 from datetime import datetime
@@ -66,11 +67,9 @@ def create_enriched_lead_record(lead_id, enriched_lead):
     """
     Persists the enriched lead record to the call sheet database.
     """
-    ARTIFACTS = Path(__file__).resolve().parent.parent.parent / "MBM" / "Artifacts"
-    ARTIFACTS.mkdir(parents=True, exist_ok=True)
-    
-    # Ensure the leads database file exists
-    leads_db = ARTIFACTS / "mbm-dialer" / "app" / "public" / "leads_database.json"
+    ROOT = Path(__file__).resolve().parent.parent.parent
+    leads_db = ROOT / "mbm-dialer" / "app" / "public" / "leads_database.json"
+    leads_db.parent.mkdir(parents=True, exist_ok=True)
     if not leads_db.exists():
         print(f"[HIGHSFFIELD DAILER] Creating new leads database at {leads_db}")
     
@@ -170,25 +169,24 @@ def main():
     ARTIFACTS = BASE.parent.parent / "MBM" / "Artifacts"
     LOGS = BASE / "logs"
     CALLSHEET = ARTIFACTS / "npi_verified_callsheet.csv"
+    if not CALLSHEET.exists():
+        CALLSHEET = ARTIFACTS / "real_leads.csv"
     
     if not CALLSHEET.exists():
-        print(f"[ERROR] Call sheet not found: {CALLSHEET}")
-        print("Run npi_verified_callsheet.py first to generate the call sheet.")
+        print(f"[ERROR] Call sheet not found in {ARTIFACTS}")
         sys.exit(1)
     
-    # Load leads
-    if not LOGS.exists():
-        print("[INFO] No disposition logs found. Starting fresh.")
-    else:
-        with open(CALLSHEET, "r", encoding="utf-8") as f:
-            rows = list(csv.DictReader(f))
+    rows = []
+    with open(CALLSHEET, "r", encoding="utf-8", errors="replace") as f:
+        rows = list(csv.DictReader(f))
     
     if not rows:
         print("[WARN] No leads loaded from call sheet.")
         sys.exit(0)
     
     # Display leads
-    print(f"\n=== TOP {min(args.limit or 15)} DIALABLE LEADS ===\n")
+    limit_val = min(args.limit or 15, len(rows))
+    print(f"\n=== TOP {limit_val} DIALABLE LEADS ===\n")
     for i, row in enumerate(rows[:args.limit], 1):
         print(f"{i:>3} | Priority: {row.get('priority', '')} | "
               f"Phone: {row.get('phone', '')} | "
@@ -203,7 +201,8 @@ def main():
         enriched = create_enriched_lead_record(lead_id, row)
         
         # Generate script with visual theme
-        offer_text = enriched.get("Call_Script", {}).get("offer", None)
+        cs = enriched.get("Call_Script")
+        offer_text = cs.get("offer") if isinstance(cs, dict) else (cs if isinstance(cs, str) and cs else None)
         if not offer_text:
             offer_text = "We buy houses as-is with a 7-day cash close, zero fees, and cover all closing costs."
         
