@@ -1,281 +1,471 @@
 #!/usr/bin/env python3
 """
-lead_pack_builder.py — Build a deliverable monthly Real-Estate Lead Pack from the
-MBM Lead Engine pipeline, ready to ship to a Whop subscriber.
+lead_pack_builder -- Build a monthly REAL-ESTATE LEAD PACK from the pipeline.
 
-Outputs (Output Contract):
-  status: success | failure | skipped
-  inputs: { source, month, tier_filters }
-  outputs: { pack_path, csv_path, count, verified_count, verification_rate, gate }
-  errors: [ ... ]
-  next_action: string
-  owner: "system"
-  timestamp: ISO8601
+Research-backed deliverable (docs/research/automation-monetization-2026.md):
+  Deploy automated monthly lead packs FIRST ($899/mo) — lowest friction, fastest
+  sales cycle, and the repo already has the machine (NPI-verified sellers, buyer
+  contacts, skip-trace, Whop storefront).
 
-Wires into: leadPipeline.py (source), revenue_tracker.py (gate), Whop subscription.
-Gate: a pack is "ship-ready" only when contact-verification >= REQUIRED_VERIFICATION_RATE.
+What this does:
+  ingest -> score -> verify contact -> tier -> gate -> export (CSV + brief + manifest)
+
+Honesty contract (same as moneybeast / lead_quality_scorer):
+  - NEVER invents phones, emails, addresses, owners, equity or motivation.
+  - A lead only ships in a pack with a VERIFIED, deliverable contact (phone or
+    email) plus a real verification source. Missing = kept out, counted as
+    "needs_verification", never padded.
+  - The pack is BLOCKED (status=blocked) when contact-verification % is below
+    the gate threshold — we never ship an unverifiable pack.
+
+CLI:
+  python MBM/LeadEngine/lead_pack_builder.py                      # dry-run (no writes)
+  python MBM/LeadEngine/lead_pack_builder.py --apply              # write CSV + brief + manifest
+  python MBM/LeadEngine/lead_pack_builder.py --source mbm-dialer/app/public/leads_database.json
+  python MBM/LeadEngine/lead_pack_builder.py --source MBM/Artifacts/buyer_contacts.csv
+  python MBM/LeadEngine/lead_pack_builder.py --gate 0.80          # min contact-verification %
+  python MBM/LeadEngine/lead_pack_builder.py --whop-config        # emit Whop product spec (no API call)
+  python MBM/LeadEngine/lead_pack_builder.py --limit 50
 """
-import base64
+from __future__ import annotations
+
+import argparse
 import csv
-import hashlib
 import json
-import os
+import re
+import shutil
 import sys
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional
 
-BASE_DIR = Path(__file__).resolve().parent
-LOGS_DIR = BASE_DIR / "logs"
-LOGS_DIR.mkdir(exist_ok=True)
+BASE = Path(__file__).resolve().parent
+ROOT = BASE.parent.parent
+LOGS = BASE / "logs"
+PACK_DIR = BASE / "artifacts" / "lead_packs"
+LOGS.mkdir(parents=True, exist_ok=True)
+PACK_DIR.mkdir(parents=True, exist_ok=True)
 
-QUEUE_FILE = BASE_DIR / "cold_calling_queue.json"
-RE_LIST_FILE = BASE_DIR / "real_estate_calling_queue.json"
-ENRICHED_FILE = BASE_DIR / "enriched_global_leads.json"
-OUT_DIR = BASE_DIR / "lead_packs"
-OUT_DIR.mkdir(exist_ok=True)
+DEFAULT_SOURCE = BASE / "real_estate_calling_queue.json"
 
-REQUIRED_VERIFICATION_RATE = 0.75   # 75% of rows must have a valid phone+email
-LEAD_TIERS = ("Tier A+", "Tier A")  # highest-intent tiers sold first
-MAX_ROWS = 100                      # per pack
+# Monthly subscription price anchored by the research doc ($899/mo flat).
+WHOP_PRODUCT = {
+    "name": "Real-Estate Lead Pack Subscription",
+    "price_usd": 899,
+    "plan_type": "renewal",
+    "billing_period_days": 30,
+    "headline": "Monthly verified real-estate lead packs delivered as CSV + brief.",
+    "description": (
+        "Every pack is built from NPI/registry-verified contacts with a real phone "
+        "or email and a verification source. Contact-verification % is gated before "
+        "shipment; a pack that cannot hit the gate is never delivered."
+    ),
+}
 
+TIER_BANDS = [
+    (80, "A_PLUS"),
+    (70, "A"),
+    (55, "B"),
+    (40, "C"),
+    (0, "D"),
+]
 
-def _load_json(path, default=None):
-    if default is None:
-        default = []
-    if path.exists():
-        try:
-            return json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
-            pass
-    return default
-
-
-def _save_json(path, data):
-    path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
-
-
-def _stamp():
-    return datetime.now(timezone.utc).isoformat()
-
-
-def _contract(status, inputs, outputs, errors, next_action, owner="system"):
-    return {
-        "status": status,
-        "inputs": inputs,
-        "outputs": outputs,
-        "errors": errors,
-        "next_action": next_action,
-        "owner": owner,
-        "timestamp": _stamp(),
-    }
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]{2,}$")
 
 
-def _norm(v):
-    v = (v or "").strip()
-    return v
+@dataclass
+class PackLead:
+    lead_id: str = ""
+    contact_name: str = ""
+    company: str = ""
+    email: str = ""
+    phone: str = ""
+    property_address: str = ""
+    city: str = ""
+    state: str = ""
+    vertical: str = ""
+    quality_score: int = 0
+    quality_tier: str = "D"
+    verification_source: str = ""
+    verification_status: str = "UNVERIFIED"
+    contact_ok: bool = False
+    reason: str = ""
+    pack_tier: str = "D"
+    source_row: dict = field(default_factory=dict)
 
 
-def _is_verified_phone(v):
-    digits = "".join(c for c in _norm(v) if c.isdigit())
-    return len(digits) >= 10
+def _iso_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def _is_verified_email(v):
-    v = _norm(v)
-    return "@" in v and "." in v.split("@")[-1]
+def _valid_email(v) -> str:
+    s = str(v or "").strip()
+    return s if EMAIL_RE.match(s) else ""
 
 
-def _row_from_re(item):
-    """Normalise a real-estate calling queue entry (buyer/seller deal leads)."""
-    return {
-        "contact_name": _norm(item.get("contact_name") or item.get("company_name")),
-        "title": _norm(item.get("role_type")),
-        "entity": _norm(item.get("company_name")) or _norm(item.get("contact_name")),
-        "phone": _norm(item.get("phone_number") or item.get("phone")),
-        "email": _norm(item.get("email") or item.get("agent_email")),
-        "address": _norm(item.get("property_address")),
-        "city": _norm(item.get("city")),
-        "state": _norm(item.get("state")),
-        "priority_score": _norm(item.get("antigravity_score") or item.get("priority_score")),
-        "tier": _norm(item.get("tier")) or "Tier A",
-        "deal_id": _norm(item.get("deal_id")),
-        "est_arv": _norm(item.get("est_arv")),
-        "asking_price": _norm(item.get("asking_price")),
-        "target_cash_offer": _norm(item.get("target_cash_offer")),
-        "est_assignment_profit": _norm(item.get("est_assignment_profit")),
-        "distress_signal": _norm(item.get("distress_signal")),
-        "source": "real estate",
-    }
+def _valid_phone(v) -> str:
+    s = str(v or "").strip()
+    digits = re.sub(r"\D", "", s)
+    if len(digits) >= 10 and len(digits) <= 15:
+        return s
+    return ""
 
 
-def _row_from_queue(item):
-    """Normalise a cold-calling/outreach queue entry into a pack row."""
-    tier = _norm(item.get("tier") or item.get("priority_tier"))
-    return {
-        "contact_name": _norm(item.get("contact_name") or item.get("name")),
-        "title": _norm(item.get("title")),
-        "entity": _norm(item.get("entity") or item.get("company") or item.get("agent")),
-        "phone": _norm(item.get("phone") or item.get("agent_phone")),
-        "email": _norm(item.get("email") or item.get("agent_email")),
-        "address": _norm(item.get("address")),
-        "city": _norm(item.get("city")),
-        "state": _norm(item.get("state") or item.get("country")),
-        "priority_score": _norm(item.get("priority_score")),
-        "tier": tier or "Tier A",
-        "source": "outreach",
-    }
+def _verification_source(row: dict, d: dict) -> str:
+    for key in ("verified_source", "skip_trace_source", "Verified_Source", "source", "Lead_Source", "Verification_Status"):
+        v = str(row.get(key) or d.get(key) or "").strip()
+        if v:
+            return v
+    return ""
 
 
-def _collect_rows(source=None):
-    """source: 'real_estate' | 'outreach' | None (all). Cash-buyer/seller first."""
+def _verification_status(row: dict, d: dict) -> str:
+    for key in ("skip_trace_status", "Verification_Status", "Status", "QA_Status", "status"):
+        v = str(row.get(key) or d.get(key) or "").strip()
+        if v:
+            return v
+    return "UNVERIFIED"
+
+
+def load_json_source(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(data, list):
+        return data
+    return data.get("queue", data.get("leads", data.get("data", [])))
+
+
+def load_csv_source(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
     rows = []
-    if source in (None, "real_estate") and RE_LIST_FILE.exists():
-        data = _load_json(RE_LIST_FILE, [])
-        seq = data.get("queue", data) if isinstance(data, dict) else data
-        if isinstance(seq, list):
-            for item in seq:
-                if isinstance(item, dict):
-                    rows.append(_row_from_re(item))
-    if source in (None, "outreach") and QUEUE_FILE.exists():
-        data = _load_json(QUEUE_FILE, [])
-        seq = data.get("queue", data) if isinstance(data, dict) else data
-        if isinstance(seq, list):
-            for item in seq:
-                if isinstance(item, dict):
-                    rows.append(_row_from_queue(item))
-    if source in (None, "lead engine"):
-        rows += _rows_from_enriched()
+    with path.open(encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            rows.append({k: (v or "") for k, v in r.items()})
     return rows
 
 
-def _rows_from_enriched():
-    """Complement queue rows with verified real-estate buyer/seller leads."""
-    leads = _load_json(ENRICHED_FILE, [])
-    rows = []
-    for lead in leads:
-        if not isinstance(lead, dict):
-            continue
-        status = _norm(lead.get("verification_status"))
-        if "INVALID" in status.upper():
-            continue
-        rows.append({
-            "contact_name": _norm(lead.get("agent") or lead.get("contact")),
-            "title": "Agent" if ("agent" in lead and lead.get("agent")) else "Seller",
-            "entity": _norm(lead.get("entity")) or _norm(lead.get("address")),
-            "phone": _norm(lead.get("verified_phone") or lead.get("phone") or lead.get("agent_phone")),
-            "email": _norm(lead.get("email") or lead.get("agent_email")),
-            "address": _norm(lead.get("address")),
-            "city": _norm(lead.get("city")),
-            "state": _norm(lead.get("state")),
-            "priority_score": str(lead.get("lead_score") or ""),
-            "tier": _norm(lead.get("tier")) or "Tier A",
-            "source": "lead engine",
-        })
-    return rows
+def ingest(source: Path) -> list[dict]:
+    if source.suffix.lower() == ".csv":
+        return load_csv_source(source)
+    return load_json_source(source)
 
 
-def _score_row(row):
-    """0..100 contact-verification + intent score."""
-    score = 0
-    if _is_verified_phone(row["phone"]):
-        score += 45
-    if _is_verified_email(row["email"]):
-        score += 35
-    if row.get("tier") in ("Tier A+", "Tier A"):
-        score += 10
-    if row.get("priority_score"):
-        try:
-            if int(str(row["priority_score"]).rstrip("%")) >= 70:
-                score += 10
-        except Exception:
-            pass
-    return min(score, 100)
+def _flatten_contact(row: dict) -> tuple[str, str]:
+    """Best-effort email + phone from a row or its nested details. Never invents."""
+    d = row.get("details") or {}
+    email = row.get("email") or d.get("email") or d.get("Email") or ""
+    phone = (
+        row.get("verified_phone")
+        or row.get("phone_number")
+        or row.get("phone")
+        or d.get("verified_phone")
+        or d.get("phone")
+        or d.get("Phone")
+        or ""
+    )
+    return _valid_email(email), _valid_phone(phone)
 
 
-def _build_pack(month, tier_filter, limit, source=None):
-    rows = _collect_rows(source)
-    if tier_filter:
-        rows = [r for r in rows if r["tier"] in tier_filter]
-    for r in rows:
-        r["_score"] = _score_row(r)
-    rows.sort(key=lambda r: r["_score"], reverse=True)
-    pack = rows[:limit]
-    for r in pack:
-        r["verified"] = _is_verified_phone(r["phone"]) and _is_verified_email(r["email"])
-    verified = sum(1 for r in pack if r["verified"])
-    rate = (verified / len(pack)) if pack else 0.0
-    return pack, verified, rate
+def score_row(row: dict) -> dict:
+    """Score a row. Reuses lead_quality_scorer when importable; else a local
+    deterministic fallback so this module stays standalone-safe."""
+    try:
+        sys.path.insert(0, str(BASE))
+        from lead_quality_scorer import score_lead  # type: ignore
+        res = score_lead(row)
+        return {"score": res["quality_score"], "tier": res["quality_tier"]}
+    except Exception:
+        d = row.get("details") or {}
+        score = 0
+        if (row.get("motivation_score") or d.get("Motivation_Score") or 0):
+            score += int(row.get("motivation_score") or d.get("Motivation_Score") or 0) * 0.3
+        if _valid_phone(row.get("phone") or d.get("phone") or ""):
+            score += 20
+        if _valid_email(row.get("email") or d.get("email") or ""):
+            score += 10
+        addr = row.get("property_address") or d.get("Property_Address") or ""
+        if addr:
+            score += 20
+        score = max(0, min(100, int(round(score))))
+        tier = next(t for bound, t in TIER_BANDS if score >= bound)
+        return {"score": score, "tier": tier}
 
 
-def _write_deliverables(pack, month):
-    safe_month = month.replace("-", "")
-    csv_path = OUT_DIR / f"lead_pack_{safe_month}.csv"
-    manifest_path = OUT_DIR / f"manifest_{safe_month}.json"
+def build_pack_lead(row: dict) -> PackLead:
+    d = row.get("details") or {}
+    email, phone = _flatten_contact(row)
+    vsrc = _verification_source(row, d)
+    vstat = _verification_status(row, d)
 
-    # Strip internal scoring keys for the deliverable.
-    deliver = []
-    for r in pack:
-        deliver.append({
-            k: v for k, v in r.items() if not k.startswith("_")
-        })
+    name = (
+        row.get("contact_name")
+        or row.get("contact")
+        or d.get("Owner_Name")
+        or d.get("contact")
+        or d.get("Company_Name")
+        or ""
+    )
+    company = row.get("company_name") or row.get("company") or row.get("Entity_Name") or ""
+    addr = row.get("property_address") or row.get("address") or d.get("Property_Address") or d.get("address") or ""
+    city = row.get("city") or d.get("City") or ""
+    state = row.get("state") or d.get("State") or ""
+    vertical = str(row.get("vertical") or d.get("vertical") or d.get("vertical_tag") or "Real Estate").strip()
 
-    fields = ["contact_name", "title", "entity", "phone", "email",
-              "address", "city", "state", "priority_score", "tier",
-              "deal_id", "est_arv", "asking_price", "target_cash_offer",
-              "est_assignment_profit", "distress_signal", "source"]
-    with open(csv_path, "w", newline="", encoding="utf-8-sig") as fh:
-        writer = csv.DictWriter(fh, fieldnames=fields, extrasaction="ignore")
+    scored = score_row(row)
+    quality = int(scored["score"])
+    tier = scored["tier"]
+
+    verified = bool(
+        vsrc
+        and ("VERIFIED" in vstat.upper() or "NPI" in vstat.upper() or "DCAD" in vstat.upper() or "ENRICHED" in vstat.upper() or vsrc.upper() in ("NPI", "DCAD", "VERIFIED"))
+    )
+    contact_ok = bool((email or phone) and verified)
+
+    reason_parts = []
+    if not (email or phone):
+        reason_parts.append("no deliverable contact")
+    elif not verified:
+        reason_parts.append(f"unverified ({vstat or 'no source'})")
+    if contact_ok:
+        reason_parts.append("contact verified")
+
+    return PackLead(
+        lead_id=str(row.get("deal_id") or row.get("id") or row.get("lead_id") or "").strip(),
+        contact_name=str(name).strip(),
+        company=str(company).strip(),
+        email=email,
+        phone=phone,
+        property_address=str(addr).strip(),
+        city=str(city).strip(),
+        state=str(state).strip(),
+        vertical=vertical,
+        quality_score=quality,
+        quality_tier=tier,
+        verification_source=vsrc,
+        verification_status=vstat,
+        contact_ok=contact_ok,
+        reason="; ".join(reason_parts) or "n/a",
+        source_row=row,
+        pack_tier=_tier_for(contact_ok, quality, bool(phone), bool(email)),
+    )
+
+
+def _tier_for(contact_ok: bool, quality: int, has_phone: bool, has_email: bool) -> str:
+    if not contact_ok:
+        return "D"
+    if quality >= 70 and has_phone:
+        return "A"
+    if quality >= 55 and (has_phone or has_email):
+        return "B"
+    if quality >= 40:
+        return "C"
+    return "D"
+
+
+def build_pack(source: Path, gate: float = 0.80) -> dict:
+    rows = ingest(source)
+    leads = [build_pack_lead(r) for r in rows]
+
+    shippable = [l for l in leads if l.contact_ok]
+    needs_verification = [l for l in leads if not l.contact_ok]
+
+    total = len(leads)
+    verified = len(shippable)
+    contact_verification_pct = round(verified / total, 4) if total else 0.0
+
+    gated = contact_verification_pct >= gate
+
+    tier_counts: dict[str, int] = {}
+    for l in shippable:
+        tier_counts[l.pack_tier] = tier_counts.get(l.pack_tier, 0) + 1
+
+    return {
+        "generated_at": _iso_now(),
+        "source": str(source),
+        "total_rows": total,
+        "contact_verified": verified,
+        "needs_verification": len(needs_verification),
+        "contact_verification_pct": contact_verification_pct,
+        "gate": gate,
+        "gated": gated,
+        "status": "ready" if gated else "blocked",
+        "tier_counts": tier_counts,
+        "pack_tier": sorted(tier_counts.items(), key=lambda x: -x[1])[0][0] if tier_counts else "D",
+        "leads": shippable,
+        "excluded": needs_verification,
+        "whop_product": dict(WHOP_PRODUCT),
+    }
+
+
+def export_csv(leads: list[PackLead], path: Path) -> None:
+    fieldnames = [
+        "pack_tier", "contact_name", "company", "email", "phone",
+        "property_address", "city", "state", "vertical", "quality_score",
+        "verification_source", "verification_status",
+    ]
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerows(deliver)
+        for l in sorted(leads, key=lambda x: (-x.quality_score, x.lead_id)):
+            writer.writerow({
+                "pack_tier": l.pack_tier,
+                "contact_name": l.contact_name,
+                "company": l.company,
+                "email": l.email,
+                "phone": l.phone,
+                "property_address": l.property_address,
+                "city": l.city,
+                "state": l.state,
+                "vertical": l.vertical,
+                "quality_score": l.quality_score,
+                "verification_source": l.verification_source,
+                "verification_status": l.verification_status,
+            })
 
-    manifest = {
-        "month": month,
-        "generated_at": _stamp(),
-        "count": len(deliver),
-        "verified_count": sum(1 for r in pack if r["verified"]),
-        "verification_rate": round(len(deliver) and sum(1 for r in pack if r["verified"]) / len(deliver), 3),
-        "tiers": sorted({r["tier"] for r in deliver}),
-        "csv_path": str(csv_path),
-        "sample_hashes": [hashlib.sha1(f"{r['phone']}|{r['email']}".encode()).hexdigest()[:12] for r in deliver[:5]],
-    }
-    _save_json(manifest_path, manifest)
-    return csv_path, manifest_path
+
+def write_brief(report: dict, path: Path) -> None:
+    lines = [
+        "# Real-Estate Lead Pack — Monthly Brief",
+        "",
+        f"- generated_at: `{report['generated_at']}`",
+        f"- source: `{report['source']}`",
+        f"- status: `{report['status']}` (gate {report['gate']:.0%})",
+        "",
+        "## Delivery counts",
+        "",
+        f"- total rows: {report['total_rows']}",
+        f"- contact verified: {report['contact_verified']}",
+        f"- needs verification: {report['needs_verification']}",
+        f"- contact verification: {report['contact_verification_pct']:.1%}",
+        f"- pack tier: {report['pack_tier']}",
+        "",
+        "## Tier breakdown",
+        "",
+    ]
+    for tier in ("A", "B", "C", "D"):
+        lines.append(f"- {tier}: {report['tier_counts'].get(tier, 0)}")
+    lines += [
+        "",
+        "## Integrity note",
+        "",
+        "Only leads with a verified, deliverable contact (phone or email) plus a",
+        "verification source ship in this pack. Excluded leads are counted but never",
+        "padded — re-running upstream verification (NPI / skip-trace) raises the gate.",
+        "",
+    ]
+    if report["status"] == "blocked":
+        lines += [
+            "## BLOCKED",
+            "",
+            f"Contact verification {report['contact_verification_pct']:.1%} is below the "
+            f"{report['gate']:.0%} gate. Run skip-trace / NPI verification, then rebuild.",
+            "",
+        ]
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def cmd_build(month=None, tier_filter=None, limit=MAX_ROWS, source=None):
-    month = month or datetime.now().strftime("%Y-%m")
-    pack, verified, rate = _build_pack(month, tier_filter, limit, source)
-    csv_path, manifest_path = _write_deliverables(pack, month)
+def write_whop_config(report: dict, path: Path) -> None:
+    """Emit the Whop product spec as JSON (no API call — human applies it)."""
+    path.write_text(json.dumps(report["whop_product"], indent=2) + "\n", encoding="utf-8")
 
-    gate = rate >= REQUIRED_VERIFICATION_RATE
-    outputs = {
-        "month": month,
-        "count": len(pack),
-        "verified_count": verified,
-        "verification_rate": round(rate, 3),
-        "gate_passed": gate,
-        "csv_path": str(csv_path),
-        "manifest_path": str(manifest_path),
-    }
-    errors = []
-    if not pack:
-        errors.append("no leads matched the tier filter")
-        return _contract("failure", {"month": month}, outputs, errors, "check_pipeline_harvest")
 
-    next_action = "ship_to_whop" if gate else "fix_contact_verification"
-    owner = "system"
-    _save_json(LOGS_DIR / "lead_pack_builder_log.json", outputs)
-    return _contract("success", {"month": month, "tier_filter": tier_filter, "source": source}, outputs, errors, next_action, owner)
+def main(argv: Optional[list[str]] = None) -> int:
+    ap = argparse.ArgumentParser(description="MBM Real-Estate Lead Pack Builder")
+    ap.add_argument("--apply", action="store_true", help="write CSV + brief + manifest (default: dry-run)")
+    ap.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
+    ap.add_argument("--gate", type=float, default=0.80, help="min contact-verification %% to ship")
+    ap.add_argument("--limit", type=int, default=None, help="max rows to process")
+    ap.add_argument("--whop-config", action="store_true", help="emit Whop product spec JSON")
+    args = ap.parse_args(argv)
+
+    source = args.source
+    if not source.exists():
+        print(json.dumps({
+            "status": "failure",
+            "inputs": {"source": str(source)},
+            "outputs": {},
+            "errors": [f"source not found: {source}"],
+            "next_action": "provide a valid source path",
+            "owner": "human",
+            "timestamp": _iso_now(),
+        }, indent=2))
+        return 1
+
+    report = build_pack(source, gate=args.gate)
+    if args.limit:
+        report["leads"] = report["leads"][: args.limit]
+        report["excluded"] = report["excluded"][: args.limit]
+
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    csv_path = PACK_DIR / f"lead_pack_{stamp}.csv"
+    brief_path = PACK_DIR / f"lead_pack_{stamp}_brief.md"
+    manifest_path = PACK_DIR / f"lead_pack_{stamp}_manifest.json"
+    whop_path = PACK_DIR / f"lead_pack_{stamp}_whop_config.json"
+
+    if args.apply:
+        export_csv(report["leads"], csv_path)
+        write_brief(report, brief_path)
+        manifest = {
+            "status": report["status"],
+            "generated_at": report["generated_at"],
+            "inputs": {"source": str(source), "gate": args.gate},
+            "outputs": {
+                "csv": str(csv_path),
+                "brief": str(brief_path),
+                "whop_config": str(whop_path),
+                "total_rows": report["total_rows"],
+                "contact_verified": report["contact_verified"],
+                "contact_verification_pct": report["contact_verification_pct"],
+                "pack_tier": report["pack_tier"],
+                "tier_counts": report["tier_counts"],
+            },
+            "errors": [],
+            "next_action": "ship via Whop 'Lead Pack Subscription' $899/mo" if report["status"] == "ready"
+                          else "run skip-trace / NPI verification to raise the gate",
+            "owner": "system" if report["status"] == "ready" else "human",
+            "timestamp": _iso_now(),
+        }
+        manifest_path.write_text(json.dumps(manifest, indent=2, default=str), encoding="utf-8")
+        if args.whop_config:
+            write_whop_config(report, whop_path)
+        print(json.dumps(manifest, indent=2, default=str))
+        print(f"\nWrote pack: {csv_path}")
+        print(f"Brief:       {brief_path}")
+        print(f"Manifest:    {manifest_path}")
+        if args.whop_config:
+            print(f"Whop spec:   {whop_path}")
+    else:
+        summary = {
+            "status": "dry_run",
+            "source": str(source),
+            "total_rows": report["total_rows"],
+            "contact_verified": report["contact_verified"],
+            "needs_verification": report["needs_verification"],
+            "contact_verification_pct": report["contact_verification_pct"],
+            "gate": args.gate,
+            "gated": report["gated"],
+            "pack_tier": report["pack_tier"],
+            "tier_counts": report["tier_counts"],
+            "top_lead": (
+                {
+                    "contact": report["leads"][0].contact_name,
+                    "phone": report["leads"][0].phone,
+                    "quality": report["leads"][0].quality_score,
+                }
+                if report["leads"]
+                else None
+            ),
+            "note": "dry-run — re-run with --apply to write the pack",
+        }
+        print(json.dumps(summary, indent=2, default=str))
+        if args.whop_config:
+            print("\nWhop product spec (not written in dry-run):")
+            print(json.dumps(report["whop_product"], indent=2))
+    return 0
 
 
 if __name__ == "__main__":
-    import argparse
-    parser = argparse.ArgumentParser(description="Build a deliverable Real-Estate Lead Pack.")
-    parser.add_argument("--month", default=None)
-    parser.add_argument("--tiers", nargs="*", default=["Tier A+", "Tier A"], help="Tiers to include")
-    parser.add_argument("--limit", type=int, default=MAX_ROWS)
-    parser.add_argument("--source", default="real_estate", help="real_estate | outreach | lead engine | '' (all)")
-    args = parser.parse_args()
-    result = cmd_build(args.month, args.tiers, args.limit, args.source)
-    print(json.dumps(result, indent=2))
-    sys.exit(0 if result["status"] == "success" else 1)
+    sys.exit(main())

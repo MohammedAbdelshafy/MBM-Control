@@ -32,11 +32,14 @@ npm run leads:dial:live       # Place real calls -> your phone, bridged to real 
 npm run leads:sellers         # Dry-run hybrid seller skip-trace (DCAD->RapidAPI->GMaps->free). --apply writes (backup .bak)
 npm run leads:gate:audit      # Audit every dialer queue against the verification gate
 npm run leads:all             # hygiene + fresh callsheet in one shot
+npm run leads:pack            # Build monthly lead pack (dry-run; gate blocks unverified)
+npm run leads:pack:apply      # Write lead pack CSV + brief + manifest + Whop spec
 ```
 
 New scripts: `MBM/Scripts/lead_hygiene.py`, `MBM/Scripts/revenue_recovery.py`,
 `MBM/LeadEngine/npi_verified_callsheet.py`, `MBM/LeadEngine/close_queue_dialer.py`,
-`MBM/LeadEngine/seller_skip_tracer.py`, `MBM/LeadEngine/dialer_verification_gate.py`.
+`MBM/LeadEngine/seller_skip_tracer.py`, `MBM/LeadEngine/dialer_verification_gate.py`,
+`MBM/LeadEngine/lead_pack_builder.py`.
 `schedule.yml` runs `hourly-npi-callsheet` (once/day at UTC 00) to keep a fresh
 verified call sheet. Twilio Lookup (number-level verify) returned 401 — account
 needs the separate Lookup product enabled; NPI-registry phones are already real.
