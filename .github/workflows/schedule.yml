@@ -82,6 +82,13 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          SMTP_FROM_NAME: ${{ secrets.SMTP_FROM_NAME }}
+          SMTP_SENDER_POOL: ${{ secrets.SMTP_SENDER_POOL }}
         run: node server/clientHunter.js --send
 
   hourly-lead-pipeline:
@@ -180,6 +187,10 @@ jobs:
         uses: ./.github/actions/telegram-notify
         with:
           message: "⚠️ *BASE44* NPI callsheet FAILED — no fresh real leads today.\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
+          supabase_service_role_key: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       - name: Summary
         if: failure()
         run: echo "NPI callsheet generation failed. Check scripts for DNS/net errors." >> $GITHUB_STEP_SUMMARY
@@ -326,34 +337,36 @@ jobs:
       - name: Revenue Summary
         if: always()
         run: |
-          echo "## 💰 Hourly Revenue Gate" >> $GITHUB_STEP_SUMMARY
-          if [ -f /tmp/revenue_verdict.json ]; then
-            ANSWER=$(python3 -c "import json; d=json.load(open('/tmp/revenue_verdict.json')); print(d.get('answer','UNKNOWN'))" 2>/dev/null || echo "UNKNOWN")
-            SCORE=$(python3 -c "import json; d=json.load(open('/tmp/revenue_verdict.json')); print(d.get('score',0))" 2>/dev/null || echo "0")
-            LEVEL=$(python3 -c "import json; d=json.load(open('/tmp/revenue_verdict.json')); print(d.get('escalation_level','UNKNOWN'))" 2>/dev/null || echo "UNKNOWN")
-            echo "- **Question:** Have we made any money?" >> $GITHUB_STEP_SUMMARY
-            echo "- **Answer:** ${ANSWER}" >> $GITHUB_STEP_SUMMARY
-            echo "- **Score:** ${SCORE}" >> $GITHUB_STEP_SUMMARY
-            echo "- **Escalation:** ${LEVEL}" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- Revenue check output not found" >> $GITHUB_STEP_SUMMARY
-          fi
-          if [ -f MBM/LeadEngine/logs/enforcer_audit.json ]; then
-            STATUS=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/enforcer_audit.json')); print(d.get('overall_status','UNKNOWN'))" 2>/dev/null || echo "UNKNOWN")
-            echo "- **Enforcer KPI Audit:** ${STATUS}" >> $GITHUB_STEP_SUMMARY
-          fi
-          if [ -f MBM/LeadEngine/logs/seeker_opportunities.json ]; then
-            SEEK_FOUND=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/seeker_opportunities.json')); print(d.get('total_found',0))" 2>/dev/null || echo "0")
-            echo "- **Seeker Deals Found:** ${SEEK_FOUND}" >> $GITHUB_STEP_SUMMARY
-          fi
-          if [ -f MBM/LeadEngine/logs/reply_summary.json ]; then
-            REPLIES=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/reply_summary.json')); print(d.get('total_replies',0))" 2>/dev/null || echo "0")
-            MEETINGS=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/reply_summary.json')); print(d.get('meetings_requested',0))" 2>/dev/null || echo "0")
-            BOUNCES=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/reply_summary.json')); print(d.get('bounces_detected',0))" 2>/dev/null || echo "0")
-            echo "- **Replies Detected:** ${REPLIES}" >> $GITHUB_STEP_SUMMARY
-            echo "- **Meetings Requested:** ${MEETINGS}" >> $GITHUB_STEP_SUMMARY
-            echo "- **Hard Bounces:** ${BOUNCES}" >> $GITHUB_STEP_SUMMARY
-          fi
+          {
+            echo "## 💰 Hourly Revenue Gate"
+            if [ -f /tmp/revenue_verdict.json ]; then
+              ANSWER=$(python3 -c "import json; d=json.load(open('/tmp/revenue_verdict.json')); print(d.get('answer','UNKNOWN'))" 2>/dev/null || echo "UNKNOWN")
+              SCORE=$(python3 -c "import json; d=json.load(open('/tmp/revenue_verdict.json')); print(d.get('score',0))" 2>/dev/null || echo "0")
+              LEVEL=$(python3 -c "import json; d=json.load(open('/tmp/revenue_verdict.json')); print(d.get('escalation_level','UNKNOWN'))" 2>/dev/null || echo "UNKNOWN")
+              echo "- **Question:** Have we made any money?"
+              echo "- **Answer:** ${ANSWER}"
+              echo "- **Score:** ${SCORE}"
+              echo "- **Escalation:** ${LEVEL}"
+            else
+              echo "- Revenue check output not found"
+            fi
+            if [ -f MBM/LeadEngine/logs/enforcer_audit.json ]; then
+              STATUS=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/enforcer_audit.json')); print(d.get('overall_status','UNKNOWN'))" 2>/dev/null || echo "UNKNOWN")
+              echo "- **Enforcer KPI Audit:** ${STATUS}"
+            fi
+            if [ -f MBM/LeadEngine/logs/seeker_opportunities.json ]; then
+              SEEK_FOUND=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/seeker_opportunities.json')); print(d.get('total_found',0))" 2>/dev/null || echo "0")
+              echo "- **Seeker Deals Found:** ${SEEK_FOUND}"
+            fi
+            if [ -f MBM/LeadEngine/logs/reply_summary.json ]; then
+              REPLIES=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/reply_summary.json')); print(d.get('total_replies',0))" 2>/dev/null || echo "0")
+              MEETINGS=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/reply_summary.json')); print(d.get('meetings_requested',0))" 2>/dev/null || echo "0")
+              BOUNCES=$(python3 -c "import json; d=json.load(open('MBM/LeadEngine/logs/reply_summary.json')); print(d.get('bounces_detected',0))" 2>/dev/null || echo "0")
+              echo "- **Replies Detected:** ${REPLIES}"
+              echo "- **Meetings Requested:** ${MEETINGS}"
+              echo "- **Hard Bounces:** ${BOUNCES}"
+            fi
+          } >> $GITHUB_STEP_SUMMARY
 
       - name: "📉 Revenue STOP alert — escalate when money stalls"
         env:
@@ -413,3 +426,7 @@ jobs:
         uses: ./.github/actions/telegram-notify
         with:
           message: "🛑 *BASE44 HOURLY FAILURE*\nOne or more hourly automation jobs failed.\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
+          supabase_service_role_key: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

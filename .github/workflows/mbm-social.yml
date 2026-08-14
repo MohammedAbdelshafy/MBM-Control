@@ -99,14 +99,29 @@ jobs:
           python3 << 'EOF'
           import sys
           try:
-              from mbm_social.pipeline import Pipeline
-              from mbm_social.brand_router import BrandRouter
-              from mbm_social.brand_config import BrandConfig
-              from mbm_social.model_registry import ModelRegistry
-              from mbm_social.publish_package import PublishPackage
+              from mbm_social import (
+                  model_registry,
+                  brand_config,
+                  brand_router,
+                  publish_package,
+                  pipeline,
+                  autonomous_runtime,
+                  learning_engine,
+                  night_operations,
+              )
+              from mbm_social.pipeline import run_end_to_end, route_existing_clip
+              from mbm_social.brand_router import route_clip, route_clip_dict, RouteResult
+              from mbm_social.brand_config import load_brand, load_all_brands, active_brands
+              from mbm_social.model_registry import resolve, generate, embed, cosine
+              from mbm_social.publish_package import build_package, save_package
+              assert callable(run_end_to_end)
+              assert callable(route_clip)
+              assert callable(load_brand)
+              assert callable(resolve)
+              assert callable(build_package)
               print('## Pipeline Import Test')
               print('All imports OK')
-          except ImportError as e:
+          except Exception as e:
               print(f'Import failed: {e}')
               sys.exit(1)
           EOF

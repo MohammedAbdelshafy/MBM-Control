@@ -49,3 +49,7 @@ jobs:
         uses: ./.github/actions/telegram-notify
         with:
           message: "🔥 *BASE44 WEEKEND BLITZ* completed successfully! Socials pumped.\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
+          supabase_service_role_key: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

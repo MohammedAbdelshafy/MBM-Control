@@ -54,10 +54,12 @@ jobs:
       - name: Summary & Machine State
         if: always()
         run: |
-          echo "## Lead Pipeline Run Summary" >> $GITHUB_STEP_SUMMARY
-          echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Mode:** $(if [ "${{ github.event.inputs.dry_run }}" = "false" ]; then echo "ARMED 🚀"; else echo "DRY_RUN ⚠️"; fi)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Lead Pipeline Run Summary"
+            echo "- **Status:** ${{ job.status }}"
+            echo "- **Mode:** $(if [ "${{ github.event.inputs.dry_run }}" = "false" ]; then echo "ARMED 🚀"; else echo "DRY_RUN ⚠️"; fi)"
+            echo "- **Trigger:** ${{ github.event_name }}"
+          } >> $GITHUB_STEP_SUMMARY
           
           # Output machine state as JSON for auditing
           echo '{"status": "${{ job.status }}", "mode": "dry_run", "timestamp": "'$(date -u -Iseconds)'"}' > machine_state.json
@@ -80,3 +82,7 @@ jobs:
         uses: ./.github/actions/telegram-notify
         with:
           message: "🛑 *BASE44 DAILY* lead pipeline FAILED\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
+          supabase_service_role_key: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

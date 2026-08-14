@@ -114,6 +114,10 @@ jobs:
         uses: ./.github/actions/telegram-notify
         with:
           message: "🛑 *BASE44 OVERNIGHT* email drain FAILED\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
+          supabase_service_role_key: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
   # ═══════════════════════════════════════════════════════
   # PHASE 5: Run revenue gate
@@ -199,6 +203,10 @@ jobs:
         uses: ./.github/actions/telegram-notify
         with:
           message: "🛑 *BASE44 OVERNIGHT* master revenue workflow FAILED\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
+          supabase_service_role_key: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
   # ═══════════════════════════════════════════════════════
   # PHASE 6: Summary report
@@ -211,18 +219,24 @@ jobs:
       - uses: actions/checkout@v4
       - name: Generate overnight report
         run: |
-          echo "## 🌙 Overnight Monetization Report" >> $GITHUB_STEP_SUMMARY
-          echo "- **Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Agent Factory:** ${{ needs.create-agents.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Lead Enrichment:** ${{ needs.enrich-leads.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Agent Deployment:** ${{ needs.deploy-agents.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Email Queue:** ${{ needs.send-emails.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Revenue Gate:** ${{ needs.revenue-gate.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Master Revenue Workflow:** ${{ needs.master-revenue-workflow.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Agents created tonight" >> $GITHUB_STEP_SUMMARY
-          echo "Check [agent-factory logs](../agent-factory.yml)" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## 🌙 Overnight Monetization Report"
+            echo "- **Time:** $(date -u)"
+            echo "- **Agent Factory:** ${{ needs.create-agents.result }}"
+            echo "- **Lead Enrichment:** ${{ needs.enrich-leads.result }}"
+            echo "- **Agent Deployment:** ${{ needs.deploy-agents.result }}"
+            echo "- **Email Queue:** ${{ needs.send-emails.result }}"
+            echo "- **Revenue Gate:** ${{ needs.revenue-gate.result }}"
+            echo "- **Master Revenue Workflow:** ${{ needs.master-revenue-workflow.result }}"
+            echo ""
+            echo "### Agents created tonight"
+            echo "Check [agent-factory logs](../agent-factory.yml)"
+          } >> $GITHUB_STEP_SUMMARY
       - name: Overnight digest to Telegram
         uses: ./.github/actions/telegram-notify
         with:
           message: "🌙 *BASE44 OVERNIGHT DIGEST*\nAgents: ${{ needs.create-agents.result }} | Enrich: ${{ needs.enrich-leads.result }} | Deploy: ${{ needs.deploy-agents.result }}\nEmail: ${{ needs.send-emails.result }} | Revenue Gate: ${{ needs.revenue-gate.result }} | Master WF: ${{ needs.master-revenue-workflow.result }}\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
+          supabase_service_role_key: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

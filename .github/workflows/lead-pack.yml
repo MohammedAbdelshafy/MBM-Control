@@ -46,8 +46,10 @@ jobs:
       - name: Write gate summary
         if: always()
         run: |
-          echo "## Monthly Lead Pack" >> $GITHUB_STEP_SUMMARY
-          echo "job.status=${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Monthly Lead Pack"
+            echo "job.status=${{ job.status }}"
+          } >> $GITHUB_STEP_SUMMARY
           python3 MBM/LeadEngine/lead_pack_summary.py lead_pack_result.json >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Lead Pack deliverable
@@ -70,3 +72,7 @@ jobs:
         uses: ./.github/actions/telegram-notify
         with:
           message: "🛑 *BASE44 LEAD PACK* monthly deliverable build FAILED\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
+          supabase_service_role_key: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

@@ -193,6 +193,8 @@ clipping-factory/MBM-Social/anty_shadowban_state/
 clipping-factory/MBM-Social/clips/
 clipping-factory/MBM-Social/oauth_url.txt
 clipping-factory/MBM-Social/orchestrator_output.txt
+clipping-factory/MBM-Social/clipping_factory.db
+clipping-factory/MBM-Social/clipping_factory.db-*
 
 # Lead runtime queues + config state (regenerated; PII)
 MBM/LeadEngine/multi_touch_queue.json

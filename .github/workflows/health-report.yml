@@ -108,9 +108,11 @@ jobs:
       - name: Summary & Health Score
         run: |
           score=$(cat /tmp/health_score.txt)
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "# 🏥 Repo Health Score: $score / 100" >> $GITHUB_STEP_SUMMARY
-          echo "Report generated $(date -u)" >> $GITHUB_STEP_SUMMARY
+          {
+            echo ""
+            echo "# 🏥 Repo Health Score: $score / 100"
+            echo "Report generated $(date -u)"
+          } >> $GITHUB_STEP_SUMMARY
           {
             echo "# 🏥 Repo Health Report"
             echo ""
@@ -139,3 +141,7 @@ jobs:
         uses: ./.github/actions/telegram-notify
         with:
           message: "🏥 *BASE44 HEALTH* repo health score below 75 — review issues.\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
+          supabase_service_role_key: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

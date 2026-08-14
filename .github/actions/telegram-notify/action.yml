@@ -9,6 +9,22 @@ inputs:
     description: Notification event tag stored in Supabase (e.g. ci:hourly-failure)
     required: false
     default: ci:notification
+  telegram_bot_token:
+    description: Telegram bot token (pass ${{ secrets.TELEGRAM_BOT_TOKEN }})
+    required: false
+    default: ''
+  telegram_chat_id:
+    description: Telegram chat id (pass ${{ secrets.TELEGRAM_CHAT_ID }})
+    required: false
+    default: ''
+  vite_supabase_url:
+    description: Supabase URL (pass ${{ secrets.VITE_SUPABASE_URL }})
+    required: false
+    default: ''
+  supabase_service_role_key:
+    description: Supabase service role key (pass ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }})
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -16,10 +32,10 @@ runs:
     - name: Send + persist notification
       shell: bash
       env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        TELEGRAM_BOT_TOKEN: ${{ inputs.telegram_bot_token }}
+        TELEGRAM_CHAT_ID: ${{ inputs.telegram_chat_id }}
+        VITE_SUPABASE_URL: ${{ inputs.vite_supabase_url }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ inputs.supabase_service_role_key }}
       run: |
         python MBM/Scripts/notify_lib.py \
           --event "${{ inputs.event }}" \
