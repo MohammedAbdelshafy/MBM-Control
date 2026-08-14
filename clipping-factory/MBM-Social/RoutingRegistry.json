@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-08-11",
+  "updated": "2026-08-14",
   "description": "Canonical routing registry: maps every publishable asset to an explicit account+platform. Destination is NEVER inferred from filenames.",
   "accounts": {
     "yt_clippingfactorymbm": {
@@ -120,6 +120,39 @@
       "handle": "@twistsrevealed_cinema",
       "gmail_account": "bigmoeshafy@gmail.com",
       "profile_dir": "tiktok_profile_twistsrevealed",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "tt_mohammed_abdelsha": {
+      "account_id": "tt_mohammed_abdelsha",
+      "platform": "tiktok",
+      "brand_id": "mohammed",
+      "tiktok_username": "mohammed.abdelsha21",
+      "handle": "@mohammed.abdelsha21",
+      "gmail_account": "abdelshafyclapps@gmail.com",
+      "profile_dir": "tiktok_profile_mohammed_abdelsha",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "tt_mohammed_omar": {
+      "account_id": "tt_mohammed_omar",
+      "platform": "tiktok",
+      "brand_id": "mohammed",
+      "tiktok_username": "mohammed.omar.abd2",
+      "handle": "@mohammed.omar.abd2",
+      "gmail_account": "abdelshafyclapps@gmail.com",
+      "profile_dir": "tiktok_profile_mohammed_omar",
+      "auth_method": "persistent_chrome_profile",
+      "publish_enabled": true
+    },
+    "tt_moevirals": {
+      "account_id": "tt_moevirals",
+      "platform": "tiktok",
+      "brand_id": "mohammed",
+      "tiktok_username": "moevirals",
+      "handle": "@moevirals",
+      "gmail_account": "abdelshafyclapps@gmail.com",
+      "profile_dir": "tiktok_profile_moevirals",
       "auth_method": "persistent_chrome_profile",
       "publish_enabled": true
     },
@@ -246,6 +279,18 @@
       "gmail_account": "abdelshafyclapps@gmail.com",
       "social_handles": {
         "instagram": "@plaqueboymax"
+      }
+    },
+    "mohammed": {
+      "display_name": "Mohammed (personal)",
+      "handle": "@mohammed.abdelsha21",
+      "youtube_channel_id": "UCSZ80c0lE5gqkkbfHKrGkGA",
+      "gmail_account": "abdelshafyclapps@gmail.com",
+      "social_handles": {
+        "youtube": "@ClippingFactoryMBM",
+        "tiktok": "@mohammed.abdelsha21",
+        "tiktok2": "@mohammed.omar.abd2",
+        "tiktok3": "@moevirals"
       }
     }
   },
