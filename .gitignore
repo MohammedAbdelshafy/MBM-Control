@@ -196,6 +196,9 @@ MBM/LeadEngine/multi_touch_queue.json
 MBM/LeadEngine/real_estate_calling_queue.json
 MBM/LeadEngine/ulio_voice_queue.json
 MBM/LeadEngine/distressed_wholesale_leads.json
+MBM/LeadEngine/moneybeast_artifacts/
+MBM/LeadEngine/artifacts/
+MBM/LeadEngine/reports/
 MBM/LeadEngine/whatsapp_sms_campaign.json
 MBM/LeadEngine/logs/*.html
 MBM/LeadEngine/logs/*.jsonl
