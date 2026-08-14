@@ -16,6 +16,9 @@
 !/.npmrc
 !/README.md
 !/AGENTS.md
+!/docs/
+!/docs/**
+!/OPEN_SOURCE_LEDGER.json
 !/CLAUDE.md
 !/IDENTITY.md
 !/REVENUE_CI_ENHANCEMENTS.md
