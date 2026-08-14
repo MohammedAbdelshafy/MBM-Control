@@ -17,7 +17,7 @@ Monetization Channels & Agents:
      -> Deliverable: Full White-Label AI Portal & Verified Lead Stream
 
   4. Wolf Closer & Phone Bridge Agent
-     -> Feeds closing scripts & 1-click Stripe/Neteller checkout links to active callers
+     -> Feeds closing scripts & 1-click Neteller checkout links to active callers
 
 Run:
   python MBM/LeadEngine/master_agent_monetizer.py
@@ -36,15 +36,23 @@ from datetime import datetime
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+try:
+    from MBM.Scripts.neteller_config import NETELLER_EMAIL, NETELLER_ACCOUNT_ID, neteller_link
+except Exception:
+    NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
+    NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
+
+    def neteller_link(amount, item, currency="USD", **kw):
+        base = "https://member.neteller.com/pay"
+        return f"{base}?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount={float(amount):.2f}&currency={currency}&item={item}"
+
 BASE_DIR = Path(__file__).parent.resolve()
 ROOT_DIR = BASE_DIR.parent.parent
 
 DIALER_DB = ROOT_DIR / "mbm-dialer" / "app" / "public" / "leads_database.json"
 MONETIZATION_LOG = BASE_DIR / "logs" / "master_monetization_pipeline.json"
 MONETIZATION_MD = BASE_DIR / "logs" / "master_monetization_pipeline.md"
-
-NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
-NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
 
 
 def log(msg):
@@ -69,8 +77,7 @@ def match_offer_for_lead(lead):
                 f"Hi {contact}, we provide {company or 'your practice'} with a verified weekly patient lead stream "
                 f"and automated AI no-show reminders. Setup is done-for-you with zero tech hassle."
             ),
-            "neteller_checkout": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=1997.00&currency=USD&item=Clinic_AI_Retainer",
-            "stripe_checkout": "https://checkout.stripe.com/pay/cs_live_clinic_retainer_1997"
+            "neteller_checkout": neteller_link(1997.00, "Clinic_AI_Retainer")
         }
     elif any(k in vertical for k in ["real estate", "property", "wholesal", "investor", "distressed", "land"]):
         return {
@@ -83,8 +90,7 @@ def match_offer_for_lead(lead):
                 f"Hi {contact}, we have pre-vetted cash buyers looking for off-market inventory in your area. "
                 f"We can present an immediate cash contract with built-in assignment equity."
             ),
-            "neteller_checkout": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=5000.00&currency=USD&item=Wholesale_Deal_Rights",
-            "stripe_checkout": "https://checkout.stripe.com/pay/cs_live_wholesale_deal_5000"
+            "neteller_checkout": neteller_link(5000.00, "Wholesale_Deal_Rights")
         }
     else:
         return {
@@ -97,8 +103,7 @@ def match_offer_for_lead(lead):
                 f"Hi {contact}, unlock our full white-label AI Telephony portal and daily verified lead stream "
                 f"under your brand with 80%+ gross profit margins."
             ),
-            "neteller_checkout": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=2497.00&currency=USD&item=Agency_WhiteLabel_License",
-            "stripe_checkout": "https://checkout.stripe.com/pay/cs_live_agency_whitelabel_2497"
+            "neteller_checkout": neteller_link(2497.00, "Agency_WhiteLabel_License")
         }
 
 
@@ -136,8 +141,7 @@ def main():
             "upfront_value": offer["upfront_price"],
             "recurring_value": offer["recurring_monthly"],
             "pitch_script": offer["pitch_script"],
-            "neteller_link": offer["neteller_checkout"],
-            "stripe_link": offer["stripe_checkout"]
+            "neteller_link": offer["neteller_checkout"]
         }
         monetized_pipeline.append(item)
         total_upfront_pipeline_value += offer["upfront_price"]
@@ -161,14 +165,14 @@ def main():
         f"**Projected Upfront Pipeline Revenue**: **${total_upfront_pipeline_value:,.2f} USD**",
         f"**Projected Monthly Recurring Revenue**: **${total_recurring_pipeline_value:,.2f} USD/mo**",
         "",
-        "| Lead Contact | Company / Practice | Verification | Matched Offer | Upfront Value | Monthly Recurring | Neteller Checkout | Stripe Checkout |",
-        "|---|---|---|---|---|---|---|---|"
+        "| Lead Contact | Company / Practice | Verification | Matched Offer | Upfront Value | Monthly Recurring | Neteller Checkout |",
+        "|---|---|---|---|---|---|---|"
     ]
 
     for item in monetized_pipeline[:50]:
         md_lines.append(
             f"| {item['contact']} | {item['company']} | {item['verification_status']} | {item['matched_offer_title']} | "
-            f"${item['upfront_value']:,.2f} | ${item['recurring_value']:,.2f}/mo | [Pay Neteller]({item['neteller_link']}) | [Pay Stripe]({item['stripe_link']}) |"
+            f"${item['upfront_value']:,.2f} | ${item['recurring_value']:,.2f}/mo | [Pay Neteller]({item['neteller_link']}) |"
         )
 
     with open(MONETIZATION_MD, "w", encoding="utf-8") as f:

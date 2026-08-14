@@ -10,6 +10,18 @@ import json
 from pathlib import Path
 from datetime import datetime, timezone
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+try:
+    from MBM.Scripts.neteller_config import NETELLER_EMAIL, NETELLER_ACCOUNT_ID, neteller_link
+except Exception:
+    NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
+    NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
+
+    def neteller_link(amount, item, currency="USD", **kw):
+        base = "https://member.neteller.com/pay"
+        return f"{base}?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount={float(amount):.2f}&currency={currency}&item={item}"
+
+
 BASE_DIR = Path(__file__).resolve().parent
 ROOT_DIR = BASE_DIR.parent.parent
 LOGS_DIR = BASE_DIR / "logs"
@@ -77,7 +89,7 @@ def run_ai_ad_studio(prospects_data):
             "teaser_video": video_path,
             "upsell_offer": "Unwatermarked 3-Ad Pack",
             "upsell_value": upsell_value,
-            "checkout_url": "https://contec-ai-store.myshopify.com/cart/40112240:1"
+            "checkout_url": neteller_link(upsell_value, "UGC_Ad_Pack")
         })
         total_upsell_value += upsell_value
         print(f"[+] Rendered watermarked UGC Ad for {company}. Upsell Value: ${upsell_value}")

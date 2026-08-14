@@ -10,6 +10,11 @@ import sys
 import json
 import time
 from pathlib import Path
+import sys
+from pathlib import Path
+if str(Path(__file__).resolve().parents[2]) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_ACCOUNT_ID
 
 BASE_DIR = Path(__file__).parent.resolve()
 LOGS_DIR = BASE_DIR / 'logs'
@@ -32,8 +37,7 @@ def generate_extreme_sales_hub():
             "price": "$5,000.00 USD",
             "price_numeric": 5000.00,
             "description": "Instant assignment contract for 934 Sunset Blvd (Phoenix, AZ) or 9392 Industrial Pkwy (New York, NY). Includes clean title & $35,500 built-in equity.",
-            "neteller_checkout_url": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=5000.00&currency=USD&item=Wholesale_Deal_Rights",
-            "stripe_checkout_url": "https://checkout.stripe.com/pay/cs_live_wholesale_deal_5000",
+            "neteller_checkout_url": neteller_link(5000.00, "Wholesale_Deal_Rights"),
             "action_button": "BUY WHOLESALE RIGHTS NOW ($5,000)"
         },
         {
@@ -43,8 +47,7 @@ def generate_extreme_sales_hub():
             "price": "$2,497.00 USD / month",
             "price_numeric": 2497.00,
             "description": "Complete white-label AI Voice Bot & Lead Engine portal on your custom domain with 80% gross profit margins on call minutes ($0.10 -> $0.50/min).",
-            "neteller_checkout_url": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=2497.00&currency=USD&item=Agency_WhiteLabel_License",
-            "stripe_checkout_url": "https://checkout.stripe.com/pay/cs_live_agency_whitelabel_2497",
+            "neteller_checkout_url": neteller_link(2497.00, "Agency_WhiteLabel_License"),
             "action_button": "CLAIM AGENCY WHITE-LABEL LICENSE ($2,497/mo)"
         },
         {
@@ -54,8 +57,7 @@ def generate_extreme_sales_hub():
             "price": "$997.00 USD",
             "price_numeric": 997.00,
             "description": "50 Deep Skip-Traced US Real Estate contacts (Probate, Pre-Foreclosure, Out-of-State Landlords) with primary/secondary phones, emails, and tax IDs.",
-            "neteller_checkout_url": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=997.00&currency=USD&item=50_US_Lead_Pack",
-            "stripe_checkout_url": "https://checkout.stripe.com/pay/cs_live_lead_pack_997",
+            "neteller_checkout_url": neteller_link(997.00, "50_US_Lead_Pack"),
             "action_button": "DOWNLOAD 50 VERIFIED LEADS ($997)"
         },
         {
@@ -65,8 +67,7 @@ def generate_extreme_sales_hub():
             "price": "$499.00 USD",
             "price_numeric": 499.00,
             "description": "1,000 live outbound AI calling minutes powered by Twilio & ElevenLabs with automated transcript analysis & sentiment scoring.",
-            "neteller_checkout_url": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=499.00&currency=USD&item=1000_Voice_Mins",
-            "stripe_checkout_url": "https://checkout.stripe.com/pay/cs_live_voice_mins_499",
+            "neteller_checkout_url": neteller_link(499.00, "1000_Voice_Mins"),
             "action_button": "ACTIVATE 1,000 CALL MINUTES ($499)"
         }
     ]
@@ -83,7 +84,6 @@ def generate_extreme_sales_hub():
             f.write(f"- **Target Audience**: {offer['target_buyer']}\n")
             f.write(f"- **Details**: {offer['description']}\n")
             f.write(f"- 💳 **Neteller Direct Payment**: [Pay {offer['price']} via Neteller]({offer['neteller_checkout_url']})\n")
-            f.write(f"- 💳 **Stripe One-Click Payment**: [Pay {offer['price']} via Stripe]({offer['stripe_checkout_url']})\n\n")
             f.write("---\n\n")
 
     print(f"[EXTREME SALES HUB] SUCCESS: Generated 4 High-Urgency Cash Offers. Saved to {SALES_HUB_FILE.name}")

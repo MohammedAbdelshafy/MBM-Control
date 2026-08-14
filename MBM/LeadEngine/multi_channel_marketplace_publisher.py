@@ -60,8 +60,8 @@ def generate_reddit_posts():
                 "Hey guys,\n\n"
                 "We have 2 high-equity off-market residential deals in the DFW area with $35,500 built-in equity ready for assignment.\n\n"
                 "Also releasing a fresh batch of 50 verified, deep skip-traced US seller leads with primary/cell numbers and emails.\n\n"
-                "**Get Wholesale Assignment Rights ($5,000)**: https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=5000.00&currency=USD&item=Wholesale_Deal_Rights\n"
-                "**Download 50 Verified Lead Pack ($997)**: https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=997.00&currency=USD&item=50_US_Lead_Pack\n\n"
+                "**Get Wholesale Assignment Rights ($5,000)**: " + neteller_link(5000.00, 'Wholesale_Deal_Rights') + "\n"
+                "**Download 50 Verified Lead Pack ($997)**: " + neteller_link(997.00, '50_US_Lead_Pack') + "\n\n"
                 "PM if you need custom market filters!"
             )
         },
@@ -75,8 +75,8 @@ def generate_reddit_posts():
                 "- Twilio + ElevenLabs + Retell AI voice infrastructure\n"
                 "- 80% gross profit margins on call minutes\n"
                 "- Turnkey client portal & billing engine\n\n"
-                "**Claim White-Label Agency License ($2,497/mo)**: https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=2497.00&currency=USD&item=Agency_WhiteLabel_License\n"
-                "**Get Source Code Starter Kit ($97)**: https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=97.00&currency=USD&item=AI_Voice_Starter_Kit"
+                "**Claim White-Label Agency License ($2,497/mo)**: " + neteller_link(2497.00, 'Agency_WhiteLabel_License') + "\n"
+                "**Get Source Code Starter Kit ($97)**: " + neteller_link(97.00, 'AI_Voice_Starter_Kit')
             )
         },
         {
@@ -85,7 +85,7 @@ def generate_reddit_posts():
             "body": (
                 "Practices lose up to 18% of monthly revenue due to patient no-shows and missed front-desk calls.\n\n"
                 "Our AI Voice Telephony Suite handles inbound booking 24/7, conducts automated pre-appointment reminders, and populates weekly local patient lead lists.\n\n"
-                "**VIP Practice Setup & Retainer ($1,997)**: https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=1997.00&currency=USD&item=Clinic_AI_Retainer"
+                "**VIP Practice Setup & Retainer ($1,997)**: " + neteller_link(1997.00, 'Clinic_AI_Retainer')
             )
         }
     ]
@@ -104,8 +104,8 @@ def generate_linkedin_posts():
             "post_copy": (
                 "🚀 Streamlining Off-Market Real Estate Acquisitions with AI Lead Intelligence.\n\n"
                 "We just packaged 50 deep skip-traced distressed property seller records and 2 exclusive wholesale assignment contracts in top US metro markets.\n\n"
-                "📥 Access Wholesale Deal Rights ($5,000): https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=5000.00&currency=USD&item=Wholesale_Deal_Rights\n"
-                "📊 Verified Lead Pack ($997): https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=997.00&currency=USD&item=50_US_Lead_Pack\n\n"
+                "📥 Access Wholesale Deal Rights ($5,000): " + neteller_link(5000.00, 'Wholesale_Deal_Rights') + "\n"
+                "📊 Verified Lead Pack ($997): " + neteller_link(997.00, '50_US_Lead_Pack') + "\n\n"
                 "#RealEstateInvesting #Wholesaling #PropTech #OffMarketDeals"
             )
         },
@@ -114,8 +114,8 @@ def generate_linkedin_posts():
             "post_copy": (
                 "💼 Scaling an AI Voice Agency in 2026 without writing backend code.\n\n"
                 "Our White-Label Contech AI Voice Platform allows agency owners to launch custom voice agents for local businesses with 80%+ profit margins.\n\n"
-                "🔗 White-Label License ($2,497/mo): https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=2497.00&currency=USD&item=Agency_WhiteLabel_License\n"
-                "📚 Agency Blueprint Guide ($297): https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=297.00&currency=USD&item=Agency_Setup_Guide\n\n"
+                "🔗 White-Label License ($2,497/mo): " + neteller_link(2497.00, 'Agency_WhiteLabel_License') + "\n"
+                "📚 Agency Blueprint Guide ($297): " + neteller_link(297.00, 'Agency_Setup_Guide') + "\n\n"
                 "#AIVoice #AgencyGrowth #SaaS #WhiteLabel"
             )
         }
@@ -153,7 +153,7 @@ def generate_batchleads_propstream_exports():
                 l.get("phone", ""), l.get("skip_trace_phone_alt", ""),
                 l.get("email") or l.get("skip_trace_email", ""),
                 l.get("state", ""), l.get("skip_trace_status", ""),
-                "https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=5000.00&currency=USD&item=Wholesale_Deal_Rights"
+                neteller_link(5000.00, 'Wholesale_Deal_Rights')
             ])
     log(f"✅ Exported {len(qualified)} leads to BatchLeads Format -> {bl_file.name}")
 
@@ -168,7 +168,7 @@ def generate_batchleads_propstream_exports():
                 l.get("phone", ""), l.get("skip_trace_phone_alt", ""),
                 l.get("email") or l.get("skip_trace_email", ""),
                 l.get("npi_number", ""), l.get("skip_trace_status", ""),
-                "https://member.neteller.com/pay?email=" + NETELLER_EMAIL + "&account=" + NETELLER_ACCOUNT_ID + "&amount=1997.00&currency=USD&item=Clinic_AI_Retainer"
+                neteller_link(1997.00, 'Clinic_AI_Retainer')
             ])
     log(f"✅ Exported {len(qualified)} leads to BatchDialer / PropStream Format -> {bd_file.name}")
 

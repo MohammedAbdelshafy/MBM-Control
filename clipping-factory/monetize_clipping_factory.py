@@ -11,6 +11,11 @@ import sys
 import json
 import time
 import requests
+import sys
+from pathlib import Path
+if str(Path(__file__).resolve().parents[2]) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_ACCOUNT_ID
 
 NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
 NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
@@ -39,9 +44,9 @@ def monetize_clipping_factory():
             f"Hello {c['name']},\n\n"
             f"We built an automated AI Clipping Factory pipeline that turns full-length {c['channel']} episodes into 1080p 60FPS viral Shorts with animated captions in under 60 seconds.\n\n"
             f"OFFER 1: 30 Viral Shorts Rendered for Your Channel ($497 USD)\n"
-            f"1-Click Neteller Checkout: https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=497.00&currency=USD&item=30_Viral_Shorts_Package\n\n"
+            f"1-Click Neteller Checkout: {neteller_link(497.00, '30_Viral_Shorts_Package')}\n\n"
             f"OFFER 2: Dedicated Clipping Factory White-Label Engine ($1,497 / month)\n"
-            f"1-Click Neteller Checkout: https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=1497.00&currency=USD&item=Clipping_Engine_SaaS\n\n"
+            f"1-Click Neteller Checkout: {neteller_link(1497.00, 'Clipping_Engine_SaaS')}\n\n"
             f"Best regards,\n"
             f"Clipping Factory Enterprise Team\n"
             f"abdelshafyclapps@gmail.com"

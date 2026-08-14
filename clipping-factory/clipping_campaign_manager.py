@@ -34,6 +34,11 @@ import io
 import time
 from pathlib import Path
 from datetime import datetime
+import sys
+from pathlib import Path
+if str(Path(__file__).resolve().parents[2]) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_ACCOUNT_ID
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
@@ -78,7 +83,7 @@ def get_ultra_enhanced_campaigns():
             "sample_desc": "Insane action & thriller plot twists that had American moviegoers speechless!\n\n" \
                            "#PlotTwist #MovieRecap #ActionMovies #Thriller #HollywoodEnding #USATrending #MovieClips #CinemaTok #MovieMindBlowing #Shorts #USA",
             "target_product": "White-Label Agency License ($2,497/mo)",
-            "neteller_link": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=2497.00&currency=USD&item=Agency_WhiteLabel_License"
+            "neteller_link": neteller_link(2497.00, "Agency_WhiteLabel_License")
         },
         {
             "id": "CAMP-02",
@@ -95,7 +100,7 @@ def get_ultra_enhanced_campaigns():
             "sample_desc": "The cutest baby moments across America caught on camera! Subscribe for daily wholesome dosage.\n\n" \
                            "#CuteBabies #BabyMoments #Wholesome #CuteBabiesOfTikTok #BabyLaugh #USAFamily #AdorableBabies #Heartwarming #Shorts #USA",
             "target_product": "AI Voice Starter Kit ($47)",
-            "neteller_link": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=47.00&currency=USD&item=Starter_Kit"
+            "neteller_link": neteller_link(47.00, "Starter_Kit")
         },
         {
             "id": "CAMP-03",
@@ -112,7 +117,7 @@ def get_ultra_enhanced_campaigns():
             "sample_desc": "Extremely frightening Turkish horror summaries and colossal sea waves breaking in the storm. Viewer discretion advised!\n\n" \
                            "#TurkishHorror #ScaryMovieRecap #OceanWaves #TerrifyingMoments #MegaWaves #HorrorTok #DontWatchThis #HauntedStories #Shorts #USA",
             "target_product": "Pro Deal Membership ($197/mo)",
-            "neteller_link": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=197.00&currency=USD&item=Pro_Membership"
+            "neteller_link": neteller_link(197.00, "Pro_Membership")
         },
         {
             "id": "CAMP-04",
@@ -129,7 +134,7 @@ def get_ultra_enhanced_campaigns():
             "sample_desc": "Insane knuckleball trajectories and legendary soccer goals in slow motion!\n\n" \
                            "#Knuckleball #SoccerGoals #FootballHighlights #PhysicsDefying #GoalMachinez #RonaldoFreeKick #USASports #FutbolTok #Shorts #USA",
             "target_product": "Header Banner Placement ($499/mo)",
-            "neteller_link": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=499.00&currency=USD&item=Web_Banner_Ad"
+            "neteller_link": neteller_link(499.00, "Web_Banner_Ad")
         },
         {
             "id": "CAMP-05",
@@ -146,7 +151,7 @@ def get_ultra_enhanced_campaigns():
             "sample_desc": "Watch autonomous AI agent swarms clip videos, qualify leads, and close sales 24/7 for US businesses!\n\n" \
                            "#AIAgents #Automation #SaaS #BuildInPublic #AIStartups #SiliconValley #VideoClipping #TechTok #USATech #Shorts #USA",
             "target_product": "Real-Time Lead Data API ($997/mo)",
-            "neteller_link": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=997.00&currency=USD&item=Lead_API_Sub"
+            "neteller_link": neteller_link(997.00, "Lead_API_Sub")
         }
     ]
 

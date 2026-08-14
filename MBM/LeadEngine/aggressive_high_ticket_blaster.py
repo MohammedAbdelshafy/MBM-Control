@@ -13,6 +13,11 @@ import requests
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
+import sys
+from pathlib import Path
+if str(Path(__file__).resolve().parents[2]) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_ACCOUNT_ID
 
 BASE_DIR = Path(__file__).parent.resolve()
 ROOT_DIR = BASE_DIR.parent.parent.resolve()
@@ -55,8 +60,8 @@ def blast_high_ticket_offers():
                 f"Hello {b['name']},\n\n"
                 f"We have locked up exclusive assignment rights for 2 high-equity off-market Dallas/Fort Worth residential properties with $35,500 built-in equity.\n\n"
                 f"Wholesale Assignment Rights: $5,000.00 USD\n"
-                f"1-Click Neteller/Bank Checkout: https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=5000.00&currency=USD&item=Wholesale_Deal_Rights\n\n"
-                f"Or buy 50 Deep Skip-Traced Verified Seller Leads ($997): https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=997.00&currency=USD&item=50_US_Lead_Pack\n\n"
+                f"1-Click Neteller/Bank Checkout: {neteller_link(5000.00, 'Wholesale_Deal_Rights')}\n\n"
+                f"Or buy 50 Deep Skip-Traced Verified Seller Leads ($997): {neteller_link(997.00, '50_US_Lead_Pack')}\n\n"
                 f"Best regards,\n"
                 f"Contech AI Acquisition Swarm\n"
                 f"abdelshafyclapps@gmail.com"
@@ -67,7 +72,7 @@ def blast_high_ticket_offers():
                 f"Hello {b['name']},\n\n"
                 f"Deploy our 24/7 Autonomous AI Voice Agent Swarm processing 10,000 calls per minute under your own brand with 80% gross margins.\n\n"
                 f"Agency White-Label License: $2,497.00 / month\n"
-                f"Direct Checkout Link: https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=2497.00&currency=USD&item=Agency_WhiteLabel_License\n\n"
+                f"Direct Checkout Link: {neteller_link(2497.00, 'Agency_WhiteLabel_License')}\n\n"
                 f"Sincerely,\n"
                 f"Contech AI Enterprise Team\n"
                 f"abdelshafyclapps@gmail.com"

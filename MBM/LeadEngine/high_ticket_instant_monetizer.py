@@ -20,6 +20,18 @@ ROOT_DIR = BASE_DIR.parent.parent
 LOGS_DIR = BASE_DIR / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
+sys.path.insert(0, str(BASE_DIR.parent.parent))
+try:
+    from MBM.Scripts.neteller_config import NETELLER_EMAIL, NETELLER_ACCOUNT_ID, neteller_link
+except Exception:
+    NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
+    NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
+
+    def neteller_link(amount, item, currency="USD", **kw):
+        base = "https://member.neteller.com/pay"
+        return f"{base}?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount={float(amount):.2f}&currency={currency}&item={item}"
+
+
 OUTPUT_FILE = LOGS_DIR / "high_ticket_monetization_report.json"
 
 HIGH_TICKET_OFFERS = [
@@ -28,7 +40,7 @@ HIGH_TICKET_OFFERS = [
         "title": "VIP Done-For-You AI Employee Installation & Retainer",
         "upfront_price": 3499.0,
         "monthly_recurring": 1997.0,
-        "checkout_url": "https://contec-ai-store.myshopify.com/cart/40112237:1",
+        "checkout_url": neteller_link(3499.00, "DFY_VIP_Setup"),
         "target_audience": "Mid-market Real Estate Agencies, Medical Clinics, B2B Wholesalers",
         "included_agents": [
             "Retell AI Telephony Agent",
@@ -42,7 +54,7 @@ HIGH_TICKET_OFFERS = [
         "title": "Real-Time Distressed Property & B2B Lead Feed Pass",
         "upfront_price": 0.0,
         "monthly_recurring": 997.0,
-        "checkout_url": "https://contec-ai-store.myshopify.com/cart/40112238:1",
+        "checkout_url": neteller_link(997.00, "Lead_Feed_Monthly"),
         "target_audience": "Real Estate Investors, Hedge Funds, High-Volume Wholesalers",
         "included_agents": [
             "Daily Skip-Traced Lead Stream",

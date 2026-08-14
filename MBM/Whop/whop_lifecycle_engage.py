@@ -29,6 +29,18 @@ LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 REPO_ROOT = BASE_DIR.parent.parent
 
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+try:
+    from MBM.Scripts.neteller_config import NETELLER_EMAIL, NETELLER_ACCOUNT_ID, neteller_link
+except Exception:
+    NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
+    NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
+
+    def neteller_link(amount, item, currency="USD", **kw):
+        base = "https://member.neteller.com/pay"
+        return f"{base}?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount={float(amount):.2f}&currency={currency}&item={item}"
+
 DRY_RUN = False
 
 import sys
@@ -184,7 +196,7 @@ def run_lifecycle_engage() -> dict:
                 "Hi there,\n\n"
                 "Welcome to Contec AI Agentic Teamz! Your Whop membership is active.\n\n"
                 "Here is your Quickstart Guide:\n"
-                "1. Access your AI Skills Storefront: https://whop.com/checkout/plan_ContecAI\n"
+                "1. Access your AI Skills Storefront: " + neteller_link(497.00, "ContecAI_Teamz") + "\n"
                 "2. Join our VIP Telegram Community\n"
                 "3. Contact Support 24/7 on +1 (661) 990-9068\n\n"
                 "Let's build your revenue engine!\n"
@@ -201,7 +213,7 @@ def run_lifecycle_engage() -> dict:
                 "Hi there,\n\n"
                 "We noticed you haven't used your AI Skills suite recently.\n"
                 "To make sure you get maximum ROI, we're giving you a 30% Lifetime Discount on your next renewal + 1-on-1 AI Setup session!\n\n"
-                "Claim your 30% discount here: https://whop.com/checkout/plan_ContecAI\n\n"
+                "Claim your 30% discount here: " + neteller_link(347.90, "ContecAI_Teamz_SAVE30") + "\n\n"
                 "Best,\n— Contec AI Team"
             )
             _queue_email(user_email, subject, body)
@@ -215,7 +227,7 @@ def run_lifecycle_engage() -> dict:
                 "Hi there,\n\n"
                 "We miss having you in Contec AI Agentic Teamz!\n"
                 "Reactivate your account today and receive $50 bonus credit towards any AI Agent skill.\n\n"
-                "Reactivate now: https://whop.com/checkout/plan_ContecAI\n\n"
+                "Reactivate now: " + neteller_link(447.00, "ContecAI_Teamz_Reactivation") + "\n\n"
                 "— Contec AI Team"
             )
             _queue_email(user_email, subject, body)

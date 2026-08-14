@@ -7,8 +7,9 @@ import {
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { netellerLink } from '@/lib/neteller';
 
-/* 4 flagship products — mirroring MBM/Shopify/logs/shopify_catalog.json */
+/* 4 flagship products — 1-click Neteller checkout (mirrors MBM/Shopify/logs/shopify_catalog.json) */
 const PRODUCTS = [
   {
     id: 'prod_ai_agent_suite',
@@ -19,7 +20,7 @@ const PRODUCTS = [
     icon: Sparkles,
     blurb: 'Complete autonomous AI agent suite — clipping factory, lead engine, auto-dialer.',
     accent: ['AI Agent', 'Automation', 'Flagship'],
-    checkout: 'https://contec-ai-store.myshopify.com/cart/40112233:1',
+    checkout: netellerLink(299, 'AI_Agent_Suite_License'),
     gradient: 'from-indigo-500/25 via-purple-500/10 to-transparent',
   },
   {
@@ -32,7 +33,7 @@ const PRODUCTS = [
     icon: Video,
     blurb: 'Autonomous 1080p60 short video generation & multi-channel posting daemon.',
     accent: ['Subscription', 'Reels', 'Shorts'],
-    checkout: 'https://contec-ai-store.myshopify.com/cart/40112234:1',
+    checkout: netellerLink(99, 'Clipping_Factory_Pro_Monthly'),
     gradient: 'from-cyan-500/25 via-sky-500/10 to-transparent',
   },
   {
@@ -44,7 +45,7 @@ const PRODUCTS = [
     icon: Zap,
     blurb: 'Verified skip-traced real estate leads across US, UK & EU markets.',
     accent: ['Real Estate', 'B2B', 'Data'],
-    checkout: 'https://contec-ai-store.myshopify.com/cart/40112235:1',
+    checkout: netellerLink(250, 'Buyer_Seller_Lead_Pack'),
     gradient: 'from-emerald-500/25 via-green-500/10 to-transparent',
   },
   {
@@ -56,7 +57,7 @@ const PRODUCTS = [
     icon: Crown,
     blurb: '1-on-1 custom agent setup, private server deployment, 24/7 support.',
     accent: ['Enterprise', 'High-Ticket'],
-    checkout: 'https://contec-ai-store.myshopify.com/cart/40112236:1',
+    checkout: netellerLink(1499, 'Enterprise_AI_Setup'),
     gradient: 'from-amber-500/25 via-orange-500/10 to-transparent',
   },
 ];
@@ -174,7 +175,7 @@ export default function ShopifyStorefront() {
         </div>
 
         <p className="mt-10 text-center text-xs text-slate-500">
-          <Lock className="mr-1 inline h-3 w-3" /> Secure checkout · Instant license delivery · 24/7 support
+          <Lock className="mr-1 inline h-3 w-3" /> Secure 1-click Neteller checkout · Instant license delivery · 24/7 support
         </p>
       </main>
     </div>

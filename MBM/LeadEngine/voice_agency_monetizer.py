@@ -10,6 +10,11 @@ import sys
 import json
 import time
 import requests
+import sys
+from pathlib import Path
+if str(Path(__file__).resolve().parents[2]) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_ACCOUNT_ID
 
 NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
 NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
@@ -38,9 +43,9 @@ def monetize_voice_agency():
             f"Hello {v['name']} Team,\n\n"
             f"Replace manual cold calling and intake queues with our 24/7 Contech AI Voice Bot Swarm. Handles 10,000 inbound/outbound calls simultaneously with sub-500ms latency.\n\n"
             f"OFFER 1: Complete AI Voice Agent Setup & Integration ($1,500.00 USD)\n"
-            f"1-Click Neteller Checkout: https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=1500.00&currency=USD&item=AI_Voice_Setup_Fee\n\n"
+            f"1-Click Neteller Checkout: {neteller_link(1500.00, 'AI_Voice_Setup_Fee')}\n\n"
             f"OFFER 2: Monthly Unlimited Call Swarm Retainer ($497.00 / month)\n"
-            f"1-Click Neteller Checkout: https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=497.00&currency=USD&item=AI_Voice_Monthly_Retainer\n\n"
+            f"1-Click Neteller Checkout: {neteller_link(497.00, 'AI_Voice_Monthly_Retainer')}\n\n"
             f"Best regards,\n"
             f"Contech AI Voice Agency Team\n"
             f"abdelshafyclapps@gmail.com"

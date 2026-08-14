@@ -45,7 +45,7 @@ export default function VoiceAgentsStudio() {
   const [callTimer, setCallTimer] = useState(0);
   const [liveEarnings, setLiveEarnings] = useState(0);
   const [payoutAmount, setPayoutAmount] = useState('');
-  const [payoutMethod, setPayoutMethod] = useState('Stripe Connect');
+  const [payoutMethod, setPayoutMethod] = useState('Neteller Direct');
   const timerRef = useRef(null);
 
   // Load agents and wallet stats
@@ -958,9 +958,7 @@ export default function VoiceAgentsStudio() {
                         className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500"
                       >
                         <option value="Neteller Direct">Neteller Direct (Email / Account ID)</option>
-                        <option value="Stripe Connect">Stripe Connect (Instant Direct Deposit)</option>
-                        <option value="PayPal Direct">PayPal Direct</option>
-                        <option value="Bank Wire">International Bank Wire (IBAN/SWIFT)</option>
+                        <option disabled>Stripe Connect, PayPal & Bank Wire disabled — Neteller only</option>
                       </select>
                     </div>
 

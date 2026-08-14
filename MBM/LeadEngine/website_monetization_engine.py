@@ -23,6 +23,11 @@ import io
 import time
 from pathlib import Path
 from datetime import datetime
+import sys
+from pathlib import Path
+if str(Path(__file__).resolve().parents[2]) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_ACCOUNT_ID
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
@@ -94,7 +99,7 @@ def main():
                 "pricing": "$997.00 USD / month",
                 "revenue_model": "Monthly SaaS API Key Subscription",
                 "target_customers": "Real Estate Funds, Marketing Agencies",
-                "neteller_checkout": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=997.00&currency=USD&item=Lead_API_Sub"
+                "neteller_checkout": neteller_link(997.00, "Lead_API_Sub")
             },
             {
                 "id": "MON-02",
@@ -102,7 +107,7 @@ def main():
                 "pricing": "$0.50 USD / minute",
                 "revenue_model": "Usage Top-Up Packs ($100 / $500)",
                 "target_customers": "Call Center Agents, Sales Reps",
-                "neteller_checkout": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=500.00&currency=USD&item=1000_Call_Mins"
+                "neteller_checkout": neteller_link(500.00, "1000_Call_Mins")
             },
             {
                 "id": "MON-03",
@@ -110,7 +115,7 @@ def main():
                 "pricing": "$499.00 - $1,500.00 USD / month",
                 "revenue_model": "Monthly Header & Sidebar Ad Slots",
                 "target_customers": "Hard Money Lenders, Title Companies, Software Tools",
-                "neteller_checkout": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=499.00&currency=USD&item=Web_Banner_Ad"
+                "neteller_checkout": neteller_link(499.00, "Web_Banner_Ad")
             },
             {
                 "id": "MON-04",
@@ -125,7 +130,7 @@ def main():
                 "pricing": "$197.00 USD / month",
                 "revenue_model": "Gated Membership Access to High-Equity Leads",
                 "target_customers": "Wholesalers & Investors",
-                "neteller_checkout": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=197.00&currency=USD&item=Pro_Membership"
+                "neteller_checkout": neteller_link(197.00, "Pro_Membership")
             },
             {
                 "id": "MON-06",
@@ -133,7 +138,7 @@ def main():
                 "pricing": "$2,497.00 Setup + $997.00/mo",
                 "revenue_model": "Enterprise Agency Licensing",
                 "target_customers": "Marketing Agencies",
-                "neteller_checkout": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=2497.00&currency=USD&item=Agency_WhiteLabel_License"
+                "neteller_checkout": neteller_link(2497.00, "Agency_WhiteLabel_License")
             },
             {
                 "id": "MON-07",
@@ -141,7 +146,7 @@ def main():
                 "pricing": "$47.00 - $297.00 USD per product",
                 "revenue_model": "Instant Digital Product Purchase",
                 "target_customers": "Developers, Agencies, Wholesalers",
-                "neteller_checkout": f"https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=97.00&currency=USD&item=AI_Voice_Starter_Kit"
+                "neteller_checkout": neteller_link(97.00, "AI_Voice_Starter_Kit")
             }
         ]
     }

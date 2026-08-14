@@ -8,6 +8,7 @@ import { sendEmailQueue } from './emailSender.js';
 import { generateAllDemos, queuePromoCampaign } from './demoCampaign.js';
 import { queueBuyerCampaign, queueAICampaign, queueSellerCampaign, generateSellerWhatsAppReport, loadStats } from './leadPipeline.js';
 import { hunt } from './clientHunter.js';
+import { netellerLink, netellerWalletLabel, NETELLER_EMAIL, NETELLER_ACCOUNT_ID } from './neteller.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -539,11 +540,11 @@ app.get('/api/orders', async (req, res) => {
 app.patch('/api/orders/:id/pay', async (req, res) => {
   try {
     if (!supabaseAdmin) return res.status(500).json({ error: 'SUPABASE_SERVICE_ROLE_KEY not configured' });
-    const { payment_method, stripe_payment_id } = req.body;
+    const { payment_method } = req.body;
     const { data, error } = await supabaseAdmin.from('client_orders').update({
       status: 'paid',
-      payment_method: payment_method || 'bank_transfer',
-      stripe_payment_id: stripe_payment_id || '',
+      payment_method: payment_method || 'neteller',
+      stripe_payment_id: '',
     }).eq('id', req.params.id).select().single();
     if (error) throw error;
     res.json({ success: true, order: data });
@@ -833,17 +834,14 @@ app.post('/api/creator/payout', (req, res) => {
   }
 
   creatorWallet.payout_balance = parseFloat((creatorWallet.payout_balance - withdrawAmount).toFixed(2));
-  
-  const netellerEmail = process.env.NETELLER_EMAIL || "abdelshafyclapps@gmail.com";
-  const netellerAccountId = process.env.NETELLER_ACCOUNT_ID || "4599228811";
 
   const payoutRecord = {
     id: `po-${Date.now()}`,
     amount: withdrawAmount,
     status: "processing",
-    method: method || "Neteller Direct",
-    neteller_email: method === "Neteller Direct" ? netellerEmail : undefined,
-    neteller_account_id: method === "Neteller Direct" ? netellerAccountId : undefined,
+    method: "Neteller Direct",
+    neteller_email: NETELLER_EMAIL,
+    neteller_account_id: NETELLER_ACCOUNT_ID,
     date: new Date().toISOString()
   };
 
@@ -853,9 +851,9 @@ app.post('/api/creator/payout', (req, res) => {
     status: 'payout_processed',
     payout_id: payoutRecord.id,
     amount: payoutRecord.amount,
-    method,
-    neteller_email: method === "Neteller Direct" ? netellerEmail : undefined,
-    neteller_account_id: method === "Neteller Direct" ? netellerAccountId : undefined,
+    method: "Neteller Direct",
+    neteller_email: NETELLER_EMAIL,
+    neteller_account_id: NETELLER_ACCOUNT_ID,
     remaining_balance: creatorWallet.payout_balance
   });
 });
@@ -892,18 +890,18 @@ app.get('/api/sales/deals', (req, res) => {
   res.json(inMemorySalesDeals);
 });
 
-// POST /api/sales/proposals — Creates B2B Sales Proposal with Stripe/PayPal link
+// POST /api/sales/proposals — Creates B2B Sales Proposal with Neteller checkout link
 app.post('/api/sales/proposals', (req, res) => {
   try {
     const { buyer_name, lead_pack_title, price_usd, discount_applied } = req.body;
+    const final_price = discount_applied ? (price_usd || 499.00) * 0.8 : (price_usd || 499.00);
     const proposal = {
       id: `prop-${Date.now()}`,
       buyer_name,
       lead_pack_title,
       original_price: price_usd || 499.00,
-      final_price: discount_applied ? price_usd * 0.8 : price_usd,
-      stripe_checkout_url: `https://checkout.stripe.com/pay/prop_${Date.now()}`,
-      paypal_checkout_url: `https://www.paypal.com/checkoutnow?token=prop_${Date.now()}`,
+      final_price,
+      neteller_checkout_url: netellerLink(final_price, 'B2B_Lead_Pack_Proposal', { currency: 'USD' }),
       status: 'sent',
       created_at: new Date().toISOString()
     };
@@ -1013,7 +1011,7 @@ app.post('/api/instant-cash/marketing-agencies', (req, res) => {
       monthly_retainer_usd: 997.00,
       per_min_usage_margin: 0.50,
       white_label_portal_url: `https://agency.dawrix.com/portal/${Date.now()}`,
-      stripe_checkout_url: `https://checkout.stripe.com/pay/agency_wl_${Date.now()}`,
+      neteller_checkout_url: netellerLink(1500.00, 'Agency_WhiteLabel_License', { currency: 'USD' }),
       status: 'active',
       created_at: new Date().toISOString()
     };
@@ -1626,94 +1624,35 @@ app.post('/api/dialer/cold-call', async (req, res) => {
   }
 });
 
-// === Stripe Checkout / Monetization ===
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+// === Neteller Checkout / Monetization ===
+const NETELLER_PRICES = {
+  lead_pack_daily: 18,
+  lead_pack_monthly: 497,
+  ai_email: 297,
+  ai_full_stack: 497,
+  ai_enterprise: 997,
+};
 
-// Price map: plan id -> Stripe Price ID (set in .env as STRIPE_PRICE_<PLAN_ID>)
-const STRIPE_PRICES = Object.fromEntries(
-  ['lead_pack_daily', 'lead_pack_monthly', 'ai_email', 'ai_full_stack', 'ai_enterprise']
-    .map((p) => [p, process.env[`STRIPE_${p.toUpperCase()}`]])
-    .filter(([, v]) => v)
-);
-
-let stripeApi = null;
-async function getStripe() {
-  if (!STRIPE_SECRET_KEY) return null;
-  if (!stripeApi) {
-    const { default: Stripe } = await import('stripe');
-    stripeApi = new Stripe(STRIPE_SECRET_KEY);
-  }
-  return stripeApi;
-}
-
-// POST /api/checkout — create a Stripe Checkout Session for a plan
+// POST /api/checkout — create a 1-click Neteller checkout for a plan
 app.post('/api/checkout', async (req, res) => {
   try {
     const { plan, email, name, company } = req.body || {};
-    const priceId = STRIPE_PRICES?.[plan];
     if (!plan) return res.status(400).json({ error: 'plan is required' });
 
-    // Fallback: dynamic one-time price by scanning known plan amounts
-    const stripe = await getStripe();
-    if (stripe && priceId) {
-      const session = await stripe.checkout.sessions.create({
-        mode: 'subscription',
-        customer_email: email || undefined,
-        client_reference_id: email || undefined,
-        metadata: { plan, name: name || '', company: company || '' },
-        line_items: [{ price: priceId, quantity: 1 }],
-        success_url: `${process.env.APP_URL || 'http://localhost:5173'}/demo?paid=${plan}`,
-        cancel_url: `${process.env.APP_URL || 'http://localhost:5173'}/demo#pricing`,
-      });
-      return res.json({ status: 'checkout', url: session.url, id: session.id });
-    }
+    const amount = NETELLER_PRICES[plan];
+    if (!amount) return res.status(400).json({ error: `no Neteller price mapped for plan "${plan}"` });
 
-    // No Stripe configured — record intent to email_queue and notify via email
+    const url = netellerLink(amount, plan, { currency: 'USD' });
+
+    // Record intent to email_queue so no request is ever lost (orders table optional).
     if (supabase) {
-      const subject = email ? `PAID INTENT: ${plan}${company ? ' for ' + company : ''}` : `PAID INTENT: ${plan}`;
-      const body = `Prospect ${name ? name + ' ' : ''}${company ? 'from ' + company + ' ' : ''}requested plan "${plan}" via Stripe checkout (Stripe not configured). Follow up to collect payment.\nEmail: ${email || 'unknown'}`;
+      const subject = `PAID INTENT: ${plan} ($${amount})${company ? ' for ' + company : ''}`;
+      const body = `Prospect ${name ? name + ' ' : ''}${company ? 'from ' + company + ' ' : ''}requested plan "${plan}" ($${amount}) via Neteller checkout.\nEmail: ${email || 'unknown'}\nCheckout: ${url}`;
       await supabase.from('email_queue').insert({ recipient_email: email || 'walkin@demo.com', subject, body, status: 'qued' });
     }
-    return res.status(503).json({ status: 'fallback', error: 'STRIPE_SECRET_KEY not configured; recorded as paid intent lead.' });
+    return res.json({ status: 'checkout', url, id: `nt-${Date.now()}`, neteller_email: NETELLER_EMAIL, neteller_account_id: NETELLER_ACCOUNT_ID });
   } catch (err) {
     res.status(500).json({ error: err.message });
-  }
-});
-
-// POST /api/stripe/webhook — mark orders paid on successful checkout
-app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-  try {
-    const stripe = await getStripe();
-    if (!stripe || !STRIPE_WEBHOOK_SECRET) return res.status(200).json({ received: true, skipped: true });
-    const sig = req.headers['stripe-signature'];
-    const event = stripe.webhooks.constructEvent(req.body, sig, STRIPE_WEBHOOK_SECRET);
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      // metadata.plan is set when the session is created (see POST /api/stripe/checkout).
-      // Fall back to the legacy plan_id key, then 'custom'.
-      const plan = session.metadata?.plan || session.metadata?.plan_id || 'custom';
-      const email = session.customer_email || session.client_reference_id || '';
-      // Stripe reports amount_total in cents (absent for some free/zero sessions).
-      const amountTotal = typeof session.amount_total === 'number' ? session.amount_total : 0;
-      if (supabase) {
-        await supabase.from('client_orders').insert({
-          customer_name: session.metadata?.name || '',
-          customer_email: email,
-          company: session.metadata?.company || '',
-          plan,
-          amount: amountTotal > 0 ? amountTotal / 100 : 0,
-          currency: (session.currency || 'USD').toUpperCase(),
-          status: 'paid',
-          payment_method: 'stripe',
-          stripe_payment_id: session.id || session.payment_intent,
-          notes: 'Paid via Stripe webhook',
-        });
-      }
-    }
-    res.json({ received: true });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
   }
 });
 

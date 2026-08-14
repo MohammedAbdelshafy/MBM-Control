@@ -28,6 +28,11 @@ import io
 import time
 from pathlib import Path
 from datetime import datetime
+import sys
+from pathlib import Path
+if str(Path(__file__).resolve().parents[2]) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_ACCOUNT_ID
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
@@ -97,7 +102,7 @@ def execute_email_engagement_tactics():
             "structure": {
                 "subject": "Quick question regarding {company}",
                 "body_hook": "Hey {contact}, noticed you are running {vertical}. We built an AI engine that eliminates 90% of admin overhead.",
-                "neteller_cta": f"Claim your starter pack for $47: https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=47.00&currency=USD&item=Starter_Kit"
+                "neteller_cta": f"Claim your starter pack for $47: {neteller_link(47.00, 'Starter_Kit')}"
             },
             "open_rate_target": "48.5%"
         },
@@ -106,7 +111,7 @@ def execute_email_engagement_tactics():
             "name": "Pain-Point Hook Injector",
             "trigger": "Healthcare / Clinic Vertical Leads",
             "hook": "Are empty appointment slots costing {company} $3,000+ every week?",
-            "neteller_cta": f"Lock in VIP Clinic Retainer ($1,997): https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=1997.00&currency=USD&item=Clinic_AI_Retainer"
+            "neteller_cta": f"Lock in VIP Clinic Retainer ($1,997): {neteller_link(1997.00, 'Clinic_AI_Retainer')}"
         },
         {
             "id": "EML-03",

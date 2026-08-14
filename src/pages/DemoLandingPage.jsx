@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/api/supabaseClient';
 import {
@@ -32,7 +32,7 @@ const PRICING_PLANS = [
       'Confidence scores included',
     ],
     popular: false,
-    paymentMethod: 'stripe',
+    paymentMethod: 'neteller',
     color: 'from-blue-600 to-blue-800',
     icon: Users,
   },
@@ -50,7 +50,7 @@ const PRICING_PLANS = [
       'Priority support',
     ],
     popular: false,
-    paymentMethod: 'stripe',
+    paymentMethod: 'neteller',
     color: 'from-cyan-600 to-blue-600',
     icon: Users,
   },
@@ -69,7 +69,7 @@ const PRICING_PLANS = [
       'Priority support',
     ],
     popular: true,
-    paymentMethod: 'stripe',
+    paymentMethod: 'neteller',
     color: 'from-purple-600 to-pink-600',
     icon: Mail,
   },
@@ -90,7 +90,7 @@ const PRICING_PLANS = [
       'White-label option',
     ],
     popular: false,
-    paymentMethod: 'stripe',
+    paymentMethod: 'neteller',
     color: 'from-emerald-600 to-teal-600',
     icon: Rocket,
   },
@@ -111,7 +111,7 @@ const PRICING_PLANS = [
       'Monthly strategy call',
     ],
     popular: false,
-    paymentMethod: 'bank_transfer',
+    paymentMethod: 'neteller',
     color: 'from-amber-600 to-orange-600',
     icon: Shield,
   },
@@ -123,7 +123,7 @@ const PRODUCTS = [
   {
     id: 'email-automation',
     title: 'AI Email Automation',
-    tagline: 'Draft, schedule & send — on autopilot',
+    tagline: 'Draft, schedule & send â€” on autopilot',
     description: 'Personalized sequences that nurture leads, follow up automatically, and close while you sleep.',
     icon: Mail,
     savings: '20+ hrs/week',
@@ -196,7 +196,7 @@ const PRODUCTS = [
 
 const WORKFLOW = [
   { step: '01', title: 'Book a quick call', desc: '15 minutes. We map your exact process and pain points.' },
-  { step: '02', title: 'We build your demo', desc: 'A live, working instance of your AI system — not slideware. Ready in 48 hours.' },
+  { step: '02', title: 'We build your demo', desc: 'A live, working instance of your AI system â€” not slideware. Ready in 48 hours.' },
   { step: '03', title: '7-day free pilot', desc: 'Run it on real work for a week. No card, no long-term contract.' },
   { step: '04', title: 'You keep what works', desc: 'Go monthly or enterprise. Cancel anytime. 30-day money-back guarantee.' },
 ];
@@ -205,8 +205,8 @@ const FAQS = [
   { q: 'How fast can I get started?', a: 'Most clients are up and running within 48 hours. We handle the setup, integration, and training to your business.' },
   { q: 'Do I need technical skills?', a: 'Zero coding required. We build, deploy, and manage everything. You just use the results.' },
   { q: 'Do you offer a trial?', a: 'Yes. Every plan starts with a 7-day free pilot on live work, then a 30-day money-back guarantee. No risk.' },
-  { q: 'Can I pay monthly?', a: 'Yes — all plans are monthly. No long-term contracts. Cancel anytime. Pay securely by card via Stripe.' },
-  { q: 'How do I pay?', a: 'Card payments are processed securely through Stripe. Bank transfer and crypto available on Enterprise.' },
+  { q: 'Can I pay monthly?', a: 'Yes â€” all plans are monthly. No long-term contracts. Cancel anytime. Pay securely via 1-click Neteller checkout.' },
+  { q: 'How do I pay?', a: 'Payments are processed through your Neteller wallet with a 1-click checkout link. Bank transfer available on Enterprise.' },
   { q: 'Can you work with my existing tools?', a: 'We integrate with virtually any CRM, email provider, and platform you already use.' },
 ];
 
@@ -319,7 +319,7 @@ export default function DemoLandingPage() {
         amount: plan.price,
         currency: 'USD',
         status: 'pending',
-        payment_method: plan.paymentMethod || 'stripe',
+        payment_method: plan.paymentMethod || 'neteller',
         notes: `Order from demo page - ${plan.name}`,
       });
       if (!error) order.inserted = true;
@@ -327,7 +327,7 @@ export default function DemoLandingPage() {
     } catch (err) {
       order.insertError = err;
     }
-    // The client_orders table may not exist on remote yet — never block a buyer.
+    // The client_orders table may not exist on remote yet â€” never block a buyer.
     // Record the prospect as a lead so no request is ever lost.
     if (!order.inserted) {
       try {
@@ -347,7 +347,7 @@ export default function DemoLandingPage() {
   async function handleBuy(plan) {
     setBuying(plan.id);
     await recordOrder(plan);
-    // Try Stripe checkout first; fall back to book-a-call + email if not configured.
+    // Try Neteller checkout first; fall back to book-a-call + email if not configured.
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
@@ -361,14 +361,14 @@ export default function DemoLandingPage() {
       });
       const data = await res.json();
       if (res.ok && data.url) {
-        window.location.href = data.url;
+        window.open(data.url, '_blank', 'noopener,noreferrer');
         setBuying(null);
         return;
       }
     } catch (e) {
       console.error('Checkout error:', e);
     }
-    // Fallback path (no Stripe): capture intent + open email + book a call.
+    // Fallback path (no checkout): capture intent + open email + book a call.
     const subject = encodeURIComponent(`I want ${plan.name} - $${plan.price}${plan.unit}`);
     const body = encodeURIComponent(`Hi Mohammed,\n\nI want to sign up for ${plan.name} at $${plan.price}${plan.unit}.\n\nPlease send me the payment instructions, or I'll book a call.\n\nThanks,\n${company || '[Your Company]'}`);
     window.open(`mailto:${CONTACT.email}?subject=${subject}&body=${body}`, '_blank');
@@ -400,18 +400,18 @@ ${CONTACT.email}`;
     let failed = false;
     try {
       const { error: queueError } = await supabase.functions.invoke('add-to-email-queue', {
-        body: { recipient_email: email, subject: `Welcome to Contech AI — Your demo is ready`, body: emailBody },
+        body: { recipient_email: email, subject: `Welcome to Contech AI â€” Your demo is ready`, body: emailBody },
       });
       if (queueError) failed = Boolean(queueError);
     } catch (err) {
       failed = true;
     }
-    // Edge Function may not be deployed — fall back to direct insert.
+    // Edge Function may not be deployed â€” fall back to direct insert.
     if (failed) {
       try {
         await supabase.from('email_queue').insert({
           recipient_email: email,
-          subject: `Welcome to Contech AI — Your demo is ready`,
+          subject: `Welcome to Contech AI â€” Your demo is ready`,
           body: emailBody,
           status: 'qued',
         });
@@ -427,7 +427,7 @@ ${CONTACT.email}`;
 
   return (
     <div className="min-h-screen bg-[#0a0a1a] text-white">
-      {/* Success banner after Stripe checkout */}
+      {/* Success banner after Neteller checkout */}
       <AnimatePresence>
         {paidPlan && (
           <motion.div
@@ -436,7 +436,7 @@ ${CONTACT.email}`;
             className="bg-green-600/20 border-b border-green-500/30 text-center px-4 py-3"
           >
             <p className="text-sm text-green-300 font-medium">
-              <CheckCircle size={14} className="inline mr-1" /> Payment received for {paidPlan.replace(/_/g, ' ')}! We'll onboard you now —
+              <CheckCircle size={14} className="inline mr-1" /> Payment received for {paidPlan.replace(/_/g, ' ')}! We'll onboard you now â€”
               <a href={CONTACT.calendly} target="_blank" rel="noreferrer" className="underline ml-1">book your onboarding call</a>.
             </p>
           </motion.div>
@@ -506,7 +506,7 @@ ${CONTACT.email}`;
               </h1>
               <p className="text-sm md:text-base text-gray-400 max-w-md mx-auto mb-6 leading-relaxed">
                 Stop burning hours on manual data entry, follow-ups, and lead qualification.
-                We build you a working AI system — email, leads, CRM, chatbot, content.
+                We build you a working AI system â€” email, leads, CRM, chatbot, content.
                 Live demo in 48 hours. First week free.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -582,7 +582,7 @@ ${CONTACT.email}`;
                 <p className="text-xs text-gray-400 font-medium flex items-center justify-between">
                   {product.title}
                   <Link to={product.liveDemo} className="text-purple-400 hover:text-purple-300 text-[10px] underline">
-                    Open live →
+                    Open live â†’
                   </Link>
                 </p>
               </div>
@@ -600,7 +600,7 @@ ${CONTACT.email}`;
       <section id="how" className="max-w-5xl mx-auto px-4 py-16">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
           <h2 className="text-xl md:text-3xl font-bold mb-3">From Call to Live in 48 Hours</h2>
-          <p className="text-sm text-gray-400 max-w-xl mx-auto">We build and you pilot — no slideware.</p>
+          <p className="text-sm text-gray-400 max-w-xl mx-auto">We build and you pilot â€” no slideware.</p>
         </motion.div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {WORKFLOW.map((w, i) => (
@@ -676,7 +676,7 @@ ${CONTACT.email}`;
 
         <div className="text-center mt-6">
           <p className="text-[10px] text-gray-600">
-            7-day free pilot · 30-day money-back guarantee · Cancel anytime · Secure Stripe checkout
+            7-day free pilot Â· 30-day money-back guarantee Â· Cancel anytime Â· Secure Neteller checkout
           </p>
           <p className="text-[10px] text-gray-600 mt-1">
             Need a custom plan?
@@ -707,7 +707,7 @@ ${CONTACT.email}`;
         </div>
       </section>
 
-      {/* CTA — Email Capture */}
+      {/* CTA â€” Email Capture */}
       <section id="get-started" className="max-w-3xl mx-auto px-4 py-16">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -770,7 +770,7 @@ ${CONTACT.email}`;
         <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Zap size={14} className="text-purple-400" />
-            <span className="text-xs text-gray-500">Contech AI — Agentic Solutions</span>
+            <span className="text-xs text-gray-500">Contech AI â€” Agentic Solutions</span>
           </div>
           <div className="flex items-center gap-4 text-[10px] text-gray-600">
             <a href={`mailto:${CONTACT.email}`} className="hover:text-gray-400">{CONTACT.email}</a>

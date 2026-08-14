@@ -12,6 +12,17 @@ import csv
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+try:
+    from MBM.Scripts.neteller_config import NETELLER_EMAIL, NETELLER_ACCOUNT_ID, neteller_link
+except Exception:
+    NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
+    NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
+
+    def neteller_link(amount, item, currency="USD", **kw):
+        base = "https://member.neteller.com/pay"
+        return f"{base}?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount={float(amount):.2f}&currency={currency}&item={item}"
+
 from MBM.LeadEngine.contact_enrichment import ContactEnricher
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -34,7 +45,7 @@ TARGET_PROSPECTS = [
         "content_clipping_score": "15/100 (Missing short-form Video Clipping Engine)",
         "recommended_package": "VIP Done-For-You AI Employee VIP Setup",
         "package_price": 3499.0,
-        "checkout_url": "https://contec-ai-store.myshopify.com/cart/40112237:1"
+        "checkout_url": neteller_link(3499.00, "DFY_VIP_Setup")
     },
     {
         "company": "Swift Health & Rehabilitation",
@@ -46,7 +57,7 @@ TARGET_PROSPECTS = [
         "content_clipping_score": "0/100 (No video marketing presence)",
         "recommended_package": "Enterprise Custom AI Setup",
         "package_price": 1499.0,
-        "checkout_url": "https://contec-ai-store.myshopify.com/cart/40112236:1"
+        "checkout_url": neteller_link(1499.00, "Enterprise_AI_Setup")
     },
     {
         "company": "Pioneer Property Investments",
@@ -58,7 +69,7 @@ TARGET_PROSPECTS = [
         "content_clipping_score": "20/100 (Static website, zero short-form video hooks)",
         "recommended_package": "Real-Time Distressed Property & B2B Lead Feed Pass",
         "package_price": 997.0,
-        "checkout_url": "https://contec-ai-store.myshopify.com/cart/40112238:1"
+        "checkout_url": neteller_link(997.00, "Lead_Feed_Monthly")
     }
 ]
 

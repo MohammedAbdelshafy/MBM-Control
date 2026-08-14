@@ -25,11 +25,22 @@ BASE_DIR = Path(__file__).resolve().parent
 LOGS_DIR = BASE_DIR / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
+sys.path.insert(0, str(BASE_DIR.parent.parent))
+try:
+    from MBM.Scripts.neteller_config import NETELLER_EMAIL, NETELLER_ACCOUNT_ID, neteller_link
+except Exception:
+    NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
+    NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
+
+    def neteller_link(amount, item, currency="USD", **kw):
+        base = "https://member.neteller.com/pay"
+        return f"{base}?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount={float(amount):.2f}&currency={currency}&item={item}"
+
+
 CATALOG_FILE = LOGS_DIR / "shopify_catalog.json"
 RECS_FILE = LOGS_DIR / "recommendations.json"
 
 DISCOUNT_PERCENT = 20
-STORE_BASE = "https://contec-ai-store.myshopify.com"
 
 # Deterministic cross-sell pairs (rule-based fallback + Gemini prompt anchors).
 CROSS_SELL_MAP = {
@@ -60,9 +71,15 @@ def _find_product(products, cart_title):
 
 
 def _single_use_discount_link(product_id: str) -> str:
-    """Build a dynamic, nominally single-use 20%-off checkout link."""
-    code = f"UPSELL20-{product_id.upper()[:14]}-{uuid.uuid4().hex[:8]}"
-    return f"https://contec-ai-store.myshopify.com/discount/{code}"
+    """Build a dynamic 20%-off Neteller checkout link for a product."""
+    try:
+        p = next((x for x in _load_catalog() if x["id"] == product_id), None)
+        if not p:
+            return None
+        discounted = round(p["price"] * (1 - DISCOUNT_PERCENT / 100.0), 2)
+        return neteller_link(discounted, f"{p['id']}_UPSELL20")
+    except Exception:
+        return None
 
 
 def _rule_based(cart_product, products):
@@ -90,9 +107,7 @@ def _rule_based(cart_product, products):
 
 
 def _checkout_url(p):
-    base = p.get("checkout_url") or f"{STORE_BASE}/cart"
-    sep = "&" if "?" in base else "?"
-    return f"{base}{sep}discount={DISCOUNT_PERCENT}pct"
+    return p.get("checkout_url") or neteller_link(p.get("price", 0), f"{p.get('id', 'product')}")
 
 
 def _load_env_value(key, default=""):

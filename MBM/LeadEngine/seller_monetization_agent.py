@@ -21,6 +21,18 @@ import requests
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+try:
+    from MBM.Scripts.neteller_config import NETELLER_EMAIL, NETELLER_ACCOUNT_ID, neteller_link
+except Exception:
+    NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
+    NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
+
+    def neteller_link(amount, item, currency="USD", **kw):
+        base = "https://member.neteller.com/pay"
+        return f"{base}?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount={float(amount):.2f}&currency={currency}&item={item}"
+
+
 BASE_DIR = Path(__file__).parent.resolve()
 ROOT_DIR = BASE_DIR.parent.parent.resolve()
 LOGS_DIR = BASE_DIR / 'logs'
@@ -348,7 +360,7 @@ class SellerMonetizationAgent:
             "subject": subject,
             "email_body": hook,
             "cta_button": cta_button,
-            "stripe_checkout_url": f"https://checkout.stripe.com/pay/off_{hash(prospect['name']) % 10000}",
+            "neteller_checkout_url": neteller_link(product['base_price'], f"Seller_{product['id']}"),
             "created_at": datetime.now(timezone.utc).isoformat()
         }
 

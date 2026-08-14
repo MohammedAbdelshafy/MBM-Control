@@ -11,6 +11,11 @@ import json
 import time
 from pathlib import Path
 from dotenv import load_dotenv
+import sys
+from pathlib import Path
+if str(Path(__file__).resolve().parents[2]) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_ACCOUNT_ID
 
 BASE_DIR = Path(__file__).parent.resolve()
 LOGS_DIR = BASE_DIR / 'logs'
@@ -53,19 +58,19 @@ def blast_whatsapp_messages():
             msg_body = (
                 f"Hi {target['name']},\n\n"
                 f"We locked up exclusive wholesale rights for 2 off-market Dallas properties ($35,500 built-in equity).\n\n"
-                f"Wholesale Rights ($5,000): https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=5000.00&currency=USD&item=Wholesale_Deal_Rights"
+                f"Wholesale Rights ($5,000): {neteller_link(5000.00, 'Wholesale_Deal_Rights')}"
             )
         elif target["offer_type"] == "agency":
             msg_body = (
                 f"Hi {target['name']},\n\n"
                 f"Deploy our 24/7 Contech AI Voice Bot Swarm for your agency with 80% profit margins.\n\n"
-                f"White-Label License ($2,497/mo): https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=2497.00&currency=USD&item=Agency_WhiteLabel_License"
+                f"White-Label License ($2,497/mo): {neteller_link(2497.00, 'Agency_WhiteLabel_License')}"
             )
         else:
             msg_body = (
                 f"Hi {target['name']},\n\n"
                 f"Download 50 deep skip-traced DFW seller leads (Probate/Tax Delinquent) with primary phones & emails.\n\n"
-                f"50 Lead Pack ($997): https://member.neteller.com/pay?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount=997.00&currency=USD&item=50_US_Lead_Pack"
+                f"50 Lead Pack ($997): {neteller_link(997.00, '50_US_Lead_Pack')}"
             )
 
         print(f"\n[{idx}/{len(TARGET_NUMBERS)}] Blasting WhatsApp message to {target['name']} ({target['phone']})...")

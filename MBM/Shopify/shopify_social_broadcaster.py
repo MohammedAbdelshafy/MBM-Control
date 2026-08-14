@@ -24,34 +24,46 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 sys.path.insert(0, str(SOCIAL_HOME / "mbm_social"))
 sys.path.insert(0, str(SOCIAL_HOME))
 
+sys.path.insert(0, str(BASE_DIR.parent.parent))
+try:
+    from MBM.Scripts.neteller_config import NETELLER_EMAIL, NETELLER_ACCOUNT_ID, neteller_link
+except Exception:
+    NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
+    NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
+
+    def neteller_link(amount, item, currency="USD", **kw):
+        base = "https://member.neteller.com/pay"
+        return f"{base}?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount={float(amount):.2f}&currency={currency}&item={item}"
+
+
 # Product -> promo CTA overlay mapping (title, hook, store URL, target niche).
 STORE_PROMOS = [
     {
         "product_id": "prod_ai_agent_suite",
         "title": "Build Your AI Business Empire With The Contec Agent Suite",
-        "cta": "Get The Full License → contec-ai-store.myshopify.com",
-        "store_url": "https://contec-ai-store.myshopify.com/cart/40112233:1",
+        "cta": "Get The Full License → Pay via Neteller",
+        "store_url": neteller_link(299.00, "Contec_AI_Agent_Suite"),
         "niche": "tech",
     },
     {
         "product_id": "prod_clipping_sub_pro",
         "title": "Automated 1080p60 Clips While You Sleep",
         "cta": "Start Clipping Factory Pro → $99/mo",
-        "store_url": "https://contec-ai-store.myshopify.com/cart/40112234:1",
+        "store_url": neteller_link(99.00, "Clipping_Factory_Pro"),
         "niche": "tech",
     },
     {
         "product_id": "prod_lead_engine_pass",
         "title": "300 Verified Real Estate Leads, Skip-Traced",
         "cta": "Grab The Lead Pack → $250",
-        "store_url": "https://contec-ai-store.myshopify.com/cart/40112235:1",
+        "store_url": neteller_link(250.00, "300_Lead_Pack_Pass"),
         "niche": "realestate",
     },
     {
         "product_id": "prod_enterprise_setup",
         "title": "Custom AI Enterprise Deployment In 48 Hours",
         "cta": "Book Enterprise Setup → $1,499",
-        "store_url": "https://contec-ai-store.myshopify.com/cart/40112236:1",
+        "store_url": neteller_link(1499.00, "Enterprise_AI_Setup"),
         "niche": "tech",
     },
 ]

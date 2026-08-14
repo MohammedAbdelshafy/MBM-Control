@@ -22,6 +22,18 @@ BASE_DIR = Path(__file__).resolve().parent
 LOGS_DIR = BASE_DIR / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
+sys.path.insert(0, str(BASE_DIR.parent.parent))
+try:
+    from MBM.Scripts.neteller_config import NETELLER_EMAIL, NETELLER_ACCOUNT_ID, neteller_link
+except Exception:
+    NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
+    NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
+
+    def neteller_link(amount, item, currency="USD", **kw):
+        base = "https://member.neteller.com/pay"
+        return f"{base}?email={NETELLER_EMAIL}&account={NETELLER_ACCOUNT_ID}&amount={float(amount):.2f}&currency={currency}&item={item}"
+
+
 CARTS_LOG = LOGS_DIR / "abandoned_carts.json"
 EMAIL_QUEUE = BASE_DIR.parent / "Logs" / "email_queue.json"
 EMAIL_QUEUE.parent.mkdir(parents=True, exist_ok=True)
@@ -42,8 +54,8 @@ def run_checkout_recovery(checkout: dict) -> dict:
         body = (
             f"Hi there,\n\n"
             f"To help you get started, here is an exclusive 15% DISCOUNT on your cart!\n"
-            f"Use Coupon Code: SAVE15 at checkout.\n\n"
-            f"Claim 15% Off Now: https://contec-ai-store.myshopify.com/cart?discount=SAVE15\n\n"
+            f"Complete your secure Neteller checkout below.\n\n"
+            f"Pay Securely Now: {neteller_link(val * 0.85, 'Abandoned_Cart_SAVE15')}\n\n"
             f"Best,\n— Contec AI Store Team"
         )
         email_entry = {
@@ -116,7 +128,7 @@ def run_cart_recovery() -> dict:
                 f"Hi there,\n\n"
                 f"We noticed you left {product} (${val:.2f}) in your cart.\n"
                 f"Your item is reserved for a short time.\n\n"
-                f"Complete your checkout here: https://contec-ai-store.myshopify.com/cart\n\n"
+                f"Complete your checkout here: {neteller_link(val, 'Contec_AI_Product')}\n\n"
                 f"Best,\n— Contec AI Store Team"
             )
         else:
@@ -124,8 +136,8 @@ def run_cart_recovery() -> dict:
             body = (
                 f"Hi there,\n\n"
                 f"To help you get started, here is an exclusive 15% DISCOUNT on your cart!\n"
-                f"Use Coupon Code: SAVE15 at checkout.\n\n"
-                f"Claim 15% Off Now: https://contec-ai-store.myshopify.com/cart?discount=SAVE15\n\n"
+                f"Complete your secure Neteller checkout below.\n\n"
+                f"Pay Securely Now: {neteller_link(val * 0.85, 'Abandoned_Cart_SAVE15')}\n\n"
                 f"Best,\n— Contec AI Store Team"
             )
 

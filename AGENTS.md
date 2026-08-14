@@ -9,6 +9,26 @@ Monorepo with four subsystems:
 - **MBM Ops** (`MBM/`) — Lead-gen, outreach, real estate scripts
 - **Lead Engine** (`MBM/LeadEngine/`) — Property intelligence & lead gen platform (TypeScript/Fastify/BullMQ)
 
+## Monetization: Neteller (canonical rail)
+
+ALL checkout/payout surfaces route through the **Neteller** wallet
+(`abdelshafyclapps@gmail.com`, Account ID `4599228811`). Stripe was removed.
+
+Canonical link builders (one source of truth, all three read `NETELLER_*` env):
+- Python: `MBM/Scripts/neteller_config.py` → `neteller_link(amount, item, currency="USD", **kw)`
+- Node (ESM): `server/neteller.js` → `netellerLink(amount, item, opts)`
+- Frontend: `src/lib/neteller.js` → `netellerLink(amount, item, opts)`
+
+Link format: `https://member.neteller.com/pay?email=<enc>&account=<id>&amount=X.XX&currency=USD&item=SKU`.
+
+Python scripts import via a sys.path bootstrap (`parents[2]` = repo root) then
+`from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_ACCOUNT_ID`,
+with a local `def neteller_link` fallback inside `try/except Exception`.
+
+Exceptions (deliberate, user-approved): the **Whop storefront** (`MBM/Whop/whop_monetize.py`)
+remains a separate hosted sales channel; marketplaces listings (`digital_product_store.py`
+gumroad/whop/etsy metadata) are distribution channels, not checkout rails.
+
 ## Workflow Rules
 
 | Phase | Mode | What You Do |
