@@ -8,6 +8,7 @@ import { PreDialGateEngine } from './predial-gate';
 import { NegativeLearningEngine, type CallDisposition } from './negative-learning';
 import { FreshnessEngine, type PropertyEvent } from './freshness-engine';
 import { CorroborationEngine, type SourceClaim } from './corroboration-engine';
+import { normalizeDialerPhone } from './types';
 import type { PropertyIdentity, OwnershipRecord, ContactEvidence } from './types';
 
 export type LeadAuditCategory =
@@ -113,7 +114,7 @@ export class JarvisQAGateAuditEngine {
       scheduledCallbackAt: callbackTime,
     });
 
-    const normPhone = phone.replace(/\D/g, '');
+    const normPhone = normalizeDialerPhone(phone);
     const rejectionKey = `${propertyId}::${normPhone}`;
 
     if (disposition === 'BAD_NUMBER' || disposition === 'DNC' || disposition === 'WRONG_PERSON' || disposition === 'NON_OWNER' || disposition === 'SOLD') {
@@ -131,7 +132,7 @@ export class JarvisQAGateAuditEngine {
    * Audit a single lead candidate against all QA gate rules.
    */
   public auditLead(input: AuditRecordInput): LeadAuditResult {
-    const normPhone = input.contact.phone.replace(/\D/g, '');
+    const normPhone = normalizeDialerPhone(input.contact.phone);
     const rejectionKey = `${input.property.parcelId || input.property.addressLine1}::${normPhone}`;
 
     // 1. Check Rejection Ledger Persistence / Re-Import Immunity

@@ -59,11 +59,13 @@ export class PreDialGateEngine {
       });
     }
     if (options?.previousRejections && options.previousRejections.length > 0) {
-      this.previousRejections = new Set(options.previousRejections);
+      options.previousRejections.forEach((r) => this.globalRejectionTypes.add(r));
     }
   }
 
-  private previousRejections: Set<string> = new Set();
+  private globalRejectionTypes: Set<string> = new Set();
+  private previousRejectionsByPhone: Map<string, Set<string>> = new Map();
+  public previousRejections: Set<string> = new Set();
 
   /**
    * Seed the gate from a negative-disposition registry so permanent
@@ -95,7 +97,10 @@ export class PreDialGateEngine {
       ) {
         this.suppressionList.add(norm);
       }
-      this.previousRejections.add(type);
+      if (!this.previousRejectionsByPhone.has(norm)) {
+        this.previousRejectionsByPhone.set(norm, new Set());
+      }
+      this.previousRejectionsByPhone.get(norm)!.add(type);
     }
   }
 
@@ -130,7 +135,12 @@ export class PreDialGateEngine {
     const clean = name.trim().toLowerCase();
     if (FAKE_NAME_TOKENS.has(clean)) return false;
     for (const token of FAKE_NAME_TOKENS) {
-      if (clean.includes(token)) return false;
+      if (token.includes(' ')) {
+        if (clean.includes(token)) return false;
+      } else {
+        const wordRegex = new RegExp(`\\b${token}\\b`, 'i');
+        if (wordRegex.test(clean)) return false;
+      }
     }
     return true;
   }
@@ -197,8 +207,10 @@ export class PreDialGateEngine {
 
     // 8. No Previous Rejection — previously rejected garbage cannot
     //    automatically return to the prime dialer queue.
+    const phoneRejections = Array.from(this.previousRejectionsByPhone.get(phoneNorm) ?? []);
     const effectiveRejections = [
-      ...Array.from(this.previousRejections),
+      ...phoneRejections,
+      ...Array.from(this.globalRejectionTypes),
       ...(previousRejections ?? []),
     ];
     const uniqueRejections = Array.from(new Set(effectiveRejections));
@@ -265,12 +277,20 @@ export class PreDialGateEngine {
 
   public recordDialOutcome(phone: string, outcome: 'CONNECTED' | 'WRONG_NUMBER' | 'DISCONNECTED' | 'OPTOUT'): void {
     const norm = this.normalizePhone(phone);
+    if (!this.previousRejectionsByPhone.has(norm)) {
+      this.previousRejectionsByPhone.set(norm, new Set());
+    }
+    const phoneSet = this.previousRejectionsByPhone.get(norm)!;
+
     if (outcome === 'DISCONNECTED' || outcome === 'WRONG_NUMBER') {
+      const rejType = outcome === 'WRONG_NUMBER' ? 'WRONG_PERSON' : 'BAD_NUMBER';
       this.dialedNumbersHistory.set(norm, { attempts: 1, badNumber: true });
-      this.previousRejections.add(outcome === 'WRONG_NUMBER' ? 'WRONG_PERSON' : 'BAD_NUMBER');
+      this.previousRejections.add(rejType);
+      phoneSet.add(rejType);
     } else if (outcome === 'OPTOUT') {
       this.suppressionList.add(norm);
       this.previousRejections.add('NOT_INTERESTED');
+      phoneSet.add('NOT_INTERESTED');
     }
   }
 }

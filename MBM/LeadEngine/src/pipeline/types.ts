@@ -129,3 +129,9 @@ export interface CallableDialerLead {
   dialerStatus: 'READY_TO_DIAL' | 'DIALING' | 'ANSWERED' | 'NO_ANSWER' | 'VOICEMAIL' | 'CONVERTED' | 'DNC_SUPPRESSED';
   netellerCheckoutSku?: string | null;
 }
+
+/** Canonical dialer phone identity: digits only, US leading 1 dropped. */
+export function normalizeDialerPhone(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+  return digits.length === 11 && digits.startsWith('1') ? digits.slice(1) : digits;
+}

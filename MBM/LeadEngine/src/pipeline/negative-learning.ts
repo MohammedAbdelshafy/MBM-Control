@@ -4,6 +4,8 @@
  * invalidate faulty linkages, and prevent bad records from cycling back into the dialer.
  */
 
+import { normalizeDialerPhone } from './types';
+
 export type CallDisposition =
   | 'NO_ANSWER'
   | 'BAD_NUMBER'
@@ -56,7 +58,7 @@ export class NegativeLearningEngine {
     shouldRemoveFromActiveQueue: boolean;
     priorityDelta: number;
   } {
-    const normPhone = event.phone.replace(/\D/g, '');
+    const normPhone = normalizeDialerPhone(event.phone);
     const ownerKey = `${event.propertyId}::${event.ownerName.trim().toLowerCase()}`;
     const contactKey = `${event.propertyId}::${normPhone}`;
 
@@ -170,7 +172,7 @@ export class NegativeLearningEngine {
   }
 
   public isPhoneSuppressed(phone: string): boolean {
-    const norm = phone.replace(/\D/g, '');
+    const norm = normalizeDialerPhone(phone);
     return this.state.suppressedPhones.has(norm) || this.state.suppressedDNC.has(norm);
   }
 
