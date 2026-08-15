@@ -1,0 +1,6 @@
+# Source dataset
+# 91 enriched prospect records with phone contacts exported from AI Vibe Prospecting.
+# Dataset ID: ds-7c363184-3e81-408f-a83c-f8c63091f280
+# Source: https://share.explorium.ai/OU1KqD
+# Import policy: consume through the dialer ingestion pipeline; dedupe by normalized phone; preserve existing lead records; reject rows without a phone.
+# The full CSV is maintained in the Vibe Prospecting export. This repository marker exists so the dialer sync workflow can discover and ingest the dataset without fabricating records.
