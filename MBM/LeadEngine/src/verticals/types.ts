@@ -204,3 +204,162 @@ export interface TopCallRecord extends OpportunityOutput {
   estimatedValue: string;
   bestOutreachAngle: string;
 }
+
+// ── Owner-First Routing ─────────────────────────────────────────────
+
+/**
+ * Decision-maker tier for a contact. The engine NEVER wastes a premium
+ * dialer position on an irrelevant employee when a qualified owner or
+ * decision maker is available for the same business.
+ */
+export type OwnerTier =
+  | 'OWNER'
+  | 'FOUNDER'
+  | 'CEO'
+  | 'PRESIDENT'
+  | 'PRINCIPAL'
+  | 'MANAGING_MEMBER'
+  | 'MANAGING_PARTNER'
+  | 'DIRECTOR'
+  | 'MANAGER'
+  | 'STAFF'
+  | 'UNKNOWN';
+
+export interface OwnerRoutingResult {
+  /** Highest-confidence owner tier derivable from evidence. */
+  tier: OwnerTier;
+  /** True when the tier is a qualified owner/decision maker. */
+  isDecisionMaker: boolean;
+  ownerName: string | null;
+  title: string | null;
+  /** Human label used on the dialer card. */
+  routeLabel: string;
+}
+
+// ── Objection Branches ──────────────────────────────────────────────
+
+export type ObjectionBranchId =
+  | 'HAVE_SOMEONE'
+  | 'USE_AI'
+  | 'SEND_INFO'
+  | 'TOO_EXPENSIVE'
+  | 'NOT_INTERESTED'
+  | 'TOO_BUSY'
+  | 'CALL_LATER'
+  | 'PARTNER'
+  | 'HOW_MUCH'
+  | 'HAVE_WEBSITE';
+
+/** A single objection → ACKNOWLEDGE → CLARIFY → RESPOND → NEXT STEP. */
+export interface ObjectionBranch {
+  id: ObjectionBranchId;
+  /** The objection the prospect is most likely to say. */
+  trigger: string;
+  acknowledge: string;
+  clarify: string;
+  respond: string;
+  nextStep: string;
+}
+
+// ── Dynamic Script Engine ───────────────────────────────────────────
+
+export const SCRIPT_SECTION_IDS = [
+  'WHY_THIS_LEAD',
+  'WHO_AM_I_CALLING',
+  'OPENING',
+  'DISCOVERY',
+  'PAIN',
+  'COST_OF_INACTION',
+  'OFFER',
+  'VALUE',
+  'OBJECTIONS',
+  'TRIAL_CLOSE',
+  'FINAL_CLOSE',
+  'VOICEMAIL',
+  'FOLLOW_UP',
+] as const;
+
+export type ScriptSectionId = (typeof SCRIPT_SECTION_IDS)[number];
+
+export type ScriptSections = Record<ScriptSectionId, string>;
+
+/**
+ * Dynamic script context. Every field is rendered from evidence or
+ * vertical configuration — nothing is invented at call time.
+ */
+export interface ScriptContext {
+  ownerName: string;
+  company: string;
+  vertical: string;
+  city: string;
+  knownPain: string;
+  observedSignal: string;
+  recommendedOffer: string;
+  valueHypothesis: string;
+}
+
+export interface RenderedScript {
+  verticalId: string;
+  verticalName: string;
+  sections: ScriptSections;
+  context: ScriptContext;
+  /** Full concatenated script ready to read verbatim. */
+  full: string;
+}
+
+// ── AI Vibe Prospecting ─────────────────────────────────────────────
+
+/**
+ * Enriched business-owner payload from an authorized/professional/business
+ * contact source (AI Vibe Prospecting). Every field is optional because a
+ * payload must never be fabricated — missing contacts stay missing.
+ */
+export interface AiVibePayload {
+  owner_name?: string | null;
+  company?: string | null;
+  title?: string | null;
+  location?: string | null;
+  phone?: string | null;
+  professional_email?: string | null;
+  linkedin?: string | null;
+  website?: string | null;
+  vertical?: string | null;
+  source?: string | null;
+  confidence?: number | null;
+}
+
+export interface AiVibeMappingResult {
+  verticalId: string | null;
+  evidence: BusinessEvidence;
+  /** True when the phone was suppressed (DNC/BAD_NUMBER) or already known. */
+  suppressed: boolean;
+  /** True when the business/phone was already registered. */
+  duplicate: boolean;
+  reason?: string | null;
+}
+
+// ── One-Screen Dialer Payload ───────────────────────────────────────
+
+/**
+ * The exact payload the dialer renders — the caller needs NO other
+ * research screen: owner, company, vertical, why-this-lead, offer,
+ * opener, discovery, objection, close, callability and lead score.
+ */
+export interface DialerPayload {
+  owner: string;
+  company: string;
+  vertical: string;
+  verticalId: string;
+  whyThisLead: string;
+  recommendedOffer: string;
+  opener: string;
+  discovery: string;
+  objection: string;
+  close: string;
+  callability: number;
+  leadScore: number;
+  phone: string | null;
+  email: string | null;
+  ownerRouting: OwnerRoutingResult;
+  script: RenderedScript;
+}
