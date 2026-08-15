@@ -252,8 +252,12 @@ class ArcGisAssessorAdapter(OwnershipVerifier):
         distinct_owners = sorted({owner_of(a) for a in strong})
         owner = distinct_owners[0] if len(distinct_owners) == 1 else ""
 
-        site = self._feature_site_address(feats[0])
-        parcel = str(feats[0].get(self.fields.get("parcel")) or "").strip()
+        # Evidence must point at the feature that produced the asserted owner,
+        # never at a weaker candidate (avoids owner/evidence contradictions).
+        owner_feats = [a for a in strong if owner_of(a) == owner] or strong
+        site_feat = owner_feats[0]
+        site = self._feature_site_address(site_feat)
+        parcel = str(site_feat.get(self.fields.get("parcel")) or "").strip()
         ambiguous = len(distinct_owners) > 1
 
         if owner and not ambiguous:
@@ -281,7 +285,7 @@ class ArcGisAssessorAdapter(OwnershipVerifier):
                 f"site_address={site or 'unknown'}; parcel_lookup={parcel_lookup}; "
                 f"distinct_owners={len(distinct_owners)}"
             ),
-            evidence_payload=feats[0],
+            evidence_payload=site_feat,
         )
 
         return OwnershipVerification(
@@ -290,7 +294,7 @@ class ArcGisAssessorAdapter(OwnershipVerifier):
             owner_type=classify_owner_type(owner),
             parcel_id=parcel,
             site_address=site,
-            mailing_address=str(feats[0].get(self.fields.get("mailing")) or "").strip(),
+            mailing_address=str(site_feat.get(self.fields.get("mailing")) or "").strip(),
             source=self.name,
             source_url=self.source_url,
             verification_status=status,

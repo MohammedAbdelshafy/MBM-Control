@@ -172,3 +172,37 @@ def test_apply_verification_annotates():
     assert out["ownership_source"] == "offline"
     assert out["ownership_evidence"][0]["source"] == "offline"
     assert "owner_name" in out
+
+
+# ── evidence integrity: payload must reflect the asserted owner ───────────
+def test_evidence_payload_matches_asserted_owner(monkeypatch):
+    """When the strong match is the 2nd candidate, the evidence payload must
+    reference the owner-feature, never a weaker first candidate."""
+    adapter = make_dcad_adapter()
+    rec = normalize_record({"property_address": "1510 Glen Ave, Dallas, TX 75204"})
+    rec["dedupe_key"] = dedupe_key("", rec["address"], rec["state"])
+
+    weak_row = {
+        "SITEADDRESS": "1510 RUSSELL GLEN LN",
+        "OWNERNME1": "WHITE JESSE & LINDA",
+        "PARCELID": "00000501118000000",
+    }
+    strong_row = {
+        "SITEADDRESS": "1510 GLEN AVE",
+        "OWNERNME1": "HARMON PPTY SVCS LLC",
+        "PARCELID": "00000001111999999",
+    }
+
+    def fake_query(endpoint, where, out_fields, **kw):
+        if "1510" in where and "GLEN" in where.upper():
+            return [weak_row, strong_row]
+        return []
+
+    monkeypatch.setattr("property_intel.ownership_verifier.arcgis_query", fake_query)
+    v = adapter.verify(rec)
+    assert v.owner_name == "HARMON PPTY SVCS LLC"
+    assert v.verification_status == "VERIFIED"
+    assert v.site_address == "1510 GLEN AVE"
+    assert v.parcel_id == "00000001111999999"
+    payload_owner = v.evidence[0].evidence_payload.get("OWNERNME1")
+    assert payload_owner == "HARMON PPTY SVCS LLC"

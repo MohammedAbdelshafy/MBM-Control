@@ -190,15 +190,21 @@ ALTER TABLE public.dispositions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.scoring_configs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.rejection_ledger ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY IF NOT EXISTS "service_role_all_parcels"
+DROP POLICY IF EXISTS "service_role_all_parcels" ON public.parcels;
+CREATE POLICY "service_role_all_parcels"
   ON public.parcels USING (true) WITH CHECK (true);
-CREATE POLICY IF NOT EXISTS "service_role_all_evidence_records"
+DROP POLICY IF EXISTS "service_role_all_evidence_records" ON public.evidence_records;
+CREATE POLICY "service_role_all_evidence_records"
   ON public.evidence_records USING (true) WITH CHECK (true);
-CREATE POLICY IF NOT EXISTS "service_role_all_provenance_events"
+DROP POLICY IF EXISTS "service_role_all_provenance_events" ON public.provenance_events;
+CREATE POLICY "service_role_all_provenance_events"
   ON public.provenance_events USING (true) WITH CHECK (true);
-CREATE POLICY IF NOT EXISTS "service_role_all_dispositions"
+DROP POLICY IF EXISTS "service_role_all_dispositions" ON public.dispositions;
+CREATE POLICY "service_role_all_dispositions"
   ON public.dispositions USING (true) WITH CHECK (true);
-CREATE POLICY IF NOT EXISTS "service_role_all_scoring_configs"
+DROP POLICY IF EXISTS "service_role_all_scoring_configs" ON public.scoring_configs;
+CREATE POLICY "service_role_all_scoring_configs"
   ON public.scoring_configs USING (true) WITH CHECK (true);
-CREATE POLICY IF NOT EXISTS "service_role_all_rejection_ledger"
+DROP POLICY IF EXISTS "service_role_all_rejection_ledger" ON public.rejection_ledger;
+CREATE POLICY "service_role_all_rejection_ledger"
   ON public.rejection_ledger USING (true) WITH CHECK (true);
