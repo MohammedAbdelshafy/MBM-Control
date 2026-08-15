@@ -60,6 +60,17 @@ FAKE_NAME_MARKERS = [
     "robert sterling", "elena rostova", "john doe", "jane doe",
 ]
 
+# Synthetic / placeholder contact identities that must NEVER reach the dialer.
+# These are the fallback labels historically produced by push scripts and the
+# NPI callsheet when a real decision-maker name was unavailable.
+PLACEHOLDER_NAME_MARKERS = [
+    "practice principal", "managing doctor", "practice owner",
+    "medical & dental practice", "medical and dental practice",
+    "clinic director", "decision maker", "acquisitions partner",
+    "licensed healthcare practitioner", "clinical director",
+    "practice manager", "managing principal", "practice principal 0",
+]
+
 
 def _extract_phone(lead: dict) -> str:
     """Pull the best phone from any key name variant."""
@@ -156,6 +167,34 @@ def is_valid_name(name: str) -> tuple[bool, str]:
     return True, "ok"
 
 
+def is_placeholder_identity(lead: dict) -> bool:
+    """True when a lead carries a synthetic/placeholder contact identity.
+
+    Guards the dialer against re-introducing placeholder names, synthetic
+    contacts, and unverified NPI-only identities that rerank_top_100 removed.
+    """
+    name = _extract_name(lead).strip().lower()
+    comp = ((lead.get("company_name") or lead.get("company") or "") + " "
+            + ((lead.get("details") or {}).get("Owner_Name") or "")).strip().lower()
+    combined = f"{name} {comp}"
+
+    for marker in PLACEHOLDER_NAME_MARKERS:
+        if marker in combined:
+            return True
+
+    # "Practice Principal <idx>" / "Acquisitions Partner <idx>" numbered fallbacks
+    for pattern in (r"practice principal \d+", r"acquisitions partner \d+",
+                    r"decision maker \d+", r"managing doctor \d+"):
+        if re.search(pattern, combined):
+            return True
+
+    # Numbered generic fallbacks like "Lead 7", "Contact 12"
+    if re.search(r"^(lead|contact|prospect|owner|principal)\s+\d+$", name):
+        return True
+
+    return False
+
+
 def is_verified(lead: dict) -> tuple[bool, str]:
     """
     Check if the lead has at least one verification source.
@@ -245,6 +284,16 @@ def check_lead(lead: dict) -> dict:
     name_ok, name_reason = is_valid_name(name)
     verified_ok, verified_source = is_verified(lead)
 
+    # ── Placeholder identity guard ──────────────────────────────────────
+    # Synthetic/placeholder contacts must NEVER reach the dialer, even if they
+    # clear the individual phone/name/verify checks. This gate is the final
+    # authority and vetoes identities historically produced by push scripts and
+    # the NPI callsheet when a real decision-maker name was unavailable.
+    is_ph = is_placeholder_identity(lead)
+    if is_ph:
+        verified_ok = False
+        verified_source = "placeholder_identity"
+
     reasons = []
     if not phone_ok:
         reasons.append(f"phone:{phone_reason}")
@@ -324,11 +373,15 @@ def _load_any(path: Path) -> list[dict]:
     if path.suffix.lower() == ".csv":
         with open(path, encoding="utf-8", errors="replace") as f:
             return list(csv.DictReader(f))
-    with open(path, encoding="utf-8") as f:
-        data = json.load(f)
-    if isinstance(data, list):
-        return data
-    return data.get("queue", data.get("leads", data.get("data", [])))
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, list):
+            return data
+        return data.get("queue", data.get("leads", data.get("data", [])))
+    except Exception as exc:
+        print(f"[WARN] Error loading {path.name}: {exc}")
+        return []
 
 
 def audit_file(path: Path, label: str = ""):

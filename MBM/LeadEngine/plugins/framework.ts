@@ -75,6 +75,14 @@ export abstract class BasePlugin {
 
   constructor(protected config: PluginConfig) {}
 
+  getConfig(): PluginConfig {
+    return this.config;
+  }
+
+  configure(extra: Record<string, unknown>): void {
+    this.config.config = { ...this.config.config, ...extra };
+  }
+
   validate(): string[] {
     const errors: string[] = [];
     if (!this.config.id) errors.push('Plugin id is required');

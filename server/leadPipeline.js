@@ -323,6 +323,27 @@ Mohammed Abdelshafy
 abdelshafyclapps@gmail.com`,
 });
 
+async function filterAlreadyQueued(supabase, emails, subject) {
+  if (!emails.length) return [];
+  const seen = new Set();
+  // Chunk the IN clause so large lead lists don't blow the URL/statement limits.
+  const CHUNK = 200;
+  for (let i = 0; i < emails.length; i += CHUNK) {
+    const chunk = emails.slice(i, i + CHUNK);
+    const { data, error } = await supabase
+      .from('email_queue')
+      .select('recipient_email')
+      .in('recipient_email', chunk)
+      .eq('subject', subject);
+    if (error) {
+      console.warn(`[dedup] Chunk query failed (${error.message}) — skipping dedup this run`);
+      return emails;
+    }
+    for (const r of (data || [])) seen.add(r.recipient_email.toLowerCase());
+  }
+  return emails.filter(e => !seen.has(e.toLowerCase()));
+}
+
 export async function queueBuyerCampaign({ supabase, pricing = { single_day: 18, full_day: 30, monthly: 375 } } = {}) {
   const buyers = loadBuyers();
   console.log(`[buyer-campaign] Loaded ${buyers.length} buyer leads`);
@@ -336,12 +357,19 @@ export async function queueBuyerCampaign({ supabase, pricing = { single_day: 18,
     );
   }
 
+  const { subject } = BUYER_TEMPLATE(buyers[0] || {}, pricing);
+  const fresh = await filterAlreadyQueued(supabase, buyers.map(b => b.email), subject);
+
   let queued = 0, skipped = 0;
   for (const lead of buyers) {
-    const { subject, body } = BUYER_TEMPLATE(lead, pricing);
+    if (!fresh.includes(lead.email)) {
+      skipped++;
+      continue;
+    }
+    const { subject: s, body } = BUYER_TEMPLATE(lead, pricing);
     const { error } = await supabase.from('email_queue').insert({
       recipient_email: lead.email,
-      subject,
+      subject: s,
       body,
       status: 'qued',
     });
@@ -353,7 +381,7 @@ export async function queueBuyerCampaign({ supabase, pricing = { single_day: 18,
     }
   }
 
-  console.log(`[buyer-campaign] Queued ${queued}, skipped ${skipped}`);
+  console.log(`[buyer-campaign] Queued ${queued}, skipped ${skipped} (dedup skipped ${skipped - (buyers.length - fresh.length)} duplicate)`);
   return { queued, skipped, total: buyers.length };
 }
 
@@ -370,12 +398,19 @@ export async function queueAICampaign({ supabase } = {}) {
     );
   }
 
+  const { subject } = AI_TEMPLATE(prospects[0] || {});
+  const fresh = await filterAlreadyQueued(supabase, prospects.map(p => p.email), subject);
+
   let queued = 0, skipped = 0;
   for (const lead of prospects) {
-    const { subject, body } = AI_TEMPLATE(lead);
+    if (!fresh.includes(lead.email)) {
+      skipped++;
+      continue;
+    }
+    const { subject: s, body } = AI_TEMPLATE(lead);
     const { error } = await supabase.from('email_queue').insert({
       recipient_email: lead.email,
-      subject,
+      subject: s,
       body,
       status: 'qued',
     });
@@ -453,12 +488,16 @@ export async function queueSellerCampaign({ supabase } = {}) {
 
   const withEmail = sellers.filter(s => validEmail(s.email));
 
+  const { subject } = SELLER_TEMPLATE(withEmail[0] || {});
+  const fresh = await filterAlreadyQueued(supabase, withEmail.map(s => s.email), subject);
+
   let queued = 0;
   for (const lead of withEmail) {
-    const { subject, body } = SELLER_TEMPLATE(lead);
+    if (!fresh.includes(lead.email)) continue;
+    const { subject: s, body } = SELLER_TEMPLATE(lead);
     const { error } = await supabase.from('email_queue').insert({
       recipient_email: lead.email,
-      subject,
+      subject: s,
       body,
       status: 'qued',
     });

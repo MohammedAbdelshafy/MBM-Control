@@ -1,8 +1,9 @@
 """
-Extreme Sales High-Urgency Offer Blaster
-=========================================
-Mission: Dispatches high-urgency cash offer SMS pitches via Twilio (+16619909068)
-and logs Telegram instant buy notifications for immediate cash settlement.
+Extreme Sales High-Urgency Offer Blaster (Phound Wave)
+=========================================================
+Dispatches high-urgency cash offer SMS pitches through the Phound Wave
+campaign engine (native-app mode) and logs a Telegram instant-buy notification.
+Twilio is no longer used — Phound is the telephony layer.
 """
 
 import os
@@ -10,22 +11,17 @@ import sys
 import json
 import time
 from pathlib import Path
-from twilio.rest import Client
 
 BASE_DIR = Path(__file__).parent.resolve()
 LOGS_DIR = BASE_DIR / 'logs'
 TONIGHT_FILE = LOGS_DIR / 'tonight_10_call_list_skip_traced.json'
 
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "AC03c0fb6f1a1775d7385c364af597c999")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "32b051acb02af4cbaad0fe0c1ca551a8")
-TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+16619909068")
-
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "TELEGRAM_BOT_TOKEN_REDACTED")
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "6617518949")
 
 
 def dispatch_sales_blast():
-    print("[EXTREME SALES BLASTER] Dispatching High-Urgency SMS Cash Offers...")
+    print("[EXTREME SALES BLASTER] Dispatching High-Urgency SMS Cash Offers via Phound Wave...")
 
     if not TONIGHT_FILE.exists():
         print("Error: tonight_10_call_list_skip_traced.json not found.")
@@ -34,30 +30,37 @@ def dispatch_sales_blast():
     with open(TONIGHT_FILE, 'r', encoding='utf-8') as f:
         prospects = json.load(f)
 
-    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    sys.path.insert(0, str(BASE_DIR.parent.parent))
+    from MBM.LeadEngine.phound_wave_campaign import build_message, OFFERS, DEFAULT_OFFER, normalize_e164, CAMPAIGN_EXPORT_DIR
+
     sent_count = 0
+    exports = []
 
     for p in prospects[:5]:
-        first_name = p['prospect_name'].split()[0]
-        sms_text = (
-            f"Hi {first_name}! Big Moe Shafy here with Contech AI. "
-            f"We have a firm cash offer of {p['asking_price']} NET for {p['property_address']}. "
-            f"Zero agent fees, zero repairs, 7-day close. "
-            f"Call me back directly at +16619909068 or reply YES to lock in your payout today!"
-        )
+        phone = normalize_e164(p.get('primary_phone') or p.get('primary_phone_raw'))
+        if not phone:
+            continue
+        first_name = (p.get('prospect_name') or 'there').split()[0]
+        offer = OFFERS.get("Real Estate Sellers", DEFAULT_OFFER)
+        message = build_message(offer, {
+            "contact": p.get('prospect_name'),
+            "company": p.get('property_address') or '',
+            "vertical": "Real Estate Sellers",
+        })
+        prefill = f"https://web.phound.app/?phone={phone}&body="
+        print(f"  [SMS] Queued for {p.get('prospect_name')} ({phone}) via Phound app prefill link.")
+        sent_count += 1
+        exports.append({
+            "prospect": p.get('prospect_name'),
+            "phone": phone,
+            "message": message,
+            "prefill": prefill,
+        })
 
-        print(f"  [SMS] Dispatching to {p['prospect_name']} ({p['primary_phone']})...")
-        try:
-            message = client.messages.create(
-                body=sms_text,
-                from_=TWILIO_PHONE_NUMBER,
-                to=p['primary_phone_raw']
-            )
-            sent_count += 1
-            print(f"    └─ Sent! Message SID: {message.sid}")
-        except Exception as e:
-            err_msg = str(e).encode('ascii', errors='replace').decode('ascii')
-            print(f"    - Twilio SMS Notice: {err_msg}")
+    out = CAMPAIGN_EXPORT_DIR / f"extreme_sales_blast_{time.strftime('%Y%m%d_%H%M%S')}.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with open(out, "w", encoding="utf-8") as f:
+        json.dump(exports, f, indent=2)
 
     # Send Telegram Sales Alert
     try:
@@ -68,7 +71,7 @@ def dispatch_sales_blast():
             f"👤 <b>Closer</b>: Big Moe Shafy\n"
             f"🏢 <b>Company</b>: Contech AI Agentic Teamz\n"
             f"📱 <b>Caller ID</b>: +1 (661) 990-9068\n"
-            f"📨 <b>High-Urgency Cash Offers Dispatched</b>: {sent_count} Top Prospects\n"
+            f"📨 <b>Phound Wave SMS Blast Prepared</b>: {sent_count} Top Prospects\n"
             f"💰 <b>Est. Commission Pipeline</b>: $178,500.00\n\n"
             f"🔗 <b>Dashboard</b>: http://localhost:5173/voice-agents"
         )
@@ -76,7 +79,7 @@ def dispatch_sales_blast():
     except Exception:
         pass
 
-    print(f"[EXTREME SALES BLASTER] COMPLETE: Processed {len(prospects[:5])} top targets.")
+    print(f"[EXTREME SALES BLASTER] COMPLETE: Prepared {sent_count} Phound Wave SMS messages -> {out.name}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS OS // Salesforce AI CRM Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sf-blue: #0176d3;
+            --sf-navy: #030712;
+            --sf-card: #0b1329;
+            --sf-card-hover: #142145;
+            --sf-border: #1e293b;
+            --sf-accent: #00e5ff;
+            --sf-green: #10b981;
+            --sf-gold: #f59e0b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--sf-navy);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            padding: 24px;
+            min-height: 100vh;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--sf-border);
+            margin-bottom: 24px;
+        }
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+        }
+        .logo span { color: var(--sf-accent); }
+        .nav-tabs { display: flex; gap: 12px; }
+        .nav-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-sub);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-tab.active { background: var(--sf-blue); color: #ffffff; }
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: var(--sf-card);
+            border: 1px solid var(--sf-border);
+            border-radius: 10px;
+            padding: 18px;
+        }
+        .kpi-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .kpi-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 4px;
+        }
+        .kpi-sub {
+            font-size: 12px;
+            color: var(--sf-green);
+            margin-top: 4px;
+        }
+        .analytics-bar {
+            background: #090e1c;
+            border: 1px solid var(--sf-border);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+        .an-item span:first-child { color: var(--text-sub); }
+        .an-item span:last-child { color: var(--sf-accent); font-weight: 700; }
+        .kanban-board {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            margin-bottom: 32px;
+        }
+        .kanban-col {
+            flex: 0 0 280px;
+            background: var(--sf-card);
+            border: 1px solid var(--sf-border);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+        }
+        .col-header {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--sf-border);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            color: var(--sf-accent);
+        }
+        .col-count {
+            background: rgba(0, 229, 255, 0.15);
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+        }
+        .cards-container { display: flex; flex-direction: column; gap: 10px; }
+        .deal-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--sf-border);
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.2s;
+        }
+        .deal-card:hover {
+            border-color: var(--sf-blue);
+            background: var(--sf-card-hover);
+            transform: translateY(-2px);
+        }
+        .deal-title { font-size: 13px; font-weight: 600; color: #ffffff; }
+        .deal-vertical { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .deal-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+        .deal-amt { color: var(--sf-green); font-weight: 700; }
+        .deal-prob { color: var(--sf-gold); }
+        .deal-next { font-size: 11px; color: #38bdf8; margin-top: 6px; }
+        .neteller-btn {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 4px 8px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #4ade80;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .empty-stage { font-size: 11px; color: #64748b; text-align: center; padding: 16px 0; }
+        .section-header {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--sf-card);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--sf-border);
+            font-size: 13px;
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--sf-border);
+        }
+        th {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-sub);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">⚡ JARVIS <span>Salesforce AI OS</span></div>
+        <div class="nav-tabs">
+            <a href="/crm" class="nav-tab active">16-Stage Kanban</a>
+            <a href="/terminal" class="nav-tab">Deal Terminal</a>
+            <a href="/phound" class="nav-tab">SMS Cockpit</a>
+            <a href="http://localhost:5173" class="nav-tab">React Dialer</a>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Total Pipeline Value</div>
+            <div class="kpi-val">$237,000.00</div>
+            <div class="kpi-sub">Across All Active Verticals</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Weighted Expected Revenue</div>
+            <div class="kpi-val">$106,500.00</div>
+            <div class="kpi-sub">Probability Adjusted</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Average Deal Value</div>
+            <div class="kpi-val">$13,166.67</div>
+            <div class="kpi-sub">Per Qualified Deal</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Active Canonical Deals</div>
+            <div class="kpi-val">0</div>
+            <div class="kpi-sub">Property & B2B AI Deals</div>
+        </div>
+    </div>
+
+    <!-- Phase 8 Close Rate & Conversion Analytics -->
+    <div class="analytics-bar">
+        <div class="an-item"><span>📞 Connect Rate:</span> <span>33.3%</span></div>
+        <div class="an-item"><span>🎯 Qualified Rate:</span> <span>100.0%</span></div>
+        <div class="an-item"><span>💡 Demo Booking Rate:</span> <span>0.0%</span></div>
+        <div class="an-item"><span>📝 Proposal Rate:</span> <span>0.0%</span></div>
+        <div class="an-item"><span>🏆 Close Rate:</span> <span>0.0%</span></div>
+    </div>
+
+    <div class="section-header">
+        <span>📊 16-Stage Opportunity Pipeline</span>
+        <span style="font-size: 12px; color: var(--text-sub); font-family: 'JetBrains Mono';">Live Deal Memory Sync</span>
+    </div>
+    <div class="kanban-board">
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>NEW</span>
+                <span class="col-count">18</span>
+            </div>
+            <div class="cards-container">
+                
+            <div class="deal-card">
+                <div class="deal-title">Vanguard Marine — Monthly AI Eng</div>
+                <div class="deal-vertical">Real Estate / AI</div>
+                <div class="deal-meta">
+                    <span class="deal-amt">$6,500</span>
+                    <span class="deal-prob">100% Win</span>
+                </div>
+                <div class="deal-next">⚡ Next: Follow Up</div>
+                
+            </div>
+            
+            <div class="deal-card">
+                <div class="deal-title">Vanguard Marine — Monthly AI Eng</div>
+                <div class="deal-vertical">Real Estate / AI</div>
+                <div class="deal-meta">
+                    <span class="deal-amt">$6,500</span>
+                    <span class="deal-prob">100% Win</span>
+                </div>
+                <div class="deal-next">⚡ Next: Follow Up</div>
+                
+            </div>
+            
+            <div class="deal-card">
+                <div class="deal-title">Vanguard Marine — Monthly AI Eng</div>
+                <div class="deal-vertical">Real Estate / AI</div>
+                <div class="deal-meta">
+                    <span class="deal-amt">$6,500</span>
+                    <span class="deal-prob">100% Win</span>
+                </div>
+                <div class="deal-next">⚡ Next: Follow Up</div>
+                
+            </div>
+            
+            <div class="deal-card">
+                <div class="deal-title">Vanguard Marine — Monthly AI Eng</div>
+                <div class="deal-vertical">Real Estate / AI</div>
+                <div class="deal-meta">
+                    <span class="deal-amt">$6,500</span>
+                    <span class="deal-prob">100% Win</span>
+                </div>
+                <div class="deal-next">⚡ Next: Follow Up</div>
+                
+            </div>
+            
+            <div class="deal-card">
+                <div class="deal-title">Vanguard Marine — Monthly AI Eng</div>
+                <div class="deal-vertical">Real Estate / AI</div>
+                <div class="deal-meta">
+                    <span class="deal-amt">$6,500</span>
+                    <span class="deal-prob">100% Win</span>
+                </div>
+                <div class="deal-next">⚡ Next: Follow Up</div>
+                
+            </div>
+            
+            <div class="deal-card">
+                <div class="deal-title">Vanguard Marine — Monthly AI Eng</div>
+                <div class="deal-vertical">Real Estate / AI</div>
+                <div class="deal-meta">
+                    <span class="deal-amt">$6,500</span>
+                    <span class="deal-prob">100% Win</span>
+                </div>
+                <div class="deal-next">⚡ Next: Follow Up</div>
+                
+            </div>
+            
+            <div class="deal-card">
+                <div class="deal-title">Apex Civil — AI CAD-to-BOQ Takeo</div>
+                <div class="deal-vertical">Real Estate / AI</div>
+                <div class="deal-meta">
+                    <span class="deal-amt">$4,500</span>
+                    <span class="deal-prob">60% Win</span>
+                </div>
+                <div class="deal-next">⚡ Next: Follow Up</div>
+                
+            </div>
+            
+            <div class="deal-card">
+                <div class="deal-title">Apex Civil — AI CAD-to-BOQ Takeo</div>
+                <div class="deal-vertical">Real Estate / AI</div>
+                <div class="deal-meta">
+                    <span class="deal-amt">$4,500</span>
+                    <span class="deal-prob">60% Win</span>
+                </div>
+                <div class="deal-next">⚡ Next: Follow Up</div>
+                
+            </div>
+            
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>QUALIFIED</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>CONTACTED</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>CONNECTED</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>DISCOVERY</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>INTERESTED</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>DEMO_BOOKED</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>DEMO_COMPLETE</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>PROPOSAL</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>NEGOTIATION</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>CLOSED_WON</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+        <div class="kanban-col">
+            <div class="col-header">
+                <span>FOLLOW_UP</span>
+                <span class="col-count">0</span>
+            </div>
+            <div class="cards-container">
+                <div class="empty-stage">No active deals</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="section-header">
+        <span>👥 Unified Deals Register (Top 30)</span>
+        <span style="font-size: 12px; color: var(--text-sub); font-family: 'JetBrains Mono';">Strict Provenance • Neteller Linked</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Decision Maker</th>
+                <th>Company / Property</th>
+                <th>Vertical</th>
+                <th>Phone Number</th>
+                <th>Deal Stage</th>
+                <th>Value</th>
+                <th>Score</th>
+                <th>Next Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+</body>
+</html>

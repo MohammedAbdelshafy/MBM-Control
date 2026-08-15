@@ -1,8 +1,9 @@
 """
-Twilio WhatsApp Direct Blaster Agent
-======================================
-Mission: Blasts high-ticket WhatsApp sales messages directly from your number (+16619909068)
-containing 1-click Neteller checkout links for $5,000 Real Estate Deals and $2,497/mo Agency Licenses.
+Phound SMS Direct Blaster Agent
+================================
+Blasts high-ticket sales messages from your Phound number containing 1-click
+Neteller checkout links for $5,000 Real Estate Deals and $2,497/mo Agency
+Licenses. Twilio is no longer used — Phound is the telephony layer.
 """
 
 import os
@@ -24,9 +25,7 @@ WHATSAPP_LOG = LOGS_DIR / 'whatsapp_blaster_history.json'
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env'))
 
-TWILIO_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-MY_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+16619909068")
+MY_PHONE_NUMBER = os.getenv("PHOUND_PHONE_NUMBER", "+16619909068")
 NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
 NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
 
@@ -41,17 +40,10 @@ TARGET_NUMBERS = [
 
 def blast_whatsapp_messages():
     print("============================================================")
-    print(f"[WHATSAPP BLASTER] DISPATCHING FROM MY NUMBER ({MY_PHONE_NUMBER})")
+    print(f"[PHOUND BLASTER] PREPARING FROM MY NUMBER ({MY_PHONE_NUMBER})")
     print("============================================================")
 
     dispatched = []
-
-    try:
-        from twilio.rest import Client
-        client = Client(TWILIO_SID, TWILIO_TOKEN)
-    except Exception as e:
-        print(f"  - Twilio client setup notice: {e}")
-        client = None
 
     for idx, target in enumerate(TARGET_NUMBERS, 1):
         if target["offer_type"] == "wholesale":
@@ -73,27 +65,15 @@ def blast_whatsapp_messages():
                 f"50 Lead Pack ($997): {neteller_link(997.00, '50_US_Lead_Pack')}"
             )
 
-        print(f"\n[{idx}/{len(TARGET_NUMBERS)}] Blasting WhatsApp message to {target['name']} ({target['phone']})...")
-
-        sent_sid = None
-        if client:
-            try:
-                msg = client.messages.create(
-                    body=msg_body,
-                    from_=f"whatsapp:{MY_PHONE_NUMBER}",
-                    to=f"whatsapp:{target['phone']}"
-                )
-                sent_sid = msg.sid
-                print(f"  - SUCCESS: WhatsApp Message Dispatched (SID: {sent_sid})")
-            except Exception as err:
-                err_clean = str(err).encode("ascii", errors="replace").decode("ascii")
-                print(f"  - Twilio send notice: {err_clean}")
+        prefill = f"https://web.phound.app/?phone={target['phone']}"
+        print(f"\n[{idx}/{len(TARGET_NUMBERS)}] Preparing Phound message for {target['name']} ({target['phone']})...")
 
         record = {
             "target": target["name"],
             "phone": target["phone"],
             "from_number": MY_PHONE_NUMBER,
-            "message_sid": sent_sid,
+            "prefill": prefill,
+            "message": msg_body,
             "timestamp": time.time()
         }
         dispatched.append(record)
@@ -101,7 +81,8 @@ def blast_whatsapp_messages():
     with open(WHATSAPP_LOG, "w", encoding="utf-8") as f:
         json.dump(dispatched, f, indent=2)
 
-    print(f"\n[COMPLETE] WhatsApp Blaster Dispatched {len(dispatched)} Direct Messages from {MY_PHONE_NUMBER}!")
+    print(f"\n[COMPLETE] Phound Blaster Prepared {len(dispatched)} Direct Messages from {MY_PHONE_NUMBER}!")
+    print("Send each via the Phound app using the prefill links (logs/whatsapp_blaster_history.json).")
 
 
 if __name__ == "__main__":

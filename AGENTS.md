@@ -94,6 +94,29 @@ npm run leads:biz:file        # Offline business scoring on sample rows
   returned HTTP 429. Both are documented blockers, not papered over.
 - Supabase property tables (properties/parcels/owners/auctions/evidence/
   lead_scores) do not exist yet — canonical record shapes are in `schema.py`.
+
+## Phound SMS Blasting (canonical outbound rail)
+
+Twilio is dead for this workflow. SMS outreach routes through **Phound**:
+
+```bash
+npm run leads:sms            # Dry-run Phound Wave campaign (default safe)
+npm run leads:sms:list       # List eligible leads (VERIFIED, not opted-out)
+npm run leads:sms:apply      # Write campaign bundle (CSV + JSON + history)
+```
+
+- Engine: `MBM/LeadEngine/phound_wave_campaign.py` — reads
+  `mbm-dialer/app/public/leads_database.json`, filters VERIFIED rows for the
+  vertical, builds personalized messages with `neteller_link()` checkout links,
+  excludes opted-out/STOP numbers, writes to `logs/phound_wave/` (gitignored).
+- Secure boundary: `server/dialer/phoundSmsProvider.js` (+ test) — native-app
+  mode returns `https://web.phound.app/?phone=...` prefill links; API mode stays
+  **disabled** until Phound provisions `PHOUND_SMS_ENDPOINT` + `PHOUND_API_TOKEN`.
+- Blasters repointed to Phound: `extreme_sales_blaster.py`,
+  `twilio_whatsapp_direct_blaster.py` (now "Phound Direct Blaster", Neteller-linked).
+- **Never** hardcode Twilio SID/token — all `TWILIO_*` reads are env-only (no fallback).
+- Phound Wave requires Pro/Business plan + TCR campaign registration for volume.
+
 ## Key Boundaries
 
 - **Base44**: See `base44/` config. Use `base44 dev` for local backend.

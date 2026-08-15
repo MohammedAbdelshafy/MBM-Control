@@ -13,7 +13,21 @@ export default defineConfig({
     port: 5173,
     host: true,
     watch: {
-      ignored: ['**/chrome_debug_profile/**', '**/.venv/**', '**/clipping_factory.db**', '**/node_modules/**']
+      ignored: [
+        '**/chrome_debug_profile/**',
+        '**/.venv/**',
+        '**/clipping_factory.db**',
+        '**/node_modules/**',
+        '**/MBM/**',
+        '**/MBM-Social/**',
+        '**/clipping-factory/**',
+        '**/logs/**',
+        '**/Artifacts/**',
+        '**/output/**',
+        '**/dist/**',
+        '**/*.ps1',
+        '**/*.json'
+      ]
     },
     proxy: {
       '/api': {

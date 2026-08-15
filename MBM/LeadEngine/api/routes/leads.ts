@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../db';
-import { Prisma } from '@prisma/client';
+import { Prisma, LeadGrade } from '@prisma/client';
 
 // ─── Schemas ────────────────────────────────────────────────────────────────────
 
@@ -96,7 +96,7 @@ export default async function leadRoutes(fastify: FastifyInstance): Promise<void
       const where: Prisma.LeadWhereInput = {};
 
       if (status) where.status = status as Prisma.EnumLeadStatusFilter['equals'];
-      if (grade) where.grade = grade as Prisma.EnumLeadGradeFilter['equals'];
+      if (grade) where.grade = grade as LeadGrade;
       if (niche) where.niche = niche as Prisma.EnumNicheTypeFilter['equals'];
       if (score_min !== undefined || score_max !== undefined) {
         where.score = {};
@@ -275,7 +275,7 @@ export default async function leadRoutes(fastify: FastifyInstance): Promise<void
 
       const where: Prisma.LeadWhereInput = {};
       if (status) where.status = status as Prisma.EnumLeadStatusFilter['equals'];
-      if (grade) where.grade = grade as Prisma.EnumLeadGradeFilter['equals'];
+      if (grade) where.grade = grade as LeadGrade;
       if (niche) where.niche = niche as Prisma.EnumNicheTypeFilter['equals'];
       if (county) where.property = { county: { contains: county, mode: 'insensitive' } };
 

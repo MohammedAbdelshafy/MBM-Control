@@ -1,4 +1,4 @@
-import { QueueScheduler, type JobsOptions } from 'bullmq';
+import { type JobsOptions } from 'bullmq';
 import pino from 'pino';
 import { QueueManager } from './queue';
 
@@ -38,9 +38,8 @@ const REPEATABLE_JOBS: {
 export async function setupSchedulers(): Promise<void> {
   const connection = QueueManager.getConnection();
 
-  const scheduler = new QueueScheduler('scheduler', { connection });
-  await scheduler.waitUntilReady();
-  logger.info('QueueScheduler ready');
+  // BullMQ v5: repeatable jobs are registered directly on the Queue — no
+  // separate QueueScheduler instance exists in v5 (removed API).
 
   for (const { queueName, jobName, data, opts } of REPEATABLE_JOBS) {
     try {

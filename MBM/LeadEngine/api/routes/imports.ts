@@ -1,5 +1,6 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
+import type { Prisma, SourceType } from '@prisma/client';
 import { prisma } from '../db';
 import { registry } from '../../plugins/registry';
 
@@ -12,7 +13,7 @@ const ListQuerySchema = z.object({
 });
 
 const CreateImportSchema = z.object({
-  sourceType: z.string().min(1),
+  sourceType: z.enum(['county_assessor', 'property_appraiser', 'gis', 'tax_assessor', 'open_records', 'municipal_code_enforcement', 'court_records', 'business_registry', 'auction_data', 'user_import', 'api_connector']) as unknown as z.ZodType<SourceType, z.ZodTypeDef, string>,
   config: z.record(z.unknown()).default({}),
   filename: z.string().optional(),
 });
@@ -119,17 +120,17 @@ export default async function importRoutes(fastify: FastifyInstance): Promise<vo
 
       // Find or create a source
       let source = await prisma.source.findFirst({
-        where: { type: sourceType as Prisma.EnumSourceTypeFilter['equals'], enabled: true },
+        where: { type: sourceType, enabled: true },
       });
 
       if (!source) {
         source = await prisma.source.create({
           data: {
-            type: sourceType as Prisma.EnumSourceTypeFilter['equals'],
+            type: sourceType,
             name: sourceType,
-            county: config.county ?? 'UNKNOWN',
-            state: config.state ?? 'UNKNOWN',
-            config,
+            county: String(config.county ?? 'UNKNOWN'),
+            state: String(config.state ?? 'UNKNOWN'),
+            config: config as Prisma.InputJsonValue,
           },
         });
       }
@@ -255,7 +256,7 @@ export default async function importRoutes(fastify: FastifyInstance): Promise<vo
 
       // TODO: Run plugin asynchronously (BullMQ job) and track via Import model
       //       For now, we run synchronously for small datasets
-      plugin.config.config = { ...plugin.config.config, ...config };
+      plugin.configure(config);
 
       const errors = plugin.validate();
       if (errors.length > 0) {

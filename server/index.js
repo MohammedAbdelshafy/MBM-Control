@@ -1188,7 +1188,8 @@ app.get('/api/dialer/top50', (req, res) => {
 // Phone app MUST only ever see dialable E.164 (+1XXXXXXXXXX) numbers backed by a
 // REAL lead. Fabricated 555/00x numbers are dropped, and the real NPI clinic
 // queue is served when the RE queue has nothing verifiable.
-const reQueueFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'us_re_dialer_queue.json');
+const mbmDialerFile = path.join(__dirname, '..', 'mbm-dialer', 'app', 'public', 'leads_database.json');
+const realEstateQueueFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'real_estate_calling_queue.json');
 const npiQueueFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'cold_calling_queue.json');
 
 function isFakePhoneNumber(phone) {
@@ -1198,18 +1199,15 @@ function isFakePhoneNumber(phone) {
 }
 
 function transformReLead(lead, idx) {
-  const phone = cleanPhone(lead.phone || lead.phone_number || lead.verified_phone || '');
+  const phone = cleanPhone(lead.phone || lead.phone_number || lead.verified_phone || lead.formatted_phone || '');
   if (!phone) return null;
 
-  // REAL data only. Missing values become 'Unknown' — never invented. The old
-  // code defaulted asking price to $250,000 and fabricated Zestimate/DOM/
-  // year_built/90% distress from it, which produced fictional deal cards.
   const asking = /Asking:\s*\$([\d,]+)/i.exec(lead.distress_or_criteria || lead.notes || '');
   const askingPriceRaw = asking
     ? parseInt(asking[1].replace(/,/g, ''), 10)
     : (lead.asking_price || lead.askingPrice || 0);
-  const askingPrice = askingPriceRaw ? `$${Number(askingPriceRaw).toLocaleString()}` : 'Unknown';
-  const est = askingPriceRaw ? Math.round(Number(askingPriceRaw) * 0.03).toLocaleString() : null;
+  const askingPrice = askingPriceRaw ? (typeof askingPriceRaw === 'number' ? `$${Number(askingPriceRaw).toLocaleString()}` : String(askingPriceRaw)) : 'Unknown';
+  const est = askingPriceRaw && typeof askingPriceRaw === 'number' ? Math.round(Number(askingPriceRaw) * 0.03).toLocaleString() : null;
 
   const name = lead.contact_name || lead.name || lead.prospect_name || lead.entity || lead.company_name || `Prospect ${idx + 1}`;
   const cityState = [lead.city, lead.state].filter(Boolean).join(', ');
@@ -1239,36 +1237,76 @@ function transformReLead(lead, idx) {
     property_type: `${lead.type || lead.vertical || 'Real Estate'} — ${lead.subtype || 'Contact'}`,
     asking_price: askingPrice,
     est_commission: est ? `$${est}.00` : 'Unknown',
-    distress_score: lead.priority_score || lead.distress_score || 'Unknown',
+    distress_score: lead.priority_score || lead.distress_score || lead.distressScore || 'Unknown',
     zestimate,
     days_on_market: dom,
     year_built,
-    cold_calling_script: `${scriptIntro}${scriptHook} Are you open to a firm cash offer today?`,
+    cold_calling_script: lead.call_script || lead.script || `${scriptIntro}${scriptHook} Are you open to a firm cash offer today?`,
     tel_link: `tel:${phone}`,
     email: lead.email || '',
+    owner_name: lead.owner_name || lead.owner || '',
+    phone_owner_name: lead.phone_owner_name || lead.contact_name || name,
+    phone_type: lead.phone_type || 'wireless',
+    is_residential: lead.is_residential ?? true,
+    dnc: lead.dnc ?? false,
+    motivation_tier: lead.motivation_tier || lead.tier || 'STANDARD',
   };
+}
+
+function getUnifiedDialerLeads() {
+  const prospects = [];
+  const seenPhones = new Set();
+
+  const addLead = (lead, i) => {
+    const rawPhone = lead.phone || lead.phone_number || lead.verified_phone || lead.formatted_phone;
+    if (isFakePhoneNumber(rawPhone)) return;
+    const p = transformReLead(lead, i);
+    if (!p) return;
+    const cleanDigits = p.phone_number.replace(/\D/g, '');
+    if (seenPhones.has(cleanDigits)) return;
+    seenPhones.add(cleanDigits);
+    prospects.push(p);
+  };
+
+  if (fs.existsSync(mbmDialerFile)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(mbmDialerFile, 'utf8'));
+      const arr = Array.isArray(data) ? data : (data.leads || data.prospects || []);
+      for (const [i, lead] of arr.entries()) addLead(lead, i);
+    } catch {}
+  }
+
+  if (fs.existsSync(realEstateQueueFile)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(realEstateQueueFile, 'utf8'));
+      const arr = Array.isArray(data) ? data : (data.queue || data.prospects || []);
+      for (const [i, lead] of arr.entries()) addLead(lead, prospects.length + i);
+    } catch {}
+  }
+
+  if (fs.existsSync(npiQueueFile)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(npiQueueFile, 'utf8'));
+      const arr = Array.isArray(data) ? data : (data.queue || data.prospects || []);
+      for (const [i, lead] of arr.entries()) addLead(lead, prospects.length + i);
+    } catch {}
+  }
+
+  return prospects;
 }
 
 app.get('/api/dialer/re-queue', (req, res) => {
   try {
-    const prospects = [];
-    if (fs.existsSync(reQueueFile)) {
-      const data = JSON.parse(fs.readFileSync(reQueueFile, 'utf8'));
-      for (const [i, lead] of (Array.isArray(data) ? data : (data.queue || data.prospects || [])).entries()) {
-        if (isFakePhoneNumber(lead.phone || lead.phone_number)) continue;
-        const p = transformReLead(lead, i);
-        if (p) prospects.push(p);
-      }
-    }
-    // Fallback to the real NPI clinic queue when the RE queue is all fabricated.
-    if (prospects.length === 0 && fs.existsSync(npiQueueFile)) {
-      const data = JSON.parse(fs.readFileSync(npiQueueFile, 'utf8'));
-      for (const [i, lead] of (Array.isArray(data) ? data : (data.queue || data.prospects || [])).entries()) {
-        if (isFakePhoneNumber(lead.phone)) continue;
-        const p = transformReLead(lead, i);
-        if (p) prospects.push(p);
-      }
-    }
+    const prospects = getUnifiedDialerLeads();
+    return res.json({ status: 'success', count: prospects.length, prospects });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/dialer/top50', (req, res) => {
+  try {
+    const prospects = getUnifiedDialerLeads().slice(0, 50);
     return res.json({ status: 'success', count: prospects.length, prospects });
   } catch (err) {
     res.status(500).json({ error: err.message });

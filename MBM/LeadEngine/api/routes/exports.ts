@@ -1,5 +1,6 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
+import type { Prisma, ExportFormat } from '@prisma/client';
 import { prisma } from '../db';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -12,7 +13,7 @@ const ListQuerySchema = z.object({
 });
 
 const CreateExportSchema = z.object({
-  format: z.enum(['csv', 'excel', 'pdf', 'json', 'crm_import']),
+  format: z.enum(['csv', 'excel', 'pdf', 'json', 'crm_import']) as unknown as z.ZodType<ExportFormat, z.ZodTypeDef, string>,
   filters: z.record(z.unknown()).optional(),
   clientId: z.string().uuid().optional(),
 });
@@ -109,8 +110,8 @@ export default async function exportRoutes(fastify: FastifyInstance): Promise<vo
 
       const exp = await prisma.export.create({
         data: {
-          format: data.format as Prisma.EnumExportFormatFilter['equals'],
-          filters: data.filters ?? {},
+          format: data.format,
+          filters: (data.filters ?? {}) as Prisma.InputJsonValue,
           totalLeads: 0,
           clientId: data.clientId ?? null,
         },

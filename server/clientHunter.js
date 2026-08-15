@@ -256,6 +256,25 @@ export async function hunt({ template, supabase, dryRun = false, limit = 0 } = {
   let queued = 0, skipped = 0, bounced = 0;
   const results = [];
 
+  // Dedup: skip recipients already in the email queue for this subject so
+  // repeated hourly runs never re-queue the same outreach email.
+  const freshSet = new Set(toSend.map(l => l.email.toLowerCase()));
+  if (!dryRun) {
+    const CHUNK = 200;
+    const emails = [...freshSet];
+    for (let i = 0; i < emails.length; i += CHUNK) {
+      const { data: existing, error: dedupErr } = await supabase
+        .from('email_queue')
+        .select('recipient_email')
+        .in('recipient_email', emails.slice(i, i + CHUNK));
+      if (dedupErr) {
+        console.warn(`[hunter] dedup query failed (${dedupErr.message}) — continuing`);
+        break;
+      }
+      for (const row of (existing || [])) freshSet.delete(row.recipient_email.toLowerCase());
+    }
+  }
+
   for (const lead of toSend) {
     const tplName = template || getTemplateForLead(lead);
     const tplFn = TEMPLATES[tplName];
@@ -266,6 +285,12 @@ export async function hunt({ template, supabase, dryRun = false, limit = 0 } = {
     }
 
     const { subject, body } = tplFn(lead);
+
+    if (!dryRun && !freshSet.has(lead.email.toLowerCase())) {
+      console.log(`  [SKIP] ${lead.email}: already in queue (dedup)`);
+      skipped++;
+      continue;
+    }
 
     if (dryRun) {
       results.push({

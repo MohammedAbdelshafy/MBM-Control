@@ -189,14 +189,17 @@ def _whop_bin():
                  shutil.which("whop")):
         if cand:
             return cand
-    return "whop"
+    return None
 
 
 def run_whop(args, fmt="json"):
-    cmd = [_whop_bin(), *args]
+    wb = _whop_bin()
+    if not wb:
+        raise RuntimeError("Whop CLI not found on system PATH and no WHOP_API_KEY set.")
+    cmd = [wb, *args]
     if fmt:
         cmd += ["--format", fmt]
-    p = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    p = subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=20)
     if p.returncode != 0:
         raise RuntimeError(f"whop {' '.join(args)} failed: {p.stdout[:300]} {p.stderr[:300]}")
     if not fmt:

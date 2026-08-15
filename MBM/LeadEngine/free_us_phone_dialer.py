@@ -16,8 +16,8 @@ ROOT_DIR = BASE_DIR.parent.parent.resolve()
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "AC03c0fb6f1a1775d7385c364af597c999")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "32b051acb02af4cbaad0fe0c1ca551a8")
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "").strip()
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "").strip()
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+16619909068")
 
 

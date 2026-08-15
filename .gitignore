@@ -135,6 +135,11 @@ MBM/LeadEngine/logs/*.json
 MBM/LeadEngine/logs/*.md
 MBM/LeadEngine/logs/*.png
 MBM/LeadEngine/logs/*.txt
+MBM/LeadEngine/logs/*.csv
+# Call-queue state + call lists — real PII (phones, owners); never commit
+MBM/LeadEngine/tonight_real_estate_call_queue.json
+MBM/LeadEngine/tonight_real_estate_call_queue.csv
+MBM/LeadEngine/tonight_real_estate_call_queue.md
 MBM/LeadEngine/cold_calling_queue.json
 MBM/LeadEngine/us_re_dialer_queue.json
 MBM/LeadEngine/enriched_global_leads.json
@@ -223,3 +228,22 @@ MBM/Clients/BAGA/
 MBM/LeadEngine/property_intel/artifacts/
 MBM/LeadEngine/property_intel/reports/
 MBM/LeadEngine/property_intel/__pycache__/
+
+# Institutional Real Estate dossiers + deal DB (real property PII)
+MBM/LeadEngine/InstitutionalRealEstate/dossiers/
+MBM/LeadEngine/InstitutionalRealEstate/institutional_deal_dossiers.json
+
+# Salesforce CRM local DB (PII)
+MBM/SalesforceOS/data/
+MBM/SalesforceOS/__pycache__/
+MBM/GroqBot/__pycache__/
+MBM/LeadEngine/__pycache__/
+
+# Agent MCP config (may embed tokens)
+.agents/mcp_config.json
+MBM/LeadEngine/logs/phound_wave/
+MBM/LeadEngine/logs/campaign_*.csv
+MBM/LeadEngine/logs/campaign_*.json
+MBM/Phound/campaigns/
+MBM/Recruitment/outreach_packs/
+MBM/Recruitment/reddit_recruitment_posts.json

@@ -19,6 +19,9 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+from dotenv import load_dotenv
+
+load_dotenv()
 
 NVIDIA_BASE_URL = os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1")
 NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY", os.getenv("NVIDIA_NIM_API_KEY", "nvapi-demo-free-key"))
@@ -28,19 +31,19 @@ class NVIDIAModelRegistry:
 
     NVIDIA_FREE_MODELS = {
         # LLMs & Reasoning Models
-        "nvidia/llama-3.3-70b-instruct": {
-            "name": "NVIDIA Llama 3.3 70B Instruct",
+        "meta/llama-3.3-70b-instruct": {
+            "name": "NVIDIA NIM Meta Llama 3.3 70B Instruct",
             "category": "llm_reasoning",
             "context_window": 131072,
             "description": "High-throughput reasoning, code generation, and complex analysis.",
             "free_tier": True,
             "status": "AVAILABLE"
         },
-        "meta/llama-3.1-405b-instruct": {
-            "name": "NVIDIA NIM Llama 3.1 405B Instruct",
-            "category": "llm_premier",
+        "meta/llama-3.1-70b-instruct": {
+            "name": "NVIDIA NIM Meta Llama 3.1 70B Instruct",
+            "category": "llm_chat",
             "context_window": 131072,
-            "description": "NVIDIA hosted 405B parameter frontier model with TensorRT-LLM acceleration.",
+            "description": "Enterprise instruction-tuned model with TensorRT-LLM acceleration.",
             "free_tier": True,
             "status": "AVAILABLE"
         },
@@ -60,11 +63,24 @@ class NVIDIAModelRegistry:
             "free_tier": True,
             "status": "AVAILABLE"
         },
-        "deepseek-ai/deepseek-r1": {
-            "name": "NVIDIA NIM DeepSeek R1 Reasoning",
-            "category": "reasoning_chain",
-            "context_window": 64000,
-            "description": "DeepSeek R1 hosted on NVIDIA infrastructure with ultra-low latency.",
+        "meta/llama-3.2-90b-vision-instruct": {
+            "name": "NVIDIA NIM Llama 3.2 90B Vision Instruct",
+            "category": "vision_multimodal",
+            "description": "High-capacity frontier visual understanding model.",
+            "free_tier": True,
+            "status": "AVAILABLE"
+        },
+        "meta/llama-3.2-11b-vision-instruct": {
+            "name": "NVIDIA NIM Llama 3.2 11B Vision Instruct",
+            "category": "vision_multimodal",
+            "description": "Multimodal visual reasoning, document comprehension, and image Q&A.",
+            "free_tier": True,
+            "status": "AVAILABLE"
+        },
+        "mistralai/codestral-22b-instruct-v0.1": {
+            "name": "NVIDIA NIM Mistral Codestral 22B",
+            "category": "code_generation",
+            "description": "State-of-the-art coding model for code synthesis and refactoring.",
             "free_tier": True,
             "status": "AVAILABLE"
         },
@@ -290,7 +306,7 @@ class NVIDIAModelRegistry:
     def query_model(self, model_id: str, prompt: str, system_prompt: str = "You are a helpful AI assistant.") -> Dict[str, Any]:
         """Dispatches completion request to NVIDIA NIM API."""
         if model_id not in self.NVIDIA_FREE_MODELS:
-            model_id = "nvidia/llama-3.3-70b-instruct"
+            model_id = "meta/llama-3.3-70b-instruct"
 
         payload = {
             "model": model_id,
@@ -327,7 +343,7 @@ class NVIDIAModelRegistry:
                 headers=headers,
                 method="POST"
             )
-            with urllib.request.urlopen(req, timeout=15) as resp:
+            with urllib.request.urlopen(req, timeout=60) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
                 return {
                     "id": data.get("id"),
@@ -337,6 +353,29 @@ class NVIDIAModelRegistry:
                     "usage": data.get("usage", {})
                 }
         except Exception as err:
+            # Dead model ID (e.g. retired NIM endpoint returning 404/410) → retry
+            # once against the known-good default before reporting a hard failure.
+            if model_id != "meta/llama-3.3-70b-instruct":
+                try:
+                    fallback_payload = {**payload, "model": "meta/llama-3.3-70b-instruct"}
+                    req2 = urllib.request.Request(
+                        f"{self.base_url}/chat/completions",
+                        data=json.dumps(fallback_payload).encode("utf-8"),
+                        headers=headers,
+                        method="POST"
+                    )
+                    with urllib.request.urlopen(req2, timeout=60) as resp2:
+                        data2 = json.loads(resp2.read().decode("utf-8"))
+                        return {
+                            "id": data2.get("id"),
+                            "model": "meta/llama-3.3-70b-instruct",
+                            "status": "SUCCESS_LIVE",
+                            "message": data2["choices"][0]["message"]["content"],
+                            "usage": data2.get("usage", {}),
+                            "fallback_from": model_id
+                        }
+                except Exception:
+                    pass
             return {
                 "id": f"nv-err-{int(time.time())}",
                 "model": model_id,
@@ -351,7 +390,7 @@ if __name__ == "__main__":
     if "--list" in sys.argv:
         print(json.dumps(registry.list_models(), indent=2))
     elif "--test" in sys.argv:
-        res = registry.query_model("nvidia/llama-3.3-70b-instruct", "Explain the advantages of NVIDIA NIM microservices for real-time video and AI processing.")
+        res = registry.query_model("meta/llama-3.3-70b-instruct", "Explain the advantages of NVIDIA NIM microservices for real-time video and AI processing.")
         print(json.dumps(res, indent=2))
     else:
         print(f"[NVIDIA AI Suite] Registry loaded with {len(registry.NVIDIA_FREE_MODELS)} free NVIDIA NIM models & perks.")

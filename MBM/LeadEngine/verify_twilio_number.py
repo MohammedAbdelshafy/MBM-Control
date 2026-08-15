@@ -9,14 +9,18 @@ import os
 import sys
 from twilio.rest import Client
 
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "AC03c0fb6f1a1775d7385c364af597c999")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "32b051acb02af4cbaad0fe0c1ca551a8")
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "").strip()
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "").strip()
 
 
 def check_account_status():
     print("============================================================")
     print("[TWILIO CHECK] TWILIO ACCOUNT & VERIFIED NUMBERS STATUS CHECK")
     print("============================================================")
+
+    if not (TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN):
+        print("TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN not set in .env. Skipping.")
+        return
 
     try:
         client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)

@@ -1,5 +1,6 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '../db';
 
 // ─── Schemas ────────────────────────────────────────────────────────────────────
@@ -88,8 +89,8 @@ export default async function outreachRoutes(fastify: FastifyInstance): Promise<
       const campaign = await prisma.outreachCampaign.create({
         data: {
           name: data.name,
-          leadFilters: data.leadFilters ?? {},
-          templateIds: data.templateIds ?? [],
+          leadFilters: (data.leadFilters ?? {}) as Prisma.InputJsonValue,
+          templateIds: (data.templateIds ?? []) as unknown as Prisma.InputJsonValue,
           scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
           status: 'draft',
         },
@@ -141,7 +142,15 @@ export default async function outreachRoutes(fastify: FastifyInstance): Promise<
     async (request: FastifyRequest<{ Body: CreateTemplate }>, reply: FastifyReply) => {
       const data = CreateTemplateSchema.parse(request.body);
 
-      const template = await prisma.outreachTemplate.create({ data });
+      const template = await prisma.outreachTemplate.create({
+        data: {
+          name: data.name,
+          type: data.type,
+          subject: data.subject ?? null,
+          body: data.body,
+          variables: (data.variables ?? {}) as Prisma.InputJsonValue,
+        },
+      });
       return reply.status(201).send(template);
     },
   );

@@ -21,7 +21,7 @@ dotenv.config();
 
 const PORT = parseInt(process.env.PORT ?? '4000', 10);
 const HOST = process.env.HOST ?? '0.0.0.0';
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET: string = process.env.JWT_SECRET ?? '';
 const NODE_ENV = process.env.NODE_ENV ?? 'development';
 
 if (!JWT_SECRET) {
@@ -157,4 +157,6 @@ export async function startServer() {
 }
 
 // ── Start if executed directly ────────────────────────────────────────────────
-startServer();
+if (require.main === module) {
+  startServer();
+}
