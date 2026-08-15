@@ -1,0 +1,44 @@
+{
+  "_comment": "SAMPLE FIXTURE for the jarvis-mbm#23 vertical slice. These rows are MANUALLY IMPORTED test rows (source='sample-fixture'), NOT scraped from Auction.com. Addresses are real Dallas, TX properties. Owner names are intentionally absent here; the pipeline resolves them via the live DCAD authoritative API (verified 2026-08-15). Auction date/status/bids are illustrative sample values for pipeline testing and must not be treated as real auction facts.",
+  "listings": [
+    {
+      "address": "12124 Schroeder Rd, Dallas, TX 75243",
+      "city": "Dallas",
+      "state": "TX",
+      "auction_date": "2026-08-22",
+      "auction_status": "foreclosure",
+      "opening_bid": "225000",
+      "estimated_value": "450000",
+      "occupancy_signal": "unknown",
+      "source": "sample-fixture",
+      "source_url": "https://www.auction.com/residential/dallas-county_tx/",
+      "source_date": "2026-08-15"
+    },
+    {
+      "address": "3134 Arizona Ave, Dallas, TX 75216",
+      "city": "Dallas",
+      "state": "TX",
+      "auction_date": "2026-08-20",
+      "auction_status": "foreclosure",
+      "opening_bid": "140000",
+      "estimated_value": "280000",
+      "occupancy_signal": "vacant",
+      "source": "sample-fixture",
+      "source_url": "https://www.auction.com/residential/dallas-county_tx/",
+      "source_date": "2026-08-15"
+    },
+    {
+      "address": "1510 Glen Ave, Dallas, TX 75204",
+      "city": "Dallas",
+      "state": "TX",
+      "auction_date": "2026-09-05",
+      "auction_status": "pre-foreclosure",
+      "opening_bid": "",
+      "estimated_value": "390000",
+      "occupancy_signal": "unknown",
+      "source": "sample-fixture",
+      "source_url": "https://www.auction.com/residential/dallas-county_tx/",
+      "source_date": "2026-08-15"
+    }
+  ]
+}

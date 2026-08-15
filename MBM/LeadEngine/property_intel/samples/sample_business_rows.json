@@ -1,0 +1,60 @@
+{
+  "_comment": "SAMPLE BUSINESS ROWS for pipeline testing only. These are illustrative placeholder rows (sample-fixture), NOT scraped or sourced data. Phones use 555 to make clear they are not real contacts. The scoring pipeline accepts authorized Google Maps export rows of this shape via --source.",
+  "businesses": [
+    {
+      "name": "Metro Roofing & Restoration LLC",
+      "category": "Roofing contractor",
+      "website": "https://www.metroroofing.example",
+      "phone_number": "+1 555-010-1001",
+      "rating": 4.7,
+      "review_count": 214,
+      "city": "Dallas",
+      "state": "TX",
+      "link": "https://maps.example/place/metro-roofing"
+    },
+    {
+      "name": "A-1 Plumbing Services",
+      "category": "Plumber",
+      "website": "",
+      "phone_number": "+1 555-010-1002",
+      "rating": 3.8,
+      "review_count": 5,
+      "city": "Fort Worth",
+      "state": "TX",
+      "link": "https://maps.example/place/a1-plumbing"
+    },
+    {
+      "name": "Bluebonnet General Contracting",
+      "category": "General contractor",
+      "website": "https://bluebonnetgc.wordpress.com",
+      "phone_number": "+1 555-010-1003",
+      "rating": 4.2,
+      "review_count": 62,
+      "city": "Austin",
+      "state": "TX",
+      "link": "https://maps.example/place/bluebonnet-gc"
+    },
+    {
+      "name": "Cornerstone Civil Engineering",
+      "category": "Civil engineering firm",
+      "website": "https://www.cornerstonecivil.example",
+      "phone_number": "+1 555-010-1004",
+      "rating": 4.9,
+      "review_count": 8,
+      "city": "Houston",
+      "state": "TX",
+      "link": "https://maps.example/place/cornerstone-civil"
+    },
+    {
+      "name": "Family Dental Care DFW",
+      "category": "Dentist",
+      "website": "https://www.familydentaldfw.example",
+      "phone_number": "+1 555-010-1005",
+      "rating": 4.5,
+      "review_count": 158,
+      "city": "Plano",
+      "state": "TX",
+      "link": "https://maps.example/place/family-dental"
+    }
+  ]
+}

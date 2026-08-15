@@ -220,3 +220,6 @@ MBM/Pipeline/
 MBM/Artifacts/*.tsv
 MBM/Artifacts/recovery_backups/
 MBM/Clients/BAGA/
+MBM/LeadEngine/property_intel/artifacts/
+MBM/LeadEngine/property_intel/reports/
+MBM/LeadEngine/property_intel/__pycache__/

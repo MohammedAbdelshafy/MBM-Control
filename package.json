@@ -98,6 +98,13 @@
     "leads:export:airtable": "python MBM/LeadEngine/dialer_export.py --airtable",
     "leads:scripts": "python MBM/LeadEngine/cgpt_script_generator.py --refresh-missing",
     "leads:scripts:apply": "python MBM/LeadEngine/cgpt_script_generator.py --refresh-missing --update-json",
+    "leads:prop": "cd MBM/LeadEngine && python -m property_intel.pipeline --source property_intel/samples/sample_auction_records.json",
+    "leads:prop:live": "cd MBM/LeadEngine && python -m property_intel.pipeline --source property_intel/samples/sample_auction_records.json --verify-live --apply",
+    "leads:prop:test": "cd MBM/LeadEngine && python -m pytest property_intel/tests -q",
+    "leads:auction": "cd MBM/LeadEngine && python -m property_intel.auction_freshness",
+    "leads:auction:live": "cd MBM/LeadEngine && python -m property_intel.auction_freshness --state TX --county Dallas --max-pages 2 --debug",
+    "leads:biz": "cd MBM/LeadEngine && python -m property_intel.business_prospector",
+    "leads:biz:file": "cd MBM/LeadEngine && python -m property_intel.business_prospector --source property_intel/samples/sample_business_rows.json --apply",
     "nvidia:models": "python MBM/LeadEngine/nvidia_model_registry.py --list",
     "nvidia:test": "python MBM/LeadEngine/nvidia_model_registry.py --test"
   },

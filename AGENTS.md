@@ -64,6 +64,36 @@ New scripts: `MBM/Scripts/lead_hygiene.py`, `MBM/Scripts/revenue_recovery.py`,
 verified call sheet. Twilio Lookup (number-level verify) returned 401 — account
 needs the separate Lookup product enabled; NPI-registry phones are already real.
 
+## Property Intelligence (Issue #23, data side)
+
+Package: `MBM/LeadEngine/property_intel/` — fresh Auction pipeline,
+authoritative county ownership verification, business-owner AI-services
+prospecting, scoring/ranking with reason traces. See `property_intel/README.md`
+and `property_intel/REPORT.md`. **Never fabricate** owners/phones/auction rows;
+a blocked/missing source returns `blocked`/`NOT_FOUND`, never mock data.
+
+```bash
+npm run leads:prop            # Offline pipeline dry-run on sample fixture
+npm run leads:prop:live       # Live DCAD ownership verify + artifacts (--verify-live --apply)
+npm run leads:prop:test       # Hermetic test suite (83 tests, no network)
+npm run leads:auction         # Auction.com freshness (file/dry-run)
+npm run leads:auction:live    # Live scrape (currently BLOCKED by Incapsula)
+npm run leads:biz             # Business prospector (needs RAPIDAPI_KEY; 429 observed)
+npm run leads:biz:file        # Offline business scoring on sample rows
+```
+
+- Ownership verified live (2026-08-15) for **Dallas (DCAD)**: real owners + APN.
+  Tarrant/Harris/Collin ArcGIS endpoints are reachable but slower; Harris address
+  matches are ambiguous → CONFLICT until an APN is provided.
+- Ambiguity rule: multiple distinct owners at one site address → **CONFLICT**,
+  no owner asserted (see `ownership_verifier.py::_build`).
+- Callability is hard-capped ≤39 without a real phone/verified owner, and for
+  any recorded `BAD_NUMBER`/`WRONG_PERSON`/`NON_OWNER`/`DNC` — garbage is never
+  recycled into the prime queue (`PRIME_QUEUE_CALLABILITY=50`).
+- Auction.com live scrape is blocked by Imperva/Incapsula; RapidAPI Google Maps
+  returned HTTP 429. Both are documented blockers, not papered over.
+- Supabase property tables (properties/parcels/owners/auctions/evidence/
+  lead_scores) do not exist yet — canonical record shapes are in `schema.py`.
 ## Key Boundaries
 
 - **Base44**: See `base44/` config. Use `base44 dev` for local backend.

@@ -1,0 +1,446 @@
+"""county_sources -- registry of official county ownership sources.
+
+Each entry documents the authoritative assessor / recorder / tax source for a
+county and, where available, a public query API that the ownership adapter can
+call. `verified` marks endpoints that were confirmed reachable/public during
+research (2026-08-15). Unverified entries route to the official website with
+adapter="none" so ownership verification reports REQUIRES_VERIFICATION rather
+than guessing.
+
+Documentation: see COUNTY_SOURCES.md in this package.
+"""
+from __future__ import annotations
+
+from typing import Any, Optional
+
+COUNTY_SOURCES: list[dict[str, Any]] = [
+    # ── Texas (operating market; ArcGIS endpoints verified live) ─────────────
+    {
+        "state": "TX",
+        "county": "Dallas",
+        "fips": "48113",
+        "authority": "Dallas Central Appraisal District (DCAD)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.dallascad.org",
+        "api_url": "https://maps.dcad.org/prdwa/rest/services/Property/ParcelQuery/MapServer/4",
+        "api_kind": "arcgis",
+        "adapter": "arcgis",
+        "verified": True,
+        "fields": {
+            "address": "SITEADDRESS",
+            "owner1": "OWNERNME1",
+            "owner2": "OWNERNME2",
+            "mailing": "PSTLADDRESS",
+            "mail_city": "PSTLCITY",
+            "mail_state": "PSTLSTATE",
+            "mail_zip": "PSTLZIP5",
+            "parcel": "PARCELID",
+        },
+        "notes": (
+            "Free public tax-parcel ArcGIS REST (no key). Verified live 2026-08-15: "
+            "returns registered owner name + mailing address + PARCELID."
+        ),
+    },
+    {
+        "state": "TX",
+        "county": "Tarrant",
+        "fips": "48439",
+        "authority": "Tarrant Appraisal District (TAD) / Tarrant County Tax Assessor-Collector",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.tad.org",
+        "api_url": "https://mapit.tarrantcounty.com/arcgis/rest/services/Tax/TCProperty/MapServer/0",
+        "api_kind": "arcgis",
+        "adapter": "arcgis",
+        "verified": True,
+        "fields": {
+            "address": "SITUS_ADDR",
+            "owner1": "OWNER_NAME",
+            "owner2": None,
+            "mailing": "OWNER_ADDR",
+            "mail_city": "OWNER_CITY",
+            "mail_state": None,
+            "mail_zip": "OWNER_ZIP",
+            "parcel": "TAXPIN",
+        },
+        "notes": (
+            "Public ArcGIS MapServer (Tarrant County Tax Assessor-Collector + TAD). "
+            "Owner LIKE queries confirmed live 2026-05-11."
+        ),
+    },
+    {
+        "state": "TX",
+        "county": "Harris",
+        "fips": "48201",
+        "authority": "Harris Central Appraisal District (HCAD)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://hcad.org",
+        "api_url": "https://www.gis.hctx.net/arcgis/rest/services/HCAD/Parcels/MapServer/0",
+        "api_kind": "arcgis",
+        "adapter": "arcgis",
+        "verified": True,
+        "fields": {
+            "address": "site_str_name",
+            "address_num": "site_str_num",
+            "owner1": "owner_name_1",
+            "owner2": "owner_name_2",
+            "owner3": "owner_name_3",
+            "mailing": "mail_addr_1",
+            "mail_city": "mail_city",
+            "mail_state": "mail_state",
+            "mail_zip": "mail_zip",
+            "parcel": "HCAD_NUM",
+            "site_city": "site_city",
+            "site_zip": "site_zip",
+        },
+        "notes": (
+            "Public ArcGIS MapServer (HCAD GIS). Up to 3 owner names with pct shares. "
+            "Owner LIKE query confirmed live 2026-05-11."
+        ),
+    },
+    {
+        "state": "TX",
+        "county": "Collin",
+        "fips": "48085",
+        "authority": "Collin Central Appraisal District (CCAD)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://collincad.org",
+        "api_url": "https://gismaps.cityofallen.org/arcgis/rest/services/ReferenceData/Collin_County_Appraisal_District_Parcels/MapServer/1",
+        "api_kind": "arcgis",
+        "adapter": "arcgis",
+        "verified": True,
+        "fields": {
+            "address": "GIS_DBO_AD_Entity_situs_display",
+            "owner1": "GIS_DBO_AD_Entity_file_as_name",
+            "owner2": None,
+            "mailing": None,
+            "mail_city": None,
+            "mail_state": None,
+            "mail_zip": None,
+            "parcel": "GIS_DBO_Parcel_PROP_ID",
+        },
+        "notes": (
+            "CCAD parcels served through City of Allen ArcGIS MapServer. Owner name is "
+            "GIS_DBO_AD_Entity_file_as_name (joined table prefix must be used verbatim). "
+            "Owner LIKE query confirmed live 2026-05-30."
+        ),
+    },
+    # ── Texas (official website only; adapter=none until an API is configured) ─
+    {
+        "state": "TX",
+        "county": "Travis",
+        "fips": "48453",
+        "authority": "Travis Central Appraisal District (TCAD)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://travis.parceldata.org",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official TCAD property search portal (public). No confirmed free API; manual/official verification required.",
+    },
+    {
+        "state": "TX",
+        "county": "Bexar",
+        "fips": "48029",
+        "authority": "Bexar Appraisal District (BCAD)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.bcad.org",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official BCAD property search (public). No confirmed free API.",
+    },
+    {
+        "state": "TX",
+        "county": "Williamson",
+        "fips": "48491",
+        "authority": "Williamson Central Appraisal District (WCAD)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.wcad.org",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official WCAD property search (public).",
+    },
+    {
+        "state": "TX",
+        "county": "Denton",
+        "fips": "48121",
+        "authority": "Denton Central Appraisal District (DCAD-DFW)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.dentoncad.com",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official Denton CAD property search (public).",
+    },
+    {
+        "state": "TX",
+        "county": "El Paso",
+        "fips": "48141",
+        "authority": "El Paso Central Appraisal District (EPCAD)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.epcad.org",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official EPCAD property search (public).",
+    },
+    {
+        "state": "TX",
+        "county": "Montgomery",
+        "fips": "48339",
+        "authority": "Montgomery Central Appraisal District (MCAD)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://mctxcad.org",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official MCAD property search (public).",
+    },
+    {
+        "state": "TX",
+        "county": "Fort Bend",
+        "fips": "48157",
+        "authority": "Fort Bend Central Appraisal District (FBCAD)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.fbcad.org",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official FBCAD property search (public).",
+    },
+    # ── Other top US markets (official website only) ──────────────────────────
+    {
+        "state": "IL",
+        "county": "Cook",
+        "fips": "17031",
+        "authority": "Cook County Recorder of Deeds / Assessor / Clerk",
+        "source_type": "recorder",
+        "official": True,
+        "website_url": "https://cookcountyrecorder.com",
+        "api_url": "https://www.cookcountypropertyinfo.com",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": (
+            "Public REST layer (CookViewer3Parcels/MapServer/0) exposes only PIN10/"
+            "PIN14_dash + street_address (no owner). Use cookcountypropertyinfo.com "
+            "for ownership. No free owner API confirmed."
+        ),
+    },
+    {
+        "state": "AZ",
+        "county": "Maricopa",
+        "fips": "04013",
+        "authority": "Maricopa County Assessor",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://mcassessor.maricopa.gov",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official Maricopa County Assessor property search (public).",
+    },
+    {
+        "state": "CA",
+        "county": "Los Angeles",
+        "fips": "06037",
+        "authority": "Los Angeles County Assessor",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://assessor.lacounty.gov",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official L.A. County Assessor property search (public).",
+    },
+    {
+        "state": "FL",
+        "county": "Miami-Dade",
+        "fips": "12086",
+        "authority": "Miami-Dade County Property Appraiser",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.miamidade.gov/global/property/property-search.page",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official Miami-Dade property appraiser search (public).",
+    },
+    {
+        "state": "NV",
+        "county": "Clark",
+        "fips": "32003",
+        "authority": "Clark County Assessor",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.clarkcountynv.gov/government/departments/assessor",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official Clark County Assessor (public).",
+    },
+    {
+        "state": "WA",
+        "county": "King",
+        "fips": "53033",
+        "authority": "King County Assessor",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://info.kingcounty.gov/assessor/DataDownload/default.aspx",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "King County Assessor public data download / property search.",
+    },
+    {
+        "state": "MI",
+        "county": "Wayne",
+        "fips": "26163",
+        "authority": "Wayne County (Detroit) Assessor",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.waynecounty.com/departments/assessor",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official Wayne County Assessor (public).",
+    },
+    {
+        "state": "OH",
+        "county": "Franklin",
+        "fips": "39049",
+        "authority": "Franklin County Auditor",
+        "source_type": "recorder",
+        "official": True,
+        "website_url": "https://franklincountyauditor.com",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official Franklin County Auditor real estate search (public).",
+    },
+    {
+        "state": "TN",
+        "county": "Shelby",
+        "fips": "47157",
+        "authority": "Shelby County Assessor",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://www.assessor.shelby.tn.us",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official Shelby County Assessor (public).",
+    },
+    {
+        "state": "GA",
+        "county": "Fulton",
+        "fips": "13121",
+        "authority": "Fulton County Tax Assessor",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://fultonassessor.org",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official Fulton County Tax Assessor (public).",
+    },
+    {
+        "state": "NC",
+        "county": "Mecklenburg",
+        "fips": "37119",
+        "authority": "Mecklenburg County Assessor",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://qpublic.schneidercorp.com/Application.aspx?AppID=1073&LayerID=24454&PageTypeID=2",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Mecklenburg County public property search (QPublic).",
+    },
+    {
+        "state": "PA",
+        "county": "Philadelphia",
+        "fips": "42101",
+        "authority": "Philadelphia Office of Property Assessment (OPA)",
+        "source_type": "assessor",
+        "official": True,
+        "website_url": "https://property.phila.gov",
+        "api_url": "",
+        "api_kind": "web",
+        "adapter": "none",
+        "verified": False,
+        "fields": {},
+        "notes": "Official City of Philadelphia OPA property search (public).",
+    },
+]
+
+
+def county_sources_for(state: str, county: str) -> list[dict]:
+    """All documented sources for a (state, county). Case-insensitive."""
+    st = (state or "").strip().upper()
+    ct = (county or "").strip().title()
+    if not ct:
+        return []
+    return [s for s in COUNTY_SOURCES if s["state"].upper() == st and s["county"].title() == ct]
+
+
+def best_county_source(state: str, county: str) -> Optional[dict]:
+    """Best source for a county: preferred verified ArcGIS adapter, else the
+    official website entry, else None."""
+    srcs = county_sources_for(state, county)
+    if not srcs:
+        return None
+    for s in srcs:
+        if s.get("adapter") == "arcgis" and s.get("verified"):
+            return s
+    for s in srcs:
+        if s.get("adapter") == "arcgis":
+            return s
+    return srcs[0]
