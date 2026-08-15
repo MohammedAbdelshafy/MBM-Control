@@ -1,4 +1,5 @@
 import pino from 'pino';
+import type { Prisma } from '@prisma/client';
 import { getDb } from '../db';
 import {
   calculateLeadScore,
@@ -14,6 +15,12 @@ import {
   detectDataCompleteness,
 } from '../../src/scoring';
 import type { ScoringSignals } from '../../src/scoring/types';
+import { CallabilityEngine } from '../../src/pipeline/callability-engine';
+import type { ContactEvidence, OwnershipRecord, PropertyIdentity } from '../../src/pipeline/types';
+import {
+  PrismaScoringConfigRepository,
+  ScoringConfigResolver,
+} from '../../src/property-intel/scoring-config';
 
 const logger = pino({ name: 'scoring-handler' });
 
@@ -28,6 +35,8 @@ export async function handleScoring(job: {
   const payload = job.data as ScoringPayload;
   const { leadIds } = payload;
   const db = getDb();
+  const resolver = new ScoringConfigResolver(new PrismaScoringConfigRepository(db));
+  const callabilityEngine = new CallabilityEngine();
 
   if (!leadIds || leadIds.length === 0) {
     logger.warn({ jobId: job.id }, 'No lead IDs provided for scoring');
@@ -100,9 +109,19 @@ export async function handleScoring(job: {
         duplicatePenalty: 0,
       };
 
-      const result = calculateLeadScore(leadId, signals);
+      // Configurable weights — per county/state/niche config wins over defaults.
+      const weights = await resolver.resolveWeights({
+        county: property.county,
+        state: property.state,
+        niche: lead.niche,
+      });
+
+      const result = calculateLeadScore(leadId, signals, weights);
       const confidence = calculateSignalConfidence(signals);
       const grade = result.grade;
+
+      // Separate CALLABILITY score (dialability), independent of lead score.
+      const callability = computeCallabilityScore(lead, primaryOwner, result.overallScore, callabilityEngine);
 
       await db.$transaction([
         db.lead.update({
@@ -111,7 +130,8 @@ export async function handleScoring(job: {
             score: result.overallScore,
             grade: mapGrade(grade),
             confidence,
-            signals: result.breakdown as Record<string, unknown>,
+            callabilityScore: callability.totalScore,
+            signals: result.breakdown as unknown as Prisma.InputJsonValue,
           },
         }),
         db.leadScore.upsert({
@@ -119,6 +139,8 @@ export async function handleScoring(job: {
           create: {
             leadId,
             overallScore: result.overallScore,
+            callabilityScore: callability.totalScore,
+            callabilityBreakdown: callability as unknown as Prisma.InputJsonValue,
             ownershipConfidence: signals.ownershipConfidence,
             recordFreshness: signals.recordFreshness,
             absenteeSignal: signals.absenteeSignal,
@@ -132,6 +154,8 @@ export async function handleScoring(job: {
           },
           update: {
             overallScore: result.overallScore,
+            callabilityScore: callability.totalScore,
+            callabilityBreakdown: callability as unknown as Prisma.InputJsonValue,
             ownershipConfidence: signals.ownershipConfidence,
             recordFreshness: signals.recordFreshness,
             absenteeSignal: signals.absenteeSignal,
@@ -159,6 +183,68 @@ export async function handleScoring(job: {
   );
 
   return { scored, errors, total: leadIds.length };
+}
+
+function computeCallabilityScore(
+  lead: {
+    phone: string | null;
+    email: string | null;
+    contactName: string | null;
+    skipTraceSource: string | null;
+    skipTraceConfidence: number | null;
+    generatedAt: Date;
+    niche: string;
+  },
+  primaryOwner: { name: string; ownerType: string; mailingAddress: string; isAbsentee: boolean; confidenceScore: number; verifiedAt: Date | null } | null,
+  leadScore: number,
+  engine: CallabilityEngine,
+) {
+  const property = {} as PropertyIdentity;
+  const ownership: OwnershipRecord | null = primaryOwner
+    ? {
+        ownerName: primaryOwner.name,
+        ownerType: primaryOwner.ownerType as OwnershipRecord['ownerType'],
+        mailingAddress: primaryOwner.mailingAddress,
+        isAbsentee: primaryOwner.isAbsentee,
+        confidenceScore: primaryOwner.confidenceScore,
+        verifiedAt: primaryOwner.verifiedAt?.toISOString() ?? new Date().toISOString(),
+      }
+    : null;
+
+  const contact: ContactEvidence = {
+    contactName: lead.contactName ?? primaryOwner?.name ?? '',
+    phone: lead.phone ?? '',
+    email: lead.email,
+    source: mapContactSource(lead.skipTraceSource),
+    dncStatus: 'CLEAN',
+    confidenceScore: lead.skipTraceConfidence ?? 0,
+    extractedAt: lead.generatedAt.toISOString(),
+  };
+
+  return engine.calculateCallability(property, ownership ?? fallbackOwnership(), contact, leadScore);
+}
+
+function fallbackOwnership(): OwnershipRecord {
+  return {
+    ownerName: '',
+    ownerType: 'INDIVIDUAL',
+    mailingAddress: '',
+    isAbsentee: false,
+    confidenceScore: 0,
+    verifiedAt: new Date().toISOString(),
+  };
+}
+
+function mapContactSource(
+  source: string | null,
+): ContactEvidence['source'] {
+  const s = (source ?? '').toUpperCase();
+  if (s.includes('NPI') || s.includes('CMS')) return 'CMS_NPI';
+  if (s.includes('COUNTY') || s.includes('TAX')) return 'COUNTY_TAX';
+  if (s.includes('SECRETARY') || s.includes('SOS')) return 'SECRETARY_OF_STATE';
+  if (s.includes('RAPIDAPI')) return 'RAPIDAPI';
+  if (s.includes('SKIP') || s.includes('TRACE')) return 'SKIP_TRACE';
+  return 'SKIP_TRACE';
 }
 
 function mapGrade(grade: string): 'A_PLUS' | 'A' | 'B' | 'C' | 'REJECT' {

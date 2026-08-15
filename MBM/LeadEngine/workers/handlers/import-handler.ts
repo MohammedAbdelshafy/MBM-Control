@@ -2,6 +2,11 @@ import { Worker } from 'bullmq';
 import pino from 'pino';
 import { getDb } from '../db';
 import ExcelJS from 'exceljs';
+import {
+  normalizeAddress,
+  normalizeParcelId,
+  computeDedupeKeys,
+} from '../../src/property-intel';
 
 const logger = pino({ name: 'import-handler' });
 
@@ -74,14 +79,6 @@ function parseCSV(csv: string): RawRow[] {
   return rows;
 }
 
-function normalizeAddress(addr: string): string {
-  return addr
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
 function mapRowToDB(row: RawRow): RawRow {
   const map: Record<string, string> = {
     'parcel id': 'parcelId',
@@ -142,7 +139,7 @@ export async function handleImport(job: {
     } else if (fileBuffer && fileBuffer.length > 0) {
       const buffer = Buffer.from(fileBuffer);
       const workbook = new ExcelJS.Workbook();
-      await workbook.xlsx.load(buffer);
+      await workbook.xlsx.load(buffer as unknown as Parameters<typeof workbook.xlsx.load>[0]);
       const worksheet = workbook.worksheets[0];
       if (!worksheet) throw new Error('No worksheet found in XLSX file');
 
@@ -245,52 +242,14 @@ async function processChunk(
   sourceId: string,
   chunk: RawRow[],
 ): Promise<void> {
-  const parcelIds = chunk
-    .map((r) => r.parcelId)
-    .filter((id): id is string => Boolean(id && String(id).trim()));
-
-  const existing = parcelIds.length > 0
-    ? await db.property.findMany({
-        where: { parcelId: { in: parcelIds } },
-        select: { id: true, parcelId: true },
-      })
-    : [];
-
-  const existingMap = new Map(existing.map((p) => [p.parcelId, p.id]));
-
   for (const row of chunk) {
-    const parcelId = String(row.parcelId ?? '').trim();
-    if (!parcelId) continue;
+    const result = await findOrCreateProperty(db, row);
+    if (!result) continue;
 
-    const existingId = existingMap.get(parcelId);
-
-    const propertyData = {
-      parcelId,
-      addressLine1: String(row.addressLine1 ?? '').trim() || 'Unknown',
-      addressLine2: String(row.addressLine2 ?? '').trim() || undefined,
-      city: String(row.city ?? '').trim() || 'Unknown',
-      state: String(row.state ?? '').trim().toUpperCase().slice(0, 2) || 'XX',
-      zip: String(row.zip ?? '').trim().slice(0, 10) || '00000',
-      county: String(row.county ?? '').trim() || 'Unknown',
-      propertyType: 'OTHER' as const,
-    };
-
-    if (existingId) {
-      await db.property.update({
-        where: { id: existingId },
-        data: propertyData,
-      });
-    } else {
-      const property = await db.property.create({
-        data: propertyData,
-      });
-      existingMap.set(parcelId, property.id);
-    }
-
-    const propertyId = existingMap.get(parcelId)!;
+    const { propertyId } = result;
 
     if (row.ownerName) {
-      const mailingAddr = String(row.mailingAddress ?? '').trim() || propertyData.addressLine1;
+      const mailingAddr = String(row.mailingAddress ?? '').trim() || String(row.addressLine1 ?? '').trim();
       const ownerType = normalizeOwnerType(String(row.ownerType ?? ''));
 
       await db.owner.create({
@@ -314,4 +273,76 @@ function normalizeOwnerType(raw: string): 'INDIVIDUAL' | 'LLC' | 'CORPORATION' |
   if (/gov|government|county|city|state/i.test(val)) return 'GOVERNMENT';
   if (/individual|sole/i.test(val)) return 'INDIVIDUAL';
   return 'OTHER';
+}
+
+/**
+ * Deterministic dedupe: normalize the address once, derive the canonical
+ * dedupe key, then collapse duplicates on parcel OR canonical address.
+ */
+async function findOrCreateProperty(
+  db: ReturnType<typeof getDb>,
+  row: RawRow,
+): Promise<{ propertyId: string; existing: boolean } | null> {
+  const parcelIdRaw = String(row.parcelId ?? '').trim();
+  const address = String(row.addressLine1 ?? '').trim();
+  const city = String(row.city ?? '').trim();
+  const state = String(row.state ?? '').trim().toUpperCase().slice(0, 2);
+  const zip = String(row.zip ?? '').trim().slice(0, 10);
+  const county = String(row.county ?? '').trim();
+
+  if (!parcelIdRaw && !address) return null;
+
+  const keys = computeDedupeKeys({
+    parcelId: parcelIdRaw || undefined,
+    addressLine1: address || undefined,
+    city: city || undefined,
+    state: state || undefined,
+    zip: zip || undefined,
+    county: county || undefined,
+  });
+  const normalized = normalizeAddress({
+    line1: address,
+    city,
+    state,
+    zip,
+    county,
+  });
+
+  const propertyData = {
+    parcelId: parcelIdRaw ? normalizeParcelId(parcelIdRaw) : `ADDR-${keys.addressKey.slice(0, 20).toUpperCase()}`,
+    addressLine1: address || 'Unknown',
+    addressLine2: String(row.addressLine2 ?? '').trim() || undefined,
+    normalizedAddress: normalized.full,
+    dedupeKey: keys.addressKey,
+    city: normalized.city || 'Unknown',
+    state: normalized.state,
+    zip: normalized.zip,
+    county: county || 'Unknown',
+    propertyType: 'OTHER' as const,
+  };
+
+  // Lookup by parcel id first (strongest key), then canonical address.
+  let existingId: string | null = null;
+  if (parcelIdRaw) {
+    const byParcel = await db.property.findUnique({
+      where: { parcelId: normalizeParcelId(parcelIdRaw) },
+      select: { id: true },
+    });
+    existingId = byParcel?.id ?? null;
+  }
+  if (!existingId) {
+    const byDedupe = await db.property.findUnique({
+      where: { dedupeKey: keys.addressKey },
+      select: { id: true },
+    });
+    existingId = byDedupe?.id ?? null;
+  }
+
+  if (existingId) {
+    await db.property.update({ where: { id: existingId }, data: propertyData });
+    return { propertyId: existingId, existing: true };
+  }
+
+  const created = await db.property.create({ data: propertyData });
+  return { propertyId: created.id, existing: false };
 }

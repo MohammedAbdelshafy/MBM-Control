@@ -137,6 +137,29 @@ enum ImportStatus {
   @@map("import_status")
 }
 
+enum VerificationStatus {
+  UNVERIFIED @map("unverified")
+  PENDING    @map("pending")
+  VERIFIED   @map("verified")
+  REJECTED   @map("rejected")
+  EXPIRED    @map("expired")
+
+  @@map("verification_status")
+}
+
+enum DispositionType {
+  BAD_NUMBER      @map("bad_number")
+  WRONG_PERSON    @map("wrong_person")
+  NON_OWNER       @map("non_owner")
+  DUPLICATE       @map("duplicate")
+  DNC             @map("dnc")
+  SOLD            @map("sold")
+  NOT_INTERESTED  @map("not_interested")
+  OTHER           @map("other")
+
+  @@map("disposition_type")
+}
+
 // ────────────────────────────────────────────── Models
 
 model Property {
@@ -162,15 +185,20 @@ model Property {
   assessedValue    Float?   @map("assessed_value")
   marketValue      Float?   @map("market_value")
   legalDescription String?  @map("legal_description")
+  normalizedAddress String? @map("normalized_address")
+  dedupeKey        String?  @unique @map("dedupe_key")
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
-  owners    Owner[]
-  violations    Violation[]
-  taxRecords    TaxRecord[]
-  leads     Lead[]
-  documents     Document[]
-  addresses     Address[]
+  parcel      Parcel?
+  owners      Owner[]
+  violations  Violation[]
+  taxRecords  TaxRecord[]
+  leads       Lead[]
+  documents   Document[]
+  addresses   Address[]
+  evidence    EvidenceRecord[]
+  dispositions Disposition[]
 
   @@index([county])
   @@index([state, county])
@@ -191,16 +219,23 @@ model Owner {
   email           String?
   isAbsentee      Boolean       @default(false) @map("is_absentee")
   confidenceScore Float         @default(0) @map("confidence_score")
+  verificationStatus VerificationStatus @default(UNVERIFIED) @map("verification_status")
+  source          String?
+  sourceUrl       String?       @map("source_url")
+  sourceReference String?       @map("source_reference")
   verifiedAt      DateTime?     @map("verified_at")
+  lastVerified    DateTime?     @map("last_verified")
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
 
   property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  evidence EvidenceRecord[]
 
   @@index([propertyId])
   @@index([ownerType])
   @@index([isAbsentee])
   @@index([confidenceScore])
+  @@index([verificationStatus])
   @@map("owners")
 }
 
@@ -217,11 +252,13 @@ model Address {
   lng              Float?
   geocodedAt       DateTime? @map("geocoded_at")
   normalizedAt     DateTime? @map("normalized_at")
+  dedupeKey        String?   @map("dedupe_key")
 
   property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   @@index([propertyId])
   @@index([state, county])
+  @@index([dedupeKey])
   @@map("addresses")
 }
 
@@ -239,10 +276,21 @@ model Lead {
   claimedAt   DateTime?  @map("claimed_at")
   clientId    String?    @map("client_id")
   assignedTo  String?    @map("assigned_to")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  phone       String?    @map("phone")
+  email       String?    @map("email")
+  emailVerified Boolean  @default(false) @map("email_verified")
+  contactName String?    @map("contact_name")
+  skipTraceSource String? @map("skip_trace_source")
+  skipTraceConfidence Float? @map("skip_trace_confidence")
+  callabilityScore Int?   @map("callability_score")
 
   property   Property       @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   leadScore  LeadScore?
   documents  Document[]
+  dispositions Disposition[]
+  evidence   EvidenceRecord[]
 
   @@index([propertyId])
   @@index([status])
@@ -256,6 +304,8 @@ model Lead {
   @@index([niche, status])
   @@index([createdAt])
   @@index([updatedAt])
+  @@index([email])
+  @@index([callabilityScore])
   @@map("leads")
 }
 
@@ -360,6 +410,8 @@ model LeadScore {
   id                   String   @id @default(uuid()) @db.Uuid
   leadId               String   @unique @map("lead_id") @db.Uuid
   overallScore         Int      @map("overall_score")
+  callabilityScore     Int?     @map("callability_score")
+  callabilityBreakdown Json?    @map("callability_breakdown")
   ownershipConfidence  Float    @map("ownership_confidence")
   recordFreshness      Float    @map("record_freshness")
   absenteeSignal       Float    @map("absentee_signal")
@@ -551,3 +603,329 @@ model OutreachTemplate {
   @@index([type])
   @@map("outreach_templates")
 }
+
+// ──────────────────────────────────────────────
+// Property Intelligence Engine (JARVIS Worker 1)
+// Parcel / APN registry + evidence & provenance
+// ──────────────────────────────────────────────
+
+model Parcel {
+  id               String   @id @default(uuid()) @db.Uuid
+  parcelId         String   @map("parcel_id")
+  apnNormalized    String?  @map("apn_normalized")
+  county           String
+  state            String   @db.VarChar(2)
+  legalDescription String?  @map("legal_description")
+  propertyId       String?  @unique @map("property_id") @db.Uuid
+  source           String?
+  sourceUrl        String?  @map("source_url")
+  sourceReference  String?  @map("source_reference")
+  retrievedAt      DateTime @default(now()) @map("retrieved_at")
+  verificationStatus VerificationStatus @default(UNVERIFIED) @map("verification_status")
+  confidence       Float    @default(0)
+  lastVerified     DateTime? @map("last_verified")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  property Property?       @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  evidence EvidenceRecord[]
+
+  @@unique([parcelId, county, state])
+  @@index([county, state])
+  @@index([verificationStatus])
+  @@index([parcelId])
+  @@map("parcels")
+}
+
+model EvidenceRecord {
+  id                 String             @id @default(uuid()) @db.Uuid
+  leadId             String?            @map("lead_id") @db.Uuid
+  propertyId         String?            @map("property_id") @db.Uuid
+  parcelId           String?            @map("parcel_id") @db.Uuid
+  ownerId            String?            @map("owner_id") @db.Uuid
+  source             String             @map("source")
+  sourceType         SourceType         @map("source_type")
+  sourceReference    String?            @map("source_reference")
+  sourceUrl          String?            @map("source_url")
+  rawPayloadHash     String             @map("raw_payload_hash")
+  verificationStatus VerificationStatus @default(UNVERIFIED) @map("verification_status")
+  confidence         Float              @default(0)
+  retrievedAt        DateTime           @default(now()) @map("retrieved_at")
+  lastVerified       DateTime?          @map("last_verified")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  lead      Lead?             @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  property  Property?         @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  parcel    Parcel?           @relation(fields: [parcelId], references: [id], onDelete: SetNull)
+  owner     Owner?            @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  transitions ProvenanceEvent[]
+
+  @@index([leadId])
+  @@index([propertyId])
+  @@index([parcelId])
+  @@index([ownerId])
+  @@index([source])
+  @@index([sourceType])
+  @@index([sourceReference])
+  @@index([verificationStatus])
+  @@index([lastVerified])
+  @@map("evidence_records")
+}
+
+model ProvenanceEvent {
+  id         String   @id @default(uuid()) @db.Uuid
+  evidenceId String   @map("evidence_id") @db.Uuid
+  fromStage  String   @map("from_stage")
+  toStage    String   @map("to_stage")
+  workerId   String?  @map("worker_id")
+  status     String   @default("SUCCESS")
+  metadata   Json?
+  occurredAt DateTime @default(now()) @map("occurred_at")
+
+  evidence EvidenceRecord @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+
+  @@index([evidenceId])
+  @@index([occurredAt])
+  @@map("provenance_events")
+}
+
+model Disposition {
+  id         String          @id @default(uuid()) @db.Uuid
+  leadId     String?         @map("lead_id") @db.Uuid
+  propertyId String?         @map("property_id") @db.Uuid
+  phone      String          @map("phone")
+  type       DispositionType
+  reason     String?
+  permanent  Boolean         @default(true)
+  source     String?         @default("dialer")
+  recordedBy String?         @map("recorded_by")
+  recordedAt DateTime        @default(now()) @map("recorded_at")
+  expiresAt  DateTime?       @map("expires_at")
+  createdAt  DateTime        @default(now()) @map("created_at")
+
+  lead     Lead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  property Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  @@index([phone])
+  @@index([type])
+  @@index([permanent])
+  @@index([leadId])
+  @@index([propertyId])
+  @@index([recordedAt])
+  @@map("dispositions")
+}
+
+model ScoringConfig {
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String   @unique
+  scope      String   @default("global")
+  scopeValue String?  @map("scope_value")
+  weights    Json
+  enabled    Boolean  @default(true)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([scope, scopeValue])
+  @@index([enabled])
+  @@map("scoring_configs")
+}
+
+model RejectionLedgerRecord {
+  id          String   @id @default(uuid()) @db.Uuid
+  rejectionKey String  @map("rejection_key")
+  dimension   String   @map("dimension")
+  phone       String?
+  parcelId    String?  @map("parcel_id")
+  addressKey  String?  @map("address_key")
+  reasons     Json
+  permanent   Boolean  @default(true)
+  source      String   @default("predial_gate")
+  recordedAt  DateTime @default(now()) @map("recorded_at")
+
+  @@unique([rejectionKey, dimension])
+  @@index([phone])
+  @@index([parcelId])
+  @@index([permanent])
+  @@index([recordedAt])
+  @@map("rejection_ledger")
+}
+
+// ────────────────────────────────────────────── Opportunity Intelligence v3 Models
+
+model PropertyEvent {
+  id              String   @id @default(uuid()) @db.Uuid
+  propertyId      String   @map("property_id") @db.Uuid
+  eventType       String   @map("event_type")
+  eventDate       DateTime @map("event_date")
+  retrievedAt     DateTime @default(now()) @map("retrieved_at")
+  source          String
+  sourceUrl       String?  @map("source_url")
+  sourceReference String?  @map("source_reference")
+  confidence      Float    @default(1.0)
+  isIndependent   Boolean  @default(true) @map("is_independent")
+  metadata        Json?
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([propertyId])
+  @@index([eventType])
+  @@index([eventDate])
+  @@map("property_events")
+}
+
+model Auction {
+  id              String    @id @default(uuid()) @db.Uuid
+  propertyId      String    @map("property_id") @db.Uuid
+  auctionDate     DateTime  @map("auction_date")
+  openingBid      Float?    @map("opening_bid")
+  estimatedValue  Float?    @map("estimated_value")
+  venue           String?
+  caseNumber      String?   @map("case_number")
+  source          String
+  sourceUrl       String?   @map("source_url")
+  status          String    @default("scheduled")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  @@index([propertyId])
+  @@index([auctionDate])
+  @@index([status])
+  @@map("auctions")
+}
+
+model OwnerEntity {
+  id               String   @id @default(uuid()) @db.Uuid
+  canonicalName    String   @map("canonical_name")
+  entityType       String   @map("entity_type")
+  stateOfFiling    String?  @map("state_of_filing") @db.VarChar(2)
+  registrationId   String?  @map("registration_id")
+  officerName      String?  @map("officer_name")
+  officerTitle     String?  @map("officer_title")
+  confidenceScore  Float    @default(0.8) @map("confidence_score")
+  verifiedAt       DateTime? @map("verified_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([canonicalName])
+  @@index([officerName])
+  @@map("owner_entities")
+}
+
+model PortfolioRelationship {
+  id              String   @id @default(uuid()) @db.Uuid
+  entityId        String   @map("entity_id") @db.Uuid
+  propertyId      String   @map("property_id") @db.Uuid
+  verificationDoc String?  @map("verification_doc")
+  confidence      Float    @default(0.9)
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@unique([entityId, propertyId])
+  @@index([entityId])
+  @@index([propertyId])
+  @@map("portfolio_relationships")
+}
+
+model LeadDisposition {
+  id               String   @id @default(uuid()) @db.Uuid
+  leadId           String   @map("lead_id") @db.Uuid
+  propertyId       String?  @map("property_id") @db.Uuid
+  phone            String
+  disposition      String
+  notes            String?  @db.Text
+  agentId          String?  @map("agent_id")
+  callbackAt       DateTime? @map("callback_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([leadId])
+  @@index([phone])
+  @@index([disposition])
+  @@map("lead_dispositions")
+}
+
+model BuyerProfile {
+  id                 String   @id @default(uuid()) @db.Uuid
+  name               String
+  buyerType          String   @map("buyer_type")
+  targetGeographies  Json     @map("target_geographies")
+  targetPropertyTypes Json    @map("target_property_types")
+  priceMin           Float    @map("price_min")
+  priceMax           Float    @map("price_max")
+  minSpread          Float    @default(25000) @map("min_spread")
+  activeCapital      Float?   @map("active_capital")
+  contactEmail       String?  @map("contact_email")
+  contactPhone       String?  @map("contact_phone")
+  netellerVerified   Boolean  @default(false) @map("neteller_verified")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@index([buyerType])
+  @@map("buyer_profiles")
+}
+
+model BuyerMatch {
+  id             String   @id @default(uuid()) @db.Uuid
+  leadId         String   @map("lead_id") @db.Uuid
+  buyerId        String   @map("buyer_id") @db.Uuid
+  matchScore     Float    @map("match_score")
+  reason         String?
+  status         String   @default("proposed")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@index([leadId])
+  @@index([buyerId])
+  @@map("buyer_matches")
+}
+
+model BusinessProspect {
+  id                      String   @id @default(uuid()) @db.Uuid
+  companyName             String   @map("company_name")
+  industry                String
+  decisionMakerName       String   @map("decision_maker_name")
+  decisionMakerTitle      String   @map("decision_maker_title")
+  verifiedEmail           String?  @map("verified_email")
+  verifiedPhone           String?  @map("verified_phone")
+  serviceFit              String   @map("service_fit")
+  problemDescription      String?  @map("problem_description") @db.Text
+  solutionDescription     String?  @map("solution_description") @db.Text
+  salesPriorityScore      Int      @default(0) @map("sales_priority_score")
+  netellerSku             String?  @map("neteller_sku")
+  status                  String   @default("new")
+  createdAt               DateTime @default(now()) @map("created_at")
+
+  @@index([companyName])
+  @@index([salesPriorityScore])
+  @@map("business_prospects")
+}
+
+model Deal {
+  id               String   @id @default(uuid()) @db.Uuid
+  propertyId       String?  @map("property_id") @db.Uuid
+  leadId           String?  @map("lead_id") @db.Uuid
+  businessProspectId String? @map("business_prospect_id") @db.Uuid
+  dealType         String   @map("deal_type")
+  grossRevenue     Float    @map("gross_revenue")
+  netCommission    Float    @map("net_commission")
+  netellerPaymentId String? @map("neteller_payment_id")
+  status           String   @default("pipeline")
+  closedAt         DateTime? @map("closed_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([status])
+  @@index([dealType])
+  @@map("deals")
+}
+
+model Call {
+  id               String   @id @default(uuid()) @db.Uuid
+  leadId           String?  @map("lead_id") @db.Uuid
+  phone            String
+  durationSeconds  Int      @default(0) @map("duration_seconds")
+  disposition      String
+  recordingUrl     String?  @map("recording_url")
+  transcript       String?  @db.Text
+  callStartedAt    DateTime @default(now()) @map("call_started_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([phone])
+  @@index([disposition])
+  @@map("calls")
+}
+
+
