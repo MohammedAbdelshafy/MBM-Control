@@ -1,0 +1,22 @@
+{
+  "sku": "AI-ASSISTANT-HVAC-DISPATCH",
+  "offer_name": "24/7 AI Emergency Call Triage & Technician Dispatch Agent",
+  "problem_solved": "Missed after-hours emergency calls and slow dispatcher routing during heat waves/freezes",
+  "core_workflow": "Answers on 1st ring, qualifies emergency vs routine, captures unit model/address, routes technician via SMS",
+  "implementation_scope": "Twilio/SIP phone bridge, ServiceTitan/Housecall Pro calendar webhook, SMS technician escalation",
+  "pricing_model": "MONTHLY_RETAINER",
+  "setup_fee_usd": 1500.0,
+  "monthly_fee_usd": 2500.0,
+  "performance_fee": "$25 per dispatched high-value diagnostic call",
+  "neteller_checkout_link": "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=2500.00&currency=USD&item=AI-ASSISTANT-HVAC-DISPATCH",
+  "entry_diagnostic": "30-Second After-Hours Secret Shopper Call Audit",
+  "expansion_paths": [
+    "Seasonal Maintenance Recall Swarm",
+    "Commercial Filter Replacement Bot"
+  ],
+  "roi_hypothesis": {
+    "observed": "Commercial HVAC average ticket value is $450 - $4,500+",
+    "estimated": "Losing 4-8 emergency calls/week to voicemail costs $7,200 - $18,000/mo in lost gross revenue",
+    "assumed": "Recovering just 2 missed service calls per month pays for the entire $2,500 retainer (3.6x ROI)"
+  }
+}

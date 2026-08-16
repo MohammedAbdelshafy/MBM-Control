@@ -1,0 +1,22 @@
+{
+  "sku": "AI-ASSISTANT-LEGAL-INTAKE",
+  "offer_name": "24/7 AI Retainer Signer & Case Intake Specialist",
+  "problem_solved": "High-value accident and legal inquiries lost to competing law firms due to delayed intake response",
+  "core_workflow": "Screens potential claimants 24/7, validates liability/injury criteria, signs digital retainer via DocuSign in under 3 minutes",
+  "implementation_scope": "Clio/Filevine CRM integration, DocuSign/HelloSign automated envelope dispatch, high-priority attorney SMS alert",
+  "pricing_model": "MONTHLY_RETAINER",
+  "setup_fee_usd": 2500.0,
+  "monthly_fee_usd": 4000.0,
+  "performance_fee": "$100 per qualified signed retainer",
+  "neteller_checkout_link": "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=4000.00&currency=USD&item=AI-ASSISTANT-LEGAL-INTAKE",
+  "entry_diagnostic": "10-Minute Ghost Lead Intake Speed Audit",
+  "expansion_paths": [
+    "Medical Records Collection Chaser Bot",
+    "Client Case Status Portal Assistant"
+  ],
+  "roi_hypothesis": {
+    "observed": "Average personal injury case settlement produces $15,000 - $50,000+ in attorney contingency fees",
+    "estimated": "An injured claimant calls 3 firms from Google Ads; the first firm to complete intake signs the retainer 78% of the time",
+    "assumed": "Signing just 1 additional case per quarter yields $25,000+ fee vs $4,000/mo retainer (6x ROI)"
+  }
+}

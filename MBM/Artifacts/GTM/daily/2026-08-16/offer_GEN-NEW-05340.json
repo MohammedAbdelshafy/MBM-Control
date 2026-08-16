@@ -1,0 +1,22 @@
+{
+  "sku": "AI-ASSISTANT-ROOF-SWARM",
+  "offer_name": "AI Storm Surge Lead Intake & Satellite Inspection Qualifier",
+  "problem_solved": "Slow response times to storm surge leads and lost re-roofing bids to faster competitors",
+  "core_workflow": "Instantly calls/texts incoming storm leads within 15 seconds, collects roof age/damage photos, books drone inspection",
+  "implementation_scope": "Instant inbound lead webhook, automated multi-touch SMS sequence, Roofr/AccuLynx calendar booking",
+  "pricing_model": "MONTHLY_RETAINER",
+  "setup_fee_usd": 2000.0,
+  "monthly_fee_usd": 3000.0,
+  "performance_fee": "$50 per qualified inspection completed",
+  "neteller_checkout_link": "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=3000.00&currency=USD&item=AI-ASSISTANT-ROOF-SWARM",
+  "entry_diagnostic": "15-Minute Storm Lead Speed-to-Lead Simulation Audit",
+  "expansion_paths": [
+    "Insurance Claim Supplement Tracking Agent",
+    "Commercial Flat Roof Maintenance Nurture"
+  ],
+  "roi_hypothesis": {
+    "observed": "Average residential/commercial roof replacement is $12,000 - $35,000",
+    "estimated": "Responding in 15 seconds vs 30 minutes increases lead conversion by 391%",
+    "assumed": "Securing 1 extra roof replacement per month yields $12,000+ top-line for a $3,000 retainer (4x ROI)"
+  }
+}

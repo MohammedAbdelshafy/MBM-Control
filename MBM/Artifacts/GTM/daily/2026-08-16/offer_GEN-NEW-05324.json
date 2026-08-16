@@ -1,0 +1,22 @@
+{
+  "sku": "AI-ASSISTANT-CONTECH-TAKEOFF",
+  "offer_name": "Autonomous CAD-to-BOQ Takeoff & Estimating Copilot",
+  "problem_solved": "2-3 week manual takeoff bottlenecks and mathematical calculation errors in structural bids",
+  "core_workflow": "Parses .DWG, .DXF, and PDF drawing sets, extracts structural quantities, generates verified BOQ with Eurocode/USACE formulas",
+  "implementation_scope": "Desktop vector extraction engine, MasterFormat/UniFormat cost database mapper, Excel/Procore sync",
+  "pricing_model": "MONTHLY_RETAINER",
+  "setup_fee_usd": 3500.0,
+  "monthly_fee_usd": 4500.0,
+  "performance_fee": "Optional 0.25% contingency review fee on awarded bids",
+  "neteller_checkout_link": "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=4500.00&currency=USD&item=AI-ASSISTANT-CONTECH-TAKEOFF",
+  "entry_diagnostic": "Complimentary CAD-to-BOQ Benchmark Audit on 1 Sample Drawing Set",
+  "expansion_paths": [
+    "Subcontractor Bid Reconciliation Bot",
+    "Change Order Discrepancy Detector"
+  ],
+  "roi_hypothesis": {
+    "observed": "Senior estimating engineers bill $90 - $160/hr and spend 40+ hours per commercial bid",
+    "estimated": "Cutting takeoff time from 3 weeks to 15 minutes enables bidding on 4x more tenders with zero math errors",
+    "assumed": "Winning 1 additional civil tender per quarter yields $250,000+ gross margin vs $4,500/mo cost (18x ROI)"
+  }
+}
