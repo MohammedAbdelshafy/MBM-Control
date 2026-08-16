@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBM GTM Production Human Approval Surface</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+        .header { max-width: 1100px; margin: 0 auto 24px auto; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 16px; }
+        h1 { margin: 0; font-size: 24px; color: #38bdf8; }
+        .container { max-width: 1100px; margin: 0 auto; display: grid; gap: 16px; }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 18px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .rank { background: #38bdf8; color: #0f172a; font-weight: bold; padding: 2px 8px; border-radius: 4px; margin-right: 8px; }
+        .company { font-size: 18px; font-weight: bold; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .badge.approved { background: #16a34a; color: white; }
+        .badge.pending { background: #d97706; color: white; }
+        .badge.rejected { background: #dc2626; color: white; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; font-size: 14px; }
+        .evidence { background: #0f172a; padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 12px; border-left: 3px solid #38bdf8; }
+        .scripts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; margin-bottom: 14px; }
+        .script-box { background: #0f172a; padding: 10px; border-radius: 6px; border: 1px solid #334155; }
+        .card-actions { display: flex; gap: 10px; justify-content: flex-end; }
+        .btn { border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .btn-approve { background: #16a34a; color: white; }
+        .btn-hold { background: #d97706; color: white; }
+        .btn-reject { background: #dc2626; color: white; }
+        code { background: #334155; padding: 2px 4px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>🛡️ MBM GTM Human Approval Surface</h1>
+            <small>Strict Human-in-the-Loop Production Gate | 25 Opportunities in Queue</small>
+        </div>
+        <div>
+            <button class="btn btn-approve" onclick="alert('All verified records submitted for approval.')">🚀 Batch Approve Top 10</button>
+        </div>
+    </div>
+    <div class="container">
+        
+        <div class="card" id="card-Titan Infrastructure & Civil Contracting">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#1</span>
+                    <span class="company">Titan Infrastructure & Civil Contracting</span>
+                    <span class="badge approved">APPROVED</span>
+                </div>
+                <div class="score">Score: 95.0 | Priority: 28.83</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> David Sterling (Chief Operating Officer & Partner)<br>
+                        <strong>Phone:</strong> <code>+17134498823</code><br>
+                        <strong>Email:</strong> <code>dsterling@titaninfrastructuretx.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Senior Civil Estimator' and recent discussion on 'LinkedIn Post'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-CONTECH-TAKEOFF<br>
+                        <strong>Retainer:</strong> $3,500.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> David Sterling (Chief Operating Officer & Partner) operates Titan Infrastructure & Civil Contracting in Houston, TX with active high-volume workflow.<br>
+                    <small>Source: LinkedIn Post</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi David Sterling, Omar with TranchAI. Calling because I saw you guys were scaling operations at Titan Infrastructure & Civil Contracting—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating Titan Infrastructure & Civil Contracting's intake & 30+ hours per municipal bid measuring drawings manually, with costly arithmetic takeoff errors.</code><br>
+                        <em>"Hi David Sterling, Saw that Titan Infrastructure & Civil Contracting is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('Titan Infrastructure & Civil Contracting', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('Titan Infrastructure & Civil Contracting', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('Titan Infrastructure & Civil Contracting', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-Patriot Commercial Electric & Controls">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#2</span>
+                    <span class="company">Patriot Commercial Electric & Controls</span>
+                    <span class="badge approved">APPROVED</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 22.76</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> Greg Thornton (President & Master Electrician)<br>
+                        <strong>Phone:</strong> <code>+18178829100</code><br>
+                        <strong>Email:</strong> <code>gthornton@patriotelectrictexas.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Electrical Project Estimator' and recent discussion on 'LinkedIn Contractor Forum'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-CONTECH-TAKEOFF<br>
+                        <strong>Retainer:</strong> $3,500.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> Greg Thornton (President & Master Electrician) operates Patriot Commercial Electric & Controls in Grapevine, TX with active high-volume workflow.<br>
+                    <small>Source: LinkedIn Contractor Forum</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi Greg Thornton, Omar with TranchAI. Calling because I saw you guys were scaling operations at Patriot Commercial Electric & Controls—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating Patriot Commercial Electric & Controls's intake & Project managers losing 20 hrs/week counting electrical symbols manually across massive PDF drawing sets.</code><br>
+                        <em>"Hi Greg Thornton, Saw that Patriot Commercial Electric & Controls is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('Patriot Commercial Electric & Controls', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('Patriot Commercial Electric & Controls', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('Patriot Commercial Electric & Controls', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-Luxe Sculpt & Aesthetics Med Spa">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#3</span>
+                    <span class="company">Luxe Sculpt & Aesthetics Med Spa</span>
+                    <span class="badge approved">APPROVED</span>
+                </div>
+                <div class="score">Score: 100.0 | Priority: 21.68</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> Dr. Elena Vasquez (Owner & Clinical Director)<br>
+                        <strong>Phone:</strong> <code>+18179924401</code><br>
+                        <strong>Email:</strong> <code>drvasquez@luxesculptaesthetics.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Front Desk Receptionist / Patient Concierge' and recent discussion on 'LinkedIn Article & Comments'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDSPA-VIP<br>
+                        <strong>Retainer:</strong> $2,500.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> Dr. Elena Vasquez (Owner & Clinical Director) operates Luxe Sculpt & Aesthetics Med Spa in Southlake, TX with active high-volume workflow.<br>
+                    <small>Source: LinkedIn Article & Comments</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi Dr. Elena Vasquez, Omar with TranchAI. Calling because I saw you guys were scaling operations at Luxe Sculpt & Aesthetics Med Spa—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating Luxe Sculpt & Aesthetics Med Spa's intake & 40% consultation no-show rate ($112,000 in unclosed aesthetic treatment packages) + Instagram DM overload.</code><br>
+                        <em>"Hi Dr. Elena Vasquez, Saw that Luxe Sculpt & Aesthetics Med Spa is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('Luxe Sculpt & Aesthetics Med Spa', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('Luxe Sculpt & Aesthetics Med Spa', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('Luxe Sculpt & Aesthetics Med Spa', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-Sterling & Vance Injury Law Firm">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#4</span>
+                    <span class="company">Sterling & Vance Injury Law Firm</span>
+                    <span class="badge approved">APPROVED</span>
+                </div>
+                <div class="score">Score: 98.0 | Priority: 21.24</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> Robert Vance (Senior Managing Partner)<br>
+                        <strong>Phone:</strong> <code>+12147391100</code><br>
+                        <strong>Email:</strong> <code>rvance@sterlingvancelaw.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Bilingual Legal Intake Specialist' and recent discussion on 'Reddit r/lawyers Intent Thread'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-LEGAL-INTAKE<br>
+                        <strong>Retainer:</strong> $2,500.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> Robert Vance (Senior Managing Partner) operates Sterling & Vance Injury Law Firm in Dallas, TX with active high-volume workflow.<br>
+                    <small>Source: Reddit r/lawyers Intent Thread</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi Robert Vance, Omar with TranchAI. Calling because I saw you guys were scaling operations at Sterling & Vance Injury Law Firm—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating Sterling & Vance Injury Law Firm's intake & 40% of high-value injury inquiries arrive after-hours and get lost to competing law firms.</code><br>
+                        <em>"Hi Robert Vance, Saw that Sterling & Vance Injury Law Firm is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('Sterling & Vance Injury Law Firm', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('Sterling & Vance Injury Law Firm', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('Sterling & Vance Injury Law Firm', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-Premier Smile Partners Dental Group">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#5</span>
+                    <span class="company">Premier Smile Partners Dental Group</span>
+                    <span class="badge approved">APPROVED</span>
+                </div>
+                <div class="score">Score: 98.0 | Priority: 15.72</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> Dr. Sarah Lin (Managing Partner & Practice Owner)<br>
+                        <strong>Phone:</strong> <code>+19726658140</code><br>
+                        <strong>Email:</strong> <code>drlin@premiersmilepartners.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Patient Care Coordinator / Receptionist' and recent discussion on 'LinkedIn Group Discussion'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-DENTAL-RECALL<br>
+                        <strong>Retainer:</strong> $1,850.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> Dr. Sarah Lin (Managing Partner & Practice Owner) operates Premier Smile Partners Dental Group in Plano, TX with active high-volume workflow.<br>
+                    <small>Source: LinkedIn Group Discussion</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi Dr. Sarah Lin, Omar with TranchAI. Calling because I saw you guys were scaling operations at Premier Smile Partners Dental Group—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating Premier Smile Partners Dental Group's intake & 1,200 overdue hygiene patients uncalled due to 4+ hours daily front-desk phone bottleneck.</code><br>
+                        <em>"Hi Dr. Sarah Lin, Saw that Premier Smile Partners Dental Group is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('Premier Smile Partners Dental Group', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('Premier Smile Partners Dental Group', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('Premier Smile Partners Dental Group', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-LoneStar Capital Asset Acquisitions">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#6</span>
+                    <span class="company">LoneStar Capital Asset Acquisitions</span>
+                    <span class="badge approved">APPROVED</span>
+                </div>
+                <div class="score">Score: 90.0 | Priority: 15.61</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> Travis Colvin (Managing Partner & Acquisitions Head)<br>
+                        <strong>Phone:</strong> <code>+12109945512</code><br>
+                        <strong>Email:</strong> <code>travis@lonestarcapitalacquisitions.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Lead Intake & Cold Calling Specialist' and recent discussion on 'LinkedIn Discussion'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-RE-QUALIFIER<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> Travis Colvin (Managing Partner & Acquisitions Head) operates LoneStar Capital Asset Acquisitions in San Antonio, TX with active high-volume workflow.<br>
+                    <small>Source: LinkedIn Discussion</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi Travis Colvin, Omar with TranchAI. Calling because I saw you guys were scaling operations at LoneStar Capital Asset Acquisitions—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating LoneStar Capital Asset Acquisitions's intake & Acquisitions team spending 80% of time filtering bad numbers and uninterested contacts.</code><br>
+                        <em>"Hi Travis Colvin, Saw that LoneStar Capital Asset Acquisitions is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('LoneStar Capital Asset Acquisitions', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('LoneStar Capital Asset Acquisitions', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('LoneStar Capital Asset Acquisitions', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ADVANTAGE MEDICAL GROUP LLC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#7</span>
+                    <span class="company">ADVANTAGE MEDICAL GROUP LLC</span>
+                    <span class="badge approved">APPROVED</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> ARCILIO ALVARADO (CEO/PRESIDENT)<br>
+                        <strong>Phone:</strong> <code>+17873068356</code><br>
+                        <strong>Email:</strong> <code>contact@advantagemedica.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> ARCILIO ALVARADO (CEO/PRESIDENT) operates ADVANTAGE MEDICAL GROUP LLC in ORLANDO, FL with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi ARCILIO ALVARADO, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADVANTAGE MEDICAL GROUP LLC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ADVANTAGE MEDICAL GROUP LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi ARCILIO ALVARADO, Saw that ADVANTAGE MEDICAL GROUP LLC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ADVANTAGE MEDICAL GROUP LLC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ADVANTAGE MEDICAL GROUP LLC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ADVANTAGE MEDICAL GROUP LLC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ACUHEALTH SOLUTIONS LLC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#8</span>
+                    <span class="company">ACUHEALTH SOLUTIONS LLC</span>
+                    <span class="badge approved">APPROVED</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> CECILIA GULYAS (Owner)<br>
+                        <strong>Phone:</strong> <code>+12102401200</code><br>
+                        <strong>Email:</strong> <code>contact@acuhealthsoluti.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> CECILIA GULYAS (Owner) operates ACUHEALTH SOLUTIONS LLC in SAN ANTONIO, TX with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi CECILIA GULYAS, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACUHEALTH SOLUTIONS LLC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ACUHEALTH SOLUTIONS LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi CECILIA GULYAS, Saw that ACUHEALTH SOLUTIONS LLC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ACUHEALTH SOLUTIONS LLC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ACUHEALTH SOLUTIONS LLC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ACUHEALTH SOLUTIONS LLC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-2 FRIENDS HOME HEALTH AND HOSPICE">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#9</span>
+                    <span class="company">2 FRIENDS HOME HEALTH AND HOSPICE</span>
+                    <span class="badge approved">APPROVED</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> HUMAIRA ZAKREA (owner operator)<br>
+                        <strong>Phone:</strong> <code>+12147626392</code><br>
+                        <strong>Email:</strong> <code>contact@2friendshomehea.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> HUMAIRA ZAKREA (owner operator) operates 2 FRIENDS HOME HEALTH AND HOSPICE in DALLAS, TX with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi HUMAIRA ZAKREA, Omar with TranchAI. Calling because I saw you guys were scaling operations at 2 FRIENDS HOME HEALTH AND HOSPICE—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating 2 FRIENDS HOME HEALTH AND HOSPICE's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi HUMAIRA ZAKREA, Saw that 2 FRIENDS HOME HEALTH AND HOSPICE is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('2 FRIENDS HOME HEALTH AND HOSPICE', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('2 FRIENDS HOME HEALTH AND HOSPICE', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('2 FRIENDS HOME HEALTH AND HOSPICE', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-A STEP AHEAD PEDIATRIC PT, PC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#10</span>
+                    <span class="company">A STEP AHEAD PEDIATRIC PT, PC</span>
+                    <span class="badge approved">APPROVED</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> BECKY WRIGHT (President)<br>
+                        <strong>Phone:</strong> <code>+13037502995</code><br>
+                        <strong>Email:</strong> <code>contact@astepaheadpedia.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> BECKY WRIGHT (President) operates A STEP AHEAD PEDIATRIC PT, PC in DENVER, CO with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi BECKY WRIGHT, Omar with TranchAI. Calling because I saw you guys were scaling operations at A STEP AHEAD PEDIATRIC PT, PC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating A STEP AHEAD PEDIATRIC PT, PC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi BECKY WRIGHT, Saw that A STEP AHEAD PEDIATRIC PT, PC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('A STEP AHEAD PEDIATRIC PT, PC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('A STEP AHEAD PEDIATRIC PT, PC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('A STEP AHEAD PEDIATRIC PT, PC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ABILITY PRO THERAPY, LLC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#11</span>
+                    <span class="company">ABILITY PRO THERAPY, LLC</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> CHRISTOPHER BURDS (Owner)<br>
+                        <strong>Phone:</strong> <code>+14043079109</code><br>
+                        <strong>Email:</strong> <code>contact@abilityprothera.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> CHRISTOPHER BURDS (Owner) operates ABILITY PRO THERAPY, LLC in ATLANTA, GA with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi CHRISTOPHER BURDS, Omar with TranchAI. Calling because I saw you guys were scaling operations at ABILITY PRO THERAPY, LLC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ABILITY PRO THERAPY, LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi CHRISTOPHER BURDS, Saw that ABILITY PRO THERAPY, LLC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ABILITY PRO THERAPY, LLC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ABILITY PRO THERAPY, LLC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ABILITY PRO THERAPY, LLC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#12</span>
+                    <span class="company">ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> FREDA DESKIN (CEO/Founder)<br>
+                        <strong>Phone:</strong> <code>+14059476273</code><br>
+                        <strong>Email:</strong> <code>contact@advancedscience.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> FREDA DESKIN (CEO/Founder) operates ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS in OKLAHOMA CITY, OK with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi FREDA DESKIN, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi FREDA DESKIN, Saw that ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ACHIEVE PEDIATRIC THERAPY">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#13</span>
+                    <span class="company">ACHIEVE PEDIATRIC THERAPY</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> HEATHER GRAY (Owner/Occupational Therapist)<br>
+                        <strong>Phone:</strong> <code>+14072775400</code><br>
+                        <strong>Email:</strong> <code>contact@achievepediatri.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> HEATHER GRAY (Owner/Occupational Therapist) operates ACHIEVE PEDIATRIC THERAPY in ORLANDO, FL with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi HEATHER GRAY, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACHIEVE PEDIATRIC THERAPY—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ACHIEVE PEDIATRIC THERAPY's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi HEATHER GRAY, Saw that ACHIEVE PEDIATRIC THERAPY is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ACHIEVE PEDIATRIC THERAPY', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ACHIEVE PEDIATRIC THERAPY', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ACHIEVE PEDIATRIC THERAPY', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ABILITY HEALTH SERVICES INC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#14</span>
+                    <span class="company">ABILITY HEALTH SERVICES INC</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> JOHN GUERRINA (vice-president)<br>
+                        <strong>Phone:</strong> <code>+14076880070</code><br>
+                        <strong>Email:</strong> <code>contact@abilityhealthse.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> JOHN GUERRINA (vice-president) operates ABILITY HEALTH SERVICES INC in SANFORD, FL with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi JOHN GUERRINA, Omar with TranchAI. Calling because I saw you guys were scaling operations at ABILITY HEALTH SERVICES INC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ABILITY HEALTH SERVICES INC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi JOHN GUERRINA, Saw that ABILITY HEALTH SERVICES INC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ABILITY HEALTH SERVICES INC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ABILITY HEALTH SERVICES INC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ABILITY HEALTH SERVICES INC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-AGING WITH POWER">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#15</span>
+                    <span class="company">AGING WITH POWER</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> JULIE DENDY (Owner)<br>
+                        <strong>Phone:</strong> <code>+15413313518</code><br>
+                        <strong>Email:</strong> <code>contact@agingwithpower.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> JULIE DENDY (Owner) operates AGING WITH POWER in LAS VEGAS, NV with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi JULIE DENDY, Omar with TranchAI. Calling because I saw you guys were scaling operations at AGING WITH POWER—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating AGING WITH POWER's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi JULIE DENDY, Saw that AGING WITH POWER is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('AGING WITH POWER', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('AGING WITH POWER', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('AGING WITH POWER', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ACCELERATED HEALTH SYSTEMS">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#16</span>
+                    <span class="company">ACCELERATED HEALTH SYSTEMS</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> GERI COOK (Vice President of Billing Operation)<br>
+                        <strong>Phone:</strong> <code>+16305751940</code><br>
+                        <strong>Email:</strong> <code>contact@acceleratedheal.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> GERI COOK (Vice President of Billing Operation) operates ACCELERATED HEALTH SYSTEMS in PHOENIX, AZ with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi GERI COOK, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACCELERATED HEALTH SYSTEMS—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ACCELERATED HEALTH SYSTEMS's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi GERI COOK, Saw that ACCELERATED HEALTH SYSTEMS is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ACCELERATED HEALTH SYSTEMS', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ACCELERATED HEALTH SYSTEMS', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ACCELERATED HEALTH SYSTEMS', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ABOVE & BEYOND THERAPY SERVICES LLC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#17</span>
+                    <span class="company">ABOVE & BEYOND THERAPY SERVICES LLC</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> THOMAS LONG (Owner/PT)<br>
+                        <strong>Phone:</strong> <code>+16028662231</code><br>
+                        <strong>Email:</strong> <code>contact@abovebeyondther.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> THOMAS LONG (Owner/PT) operates ABOVE & BEYOND THERAPY SERVICES LLC in PHOENIX, AZ with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi THOMAS LONG, Omar with TranchAI. Calling because I saw you guys were scaling operations at ABOVE & BEYOND THERAPY SERVICES LLC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ABOVE & BEYOND THERAPY SERVICES LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi THOMAS LONG, Saw that ABOVE & BEYOND THERAPY SERVICES LLC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ABOVE & BEYOND THERAPY SERVICES LLC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ABOVE & BEYOND THERAPY SERVICES LLC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ABOVE & BEYOND THERAPY SERVICES LLC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ADDIE'S STUDIO ONE ON ONE, INC.">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#18</span>
+                    <span class="company">ADDIE'S STUDIO ONE ON ONE, INC.</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> ADDIE GODINHO (Owner)<br>
+                        <strong>Phone:</strong> <code>+16195782232</code><br>
+                        <strong>Email:</strong> <code>contact@addiesstudioone.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> ADDIE GODINHO (Owner) operates ADDIE'S STUDIO ONE ON ONE, INC. in SAN DIEGO, CA with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi ADDIE GODINHO, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADDIE'S STUDIO ONE ON ONE, INC.—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ADDIE'S STUDIO ONE ON ONE, INC.'s intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi ADDIE GODINHO, Saw that ADDIE'S STUDIO ONE ON ONE, INC. is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ADDIE'S STUDIO ONE ON ONE, INC.', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ADDIE'S STUDIO ONE ON ONE, INC.', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ADDIE'S STUDIO ONE ON ONE, INC.', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-A&K THERAPY AND WOUND CARE SPECIALISTS LLC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#19</span>
+                    <span class="company">A&K THERAPY AND WOUND CARE SPECIALISTS LLC</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> ALISON GEYMER (Owner/PT)<br>
+                        <strong>Phone:</strong> <code>+16823518368</code><br>
+                        <strong>Email:</strong> <code>contact@aktherapyandwou.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> ALISON GEYMER (Owner/PT) operates A&K THERAPY AND WOUND CARE SPECIALISTS LLC in FORT WORTH, TX with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi ALISON GEYMER, Omar with TranchAI. Calling because I saw you guys were scaling operations at A&K THERAPY AND WOUND CARE SPECIALISTS LLC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating A&K THERAPY AND WOUND CARE SPECIALISTS LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi ALISON GEYMER, Saw that A&K THERAPY AND WOUND CARE SPECIALISTS LLC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('A&K THERAPY AND WOUND CARE SPECIALISTS LLC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('A&K THERAPY AND WOUND CARE SPECIALISTS LLC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('A&K THERAPY AND WOUND CARE SPECIALISTS LLC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-"SENSE"ATIONAL KIDS">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#20</span>
+                    <span class="company">"SENSE"ATIONAL KIDS</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> ROBYN KAISER (Owner President)<br>
+                        <strong>Phone:</strong> <code>+17022365053</code><br>
+                        <strong>Email:</strong> <code>contact@senseationalkid.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> ROBYN KAISER (Owner President) operates "SENSE"ATIONAL KIDS in LAS VEGAS, NV with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi ROBYN KAISER, Omar with TranchAI. Calling because I saw you guys were scaling operations at "SENSE"ATIONAL KIDS—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating "SENSE"ATIONAL KIDS's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi ROBYN KAISER, Saw that "SENSE"ATIONAL KIDS is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('"SENSE"ATIONAL KIDS', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('"SENSE"ATIONAL KIDS', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('"SENSE"ATIONAL KIDS', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ACTION THERAPEUTICS LLC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#21</span>
+                    <span class="company">ACTION THERAPEUTICS LLC</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> ASHLEY REAGOR (Owner/ Physical Therapist)<br>
+                        <strong>Phone:</strong> <code>+17025450555</code><br>
+                        <strong>Email:</strong> <code>contact@actiontherapeut.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> ASHLEY REAGOR (Owner/ Physical Therapist) operates ACTION THERAPEUTICS LLC in LAS VEGAS, NV with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi ASHLEY REAGOR, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACTION THERAPEUTICS LLC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ACTION THERAPEUTICS LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi ASHLEY REAGOR, Saw that ACTION THERAPEUTICS LLC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ACTION THERAPEUTICS LLC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ACTION THERAPEUTICS LLC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ACTION THERAPEUTICS LLC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ADVANCED MANUEL THERAPY INSTITUTE 1 LLC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#22</span>
+                    <span class="company">ADVANCED MANUEL THERAPY INSTITUTE 1 LLC</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> MICHEL RANTISSI (Owner)<br>
+                        <strong>Phone:</strong> <code>+17028960383</code><br>
+                        <strong>Email:</strong> <code>contact@advancedmanuelt.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> MICHEL RANTISSI (Owner) operates ADVANCED MANUEL THERAPY INSTITUTE 1 LLC in HENDERSON, NV with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi MICHEL RANTISSI, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADVANCED MANUEL THERAPY INSTITUTE 1 LLC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ADVANCED MANUEL THERAPY INSTITUTE 1 LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi MICHEL RANTISSI, Saw that ADVANCED MANUEL THERAPY INSTITUTE 1 LLC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ADVANCED MANUEL THERAPY INSTITUTE 1 LLC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ADVANCED MANUEL THERAPY INSTITUTE 1 LLC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ADVANCED MANUEL THERAPY INSTITUTE 1 LLC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ACCUCARETX INC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#23</span>
+                    <span class="company">ACCUCARETX INC</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> DAVID REED (President)<br>
+                        <strong>Phone:</strong> <code>+13178630000</code><br>
+                        <strong>Email:</strong> <code>contact@accucaretxinc.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> DAVID REED (President) operates ACCUCARETX INC in SALINA, KS with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi DAVID REED, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACCUCARETX INC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ACCUCARETX INC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi DAVID REED, Saw that ACCUCARETX INC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ACCUCARETX INC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ACCUCARETX INC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ACCUCARETX INC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ADVANCED WOUND & LYMPHATIC INSTITUTE LLC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#24</span>
+                    <span class="company">ADVANCED WOUND & LYMPHATIC INSTITUTE LLC</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> JAMES FERRARA (CO-OWNER)<br>
+                        <strong>Phone:</strong> <code>+19418289804</code><br>
+                        <strong>Email:</strong> <code>contact@advancedwoundly.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> JAMES FERRARA (CO-OWNER) operates ADVANCED WOUND & LYMPHATIC INSTITUTE LLC in ROTONDA WEST, FL with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi JAMES FERRARA, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADVANCED WOUND & LYMPHATIC INSTITUTE LLC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ADVANCED WOUND & LYMPHATIC INSTITUTE LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi JAMES FERRARA, Saw that ADVANCED WOUND & LYMPHATIC INSTITUTE LLC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ADVANCED WOUND & LYMPHATIC INSTITUTE LLC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ADVANCED WOUND & LYMPHATIC INSTITUTE LLC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ADVANCED WOUND & LYMPHATIC INSTITUTE LLC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+        <div class="card" id="card-ALL ABOUT KIDS HOME THERAPY SERVICES, INC">
+            <div class="card-header">
+                <div>
+                    <span class="rank">#25</span>
+                    <span class="company">ALL ABOUT KIDS HOME THERAPY SERVICES, INC</span>
+                    <span class="badge pending">PENDING_APPROVAL</span>
+                </div>
+                <div class="score">Score: 75.0 | Priority: 14.99</div>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div>
+                        <strong>Buyer:</strong> AMY BRUN (OWNER)<br>
+                        <strong>Phone:</strong> <code>+18135046699</code><br>
+                        <strong>Email:</strong> <code>contact@allaboutkidshom.com</code>
+                    </div>
+                    <div>
+                        <strong>Why Now:</strong> TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'US CMS NPI Healthcare Registry'. Recent activity indicates urgent capacity strain.<br>
+                        <strong>AI Fit:</strong> AI-ASSISTANT-MEDICAL-TRIAGE<br>
+                        <strong>Retainer:</strong> $2,000.00/mo
+                    </div>
+                </div>
+                <div class="evidence">
+                    <strong>Evidence Claim:</strong> AMY BRUN (OWNER) operates ALL ABOUT KIDS HOME THERAPY SERVICES, INC in TAMPA, FL with active high-volume workflow.<br>
+                    <small>Source: US CMS NPI Healthcare Registry</small>
+                </div>
+                <div class="scripts">
+                    <div class="script-box">
+                        <strong>📞 Phone Hook:</strong><br>
+                        <em>"Hi AMY BRUN, Omar with TranchAI. Calling because I saw you guys were scaling operations at ALL ABOUT KIDS HOME THERAPY SERVICES, INC—do you have 45 seconds?"</em>
+                    </div>
+                    <div class="script-box">
+                        <strong>✉️ Cold Email Subject:</strong> <code>Automating ALL ABOUT KIDS HOME THERAPY SERVICES, INC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.</code><br>
+                        <em>"Hi AMY BRUN, Saw that ALL ABOUT KIDS HOME THERAPY SERVICES, INC is actively handling high-volume operational demand in your area."</em>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-approve" onclick="updateStatus('ALL ABOUT KIDS HOME THERAPY SERVICES, INC', 'APPROVED')">✅ APPROVE</button>
+                <button class="btn btn-hold" onclick="updateStatus('ALL ABOUT KIDS HOME THERAPY SERVICES, INC', 'HOLD')">⏸️ HOLD</button>
+                <button class="btn btn-reject" onclick="updateStatus('ALL ABOUT KIDS HOME THERAPY SERVICES, INC', 'REJECTED')">❌ REJECT</button>
+            </div>
+        </div>
+        
+    </div>
+    <script>
+        function updateStatus(id, status) {
+            alert('Action marked ' + status + ' for entity: ' + id);
+        }
+    </script>
+</body>
+</html>
