@@ -7,10 +7,15 @@ and logs/recovery/recovered_candidates.json.
 
 import json
 import re
+import sys
 from pathlib import Path
 from collections import Counter
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "MBM" / "LeadEngine"))
+
+from MBM.LeadEngine.canonical_schema import load_canonical_memory, assert_canonical_list
 DIALER_DB = ROOT / "mbm-dialer" / "app" / "public" / "leads_database.json"
 PARTITION_FILE = ROOT / "MBM" / "Artifacts" / "top_100_partition.json"
 CANONICAL_MEMORY = ROOT / "MBM" / "Artifacts" / "canonical_deals_memory.json"
@@ -30,7 +35,9 @@ def run_audit():
         partition_data = json.load(f)
 
     with open(CANONICAL_MEMORY, "r", encoding="utf-8") as f:
-        canonical_data = json.load(f)
+        canonical_data = load_canonical_memory(CANONICAL_MEMORY)
+    assert_canonical_list(canonical_data)
+    print(f"  - canonical_deals_memory.json schema: LIST ({len(canonical_data)} records)")
 
     with open(RECOVERY_FILE, "r", encoding="utf-8") as f:
         recovery_leads = json.load(f)

@@ -1313,6 +1313,27 @@ function getUnifiedDialerLeads() {
     } catch {}
   }
 
+  // Identity-aware ranking: live-confirmed owners/decision-makers surface
+  // first, then unconfirmed-but-callable, and unconfirmed lower priority.
+  // (Suppressed states are already excluded above.) This mirrors
+  // owner_identity.IDENTITY_QUEUE_PRIORITY — lower rank = called first.
+  const IDENTITY_PRIORITY = {
+    OWNER_CONFIRMED: 0,
+    AUTHORIZED_DECISION_MAKER: 1,
+    OWNER_LIKELY: 2,
+    IDENTITY_UNCONFIRMED: 3,
+  };
+  const rankLead = (p) => {
+    const st = p.identity_state || '';
+    if (st in IDENTITY_PRIORITY) return IDENTITY_PRIORITY[st];
+    return 2; // no recorded identity state = callable but unconfirmed
+  };
+  prospects.sort((a, b) => {
+    const ra = rankLead(a), rb = rankLead(b);
+    if (ra !== rb) return ra - rb;
+    return (b.distress_score || 0) - (a.distress_score || 0);
+  });
+
   return prospects;
 }
 
@@ -1381,9 +1402,36 @@ app.get('/api/dialer/dispositions', (req, res) => {
 // confirmation. The DB proves the record; the call proves who answers.
 const identityResultsFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'logs', 'call_identity_results.json');
 
+// Current recorded identity state for a lead (from the identity log), used to
+// capture previous_identity_state on transition. Returns '' if none recorded.
+function getLeadIdentityState(leadId) {
+  try {
+    if (fs.existsSync(identityResultsFile)) {
+      const data = JSON.parse(fs.readFileSync(identityResultsFile, 'utf8'));
+      const rec = (data || []).find((r) => String(r.lead_id) === String(leadId));
+      if (rec) return rec.identity_state || '';
+    }
+  } catch {}
+  // Fall back to the DB record if the log has no entry.
+  try {
+    if (fs.existsSync(mbmDialerFile)) {
+      const db = JSON.parse(fs.readFileSync(mbmDialerFile, 'utf8'));
+      const arr = Array.isArray(db) ? db : (db.leads || []);
+      const lead = arr.find((l) => String(l.id) === String(leadId));
+      if (lead) return lead.identity_state || (lead.details && lead.details.identity_state) || '';
+    }
+  } catch {}
+  return '';
+}
+
 // POST /api/dialer/identity — Save a call-level identity result.
 // Body: { lead_id, caller_name, relationship, property_confirmed,
 //         name_confirmed, wrong_number, do_not_call, disposition, notes }
+// Identity-state mapping mirrors owner_identity.py (Python is authoritative):
+//   OWNER_CONFIRMED requires relationship === 'OWNER' AND name_confirmed
+//   AND property_confirmed. NEVER derived from phone/address/DB alone.
+//   AUTHORIZED_DECISION_MAKER stays separate and is never collapsed into
+//   OWNER_CONFIRMED.
 app.post('/api/dialer/identity', (req, res) => {
   try {
     const {
@@ -1392,10 +1440,13 @@ app.post('/api/dialer/identity', (req, res) => {
     } = req.body || {};
     if (!lead_id) return res.status(400).json({ error: 'lead_id required' });
 
+    const rel = (relationship || 'UNKNOWN').toUpperCase();
+    const prev = getLeadIdentityState(lead_id);
+
     const entry = {
       lead_id,
       caller_name: caller_name || '',
-      relationship: relationship || 'UNKNOWN',
+      relationship: rel,
       property_confirmed: !!property_confirmed,
       name_confirmed: !!name_confirmed,
       wrong_number: !!wrong_number,
@@ -1409,14 +1460,18 @@ app.post('/api/dialer/identity', (req, res) => {
     let identity_state;
     if (entry.wrong_number) identity_state = 'WRONG_NUMBER';
     else if (entry.do_not_call) identity_state = 'DO_NOT_CALL';
-    else if (entry.relationship === 'WRONG_PERSON') identity_state = 'WRONG_PERSON';
-    else if (entry.relationship === 'TENANT') identity_state = 'TENANT';
-    else if (entry.relationship === 'RELATIVE_OR_ASSOCIATE') identity_state = 'RELATIVE_OR_ASSOCIATE';
-    else if (entry.relationship === 'AUTHORIZED_DECISION_MAKER') identity_state = 'AUTHORIZED_DECISION_MAKER';
-    else if (entry.name_confirmed && entry.property_confirmed) identity_state = 'OWNER_CONFIRMED';
+    else if (rel === 'WRONG_PERSON') identity_state = 'WRONG_PERSON';
+    else if (rel === 'TENANT') identity_state = 'TENANT';
+    else if (rel === 'RELATIVE' || rel === 'RELATIVE_OR_ASSOCIATE') identity_state = 'RELATIVE_OR_ASSOCIATE';
+    else if (rel === 'AUTHORIZED_DECISION_MAKER') identity_state = 'AUTHORIZED_DECISION_MAKER';
+    else if (rel === 'OWNER' && entry.name_confirmed && entry.property_confirmed) identity_state = 'OWNER_CONFIRMED';
+    else if (rel === 'OWNER' && entry.property_confirmed) identity_state = 'OWNER_LIKELY';
     else if (entry.name_confirmed || entry.property_confirmed) identity_state = 'OWNER_LIKELY';
     else identity_state = 'IDENTITY_UNCONFIRMED';
     entry.identity_state = identity_state;
+    entry.previous_identity_state = prev;
+    entry.verification_source = 'CALLER_CONFIRMATION';
+    entry.source = 'CALL_LEVEL';
     entry.caller_identity_verified = identity_state === 'OWNER_CONFIRMED' || identity_state === 'AUTHORIZED_DECISION_MAKER';
 
     let results = [];

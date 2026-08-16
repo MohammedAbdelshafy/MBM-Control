@@ -181,6 +181,8 @@ class IdentityResult:
     evidence_used: list = field(default_factory=list)
     created_at: str = field(default_factory=_iso_now)
     source: str = "CALL_LEVEL"
+    verification_source: str = "CALLER_CONFIRMATION"
+    previous_identity_state: str = ""
 
     def to_dict(self) -> dict:
         d = dict(self.__dict__)
@@ -246,6 +248,18 @@ def classify_identity(score: int, *, caller_name: str = "", relationship: str = 
     positive/uncertain states. Never promotes an unconfirmed person to
     OWNER_CONFIRMED, and never demotes a verified record to WRONG_PERSON
     without the caller explicitly claiming a non-owner relationship.
+
+    OWNER_CONFIRMED requires THREE explicit call-level facts:
+      1. the caller identifies themselves as the OWNER (relationship=OWNER), and
+      2. the caller confirms their name matches the verified record, and
+      3. the caller confirms the property relationship (property_confirmed).
+    It is NEVER derived from phone match, DB record, address match, caller
+    assumption, or AI inference alone.
+
+    AUTHORIZED_DECISION_MAKER stays SEPARATE from OWNER_CONFIRMED: when the
+    caller explicitly establishes they are authorized to make decisions for
+    the property owner, that is its own state — it is never collapsed into
+    OWNER_CONFIRMED and never demoted by an incomplete name capture.
     """
     rel = (relationship or "").upper()
     if rel in ("WRONG_PERSON",):
@@ -255,18 +269,26 @@ def classify_identity(score: int, *, caller_name: str = "", relationship: str = 
     if rel in ("RELATIVE", "RELATIVE_OR_ASSOCIATE"):
         return IdentityState.RELATIVE_OR_ASSOCIATE, "caller identified as relative/associate"
 
+    # Explicitly authorized decision-maker is its own state. Even a strong
+    # score/name match on an ADM call does NOT promote them to OWNER.
+    if rel == "AUTHORIZED_DECISION_MAKER":
+        return IdentityState.AUTHORIZED_DECISION_MAKER, "caller explicitly established authorization to decide for owner"
+
     if not name_confirmed or not caller_name:
         # No caller name confirmation → cannot be owner-confirmed regardless of score.
-        if rel == "AUTHORIZED_DECISION_MAKER":
-            return IdentityState.AUTHORIZED_DECISION_MAKER, "caller confirmed authorized decision-maker"
-        if score >= 70:
-            return IdentityState.OWNER_LIKELY, "strong evidence, identity not call-confirmed"
+        # A database-verified ownership record (authoritative) is OWNER_LIKELY —
+        # the record strongly suggests the owner, but who answers is unconfirmed.
+        if authoritative or score >= 70:
+            return IdentityState.OWNER_LIKELY, "authoritative record, identity not call-confirmed"
         if score >= 40:
             return IdentityState.IDENTITY_UNCONFIRMED, "partial evidence, no caller confirmation"
         return IdentityState.IDENTITY_UNCONFIRMED, "no supporting evidence"
 
-    if score >= 90:
-        return IdentityState.OWNER_CONFIRMED, "caller name matches verified owner + property confirmed"
+    # OWNER_CONFIRMED requires the caller to identify AS the owner AND confirm
+    # both name match and property. A verified record + caller name match but
+    # NO property confirmation caps at OWNER_LIKELY (never OWNER_CONFIRMED).
+    if rel == "OWNER" and name_confirmed and property_confirmed and score >= 90:
+        return IdentityState.OWNER_CONFIRMED, "caller identifies as owner; name matches verified record; property confirmed"
     if score >= 70:
         return IdentityState.OWNER_LIKELY, "strong evidence, still not fully call-confirmed"
     if score >= 40:
@@ -279,14 +301,17 @@ def evaluate_lead_identity(lead: dict, *, caller_name: str = "", relationship: s
                            wrong_number: bool = False, do_not_call: bool = False) -> IdentityResult:
     """Full identity evaluation for a lead + call-level caller input."""
     lead_id = str(lead.get("id") or lead.get("lead_id") or "")
+    prev = lead.get("identity_state") or (lead.get("details") or {}).get("identity_state", "")
     if wrong_number:
         return IdentityResult(lead_id=lead_id, state=IdentityState.WRONG_NUMBER,
                               score=0, relationship="WRONG_NUMBER",
-                              evidence_used=["caller reported wrong number"])
+                              evidence_used=["caller reported wrong number"],
+                              previous_identity_state=prev)
     if do_not_call:
         return IdentityResult(lead_id=lead_id, state=IdentityState.DO_NOT_CALL,
                               score=0, relationship="DO_NOT_CALL",
-                              evidence_used=["caller requested no further contact"])
+                              evidence_used=["caller requested no further contact"],
+                              previous_identity_state=prev)
 
     scored = score_owner_match(
         lead, caller_name=caller_name, relationship=relationship,
@@ -302,6 +327,7 @@ def evaluate_lead_identity(lead: dict, *, caller_name: str = "", relationship: s
         score_breakdown=scored["breakdown"], relationship=(relationship or "").upper(),
         property_confirmed=bool(property_confirmed), name_confirmed=bool(name_confirmed),
         caller_name=caller_name, evidence_used=scored["evidence"] + [reason],
+        previous_identity_state=prev,
     )
 
 
@@ -314,6 +340,39 @@ def is_primary_eligible(state: str | IdentityState) -> bool:
         except ValueError:
             return True
     return state not in SUPPRESSED_FROM_PRIMARY
+
+
+# Identity-state queue priority (lower = called first). After a live call:
+#   OWNER_CONFIRMED             → highest seller confidence
+#   AUTHORIZED_DECISION_MAKER   → high seller confidence
+#   OWNER_LIKELY                → callable, visibly unconfirmed
+#   IDENTITY_UNCONFIRMED        → lower priority
+#   suppressed states          → never in the primary queue
+IDENTITY_QUEUE_PRIORITY: dict[str, int] = {
+    "OWNER_CONFIRMED": 0,
+    "AUTHORIZED_DECISION_MAKER": 1,
+    "OWNER_LIKELY": 2,
+    "IDENTITY_UNCONFIRMED": 3,
+    "WRONG_PERSON": 100,
+    "WRONG_NUMBER": 100,
+    "TENANT": 100,
+    "RELATIVE_OR_ASSOCIATE": 100,
+    "DO_NOT_CALL": 100,
+    "QUARANTINED": 100,
+}
+
+
+def identity_queue_rank(lead: dict) -> int:
+    """Rank a lead for the seller queue by its identity state. Lower rank is
+    called first. A lead with no recorded identity state is treated as
+    callable-but-unconfirmed (rank 2) so an unverified record never jumps the
+    queue ahead of a live-confirmed owner."""
+    raw = lead.get("identity_state")
+    if not raw:
+        raw = (lead.get("details") or {}).get("identity_state", "")
+    if raw in IDENTITY_QUEUE_PRIORITY:
+        return IDENTITY_QUEUE_PRIORITY[raw]
+    return 2
 
 
 def apply_identity_to_lead(lead: dict, result: IdentityResult) -> dict:
@@ -344,16 +403,36 @@ def load_identity_results() -> list[dict]:
     if not IDENTITY_RESULTS_FILE.exists():
         return []
     try:
-        return json.loads(IDENTITY_RESULTS_FILE.read_text(encoding="utf-8"))
+        data = json.loads(IDENTITY_RESULTS_FILE.read_text(encoding="utf-8"))
+        return data if isinstance(data, list) else []
     except Exception:
         return []
 
 
-def save_identity_result(result: IdentityResult | dict) -> dict:
-    """Append an identity result to the persistent log (idempotent per lead)."""
+def save_identity_result(result: IdentityResult | dict, *, previous_state: str = "") -> dict:
+    """Append an identity result to the persistent log (idempotent per lead).
+
+    Duplicate submissions for the same lead replace the previous record rather
+    than stacking. The previous identity state is captured so the state-machine
+    transitions are auditable (e.g. OWNER_LIKELY → OWNER_CONFIRMED).
+    """
     results = load_identity_results()
     rec = result.to_dict() if isinstance(result, IdentityResult) else dict(result)
-    results = [r for r in results if r.get("lead_id") != rec.get("lead_id")]
+    if not rec.get("lead_id"):
+        raise ValueError("identity result requires lead_id")
+    # Canonical field name is identity_state (the same key stamped on leads).
+    if "identity_state" not in rec and rec.get("state"):
+        rec["identity_state"] = rec["state"]
+    # Capture the previous state from the LAST RECORDED result (authoritative)
+    # on repeats; otherwise use the caller-provided/lead-derived previous state.
+    existing = [r for r in results if r.get("lead_id") == rec.get("lead_id")]
+    if existing:
+        rec["previous_identity_state"] = existing[-1].get("identity_state", "")
+        results = [r for r in results if r.get("lead_id") != rec.get("lead_id")]
+    else:
+        rec.setdefault("previous_identity_state", previous_state)
+    rec.setdefault("verification_source", "CALLER_CONFIRMATION")
+    rec.setdefault("source", "CALL_LEVEL")
     results.append(rec)
     IDENTITY_RESULTS_FILE.write_text(json.dumps(results, indent=2), encoding="utf-8")
     return rec
@@ -364,6 +443,7 @@ def stamp_identity_into_dialer_db(result: IdentityResult | dict, db_path: Path |
     preserving all other fields. Returns number of patched leads."""
     db_path = db_path or (ROOT_DIR / "mbm-dialer" / "app" / "public" / "leads_database.json")
     rec = result.to_dict() if isinstance(result, IdentityResult) else dict(result)
+    state = rec.get("identity_state") or rec.get("state") or ""
     if not db_path.exists():
         return 0
     data = json.loads(db_path.read_text(encoding="utf-8"))
@@ -371,15 +451,15 @@ def stamp_identity_into_dialer_db(result: IdentityResult | dict, db_path: Path |
     patched = 0
     for lead in arr:
         if str(lead.get("id")) == str(rec.get("lead_id")):
-            lead["identity_state"] = rec.get("state")
+            lead["identity_state"] = state
             lead["identity_score"] = rec.get("score", 0)
             lead["identity_relationship"] = rec.get("relationship", "")
             lead["identity_property_confirmed"] = bool(rec.get("property_confirmed"))
             lead["identity_name_confirmed"] = bool(rec.get("name_confirmed"))
             lead["identity_caller_name"] = rec.get("caller_name", "")
             lead["identity_evidence"] = rec.get("evidence_used", [])
-            lead["identity_updated_at"] = rec.get("created_at", _iso_now())
-            lead["caller_identity_verified"] = rec.get("state") in (
+            lead["identity_updated_at"] = rec.get("created_at") or rec.get("timestamp") or _iso_now()
+            lead["caller_identity_verified"] = state in (
                 IdentityState.OWNER_CONFIRMED.value, IdentityState.AUTHORIZED_DECISION_MAKER.value)
             lead["database_ownership_verified"] = _has_authoritative_ownership_evidence(lead)
             patched += 1

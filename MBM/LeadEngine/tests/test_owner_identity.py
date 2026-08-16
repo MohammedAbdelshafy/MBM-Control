@@ -212,3 +212,198 @@ def test_is_primary_eligible_rejects_suppressed_and_accepts_clean():
     for state in (IdentityState.OWNER_CONFIRMED, IdentityState.OWNER_LIKELY,
                   IdentityState.AUTHORIZED_DECISION_MAKER, IdentityState.IDENTITY_UNCONFIRMED):
         assert is_primary_eligible(state)
+
+
+# ── State machine: OWNER_LIKELY → live call → confirmed identity ──────────
+# The flow the mission targets:
+#   OWNER_LIKELY → CALL CONNECTED → PERSON IDENTIFIED → PROPERTY CONNECTION
+#   CONFIRMED → OWNER / AUTHORIZED DECISION MAKER CONFIRMED → OWNER_CONFIRMED
+# OWNER_LIKELY is the database-grounded starting state (verified record, no
+# live confirmation). Every transition below starts from an OWNER_LIKELY lead
+# and applies ONE call-level outcome.
+
+def _owner_likely_lead():
+    """A database-verified record that audits to OWNER_LIKELY (no caller input)."""
+    lead = dict(DCAD_LEAD)
+    r = evaluate_lead_identity(lead)
+    assert r.state == IdentityState.OWNER_LIKELY
+    return apply_identity_to_lead(lead, r)
+
+
+def test_transition_owner_likely_to_owner_confirmed():
+    """OWNER_LIKELY → (caller confirms name + property, identifies as owner)
+    → OWNER_CONFIRMED."""
+    lead = _owner_likely_lead()
+    result = evaluate_lead_identity(
+        lead, caller_name="Bruce Mcleod", relationship="OWNER",
+        property_confirmed=True, name_confirmed=True,
+    )
+    assert result.state == IdentityState.OWNER_CONFIRMED
+    assert result.previous_identity_state == "OWNER_LIKELY"
+    patched = apply_identity_to_lead(lead, result)
+    assert patched["identity_state"] == IdentityState.OWNER_CONFIRMED.value
+    assert patched["caller_identity_verified"] is True
+    assert patched["database_ownership_verified"] is True
+    # Highest queue priority.
+    from MBM.LeadEngine.owner_identity import identity_queue_rank
+    assert identity_queue_rank(patched) == 0
+
+
+def test_transition_owner_likely_to_authorized_decision_maker():
+    """OWNER_LIKELY → caller establishes decision-making authority → ADM.
+    ADM stays a SEPARATE state and is never collapsed into OWNER_CONFIRMED."""
+    lead = _owner_likely_lead()
+    result = evaluate_lead_identity(
+        lead, caller_name="Pat Mcleod", relationship="AUTHORIZED_DECISION_MAKER",
+        property_confirmed=True, name_confirmed=True,
+    )
+    assert result.state == IdentityState.AUTHORIZED_DECISION_MAKER
+    assert result.state != IdentityState.OWNER_CONFIRMED
+    patched = apply_identity_to_lead(lead, result)
+    assert patched["identity_state"] == IdentityState.AUTHORIZED_DECISION_MAKER.value
+    assert patched["caller_identity_verified"] is True
+    from MBM.LeadEngine.owner_identity import identity_queue_rank
+    assert identity_queue_rank(patched) == 1
+
+
+def test_transition_owner_likely_to_wrong_person():
+    """OWNER_LIKELY → caller is not the owner → WRONG_PERSON → suppressed."""
+    lead = _owner_likely_lead()
+    result = evaluate_lead_identity(lead, relationship="WRONG_PERSON",
+                                    caller_name="Someone Else", name_confirmed=True)
+    assert result.state == IdentityState.WRONG_PERSON
+    assert not is_primary_eligible(result.state)
+    patched = apply_identity_to_lead(lead, result)
+    assert patched["identity_state"] == IdentityState.WRONG_PERSON.value
+    assert patched["caller_identity_verified"] is False
+
+
+def test_transition_owner_likely_to_wrong_number():
+    """OWNER_LIKELY → number does not reach the owner → WRONG_NUMBER → suppressed."""
+    lead = _owner_likely_lead()
+    result = evaluate_lead_identity(lead, wrong_number=True)
+    assert result.state == IdentityState.WRONG_NUMBER
+    assert not is_primary_eligible(result.state)
+
+
+def test_transition_owner_likely_to_tenant():
+    """OWNER_LIKELY → caller is a tenant → TENANT → suppressed (unless
+    explicitly authorized, which is a separate ADM flow)."""
+    lead = _owner_likely_lead()
+    result = evaluate_lead_identity(lead, relationship="TENANT",
+                                    caller_name="Jane Renter", name_confirmed=True)
+    assert result.state == IdentityState.TENANT
+    assert not is_primary_eligible(result.state)
+
+
+def test_duplicate_identity_submission_is_idempotent(tmp_path, monkeypatch):
+    """Re-submitting the same outcome for one lead replaces the prior record —
+    no stacking, previous state preserved on the repeat."""
+    from MBM.LeadEngine.owner_identity import (
+        save_identity_result, load_identity_results, IDENTITY_RESULTS_FILE,
+    )
+    monkeypatch.setattr("MBM.LeadEngine.owner_identity.IDENTITY_RESULTS_FILE", tmp_path / "results.json")
+    lead = _owner_likely_lead()
+    r1 = evaluate_lead_identity(lead, relationship="TENANT", caller_name="Renter")
+    save_identity_result(r1)
+    # Same lead again — another tenant result.
+    r2 = evaluate_lead_identity(lead, relationship="TENANT", caller_name="Renter")
+    rec2 = save_identity_result(r2)
+    results = load_identity_results()
+    assert len(results) == 1, "duplicate submissions must not stack"
+    assert rec2["lead_id"] == lead["id"]
+    assert rec2["previous_identity_state"] == "TENANT"
+
+
+def test_identity_state_persistence_roundtrip(tmp_path, monkeypatch):
+    """A saved identity result round-trips through the persistent layer with
+    all required fields: lead id, state, timestamp, property confirmation,
+    caller name, verification source, previous state."""
+    from MBM.LeadEngine.owner_identity import (
+        save_identity_result, load_identity_results, IDENTITY_RESULTS_FILE,
+    )
+    monkeypatch.setattr("MBM.LeadEngine.owner_identity.IDENTITY_RESULTS_FILE", tmp_path / "results.json")
+    lead = _owner_likely_lead()
+    result = evaluate_lead_identity(
+        lead, caller_name="Bruce Mcleod", relationship="OWNER",
+        property_confirmed=True, name_confirmed=True,
+    )
+    save_identity_result(result)
+    results = load_identity_results()
+    assert len(results) == 1
+    rec = results[0]
+    assert rec["lead_id"] == lead["id"]
+    assert rec["identity_state"] == "OWNER_CONFIRMED"
+    assert rec["created_at"]
+    assert rec["property_confirmed"] is True
+    assert rec["caller_name"] == "Bruce Mcleod"
+    assert rec["verification_source"] == "CALLER_CONFIRMATION"
+    assert "previous_identity_state" in rec
+
+
+def test_identity_suppression_removes_from_primary_queue():
+    """Suppressed identity states are excluded from the primary queue while
+    the DB record itself is untouched (no data loss)."""
+    lead = _owner_likely_lead()
+    for rel, expected in (
+        ("WRONG_PERSON", IdentityState.WRONG_PERSON),
+        ("TENANT", IdentityState.TENANT),
+        ("RELATIVE_OR_ASSOCIATE", IdentityState.RELATIVE_OR_ASSOCIATE),
+    ):
+        r = evaluate_lead_identity(lead, relationship=rel, caller_name="X")
+        patched = apply_identity_to_lead(dict(lead), r)
+        assert not is_primary_eligible(patched["identity_state"])
+
+
+def test_requeue_ranking_orders_confirmed_first():
+    """Queue ranking: OWNER_CONFIRMED(0) → ADM(1) → OWNER_LIKELY(2) →
+    IDENTITY_UNCONFIRMED(3); suppressed states never rank into the queue."""
+    from MBM.LeadEngine.owner_identity import identity_queue_rank, is_primary_eligible
+    ranked = {
+        "OWNER_CONFIRMED": identity_queue_rank({"identity_state": "OWNER_CONFIRMED"}),
+        "AUTHORIZED_DECISION_MAKER": identity_queue_rank({"identity_state": "AUTHORIZED_DECISION_MAKER"}),
+        "OWNER_LIKELY": identity_queue_rank({"identity_state": "OWNER_LIKELY"}),
+        "IDENTITY_UNCONFIRMED": identity_queue_rank({"identity_state": "IDENTITY_UNCONFIRMED"}),
+        "": identity_queue_rank({}),
+    }
+    assert ranked["OWNER_CONFIRMED"] < ranked["AUTHORIZED_DECISION_MAKER"]
+    assert ranked["AUTHORIZED_DECISION_MAKER"] < ranked["OWNER_LIKELY"]
+    assert ranked["OWNER_LIKELY"] < ranked["IDENTITY_UNCONFIRMED"]
+    assert ranked[""] == 2  # no recorded identity = callable, unconfirmed
+    for st in ("WRONG_PERSON", "WRONG_NUMBER", "TENANT", "RELATIVE_OR_ASSOCIATE", "DO_NOT_CALL"):
+        assert not is_primary_eligible(st)
+
+
+def test_existing_sales_state_preserved_across_identity_transition():
+    """A live-call identity update (OWNER_LIKELY → OWNER_CONFIRMED) must
+    preserve dispositions, notes, attempts, stage and last_touch."""
+    lead = _owner_likely_lead()
+    lead["disposition"] = "callback"
+    lead["notes"] = "Will call back Thursday"
+    lead["attempts"] = 2
+    lead["stage"] = "CONTACTED"
+    lead["last_touch"] = "2026-08-15T12:00:00Z"
+    result = evaluate_lead_identity(
+        lead, caller_name="Bruce Mcleod", relationship="OWNER",
+        property_confirmed=True, name_confirmed=True,
+    )
+    patched = apply_identity_to_lead(lead, result)
+    assert patched["disposition"] == "callback"
+    assert patched["notes"] == "Will call back Thursday"
+    assert patched["attempts"] == 2
+    assert patched["stage"] == "CONTACTED"
+    assert patched["last_touch"] == "2026-08-15T12:00:00Z"
+    assert patched["identity_state"] == "OWNER_CONFIRMED"
+
+
+def test_idempotent_repeated_identity_updates():
+    """Repeated identity evaluations for the same lead with the same inputs
+    produce identical results — the state machine is deterministic."""
+    lead = _owner_likely_lead()
+    r1 = evaluate_lead_identity(lead, caller_name="Bruce Mcleod", relationship="OWNER",
+                                property_confirmed=True, name_confirmed=True)
+    r2 = evaluate_lead_identity(lead, caller_name="Bruce Mcleod", relationship="OWNER",
+                                property_confirmed=True, name_confirmed=True)
+    assert r1.state == r2.state
+    assert r1.score == r2.score
+    assert r1.evidence_used == r2.evidence_used

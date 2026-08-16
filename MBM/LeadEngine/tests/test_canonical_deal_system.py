@@ -681,5 +681,45 @@ def test_w3_suppression_and_legitimate_records_preserved():
     assert not any(p.get("id") == "SUP-1" for p in passed)
 
 
+def test_canonical_memory_is_a_list_regression(tmp_path):
+    """REGRESSION: canonical_deals_memory.json is a LIST of deals, not a dict.
+
+    The audit tooling must read the canonical schema correctly. This test
+    proves the shared loader accepts the ACTUAL canonical file on disk (a
+    list), and that it rejects a hypothetical dict-wrapped value that would
+    have been the wrong schema.
+    """
+    from MBM.LeadEngine.canonical_schema import (
+        load_canonical_memory,
+        assert_canonical_list,
+    )
+
+    canon_path = ROOT_DIR / "MBM" / "Artifacts" / "canonical_deals_memory.json"
+    assert canon_path.exists(), "canonical_deals_memory.json must exist for the audit"
+
+    data = json.loads(canon_path.read_text(encoding="utf-8"))
+    assert isinstance(data, list), "canonical_deals_memory.json schema regression: expected list"
+
+    loaded = load_canonical_memory(canon_path)
+    assert isinstance(loaded, list)
+    assert len(loaded) == len(data)
+    assert_canonical_list(loaded)
+    # Every record is a dict with at least an id (shape required by audits).
+    assert all(isinstance(d, dict) for d in loaded)
+    assert all(d.get("id") for d in loaded)
+
+    # A dict-wrapped list (the WRONG schema) must be refused by the guard.
+    import pytest as _pytest
+    with _pytest.raises(AssertionError):
+        assert_canonical_list({"deals": [{"id": "X"}]})
+    # A scalar JSON value is also rejected by the loader.
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        scalar_file = Path(td) / "scalar.json"
+        scalar_file.write_text('{"not": "a list"}', encoding="utf-8")
+        with _pytest.raises(ValueError):
+            load_canonical_memory(scalar_file)
+
+
 
 

@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
 import json
 import re
+import sys
 from pathlib import Path
 from collections import Counter
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "MBM" / "LeadEngine"))
+
+from MBM.LeadEngine.canonical_schema import load_canonical_memory, assert_canonical_list
 CANON_PATH = ROOT / "MBM" / "Artifacts" / "canonical_deals_memory.json"
 RE_QUEUE = ROOT / "MBM" / "LeadEngine" / "real_estate_calling_queue.json"
 RECOVERY_PATH = ROOT / "logs" / "recovery" / "recovered_candidates.json"
 
 def main():
     with open(CANON_PATH, "r", encoding="utf-8") as f:
-        canon = json.load(f)
+        canon = load_canonical_memory(CANON_PATH)
+    assert_canonical_list(canon)
 
     prop_deals = [d for d in canon if d.get("deal_type") == "property" or "real estate" in str(d.get("vertical", "")).lower()]
     print(f"Total property/RE deals in canonical memory: {len(prop_deals)}")
