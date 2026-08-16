@@ -430,6 +430,10 @@ class OfferArchitect:
         }
 
 
+def get_offer_architect() -> OfferArchitect:
+    return OfferArchitect()
+
+
 if __name__ == "__main__":
     architect = OfferArchitect()
     sample_lead = {
