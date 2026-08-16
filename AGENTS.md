@@ -206,6 +206,19 @@ Each subsystem has a dedicated `.md` at its root:
 - `functions/add-to-email-queue/` — Queue email endpoint
 - `migrations/0000*` — DB schema: email_queue, client_orders, employees, lead_pipeline_logs, pg_cron schedules
 
+## GLM Swarm Architecture (`MBM/GLM/`)
+
+Central deep-reasoning engineering intelligence layer across all MBM repositories:
+- **`orchestrator.py`**: Coordinates swarm audits, ranks missions, and manages regression gates.
+- **`agent_registry.py`**: 16 specialized engineering roles across 3 model tiers (`LIGHT`, `MEDIUM`, `DEEP_GLM`).
+- **`mission_router.py`**: Priority formula: $\text{Priority} = \text{Business} \times \text{Revenue} \times \text{Prob} \times \text{Urgency}$.
+- **`single_writer_lock.py`**: SOLE authorized gateway for mutating `leads_database.json` (Zero dataset shrinkage invariant).
+- **`mission_ledger.py`**: Persistent execution records and active file mutex locks.
+- **`delivery_report.py`**: Generates `DAILY_GLM_ENGINEERING_REPORT.md` (Money & Progress first).
+
+### Single-Writer Production Rule
+All background processes, daemons, and scripts updating `mbm-dialer/app/public/leads_database.json` MUST use `MBM.GLM.single_writer_lock.DialerSingleWriter`. Direct file overwrites or dataset shrinkage (< initial count) are strictly blocked.
+
 ## Output Contract
 
 Every workflow emits:
@@ -218,3 +231,4 @@ next_action: string
 owner: "system" | "human"
 timestamp: ISO8601
 ```
+
