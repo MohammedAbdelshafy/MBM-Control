@@ -43,6 +43,12 @@
 !/clipping-factory/**
 !/MBM/
 !/MBM/**
+!/mbm-dialer/
+!/mbm-dialer/**
+mbm-dialer/**/node_modules/
+mbm-dialer/**/dist/
+mbm-dialer/**/.output/
+mbm-dialer/**/.vinxi/
 
 # env
 .env
