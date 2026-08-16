@@ -19,6 +19,7 @@ import json
 import time
 import shutil
 import hashlib
+import threading
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional, Tuple, Set
@@ -43,31 +44,51 @@ class DialerSingleWriter:
         self.lock_file = LOCK_FILE
         self.backup_dir = BACKUP_DIR
         self.backup_dir.mkdir(parents=True, exist_ok=True)
+        self._thread_lock = threading.Lock()
 
-    def _acquire_lock(self, timeout_sec: float = 10.0) -> bool:
+    def _acquire_lock(self, timeout_sec: float = 15.0) -> bool:
         start = time.time()
+        # Acquire thread lock first
+        if not self._thread_lock.acquire(timeout=timeout_sec):
+            return False
+
         while time.time() - start < timeout_sec:
             try:
-                if not self.lock_file.exists():
-                    self.lock_file.write_text(
-                        json.dumps({
-                            "pid": os.getpid(),
-                            "timestamp": datetime.now(timezone.utc).isoformat(),
-                        }),
-                        encoding="utf-8"
-                    )
-                    return True
+                # Atomic file creation using exclusive mode 'x'
+                with open(self.lock_file, "x", encoding="utf-8") as f:
+                    json.dump({
+                        "pid": os.getpid(),
+                        "thread_id": threading.get_ident(),
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                    }, f)
+                return True
+            except FileExistsError:
+                # If lock file exists and is stale (> 30 sec old), break it
+                try:
+                    mtime = self.lock_file.stat().st_mtime
+                    if time.time() - mtime > 30.0:
+                        self.lock_file.unlink(missing_ok=True)
+                except Exception:
+                    pass
             except Exception:
                 pass
-            time.sleep(0.1)
+            time.sleep(0.05)
+
+        self._thread_lock.release()
         return False
 
     def _release_lock(self):
         try:
             if self.lock_file.exists():
-                self.lock_file.unlink()
+                self.lock_file.unlink(missing_ok=True)
         except Exception:
             pass
+        finally:
+            if self._thread_lock.locked():
+                try:
+                    self._thread_lock.release()
+                except RuntimeError:
+                    pass
 
     def read_leads(self) -> List[Dict[str, Any]]:
         """Safely read the current active dialer database."""
@@ -149,10 +170,24 @@ class DialerSingleWriter:
                     f"Dataset shrinkage detected! Initial: {initial_count}, Final: {final_count}. Write aborted."
                 )
 
-            # Atomic Write
-            temp_path = self.db_path.with_suffix(".tmp")
+            # Atomic Write with unique temp path and retry replace
+            temp_path = self.db_path.parent / f".leads_db_{os.getpid()}_{threading.get_ident()}_{time.time_ns()}.tmp"
             temp_path.write_text(json.dumps(final_leads, indent=2, ensure_ascii=False), encoding="utf-8")
-            temp_path.replace(self.db_path)
+
+            # Retry replace for Windows file locks
+            replaced = False
+            for _ in range(20):
+                try:
+                    temp_path.replace(self.db_path)
+                    replaced = True
+                    break
+                except Exception:
+                    time.sleep(0.05)
+
+            if not replaced:
+                # Fallback copy
+                shutil.copy2(temp_path, self.db_path)
+                temp_path.unlink(missing_ok=True)
 
             return {
                 "ok": True,
