@@ -215,6 +215,14 @@ def main():
         payload = d.to_dialer_payload()
         payload["norm_phone"] = norm
 
+        # Ensure vertical classification is specific
+        comp_lower = (d.company_name or "").lower()
+        title_lower = (d.title_or_role or "").lower()
+        if any(k in comp_lower for k in ["chiro", "chiropractic", "chiropractor"]) or "chiropractor" in title_lower:
+            payload["vertical"] = "Chiropractic Practices"
+        elif any(k in comp_lower for k in ["dent", "dental", "dentist", "orthodont", "periodont", "oral"]) or "dentist" in title_lower:
+            payload["vertical"] = "Dental Practices"
+
         # 4. Check for placeholder identity / gate check
         if is_placeholder_identity(payload) or not check_lead(payload)["passed"]:
             verification_leads.append({
@@ -278,11 +286,64 @@ def main():
                     seen_phones.add(norm)
 
                     vertical = (row.get("vertical") or "").strip().lower()
+                    comp_lower = comp.lower()
+                    tax = (row.get("taxonomy") or "").lower()
+                    is_chiro = any(k in tax for k in ["chiro", "chiropractic", "chiropractor"]) or any(k in comp_lower for k in ["chiro", "chiropractic", "chiropractor"]) or "chiropractor" in title.lower()
+                    is_dental = any(k in tax for k in ["dent", "dental", "dentist", "orthodont", "periodont", "oral"]) or any(w.startswith(("dent", "orthodont", "periodont", "oral")) for w in re.split(r"\W+", comp_lower)) or "dentist" in title.lower()
+
+                    if is_chiro:
+                        lead_vertical = "Chiropractic Practices"
+                    elif is_dental:
+                        lead_vertical = "Dental Practices"
+                    elif any(k in tax or k in comp_lower for k in ["physical therapist", "physical therapy", "physiotherapy", "rehab"]):
+                        lead_vertical = "Physical Therapy & Rehab"
+                    elif any(k in tax or k in comp_lower for k in ["spa", "aesthetic", "dermatol", "therapy"]):
+                        lead_vertical = "Specialty Clinics"
+                    else:
+                        lead_vertical = row.get("vertical") or "Medical Practices"
 
                     # ── Improved call script (Terminal 2 spec) ──────────────────────
                     # Natural, concise opening adapted to motivation discovery, with
                     # branching logic for common seller responses. No unsupported claims.
-                    if vertical in ("clinics", "medical", "dentistry", "optometry",
+                    if is_chiro:
+                        script = (
+                            f"Hi {name}, this is Omar with Contech AI. "
+                            f"We help chiropractic offices optimize patient flow and fill cancellation slots. "
+                            f"Quick question — are you currently managing your appointment schedule manually or with software?"
+                        )
+                        discovery_qs = [
+                            "How do you currently handle patient appointment confirmations and no-shows?",
+                            "Do you have a recall system for patients who haven't been in over 6 months?",
+                            "If automated scheduling made sense, would you be open to a 15-minute demo?"
+                        ]
+                        objection_paths = [
+                            ("We already have a system.",
+                             "Solid — then the question is just whether what you have covers after-hours and weekend bookings. If it does, I will not waste your time."),
+                            ("Not interested.",
+                             "Understood, and I respect a straight answer. Is it timing, or is it a good fit for your patient base?"),
+                            ("Too busy / call later.",
+                             "That is exactly why this call is short. When is a better time — today after 3, or tomorrow morning? I'll keep it to two minutes."),
+                        ]
+                    elif is_dental:
+                        script = (
+                            f"Hi {name}, this is Omar with Contech AI. "
+                            f"We help dental practices reduce front-desk phone overflow and fill unscheduled appointment slots. "
+                            f"Quick question — how are you currently handling patient calls between appointments?"
+                        )
+                        discovery_qs = [
+                            "How do you currently handle patient calls during peak hours and unscheduled visits?",
+                            "Do you have a recall system for hygiene recare and overdue visits?",
+                            "If a front-desk automation solution made sense, would you be open to a 15-minute conversation?"
+                        ]
+                        objection_paths = [
+                            ("We already have a system.",
+                             "Great — then the question is just whether what you have covers after-hours and weekend coverage. If it does, I will not waste your time."),
+                            ("Not interested.",
+                             "Understood, and I respect a straight answer. Is it the right fit for your patient base, or just timing?"),
+                            ("Too busy / call later.",
+                             "That is exactly why this call is short. When is a better time — today after 3, or tomorrow morning? I'll keep it to two minutes."),
+                        ]
+                    elif vertical in ("clinics", "medical", "dentistry", "optometry",
                                      "physical therapy", "podiatry", "mental health",
                                      "nursing", "healthcare"):
                         script = (
@@ -304,44 +365,6 @@ def main():
                              "Understood, and I respect a straight answer. Is it 'not this', or 'not right now'? If it is timing, I will follow up once and leave it there."),
                             ("Too busy / call later.",
                              "That is exactly why this call is short. When is a better time — today after 3, or tomorrow morning? I will keep it to two minutes and reschedule if you are mid-fire."),
-                        ]
-                    elif any(k in comp.lower() for k in ["chiro", "chiropractor", "chiropractic"]) or "chiropractor" in title.lower():
-                        script = (
-                            f"Hi {name}, this is Omar with Contech AI. "
-                            f"We help chiropractic offices optimize patient flow and fill cancellation slots. "
-                            f"Quick question — are you currently managing your appointment schedule manually or with software?"
-                        )
-                        discovery_qs = [
-                            "How do you currently handle patient appointment confirmations and no-shows?",
-                            "Do you have a recall system for patients who haven't been in over 6 months?",
-                            "If automated scheduling made sense, would you be open to a 15-minute demo?"
-                        ]
-                        objection_paths = [
-                            ("We already have a system.",
-                             "Solid — then the question is just whether what you have covers after-hours and weekend bookings. If it does, I will not waste your time."),
-                            ("Not interested.",
-                             "Understood, and I respect a straight answer. Is it timing, or is it a good fit for your patient base?"),
-                            ("Too busy / call later.",
-                             "That is exactly why this call is short. When is a better time — today after 3, or tomorrow morning? I'll keep it to two minutes."),
-                        ]
-                    elif any(k in comp.lower() for k in ["dental", "orthodont", "periodont", "oral"]) or "dentist" in title.lower():
-                        script = (
-                            f"Hi {name}, this is Omar with Contech AI. "
-                            f"We help dental practices reduce front-desk phone overflow and fill unscheduled appointment slots. "
-                            f"Quick question — how are you currently handling patient calls between appointments?"
-                        )
-                        discovery_qs = [
-                            "How do you currently handle patient calls during peak hours and unscheduled visits?",
-                            "Do you have a recall system for hygiene recare and overdue visits?",
-                            "If a front-desk automation solution made sense, would you be open to a 15-minute conversation?"
-                        ]
-                        objection_paths = [
-                            ("We already have a system.",
-                             "Great — then the question is just whether what you have covers after-hours and weekend coverage. If it does, I will not waste your time."),
-                            ("Not interested.",
-                             "Understood, and I respect a straight answer. Is it the right fit for your patient base, or just timing?"),
-                            ("Too busy / call later.",
-                             "That is exactly why this call is short. When is a better time — today after 3, or tomorrow morning? I'll keep it to two minutes."),
                         ]
                     else:
                         # Generic fallback script for unknown verticals
@@ -367,7 +390,7 @@ def main():
 
                     candidate_prime_leads.append({
                         "id": f"VERIFIED-{idx:04d}",
-                        "vertical": row.get("vertical") or "Medical & Dental Practices",
+                        "vertical": lead_vertical,
                         "company": comp,
                         "contact": name,
                         "title": title,
