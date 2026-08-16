@@ -19,6 +19,7 @@ from MBM.LeadEngine.gtm_notification_bus import (
     TelegramDeliveryAdapter,
     InAppDeliveryAdapter,
     EmailDeliveryAdapter,
+    GmailDeliveryAdapter,
     WebhookDeliveryAdapter,
     NotificationRecord,
 )
@@ -40,21 +41,27 @@ class FakeHTTPPost:
 def bus_env(tmp_path, monkeypatch):
     monkeypatch.delenv("TELEGRAM_BOT_TOKEN", raising=False)
     monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
+    monkeypatch.delenv("GMAIL_APP_PASSWORD", raising=False)
+    monkeypatch.delenv("SMTP_PASS", raising=False)
     monkeypatch.setenv("GTM_TELEGRAM_ENABLED", "true")
     monkeypatch.setenv("GTM_TELEGRAM_BOT_TOKEN", "123456:ABCdef_xyz")
     monkeypatch.setenv("GTM_TELEGRAM_CHAT_ID", "-1001234567890")
     monkeypatch.setenv("GTM_WEBHOOK_URL", "https://example.com/hook")
     fake = FakeHTTPPost()
+    fake_gmail_sends = []
+    fake_gmail_sender = lambda to, sub, body: fake_gmail_sends.append((to, sub, body)) or {"sent": True, "to": to, "subject": sub}
     bus = NotificationBus(
         state_path=tmp_path / "delivery_state.json",
         adapters={
             "in_app": InAppDeliveryAdapter(tmp_path / "feed.jsonl"),
             "email": EmailDeliveryAdapter(tmp_path / "outbox"),
+            "gmail": GmailDeliveryAdapter(smtp_sender=fake_gmail_sender),
             "telegram": TelegramDeliveryAdapter(http_post=fake),
             "webhook": WebhookDeliveryAdapter(http_post=fake),
         },
     )
     bus._fake = fake
+    bus._fake_gmail_sends = fake_gmail_sends
     return bus
 
 

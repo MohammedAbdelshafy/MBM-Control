@@ -32,6 +32,12 @@ import json
 import uuid
 import re
 import argparse
+import smtplib
+import imaplib
+import email
+import email.mime.text
+import email.mime.multipart
+import email.utils
 import urllib.parse
 import urllib.request
 from enum import Enum
@@ -44,6 +50,12 @@ from typing import Dict, List, Any, Optional, Callable
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
+
+try:
+    import dotenv
+    dotenv.load_dotenv(ROOT_DIR / ".env")
+except Exception:
+    pass
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")
@@ -111,9 +123,9 @@ class PriorityRouter:
     """Routes notification kinds to priority levels and default channel sets."""
 
     DEFAULT_CHANNELS = {
-        PriorityLevel.P0: ["telegram", "email", "in_app", "webhook"],
-        PriorityLevel.P1: ["telegram", "in_app", "email"],
-        PriorityLevel.P2: ["in_app", "email", "telegram"],
+        PriorityLevel.P0: ["telegram", "gmail", "email", "in_app", "webhook"],
+        PriorityLevel.P1: ["telegram", "gmail", "in_app", "email"],
+        PriorityLevel.P2: ["in_app", "email", "gmail", "telegram"],
     }
 
     KIND_PRIORITY = {
@@ -287,6 +299,157 @@ class EmailDeliveryAdapter(DeliveryAdapter):
         return True
 
 
+class GmailDeliveryAdapter(DeliveryAdapter):
+    """
+    Real authenticated Gmail SMTP transport & IMAP inbound processor for GTM.
+    - Outbound: Sends authenticated MIME email via smtp.gmail.com:587 (STARTTLS)
+    - Inbound: Checks UNSEEN emails & prospect reply detection via imap.gmail.com:993
+    - Isolation: Catches authentication/socket errors cleanly without disrupting GTM.
+    """
+
+    channel = "gmail"
+    SMTP_HOST = "smtp.gmail.com"
+    SMTP_PORT = 587
+    IMAP_HOST = "imap.gmail.com"
+    IMAP_PORT = 993
+
+    def __init__(self, smtp_sender: Optional[Callable] = None, imap_client: Optional[Callable] = None):
+        self._smtp_sender = smtp_sender
+        self._imap_client = imap_client
+
+    def is_enabled(self) -> bool:
+        explicit = os.environ.get("GTM_GMAIL_ENABLED", "").strip().lower()
+        if explicit in {"0", "false", "no", "off"}:
+            return False
+        if explicit in {"1", "true", "yes", "on"}:
+            return True
+        return bool(self.account_user() and self.account_password())
+
+    def account_user(self) -> str:
+        return (
+            os.environ.get("GTM_GMAIL_USER", "").strip()
+            or os.environ.get("MASTER_GMAIL", "").strip()
+            or os.environ.get("SMTP_USER", "").strip()
+            or "abdelshafyclapps@gmail.com"
+        )
+
+    def account_password(self) -> str:
+        return (
+            os.environ.get("GTM_GMAIL_APP_PASSWORD", "").strip()
+            or os.environ.get("GMAIL_APP_PASSWORD", "").strip()
+            or os.environ.get("SMTP_PASS", "").strip()
+        ).replace(" ", "")
+
+    def owner_email(self) -> str:
+        return (
+            os.environ.get("OWNER_EMAIL", "").strip()
+            or os.environ.get("ALERT_EMAIL", "").strip()
+            or self.account_user()
+        )
+
+    def is_configured(self) -> bool:
+        if self._smtp_sender is not None:
+            return True
+        return self.is_enabled() and bool(self.account_user()) and bool(self.account_password())
+
+    def validate(self) -> Dict[str, Any]:
+        errors: List[str] = []
+        hints: List[str] = []
+        user = self.account_user()
+        pwd = self.account_password()
+        enabled = self.is_enabled()
+
+        if not user:
+            errors.append("Gmail account user is empty.")
+        if not pwd:
+            errors.append("Gmail App Password / SMTP_PASS is empty.")
+            hints.append("Generate a 16-character Google App Password under Google Account -> Security -> 2-Step Verification -> App Passwords.")
+
+        return {
+            "ok": bool(user and pwd),
+            "account": user,
+            "has_password": bool(pwd),
+            "enabled": enabled,
+            "errors": errors,
+            "hints": hints,
+        }
+
+    def send_email(self, to_addr: str, subject: str, body_text: str, html_body: Optional[str] = None) -> Dict[str, Any]:
+        if self._smtp_sender:
+            return self._smtp_sender(to_addr, subject, body_text)
+
+        if not self.is_configured():
+            raise DeliveryError("Gmail not configured (missing user or app password)")
+
+        user = self.account_user()
+        pwd = self.account_password()
+
+        msg = email.mime.multipart.MIMEMultipart("alternative")
+        msg["From"] = f"MBM GTM Delivery Center <{user}>"
+        msg["To"] = to_addr
+        msg["Subject"] = subject
+        msg["Date"] = email.utils.formatdate(localtime=True)
+        msg["Message-ID"] = email.utils.make_msgid(domain="mbm-gtm.local")
+
+        msg.attach(email.mime.text.MIMEText(body_text, "plain", "utf-8"))
+        if html_body:
+            msg.attach(email.mime.text.MIMEText(html_body, "html", "utf-8"))
+
+        try:
+            server = smtplib.SMTP(self.SMTP_HOST, self.SMTP_PORT, timeout=15)
+            server.starttls()
+            server.login(user, pwd)
+            server.sendmail(user, [to_addr], msg.as_string())
+            server.quit()
+            return {"sent": True, "to": to_addr, "subject": subject, "message_id": msg["Message-ID"]}
+        except Exception as e:
+            raise DeliveryError(f"Gmail SMTP send failed: {e}")
+
+    def check_inbound_replies(self, query: str = "UNSEEN") -> List[Dict[str, Any]]:
+        """Check Gmail inbox via IMAP for positive prospect replies."""
+        if self._imap_client:
+            return self._imap_client(query)
+
+        if not self.is_configured():
+            return []
+
+        user = self.account_user()
+        pwd = self.account_password()
+
+        replies = []
+        try:
+            mail = imaplib.IMAP4_SSL(self.IMAP_HOST, self.IMAP_PORT, timeout=15)
+            mail.login(user, pwd)
+            mail.select("INBOX", readonly=True)
+            status, data = mail.search(None, query)
+            if status == "OK" and data[0]:
+                for num in data[0].split()[-10:]:
+                    res, msg_data = mail.fetch(num, "(RFC822.HEADER)")
+                    if res == "OK":
+                        header_msg = email.message_from_bytes(msg_data[0][1])
+                        replies.append({
+                            "from": header_msg.get("From", ""),
+                            "subject": header_msg.get("Subject", ""),
+                            "date": header_msg.get("Date", ""),
+                        })
+            mail.logout()
+        except Exception as e:
+            pass
+        return replies
+
+    def deliver(self, record: NotificationRecord, payload: Dict[str, Any]) -> bool:
+        subject = payload.get("email_subject") or payload.get("subject") or f"[MBM GTM] {record.kind}"
+        body = payload.get("email_text") or payload.get("text", "")
+        recipient = payload.get("recipient") or self.owner_email()
+
+        res = self.send_email(recipient, subject, body)
+        if res.get("sent"):
+            record.status = DeliveryStatus.DELIVERED.value
+            return True
+        record.status = DeliveryStatus.FAILED.value
+        return False
+
+
 class WebhookDeliveryAdapter(DeliveryAdapter):
     """POSTs JSON to a configured webhook endpoint. Any 2xx response = delivered."""
 
@@ -338,13 +501,26 @@ class TelegramDeliveryAdapter(DeliveryAdapter):
 
     # -- configuration ------------------------------------------------------
     def is_enabled(self) -> bool:
-        return os.environ.get("GTM_TELEGRAM_ENABLED", "").strip().lower() in {"1", "true", "yes", "on"}
+        explicit = os.environ.get("GTM_TELEGRAM_ENABLED", "").strip().lower()
+        if explicit in {"0", "false", "no", "off"}:
+            return False
+        if explicit in {"1", "true", "yes", "on"}:
+            return True
+        # No explicit switch: activate when credentials are present on either
+        # the GTM rail or the legacy TELEGRAM_* rail already configured.
+        return bool(self.bot_token() and self.chat_id())
 
     def bot_token(self) -> str:
-        return os.environ.get("GTM_TELEGRAM_BOT_TOKEN", "").strip()
+        return (
+            os.environ.get("GTM_TELEGRAM_BOT_TOKEN", "").strip()
+            or os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+        )
 
     def chat_id(self) -> str:
-        return os.environ.get("GTM_TELEGRAM_CHAT_ID", "").strip()
+        return (
+            os.environ.get("GTM_TELEGRAM_CHAT_ID", "").strip()
+            or os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+        )
 
     def is_configured(self) -> bool:
         return self.is_enabled() and bool(self.bot_token()) and bool(self.chat_id())
@@ -523,6 +699,7 @@ class NotificationBus:
         self.adapters: Dict[str, DeliveryAdapter] = adapters or {
             "in_app": InAppDeliveryAdapter(),
             "email": EmailDeliveryAdapter(),
+            "gmail": GmailDeliveryAdapter(),
             "telegram": TelegramDeliveryAdapter(),
             "webhook": WebhookDeliveryAdapter(),
         }
@@ -748,6 +925,67 @@ class NotificationBus:
             self.state.upsert(record)
             return {"sent": False, "status": record.status, "validation": validation, "error": str(e)}
 
+    def send_test_gmail(self, recipient: Optional[str] = None) -> Dict[str, Any]:
+        """Send a real authenticated test email through the Gmail adapter and verify status."""
+        adapter: GmailDeliveryAdapter = self.adapters.get("gmail")  # type: ignore
+        if not adapter:
+            return {"sent": False, "error": "gmail adapter not registered"}
+
+        validation = adapter.validate()
+        target_to = recipient or adapter.owner_email()
+        record = NotificationRecord(
+            event_id=f"notif_{uuid.uuid4().hex[:12]}",
+            delivery_key=f"test_gmail_{datetime.now(timezone.utc).isoformat()}",
+            kind="TEST",
+            channel="gmail",
+            priority="P0",
+            created_at=datetime.now(timezone.utc).isoformat(),
+            status=DeliveryStatus.GENERATED.value,
+        )
+        record.attempts = 1
+        record.last_attempt_at = datetime.now(timezone.utc).isoformat()
+        try:
+            adapter.deliver(record, {
+                "email_subject": "🔔 [MBM GTM] Authenticated Gmail Transport Test",
+                "email_text": (
+                    "This is an automated connectivity test from MBM GTM Delivery Center.\n\n"
+                    f"Timestamp: {datetime.now(timezone.utc).isoformat()}\n"
+                    f"Event ID: {record.event_id}\n"
+                    "Status: AUTHENTICATED_TRANSPORT_VERIFIED\n"
+                ),
+                "recipient": target_to,
+            })
+            self.state.upsert(record)
+            return {
+                "sent": True,
+                "status": record.status,
+                "validation": validation,
+                "recipient": target_to,
+                "record": record.to_dict(),
+            }
+        except Exception as e:  # noqa: BLE001
+            record.status = DeliveryStatus.FAILED.value
+            record.last_error = str(e)[:300]
+            self.state.upsert(record)
+            return {
+                "sent": False,
+                "status": record.status,
+                "validation": validation,
+                "recipient": target_to,
+                "error": str(e),
+            }
+
+    def check_gmail_inbound(self) -> Dict[str, Any]:
+        """Check Gmail inbound unread messages and prospect replies via IMAP."""
+        adapter: GmailDeliveryAdapter = self.adapters.get("gmail")  # type: ignore
+        if not adapter:
+            return {"ok": False, "error": "gmail adapter not registered"}
+        try:
+            replies = adapter.check_inbound_replies()
+            return {"ok": True, "count": len(replies), "replies": replies}
+        except Exception as e:  # noqa: BLE001
+            return {"ok": False, "error": str(e)}
+
 
 # ---------------------------------------------------------------------------
 # 6. CLI
@@ -812,7 +1050,9 @@ def _build_preview(kind: NotificationKind) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description="MBM GTM Notification Bus")
-    parser.add_argument("--test-telegram", action="store_true", help="Send a clearly-marked connectivity test message")
+    parser.add_argument("--test-telegram", action="store_true", help="Send a clearly-marked connectivity test message via Telegram")
+    parser.add_argument("--test-gmail", action="store_true", help="Send a clearly-marked connectivity test email via Gmail SMTP")
+    parser.add_argument("--check-inbound", action="store_true", help="Check inbound unread emails & detected replies via Gmail IMAP")
     parser.add_argument("--preview", type=str, choices=[k.value for k in NotificationKind], help="Render a message preview without sending")
     args = parser.parse_args()
 
@@ -822,6 +1062,16 @@ def main():
         result = bus.send_test_telegram()
         print(json.dumps(result, indent=2, ensure_ascii=False))
         sys.exit(0 if result.get("sent") else 1)
+
+    if args.test_gmail:
+        result = bus.send_test_gmail()
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+        sys.exit(0 if result.get("sent") else 1)
+
+    if args.check_inbound:
+        result = bus.check_gmail_inbound()
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+        sys.exit(0 if result.get("ok") else 1)
 
     if args.preview:
         kind = NotificationKind(args.preview)
