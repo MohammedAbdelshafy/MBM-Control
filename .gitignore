@@ -244,6 +244,9 @@ MBM/LeadEngine/__pycache__/
 MBM/LeadEngine/logs/phound_wave/
 MBM/LeadEngine/logs/campaign_*.csv
 MBM/LeadEngine/logs/campaign_*.json
+
+# Dialer reconciliation DB backups (contain lead PII — never commit)
+MBM/Artifacts/reconciliation_backups_*/
 MBM/Phound/campaigns/
 MBM/Recruitment/outreach_packs/
 MBM/Recruitment/reddit_recruitment_posts.json

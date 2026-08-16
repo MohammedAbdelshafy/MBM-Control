@@ -1250,6 +1250,17 @@ function transformReLead(lead, idx) {
     is_residential: lead.is_residential ?? true,
     dnc: lead.dnc ?? false,
     motivation_tier: lead.motivation_tier || lead.tier || 'STANDARD',
+    // Owner identity layer: database verification vs live caller confirmation.
+    database_ownership_verified: lead.owner_status === 'VERIFIED_OWNER' ||
+      lead.database_ownership_verified ||
+      (lead.details && lead.details.Owner_Status === 'VERIFIED_OWNER') || false,
+    identity_state: lead.identity_state || lead.details?.identity_state || '',
+    identity_relationship: lead.identity_relationship || '',
+    identity_name_confirmed: !!lead.identity_name_confirmed,
+    identity_property_confirmed: !!lead.identity_property_confirmed,
+    identity_caller_name: lead.identity_caller_name || '',
+    caller_identity_verified: !!lead.caller_identity_verified,
+    owner_name: lead.owner_name || lead.owner || '',
   };
 }
 
@@ -1257,9 +1268,19 @@ function getUnifiedDialerLeads() {
   const prospects = [];
   const seenPhones = new Set();
 
+  // Identity states that must never surface as primary seller calls.
+  const SUPPRESSED_IDENTITY = new Set([
+    'WRONG_PERSON', 'WRONG_NUMBER', 'TENANT',
+    'RELATIVE_OR_ASSOCIATE', 'DO_NOT_CALL', 'QUARANTINED',
+  ]);
+
   const addLead = (lead, i) => {
     const rawPhone = lead.phone || lead.phone_number || lead.verified_phone || lead.formatted_phone;
     if (isFakePhoneNumber(rawPhone)) return;
+    // Queue protection: negative identity states are excluded from the
+    // primary seller queue (they may still exist in the DB record).
+    const identityState = lead.identity_state || (lead.details && lead.details.identity_state) || '';
+    if (identityState && SUPPRESSED_IDENTITY.has(identityState)) return;
     const p = transformReLead(lead, i);
     if (!p) return;
     const cleanDigits = p.phone_number.replace(/\D/g, '');
@@ -1350,6 +1371,106 @@ app.get('/api/dialer/dispositions', (req, res) => {
       return res.json({ status: 'success', count: data.length, dispositions: data });
     }
     res.json({ status: 'success', count: 0, dispositions: [] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Owner Identity Verification Layer ────────────────────────────────
+// Separates DATABASE ownership verification from LIVE caller identity
+// confirmation. The DB proves the record; the call proves who answers.
+const identityResultsFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'logs', 'call_identity_results.json');
+
+// POST /api/dialer/identity — Save a call-level identity result.
+// Body: { lead_id, caller_name, relationship, property_confirmed,
+//         name_confirmed, wrong_number, do_not_call, disposition, notes }
+app.post('/api/dialer/identity', (req, res) => {
+  try {
+    const {
+      lead_id, caller_name, relationship, property_confirmed,
+      name_confirmed, wrong_number, do_not_call, disposition, notes,
+    } = req.body || {};
+    if (!lead_id) return res.status(400).json({ error: 'lead_id required' });
+
+    const entry = {
+      lead_id,
+      caller_name: caller_name || '',
+      relationship: relationship || 'UNKNOWN',
+      property_confirmed: !!property_confirmed,
+      name_confirmed: !!name_confirmed,
+      wrong_number: !!wrong_number,
+      do_not_call: !!do_not_call,
+      disposition: disposition || '',
+      notes: notes || '',
+      timestamp: new Date().toISOString(),
+    };
+
+    // Map caller relationship → identity state (mirrors owner_identity.py).
+    let identity_state;
+    if (entry.wrong_number) identity_state = 'WRONG_NUMBER';
+    else if (entry.do_not_call) identity_state = 'DO_NOT_CALL';
+    else if (entry.relationship === 'WRONG_PERSON') identity_state = 'WRONG_PERSON';
+    else if (entry.relationship === 'TENANT') identity_state = 'TENANT';
+    else if (entry.relationship === 'RELATIVE_OR_ASSOCIATE') identity_state = 'RELATIVE_OR_ASSOCIATE';
+    else if (entry.relationship === 'AUTHORIZED_DECISION_MAKER') identity_state = 'AUTHORIZED_DECISION_MAKER';
+    else if (entry.name_confirmed && entry.property_confirmed) identity_state = 'OWNER_CONFIRMED';
+    else if (entry.name_confirmed || entry.property_confirmed) identity_state = 'OWNER_LIKELY';
+    else identity_state = 'IDENTITY_UNCONFIRMED';
+    entry.identity_state = identity_state;
+    entry.caller_identity_verified = identity_state === 'OWNER_CONFIRMED' || identity_state === 'AUTHORIZED_DECISION_MAKER';
+
+    let results = [];
+    if (fs.existsSync(identityResultsFile)) {
+      results = JSON.parse(fs.readFileSync(identityResultsFile, 'utf8'));
+    }
+    results = results.filter((r) => r.lead_id !== lead_id);
+    results.push(entry);
+    fs.writeFileSync(identityResultsFile, JSON.stringify(results, null, 2));
+
+    // Stamp identity onto the lead in leads_database.json (preserving all
+    // existing sales data — dispositions, notes, attempts, stage, source).
+    if (fs.existsSync(mbmDialerFile)) {
+      try {
+        const data = JSON.parse(fs.readFileSync(mbmDialerFile, 'utf8'));
+        const arr = Array.isArray(data) ? data : (data.leads || []);
+        let patched = 0;
+        for (const lead of arr) {
+          if (String(lead.id) === String(lead_id)) {
+            lead.identity_state = identity_state;
+            lead.identity_relationship = entry.relationship;
+            lead.identity_property_confirmed = entry.property_confirmed;
+            lead.identity_name_confirmed = entry.name_confirmed;
+            lead.identity_caller_name = entry.caller_name;
+            lead.identity_updated_at = entry.timestamp;
+            lead.caller_identity_verified = entry.caller_identity_verified;
+            lead.database_ownership_verified = !!(lead.owner_status === 'VERIFIED_OWNER' ||
+              (lead.details && lead.details.Owner_Status === 'VERIFIED_OWNER'));
+            if (lead.details) lead.details.identity_state = identity_state;
+            patched += 1;
+          }
+        }
+        if (patched) {
+          fs.writeFileSync(mbmDialerFile, JSON.stringify(arr, null, 2));
+        }
+      } catch (err) {
+        console.error('[identity] DB patch failed:', err.message);
+      }
+    }
+
+    res.json({ status: 'success', entry });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/dialer/identity — All recorded identity results
+app.get('/api/dialer/identity', (req, res) => {
+  try {
+    if (fs.existsSync(identityResultsFile)) {
+      const data = JSON.parse(fs.readFileSync(identityResultsFile, 'utf8'));
+      return res.json({ status: 'success', count: data.length, identities: data });
+    }
+    res.json({ status: 'success', count: 0, identities: [] });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

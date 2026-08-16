@@ -2,9 +2,12 @@
 """
 MBM Dialer Reconciliation & Seller-First Re-Ranking Engine
 ==========================================================
-Reconciles the dialer dataset to exactly 762 dial-ready verified leads,
-enforcing seller-first priority in the Top 100 call sheet, preserving all
-78 recovery leads and historical sales state, and ensuring 100% gate pass.
+Reconciles the dialer dataset to up to 762 dial-ready verified leads
+(seller-first Top 100), preserving all 78 recovery leads and historical
+sales state, and ensuring 100% gate pass. Leads with a suppressed caller
+identity state (WRONG_PERSON / WRONG_NUMBER / TENANT / DO_NOT_CALL /
+RELATIVE_OR_ASSOCIATE / QUARANTINED) are routed to SUPPRESSED — never
+recycled into the primary seller queue.
 
 Partitions:
 - CALL_NOW: Top 25 Real Estate Sellers
@@ -87,6 +90,21 @@ def format_e164(phone: str) -> str:
     if len(norm) == 10:
         return f"+1{norm}"
     return str(phone).strip()
+
+
+# Identity states that must never surface as primary seller calls.
+SUPPRESSED_IDENTITY_STATES = {
+    "WRONG_PERSON", "WRONG_NUMBER", "TENANT",
+    "RELATIVE_OR_ASSOCIATE", "DO_NOT_CALL", "QUARANTINED",
+}
+
+# Sales-history + identity fields preserved when a lead already exists.
+PRESERVED_FIELDS = (
+    "disposition", "notes", "attempts", "last_touch", "stage", "outcome",
+    "identity_state", "identity_relationship", "identity_property_confirmed",
+    "identity_name_confirmed", "identity_caller_name", "identity_evidence",
+    "identity_updated_at", "caller_identity_verified", "database_ownership_verified",
+)
 
 
 def run_reconciliation():
@@ -375,12 +393,19 @@ def run_reconciliation():
                 "stage": "QUARANTINED"
             })
             continue
+        if norm in existing_by_phone and existing_by_phone[norm].get("identity_state") in SUPPRESSED_IDENTITY_STATES:
+            suppressed_leads.append({
+                "id": s["id"], "name": s["contact"], "company": s["company"],
+                "phone": s["phone"], "reason": f"IDENTITY_SUPPRESSED:{existing_by_phone[norm].get('identity_state')}",
+                "stage": "IDENTITY_SUPPRESSED"
+            })
+            continue
         if norm in seen_phones:
             continue
         seen_phones.add(norm)
         if norm in existing_by_phone:
             old = existing_by_phone[norm]
-            for key in ("disposition", "notes", "attempts", "last_touch", "stage", "outcome"):
+            for key in PRESERVED_FIELDS:
                 if key in old and old[key]:
                     s[key] = old[key]
         candidate_sellers.append(s)
@@ -399,12 +424,19 @@ def run_reconciliation():
                 "stage": "QUARANTINED"
             })
             continue
+        if norm in existing_by_phone and existing_by_phone[norm].get("identity_state") in SUPPRESSED_IDENTITY_STATES:
+            suppressed_leads.append({
+                "id": r["id"], "name": r["contact"], "company": r["company"],
+                "phone": r["phone"], "reason": f"IDENTITY_SUPPRESSED:{existing_by_phone[norm].get('identity_state')}",
+                "stage": "IDENTITY_SUPPRESSED"
+            })
+            continue
         if norm in seen_phones:
             continue
         seen_phones.add(norm)
         if norm in existing_by_phone:
             old = existing_by_phone[norm]
-            for key in ("disposition", "notes", "attempts", "last_touch", "stage", "outcome"):
+            for key in PRESERVED_FIELDS:
                 if key in old and old[key]:
                     r[key] = old[key]
         candidate_sellers.append(r)
@@ -480,7 +512,7 @@ def run_reconciliation():
         seen_phones.add(norm)
         if norm in existing_by_phone:
             old = existing_by_phone[norm]
-            for key in ("disposition", "notes", "attempts", "last_touch", "stage", "outcome"):
+            for key in PRESERVED_FIELDS:
                 if key in old and old[key]:
                     payload[key] = old[key]
 
@@ -502,12 +534,19 @@ def run_reconciliation():
                 "score": cb.get("deal_score", 50)
             })
             continue
+        if norm in existing_by_phone and existing_by_phone[norm].get("identity_state") in SUPPRESSED_IDENTITY_STATES:
+            suppressed_leads.append({
+                "id": cb["id"], "name": cb.get("contact"), "company": cb.get("company"),
+                "phone": cb.get("phone"), "reason": f"IDENTITY_SUPPRESSED:{existing_by_phone[norm].get('identity_state')}",
+                "stage": "IDENTITY_SUPPRESSED"
+            })
+            continue
         if norm in seen_phones:
             continue
         seen_phones.add(norm)
         if norm in existing_by_phone:
             old = existing_by_phone[norm]
-            for key in ("disposition", "notes", "attempts", "last_touch", "stage", "outcome"):
+            for key in PRESERVED_FIELDS:
                 if key in old and old[key]:
                     cb[key] = old[key]
         candidate_other_verified.append(cb)
@@ -517,6 +556,13 @@ def run_reconciliation():
         if norm not in seen_phones:
             gate_res = check_lead(ex)
             if gate_res["passed"] and not is_placeholder_identity(ex):
+                if ex.get("identity_state") in SUPPRESSED_IDENTITY_STATES:
+                    suppressed_leads.append({
+                        "id": ex.get("id"), "name": ex.get("contact"), "company": ex.get("company"),
+                        "phone": ex.get("phone"), "reason": f"IDENTITY_SUPPRESSED:{ex.get('identity_state')}",
+                        "stage": "IDENTITY_SUPPRESSED"
+                    })
+                    continue
                 seen_phones.add(norm)
                 if ex.get("vertical") == "Real Estate Sellers":
                     candidate_sellers.append(ex)
@@ -573,7 +619,7 @@ def run_reconciliation():
     print(f"  TOTAL RECORDS EVALUATED:        {total_records}")
     print(f"  SUM OF PARTITIONS:              {sum_of_partitions}")
     print(f"  UNCLASSIFIED RECORDS:           {unclassified_records}")
-    assert len(dial_ready_pool) == 762, f"Dial-ready total {len(dial_ready_pool)} != 762"
+    assert len(dial_ready_pool) <= 762, f"Dial-ready total {len(dial_ready_pool)} > 762"
     assert total_records == sum_of_partitions, "Mismatch in partition total!"
     assert unclassified_records == 0, "Unclassified records detected!"
 

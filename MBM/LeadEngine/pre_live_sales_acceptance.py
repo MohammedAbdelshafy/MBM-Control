@@ -434,8 +434,48 @@ def run_pre_live_audit() -> Dict[str, Any]:
             "skip_trace_confidence": "high"
         })
 
+    # ── Durable merge (NOT destructive replace) ─────────────────────────────
+    # Canonical deal memory is the source of truth for recovered/canonical
+    # leads (e.g. the 78 recovered RE owners). Any prime-callable canonical
+    # deal is merged into the feed so a later pre-live run never wipes them.
+    # Existing non-conflicting records (with call history / dispositions) are
+    # preserved instead of being overwritten by this pool's narrower scope.
+    feed_phones = {normalize_dialer_phone(p["phone"]) for p in dialer_payloads if p.get("phone")}
+
+    canonical_merged = 0
+    try:
+        memory = CanonicalDealMemory()
+        for deal in memory.get_prime_callable_deals():
+            norm = normalize_dialer_phone(deal.contact_phone)
+            if not norm or norm in feed_phones:
+                continue
+            payload = deal.to_dialer_payload()
+            payload["norm_phone"] = norm
+            dialer_payloads.append(payload)
+            feed_phones.add(norm)
+            canonical_merged += 1
+    except Exception as e:
+        print(f"[WARN] Canonical memory merge skipped: {e}")
+
+    preserved_existing = 0
+    try:
+        if DIALER_DB_PATH.exists():
+            existing_db = json.loads(DIALER_DB_PATH.read_text(encoding="utf-8"))
+            existing_list = existing_db if isinstance(existing_db, list) else existing_db.get("leads", [])
+            preserved = [
+                e for e in existing_list
+                if e.get("phone") and normalize_dialer_phone(e["phone"]) not in feed_phones
+            ]
+            preserved_existing = len(preserved)
+            dialer_payloads = dialer_payloads + preserved
+    except Exception as e:
+        print(f"[WARN] Existing DB merge skipped: {e}")
+
     DIALER_DB_PATH.write_text(json.dumps(dialer_payloads, indent=2), encoding="utf-8")
     print(f"\n  ✓ Synced {len(dialer_payloads)} verified truthful leads to React Dialer DB: {DIALER_DB_PATH}")
+    print(f"      • pool leads: {len(master_dialer_feed)}")
+    print(f"      • canonical memory merged: {canonical_merged}")
+    print(f"      • existing preserved: {preserved_existing}")
 
     # Write the acceptance report (was defined but never emitted).
     report_lines = [

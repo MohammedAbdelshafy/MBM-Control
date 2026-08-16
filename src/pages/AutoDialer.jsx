@@ -110,6 +110,14 @@ export default function AutoDialer() {
   const [callbackTime, setCallbackTime] = useState('');
   const [activeScriptTab, setActiveScriptTab] = useState('core');
   const timerRef = useRef(null);
+  // ── Owner Identity Verification (call-level) ────────────────────────
+  const [identityName, setIdentityName] = useState('');
+  const [identityRelationship, setIdentityRelationship] = useState('UNKNOWN');
+  const [identityPropertyConfirmed, setIdentityPropertyConfirmed] = useState(false);
+  const [identityNameConfirmed, setIdentityNameConfirmed] = useState(false);
+  const [identityWrongNumber, setIdentityWrongNumber] = useState(false);
+  const [identityDnc, setIdentityDnc] = useState(false);
+  const [identitySaving, setIdentitySaving] = useState(false);
 
   useEffect(() => { fetchLeads(); loadDispositions(); }, []);
   useEffect(() => {
@@ -170,20 +178,72 @@ export default function AutoDialer() {
 
   function endCall() { if (timerRef.current) clearInterval(timerRef.current); setCallState('ended'); setNotes(''); setCallbackTime(''); setShowDisposition(true); }
 
+  // Save the call-level identity result BEFORE disposition so the DB knows
+  // who actually answered. Never promotes an unconfirmed person to owner.
+  async function saveIdentity() {
+    if (!currentLead) return false;
+    setIdentitySaving(true);
+    try {
+      const res = await fetch(`${API}/dialer/identity`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lead_id: currentLead.id,
+          caller_name: identityName,
+          relationship: identityRelationship,
+          property_confirmed: identityPropertyConfirmed,
+          name_confirmed: identityNameConfirmed,
+          wrong_number: identityWrongNumber,
+          do_not_call: identityDnc,
+          disposition: dispositions[currentLead.id] || '',
+          notes,
+        }),
+      });
+      if (!res.ok) throw new Error('Failed to save identity');
+      return true;
+    } catch (err) {
+      toast.error(err.message);
+      return false;
+    } finally {
+      setIdentitySaving(false);
+    }
+  }
+
   async function saveDisposition(disposition) {
     if (!currentLead) return;
+    // Identity capture is the mandatory pre-qualification step. Skip save
+    // if the caller explicitly reports a wrong number / DNC — those states
+    // are recorded via the identity endpoint and the lead is suppressed.
+    if (identityWrongNumber || identityDnc) {
+      const saved = await saveIdentity();
+      if (!saved) return;
+      const id = currentLead.id;
+      setDispositions((prev) => ({ ...prev, [id]: disposition }));
+      toast.success(`${currentLead.prospect_name}: ${STATUS_META[disposition]?.label || disposition}`);
+      setShowDisposition(false); setCallState('idle'); setCallTimer(0); setCurrentLead(null); setNotes(''); setCallbackTime('');
+      resetIdentity();
+      return;
+    }
     try {
       const res = await fetch(`${API}/dialer/disposition`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lead_id: currentLead.id, prospect_name: currentLead.prospect_name, disposition, notes, callback_time: disposition === 'callback' ? callbackTime || null : null }) });
       if (!res.ok) throw new Error('Failed to save disposition');
     } catch (err) { toast.error(err.message); return; }
+    await saveIdentity();
     const id = currentLead.id;
     setDispositions((prev) => ({ ...prev, [id]: disposition }));
     if (disposition === 'closed') setShowClosedResources(true);
     toast.success(`${currentLead.prospect_name}: ${STATUS_META[disposition]?.label || disposition}`);
     setShowDisposition(false); setCallState('idle'); setCallTimer(0); setCurrentLead(null); setNotes(''); setCallbackTime('');
+    resetIdentity();
   }
 
-  function nextLead() { setShowDisposition(false); setShowClosedResources(false); setCallState('idle'); setCallTimer(0); setCurrentLead(null); setNotes(''); setCallbackTime(''); }
+  function resetIdentity() {
+    setIdentityName(''); setIdentityRelationship('UNKNOWN');
+    setIdentityPropertyConfirmed(false); setIdentityNameConfirmed(false);
+    setIdentityWrongNumber(false); setIdentityDnc(false);
+  }
+
+  function nextLead() { setShowDisposition(false); setShowClosedResources(false); setCallState('idle'); setCallTimer(0); setCurrentLead(null); setNotes(''); setCallbackTime(''); resetIdentity(); }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
@@ -213,12 +273,44 @@ export default function AutoDialer() {
           <div className="flex flex-col sm:flex-row gap-3 mt-5"><button onClick={endCall} className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 px-5 py-3 rounded-xl font-semibold"><PhoneOff className="w-5 h-5" />End & Disposition</button><button onClick={nextLead} className="sm:w-40 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl font-semibold"><ChevronRight className="w-5 h-5" />Skip</button></div>
         </motion.section>}</AnimatePresence>
 
-        <section><div className="flex items-center justify-between mb-3"><div><h2 className="text-lg font-semibold">Ready to call</h2><p className="text-xs text-slate-500">{filteredLeads.length} leads match the current queue filters</p></div></div>{loading ? <div className="py-20 text-center text-slate-500">Loading calling queue...</div> : filteredLeads.length === 0 ? <div className="rounded-2xl border border-dashed border-white/10 p-10 text-center text-slate-500">No leads match these filters.</div> : <div className="space-y-2">{filteredLeads.map((lead, i) => <motion.div key={lead.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} className="rounded-2xl border border-white/10 bg-white/[0.025] hover:bg-white/[0.05] p-4 flex flex-col lg:flex-row lg:items-center gap-4"><div className="flex items-center gap-3 flex-1 min-w-0"><div className="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400">{i + 1}</div><div className="min-w-0"><div className="font-semibold truncate">{lead.prospect_name}</div><div className="text-xs text-slate-500 truncate flex items-center gap-1"><MapPin className="w-3 h-3" />{lead.address || 'No address'}</div><div className="text-[11px] text-slate-600 mt-0.5">{lead.property_type || 'Property'} · {lead.city || 'Unknown market'}</div></div></div><div className="grid grid-cols-3 lg:flex gap-4 text-right"><div><div className="text-[11px] text-slate-500">Price</div><div className="text-sm font-semibold">{lead.asking_price || '—'}</div></div><div><div className="text-[11px] text-slate-500">Score</div><div className="text-sm font-semibold text-emerald-300">{lead.distress_score || '—'}</div></div><div><div className="text-[11px] text-slate-500">Phone</div><div className="text-xs font-mono text-slate-300">{lead.formatted_phone || lead.phone_number}</div></div></div><button onClick={() => startCall(lead)} disabled={callState !== 'idle'} className="w-full lg:w-auto flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 px-5 py-2.5 rounded-xl font-semibold"><Phone className="w-4 h-4" />Call</button></motion.div>)}</div>}</section>
+        <section><div className="flex items-center justify-between mb-3"><div><h2 className="text-lg font-semibold">Ready to call</h2><p className="text-xs text-slate-500">{filteredLeads.length} leads match the current queue filters</p></div></div>{loading ? <div className="py-20 text-center text-slate-500">Loading calling queue...</div> : filteredLeads.length === 0 ? <div className="rounded-2xl border border-dashed border-white/10 p-10 text-center text-slate-500">No leads match these filters.</div> : <div className="space-y-2">{filteredLeads.map((lead, i) => <motion.div key={lead.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} className="rounded-2xl border border-white/10 bg-white/[0.025] hover:bg-white/[0.05] p-4 flex flex-col lg:flex-row lg:items-center gap-4"><div className="flex items-center gap-3 flex-1 min-w-0"><div className="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400">{i + 1}</div><div className="min-w-0"><div className="font-semibold truncate">{lead.prospect_name}</div><div className="text-xs text-slate-500 truncate flex items-center gap-1"><MapPin className="w-3 h-3" />{lead.address || 'No address'}</div><div className="text-[11px] text-slate-600 mt-0.5">{lead.property_type || 'Property'} · {lead.city || 'Unknown market'}</div><div className="flex items-center gap-1.5 mt-1">{lead.caller_identity_verified ? <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">PERSON CONFIRMED</span> : <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400">PERSON UNCONFIRMED</span>}{lead.database_ownership_verified && <span className="text-[9px] px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300">DB OWNER</span>}{lead.identity_state && <span className="text-[9px] px-2 py-0.5 rounded-full bg-white/5 text-slate-400">{lead.identity_state}</span>}</div></div></div><div className="grid grid-cols-3 lg:flex gap-4 text-right"><div><div className="text-[11px] text-slate-500">Price</div><div className="text-sm font-semibold">{lead.asking_price || '—'}</div></div><div><div className="text-[11px] text-slate-500">Score</div><div className="text-sm font-semibold text-emerald-300">{lead.distress_score || '—'}</div></div><div><div className="text-[11px] text-slate-500">Phone</div><div className="text-xs font-mono text-slate-300">{lead.formatted_phone || lead.phone_number}</div></div></div><button onClick={() => startCall(lead)} disabled={callState !== 'idle'} className="w-full lg:w-auto flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 px-5 py-2.5 rounded-xl font-semibold"><Phone className="w-4 h-4" />Call</button></motion.div>)}</div>}</section>
 
         {doneLeads.length > 0 && <section><h2 className="text-lg font-semibold mb-3">Completed</h2><div className="space-y-2">{doneLeads.map((lead) => { const meta = STATUS_META[dispositions[lead.id]] || STATUS_META.dead; return <div key={lead.id} className="rounded-xl border border-white/5 bg-white/[0.02] p-3 flex items-center justify-between"><div className="flex items-center gap-3 min-w-0"><span className={`w-2 h-2 rounded-full ${meta.dot}`} /><span className="text-sm text-slate-400 truncate">{lead.prospect_name}</span><span className="text-xs text-slate-600 truncate hidden md:block">{lead.address}</span></div><span className={`text-[10px] px-2 py-1 rounded-full ${meta.badge}`}>{meta.label}</span></div>; })}</div></section>}
       </main>
 
-      <AnimatePresence>{showDisposition && currentLead && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4"><motion.div initial={{ scale: 0.96, y: 12 }} animate={{ scale: 1, y: 0 }} className="w-full max-w-xl rounded-3xl bg-slate-900 border border-white/10 p-6"><h2 className="text-2xl font-bold">What happened?</h2><p className="text-sm text-slate-500 mt-1">{currentLead.prospect_name} · {formatTime(callTimer)}</p><div className="grid md:grid-cols-3 gap-3 mt-5"><button onClick={() => saveDisposition('closed')} className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-left hover:bg-emerald-500/15"><CheckCircle className="w-6 h-6 text-emerald-300 mb-2" /><div className="font-semibold">Closed / Qualified</div><div className="text-xs text-slate-500 mt-1">Move to deal follow-up.</div></button><button onClick={() => saveDisposition('callback')} className="rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-left hover:bg-amber-500/15"><CalendarClock className="w-6 h-6 text-amber-300 mb-2" /><div className="font-semibold">Callback</div><div className="text-xs text-slate-500 mt-1">Keep the conversation alive.</div></button><button onClick={() => saveDisposition('dead')} className="rounded-2xl border border-red-400/20 bg-red-500/10 p-4 text-left hover:bg-red-500/15"><XCircle className="w-6 h-6 text-red-300 mb-2" /><div className="font-semibold">Not a Fit</div><div className="text-xs text-slate-500 mt-1">Archive from active queue.</div></button></div><div className="mt-4 grid md:grid-cols-2 gap-3"><textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Call notes, motivation, objection, price talk..." className="min-h-24 bg-slate-950 border border-white/10 rounded-xl p-3 text-sm outline-none" /><div className="space-y-3"><input value={callbackTime} onChange={(e) => setCallbackTime(e.target.value)} placeholder="Callback time (optional)" className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-3 text-sm" /><div className="rounded-xl bg-white/[0.03] border border-white/10 p-3 text-xs text-slate-500">Save the reason, next step, and any verified number discussed.</div></div></div><button onClick={() => { setShowDisposition(false); setCallState('idle'); setCurrentLead(null); }} className="mt-4 w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300">Cancel</button></motion.div></motion.div>}</AnimatePresence>
+      <AnimatePresence>{showDisposition && currentLead && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4"><motion.div initial={{ scale: 0.96, y: 12 }} animate={{ scale: 1, y: 0 }} className="w-full max-w-xl rounded-3xl bg-slate-900 border border-white/10 p-6"><h2 className="text-2xl font-bold">What happened?</h2><p className="text-sm text-slate-500 mt-1">{currentLead.prospect_name} · {formatTime(callTimer)}</p><div className="grid md:grid-cols-3 gap-3 mt-5"><button onClick={() => saveDisposition('closed')} className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-left hover:bg-emerald-500/15"><CheckCircle className="w-6 h-6 text-emerald-300 mb-2" /><div className="font-semibold">Closed / Qualified</div><div className="text-xs text-slate-500 mt-1">Move to deal follow-up.</div></button><button onClick={() => saveDisposition('callback')} className="rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-left hover:bg-amber-500/15"><CalendarClock className="w-6 h-6 text-amber-300 mb-2" /><div className="font-semibold">Callback</div><div className="text-xs text-slate-500 mt-1">Keep the conversation alive.</div></button><button onClick={() => saveDisposition('dead')} className="rounded-2xl border border-red-400/20 bg-red-500/10 p-4 text-left hover:bg-red-500/15"><XCircle className="w-6 h-6 text-red-300 mb-2" /><div className="font-semibold">Not a Fit</div><div className="text-xs text-slate-500 mt-1">Archive from active queue.</div></button></div>
+
+          <div className="mt-5 rounded-2xl border border-sky-400/20 bg-sky-500/5 p-4">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <div className="text-xs uppercase tracking-wider font-bold text-sky-300">Who am I speaking with?</div>
+              <div className="flex items-center gap-1 text-[10px] text-slate-400"><ShieldCheck className="w-3 h-3 text-sky-300" />Call-level identity</div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mb-3 text-[11px]">
+              <div className="rounded-lg bg-black/20 px-3 py-2">
+                <div className="text-slate-500">PROPERTY OWNER</div>
+                <div className="flex items-center gap-1 font-semibold text-emerald-300">{currentLead.database_ownership_verified ? 'Database verified' : 'Not DB-verified'} <CheckCircle className="w-3 h-3" /></div>
+              </div>
+              <div className="rounded-lg bg-black/20 px-3 py-2">
+                <div className="text-slate-500">PERSON ON PHONE</div>
+                {currentLead.caller_identity_verified ? <div className="flex items-center gap-1 font-semibold text-emerald-300">Confirmed <CheckCircle className="w-3 h-3" /></div> : <div className="flex items-center gap-1 font-semibold text-amber-300">Not yet confirmed <span>⚠</span></div>}
+              </div>
+            </div>
+            <input value={identityName} onChange={(e) => setIdentityName(e.target.value)} placeholder="Name (as they identified):" className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-3 py-2.5 text-sm outline-none mb-2" />
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-2">
+              {[['OWNER', 'Owner'], ['AUTHORIZED_DECISION_MAKER', 'Authorized Decision Maker'], ['TENANT', 'Tenant'], ['RELATIVE_OR_ASSOCIATE', 'Relative / Associate'], ['UNKNOWN', 'Unknown'], ['WRONG_PERSON', 'Wrong Person']].map(([val, label]) => (
+                <button key={val} type="button" onClick={() => { setIdentityRelationship(val); if (val === 'WRONG_PERSON') setIdentityNameConfirmed(false); if (val === 'OWNER') setIdentityNameConfirmed(true); }} className={`text-[11px] px-2 py-2 rounded-lg border text-left ${identityRelationship === val ? 'border-sky-400/40 bg-sky-500/15 text-sky-200' : 'border-white/10 bg-white/5 text-slate-300'}`}>{label}</button>
+              ))}
+            </div>
+            <div className="flex flex-wrap items-center gap-3 text-xs">
+              <label className="flex items-center gap-2"><input type="checkbox" checked={identityPropertyConfirmed} onChange={(e) => setIdentityPropertyConfirmed(e.target.checked)} className="accent-sky-400" /> Property confirmed</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={identityNameConfirmed} onChange={(e) => setIdentityNameConfirmed(e.target.checked)} className="accent-sky-400" /> Name confirmed</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={identityWrongNumber} onChange={(e) => { setIdentityWrongNumber(e.target.checked); if (e.target.checked) setIdentityDnc(false); }} className="accent-red-400" /> Wrong number</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={identityDnc} onChange={(e) => { setIdentityDnc(e.target.checked); if (e.target.checked) setIdentityWrongNumber(false); }} className="accent-red-400" /> Do not call</label>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-2">No sensitive info requested. Identity confidence comes only from the live call — never from the DB record alone.</div>
+          </div>
+
+          <div className="mt-4 grid md:grid-cols-2 gap-3"><textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Call notes, motivation, objection, price talk..." className="min-h-24 bg-slate-950 border border-white/10 rounded-xl p-3 text-sm outline-none" /><div className="space-y-3"><input value={callbackTime} onChange={(e) => setCallbackTime(e.target.value)} placeholder="Callback time (optional)" className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-3 text-sm" /><div className="rounded-xl bg-white/[0.03] border border-white/10 p-3 text-xs text-slate-500">Save the reason, next step, and any verified number discussed.</div></div></div><button onClick={() => { setShowDisposition(false); setCallState('idle'); setCurrentLead(null); }} className="mt-4 w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300">Cancel</button></motion.div></motion.div>}</AnimatePresence>
 
       <AnimatePresence>{showClosedResources && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/80 overflow-y-auto p-4"><div className="max-w-4xl mx-auto my-8 rounded-3xl bg-slate-900 border border-emerald-400/20 p-6"><div className="text-center mb-7"><div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/15 flex items-center justify-center mb-3"><CheckCircle className="w-8 h-8 text-emerald-300" /></div><h2 className="text-3xl font-bold">Deal Follow-up Hub</h2><p className="text-slate-500 mt-1">Move from “closed” to a concrete next action.</p></div><div className="grid md:grid-cols-2 gap-3 mb-6">{WHOLESALE_WEBSITES.map((site) => <a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer" className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.06]"><div className="flex items-center justify-between"><div className="font-semibold">{site.name}</div><ExternalLink className="w-4 h-4 text-slate-500" /></div><div className="text-xs text-slate-500 mt-1">{site.desc}</div></a>)}</div><div className="space-y-2 mb-6">{CASH_BUYERS.map((buyer) => <div key={buyer.name} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex items-center justify-between"><div><div className="font-semibold">{buyer.name}</div><div className="text-xs text-slate-500">{buyer.desc}</div></div><a href={buyer.url} target="_blank" rel="noopener noreferrer" className="text-xs text-sky-300 hover:text-sky-200">Open</a></div>)}</div><div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 mb-6"><div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 mb-2"><Building className="w-4 h-4" /> Wholesaler resources</div>{WHOLESALER_RESOURCES.map((r) => <div key={r.name} className="flex items-center justify-between py-2 border-t border-white/5 first:border-t-0"><div><div className="text-sm font-medium">{r.name}</div><div className="text-xs text-slate-500">{r.desc}</div></div>{r.phone && <div className="text-xs font-mono text-slate-400">{r.phone}</div>}</div>)}</div><button onClick={nextLead} className="w-full bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl font-semibold">Continue to Next Lead</button></div></motion.div>}</AnimatePresence>
     </div>
