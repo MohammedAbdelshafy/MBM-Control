@@ -75,11 +75,17 @@ DEFAULT_STATE_PATH = GTM_ARTIFACTS_DIR / "delivery_state.json"
 class NotificationKind(str, Enum):
     DAILY_BRIEF = "DAILY_BRIEF"
     HOT_BUYER = "HOT_BUYER"
+    LEAD_WARMED = "LEAD_WARMED"
     POSITIVE_REPLY = "POSITIVE_REPLY"
     MEETING_BOOKED = "MEETING_BOOKED"
+    MEETING_CONFIRMED = "MEETING_CONFIRMED"
     MEETING_WITHIN_1H = "MEETING_WITHIN_1H"
+    MEETING_CANCELLED = "MEETING_CANCELLED"
     DEAL_WON = "DEAL_WON"
+    PAYMENT_RECEIVED = "PAYMENT_RECEIVED"
+    PROPOSAL_SENT = "PROPOSAL_SENT"
     REVENUE_RECEIVED = "REVENUE_RECEIVED"
+    HIGH_VALUE_FOLLOWUP = "HIGH_VALUE_FOLLOWUP"
     CRITICAL_FAILURE = "CRITICAL_FAILURE"
     QUALIFIED_CONVERSATION = "QUALIFIED_CONVERSATION"
     NEW_LEADS = "NEW_LEADS"
@@ -89,8 +95,8 @@ class NotificationKind(str, Enum):
 
 class PriorityLevel(str, Enum):
     P0 = "P0"  # immediate — critical failure / deal won / revenue / meeting within 1h
-    P1 = "P1"  # near-immediate — meeting booked / positive reply / HOT buyer / qualified conversation
-    P2 = "P2"  # daily digest — new leads / warm signals / routine follow-ups / statistics
+    P1 = "P1"  # near-immediate — meeting booked / positive reply / HOT buyer / lead warmed / qualified conversation
+    P2 = "P2"  # daily digest — daily brief / new leads / statistics
 
 
 class DeliveryStatus(str, Enum):
@@ -106,11 +112,17 @@ class DeliveryStatus(str, Enum):
 KIND_TELEGRAM_FLAG = {
     NotificationKind.DAILY_BRIEF: "GTM_TELEGRAM_DAILY_BRIEF",
     NotificationKind.HOT_BUYER: "GTM_TELEGRAM_HOT_BUYERS",
+    NotificationKind.LEAD_WARMED: "GTM_TELEGRAM_HOT_BUYERS",
     NotificationKind.POSITIVE_REPLY: "GTM_TELEGRAM_POSITIVE_REPLIES",
     NotificationKind.MEETING_BOOKED: "GTM_TELEGRAM_MEETINGS",
+    NotificationKind.MEETING_CONFIRMED: "GTM_TELEGRAM_MEETINGS",
     NotificationKind.MEETING_WITHIN_1H: "GTM_TELEGRAM_MEETINGS",
+    NotificationKind.MEETING_CANCELLED: "GTM_TELEGRAM_MEETINGS",
     NotificationKind.DEAL_WON: "GTM_TELEGRAM_HOT_BUYERS",
+    NotificationKind.PAYMENT_RECEIVED: "GTM_TELEGRAM_HOT_BUYERS",
+    NotificationKind.PROPOSAL_SENT: "GTM_TELEGRAM_HOT_BUYERS",
     NotificationKind.REVENUE_RECEIVED: "GTM_TELEGRAM_HOT_BUYERS",
+    NotificationKind.HIGH_VALUE_FOLLOWUP: "GTM_TELEGRAM_HOT_BUYERS",
     NotificationKind.CRITICAL_FAILURE: "GTM_TELEGRAM_FAILURES",
     NotificationKind.QUALIFIED_CONVERSATION: "GTM_TELEGRAM_POSITIVE_REPLIES",
     NotificationKind.NEW_LEADS: "GTM_TELEGRAM_DAILY_BRIEF",
@@ -131,11 +143,17 @@ class PriorityRouter:
     KIND_PRIORITY = {
         NotificationKind.CRITICAL_FAILURE: PriorityLevel.P0,
         NotificationKind.DEAL_WON: PriorityLevel.P0,
+        NotificationKind.PAYMENT_RECEIVED: PriorityLevel.P0,
         NotificationKind.REVENUE_RECEIVED: PriorityLevel.P0,
         NotificationKind.MEETING_WITHIN_1H: PriorityLevel.P0,
         NotificationKind.MEETING_BOOKED: PriorityLevel.P1,
+        NotificationKind.MEETING_CONFIRMED: PriorityLevel.P1,
+        NotificationKind.MEETING_CANCELLED: PriorityLevel.P1,
         NotificationKind.POSITIVE_REPLY: PriorityLevel.P1,
+        NotificationKind.LEAD_WARMED: PriorityLevel.P1,
+        NotificationKind.PROPOSAL_SENT: PriorityLevel.P1,
         NotificationKind.HOT_BUYER: PriorityLevel.P1,
+        NotificationKind.HIGH_VALUE_FOLLOWUP: PriorityLevel.P1,
         NotificationKind.QUALIFIED_CONVERSATION: PriorityLevel.P1,
         NotificationKind.DAILY_BRIEF: PriorityLevel.P2,
         NotificationKind.NEW_LEADS: PriorityLevel.P2,
@@ -605,81 +623,239 @@ TEST_TELEGRAM_MESSAGE = (
 
 
 def format_telegram_daily_brief(brief: Dict[str, Any]) -> str:
-    """Compact 10-second daily brief in the canonical Telegram format."""
+    """Executive Money + Progress Daily Brief for Telegram (zero technical noise)."""
+    money = brief.get("money", {})
+    progress = brief.get("progress", {})
+    meetings = brief.get("meetings", {})
+    outreach = brief.get("outreach", {})
+    calling = brief.get("calling", {})
+    top_opps = brief.get("top_opportunities", [])
+    biggest_win = brief.get("biggest_win", "")
+    blocker = brief.get("blocker")
+    next_moves = brief.get("next_moves", [])
+
+    date_str = brief.get("date", str(date.today()))
+    try:
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
+        formatted_date = dt.strftime("%b %d")
+    except Exception:
+        formatted_date = date_str
+
+    # Legacy dictionary fallbacks if nested structures are missing
     d = brief.get("daily", {})
     leads = d.get("leads", {})
-    email = d.get("email", {})
-    calling = d.get("calling", {})
-    meetings = d.get("meetings", {})
-    pipeline = d.get("pipeline", {})
-    alerts = d.get("alerts", {})
+    em = d.get("email", {})
+    cl = d.get("calling", {})
+    mt = d.get("meetings", {})
+    pip = d.get("pipeline", {})
+
+    conf_rev = money.get("confirmed_revenue_usd", pip.get("confirmed_revenue_usd", 0.0))
+    pipeline_val = money.get("new_pipeline_usd", pip.get("pipeline_value_usd", 0.0))
+    exp_val = money.get("expected_value_usd", pip.get("expected_value_usd", 0.0))
+    proposals_cnt = money.get("proposals_count", pip.get("proposals", 0))
+    deals_won_cnt = money.get("deals_won_count", 0)
+
+    verified = progress.get("new_verified", leads.get("verified", 0))
+    contacted = progress.get("contacted", cl.get("attempted", 0))
+    connected = progress.get("connected", cl.get("connected", 0))
+    warmed = progress.get("warmed", leads.get("warm", 0))
+    qualified = progress.get("qualified", cl.get("qualified", 0))
+    mt_booked = meetings.get("booked", mt.get("booked", 0))
+    mt_confirmed = meetings.get("confirmed", mt.get("confirmed", mt_booked))
+    mt_today = meetings.get("today", mt.get("today", 0))
+    mt_tomorrow = meetings.get("tomorrow", 0)
+
+    pos_replies = outreach.get("positive_replies", em.get("positive", 0))
+    demo_reqs = outreach.get("demo_requests", 0)
+    pricing_reqs = outreach.get("pricing_requests", 0)
+    followups = outreach.get("followups_due", em.get("followups", 0))
 
     lines = [
-        "🚀 MBM GTM DAILY",
+        "🚀 MBM GTM DAILY REVENUE BRIEF",
+        f"📅 {formatted_date}",
         "",
-        f"{leads.get('verified', 0)} new verified leads",
-        f"{leads.get('hot', 0)} HOT · {leads.get('high', 0)} HIGH · {leads.get('warm', 0)} WARM",
+        "💰 MONEY",
+        f"Confirmed Revenue: ${conf_rev:,.0f}",
+        f"New Pipeline: ${pipeline_val:,.0f}",
+        f"Expected Value: ${exp_val:,.0f}",
+        f"Proposals: {proposals_cnt}",
+        f"Deals Won: {deals_won_cnt}",
         "",
-        f"📧 {email.get('replies', 0)} replies · {email.get('positive', 0)} positive",
-        f"📞 {calling.get('connected', 0)} conversations · {calling.get('qualified', 0)} qualified",
-        f"📅 {meetings.get('booked', 0)} meetings",
-        f"💰 {pipeline.get('active_opportunities', 0)} active opportunities",
+        "🔥 PROGRESS",
+        f"New Verified Leads: {verified}",
+        f"Contacted: {contacted}",
+        f"Connected: {connected}",
+        f"Warmed: {warmed}",
+        f"Qualified: {qualified}",
+        f"Meetings Booked: {mt_booked}",
+        f"Proposals: {proposals_cnt}",
+        f"Deals Won: {deals_won_cnt}",
+        "",
+        "📅 MEETINGS",
+        f"Booked: {mt_booked}",
+        f"Confirmed: {mt_confirmed}",
+        f"Today: {mt_today}",
+        f"Tomorrow: {mt_tomorrow}",
+        "",
+        "📧 OUTREACH",
+        f"Positive Replies: {pos_replies}",
+        f"Demo Requests: {demo_reqs}",
+        f"Pricing Requests: {pricing_reqs}",
+        f"Follow-Ups Due: {followups}",
+        "",
+        "📞 CALLING",
+        f"Connected: {connected}",
+        f"Qualified: {qualified}",
+        f"Meetings Requested: {mt_booked}",
     ]
-    for i, action in enumerate(brief.get("top_actions", [])[:3], start=1):
-        lines.append(f"🎯 NEXT {i}: {action.get('action', '')[:48]} {action.get('company', '')}")
-    lines.append("")
-    lines.append(f"Dialer: {'✅' if calling.get('dialer_ok', True) else '⚠️'}")
-    lines.append(f"Verification: {'✅' if alerts.get('verification_failures', 0) == 0 else '⚠️'}")
-    lines.append(f"Duplicates: {alerts.get('duplicates', 0)}")
+
+    if top_opps:
+        lines += ["", "🎯 TOP OPPORTUNITIES", ""]
+        for i, opp in enumerate(top_opps[:3], start=1):
+            comp = opp.get("company", "—")
+            buyer = opp.get("buyer", "")
+            role = opp.get("role", "")
+            buyer_str = f"{buyer} · {role}".strip(" ·") if buyer else ""
+            offer = opp.get("offer", opp.get("ai_fit", "AI Assistant Retainer"))
+            stage = opp.get("stage", "QUALIFIED")
+            ev = opp.get("expected_value_usd", opp.get("priority", 0.0))
+            action = opp.get("next_action", opp.get("action", "Follow up"))
+            lines.append(f"{i}. {comp}")
+            if buyer_str:
+                lines.append(f"   {buyer_str}")
+            lines.append(f"   {offer}")
+            lines.append(f"   Stage: {stage}")
+            lines.append(f"   Expected Value: ${ev:,.0f}" if isinstance(ev, (int, float)) else f"   Expected Value: {ev}")
+            lines.append(f"   Next Action: {action}")
+            lines.append("")
+        if lines[-1] == "":
+            lines.pop()
+
+    if biggest_win:
+        lines += [
+            "",
+            "🏆 BIGGEST WIN",
+            biggest_win,
+        ]
+
+    if blocker and isinstance(blocker, dict) and blocker.get("issue"):
+        lines += [
+            "",
+            "⚠️ BLOCKER",
+            blocker["issue"],
+            "",
+            f"Action:\n{blocker.get('action', 'Address immediately.')}",
+        ]
+    elif blocker and isinstance(blocker, str):
+        lines += [
+            "",
+            "⚠️ BLOCKER",
+            blocker,
+        ]
+
+    if next_moves:
+        lines += [
+            "",
+            "➡️ NEXT BEST MOVES",
+        ]
+        for i, move in enumerate(next_moves[:3], start=1):
+            lines.append(f"{i}. {move}")
+
     return "\n".join(lines)
 
 
 def format_hot_buyer_message(buyer: Dict[str, Any]) -> str:
-    priority = buyer.get("priority", buyer.get("priority_score", "—"))
+    ev = buyer.get("expected_value_usd", buyer.get("priority", 0))
+    ev_str = f"${ev:,.0f}" if isinstance(ev, (int, float)) and ev > 0 else "High"
     return (
-        "🔥 HOT AI BUYER\n\n"
+        "🔥 HOT BUYER\n\n"
         f"{buyer.get('company', '—')}\n"
-        f"{buyer.get('decision_maker', buyer.get('buyer', '—'))} · {buyer.get('role', '—')}\n\n"
+        f"{buyer.get('decision_maker', buyer.get('buyer', '—'))} · {buyer.get('role', 'Decision Maker')}\n\n"
         f"Pain:\n{buyer.get('pain', buyer.get('pain_point', '—'))}\n\n"
-        f"AI Fit:\n{buyer.get('ai_fit', buyer.get('recommended_ai_assistant', '—'))}\n\n"
-        f"Priority:\n{priority}\n\n"
-        "Next:\n📞 CALL"
+        f"Offer:\n{buyer.get('ai_fit', buyer.get('recommended_ai_assistant', buyer.get('offer', '24/7 AI Receptionist & Voice Agent')))}\n\n"
+        f"Expected Value:\n{ev_str}\n\n"
+        "Next:\n📞 Call discovery"
+    )
+
+
+def format_lead_warmed_message(lead: Dict[str, Any]) -> str:
+    return (
+        "🔥 LEAD WARMED\n\n"
+        f"{lead.get('company', '—')}\n"
+        f"{lead.get('decision_maker', lead.get('buyer', '—'))}\n\n"
+        f"Offer:\n{lead.get('ai_fit', lead.get('offer', 'AI Assistant Retainer'))}\n\n"
+        f"Signal:\n{lead.get('signal', lead.get('pain', 'Interested in seeing a live demo.'))}\n\n"
+        "Next:\n📅 Book meeting"
     )
 
 
 def format_positive_reply_message(reply: Dict[str, Any]) -> str:
+    next_action = reply.get("next_action", "Book 15-min demo")
     return (
         "🔥 POSITIVE REPLY\n\n"
-        f"{reply.get('company', '—')}\n\n"
-        f"Buyer:\n{reply.get('buyer', reply.get('decision_maker', '—'))}\n\n"
-        f"Signal:\n{reply.get('signal', reply.get('summary', '—'))}\n\n"
-        "Next:\n📅 BOOK MEETING"
+        f"{reply.get('company', '—')}\n"
+        f"Buyer: {reply.get('buyer', reply.get('decision_maker', '—'))}\n\n"
+        f"Signal:\n{reply.get('signal', reply.get('summary', 'Requested pricing and workflow demo.'))}\n\n"
+        f"Next:\n📅 {next_action}"
     )
 
 
 def format_meeting_booked_message(meeting: Dict[str, Any]) -> str:
     when = meeting.get("date", "") or meeting.get("when", "TBD")
     if meeting.get("time"):
-        when = f"{when} {meeting['time']}"
+        when = f"{when} · {meeting['time']}"
     brief_ready = meeting.get("brief_ready", False)
+    why = (
+        meeting.get("why_agreed")
+        or meeting.get("why_now")
+        or meeting.get("pain")
+        or meeting.get("observed_problem")
+        or "Agreed to 15-min diagnostic demo."
+    )
+    next_action = meeting.get("next_action", "Prepare demo brief")
     return (
         "📅 MEETING BOOKED\n\n"
-        f"{meeting.get('company', '—')}\n\n"
-        f"Buyer:\n{meeting.get('buyer', meeting.get('decision_maker', '—'))}\n\n"
+        f"{meeting.get('company', '—')}\n"
+        f"Buyer: {meeting.get('buyer', meeting.get('decision_maker', '—'))}\n\n"
         f"When:\n{when}\n\n"
-        f"AI Fit:\n{meeting.get('ai_fit', meeting.get('recommended_ai_assistant', '—'))}\n\n"
+        f"Offer:\n{meeting.get('ai_fit', meeting.get('recommended_ai_assistant', meeting.get('offer', 'AI Assistant Retainer')))}\n\n"
+        f"Why They Agreed:\n{why}\n\n"
         f"Brief:\n{'✅ Ready' if brief_ready else '⚠️ Not ready'}\n\n"
-        "Next:\nPrepare demo"
+        f"Next Action:\n{next_action}"
+    )
+
+
+def format_deal_won_message(deal: Dict[str, Any]) -> str:
+    val = deal.get("value", deal.get("deal_value", "$4,000/mo"))
+    rev_state = deal.get("revenue_state", deal.get("payment_state", "CONFIRMED (Neteller)"))
+    next_step = deal.get("next_step", deal.get("next_action", "Onboarding kickoff & client setup"))
+    return (
+        "💰 DEAL WON\n\n"
+        f"Company:\n{deal.get('company', '—')}\n\n"
+        f"Offer:\n{deal.get('offer', 'AI Assistant Retainer')}\n\n"
+        f"Value:\n{val}\n\n"
+        f"Revenue State:\n{rev_state}\n\n"
+        f"Next Step:\n{next_step}"
+    )
+
+
+def format_proposal_message(proposal: Dict[str, Any]) -> str:
+    val = proposal.get("value", proposal.get("deal_value", "$3,500/mo"))
+    return (
+        "📑 PROPOSAL\n\n"
+        f"{proposal.get('company', '—')}\n\n"
+        f"Offer:\n{proposal.get('offer', 'AI Assistant Retainer')}\n\n"
+        f"Value:\n{val}\n\n"
+        "Status:\nAwaiting decision"
     )
 
 
 def format_failure_message(failure: Dict[str, Any]) -> str:
     return (
-        "🚨 GTM FAILURE\n\n"
+        "🚨 GTM BLOCKER\n\n"
         f"Type:\n{failure.get('type', 'Unknown')}\n\n"
-        f"Status:\n{failure.get('status', 'FAILED')}\n\n"
         f"Impact:\n{failure.get('impact', '—')}\n\n"
-        "Action:\nInvestigate immediately."
+        f"Action:\n{failure.get('action', 'Investigate immediately.')}"
     )
 
 
@@ -999,12 +1175,20 @@ def _build_preview(kind: NotificationKind) -> str:
             "role": "Founder",
             "pain": "After-hours calls being missed",
             "ai_fit": "24/7 AI Emergency Call Answering & Dispatch",
+            "expected_value_usd": 18000.0,
             "priority": 20.4,
+        },
+        NotificationKind.LEAD_WARMED: {
+            "company": "Apex Mechanical & Air Solutions",
+            "decision_maker": "Marcus Vance",
+            "ai_fit": "24/7 AI Emergency Call Assistant",
+            "signal": "Interested in seeing a live demo.",
         },
         NotificationKind.POSITIVE_REPLY: {
             "company": "Vanguard Commercial Roofing",
             "buyer": "Derek Holloway",
-            "signal": "Interested in the AI follow-up workflow.",
+            "signal": "Interested in the AI follow-up workflow and requested pricing.",
+            "next_action": "Send proposal & book 15-min walkthrough",
         },
         NotificationKind.MEETING_BOOKED: {
             "id": "preview",
@@ -1012,35 +1196,106 @@ def _build_preview(kind: NotificationKind) -> str:
             "buyer": "Dr. Sarah Lin",
             "date": "Tomorrow",
             "time": "10:30 AM",
-            "ai_fit": "AI Recall / Front Desk Assistant",
+            "ai_fit": "AI Recall + Front Desk Assistant",
             "brief_ready": True,
         },
+        NotificationKind.DEAL_WON: {
+            "company": "Apex Mechanical",
+            "offer": "24/7 AI Emergency Call Agent",
+            "value": "$4,000/mo ($48,000 ARR)",
+        },
+        NotificationKind.PROPOSAL_SENT: {
+            "company": "Vanguard Commercial Roofing",
+            "offer": "AI Lead Follow-Up Agent",
+            "value": "$3,500/mo ($42,000 ARR)",
+        },
         NotificationKind.CRITICAL_FAILURE: {
-            "type": "Dialer Sync",
-            "status": "FAILED",
-            "impact": "Today's new leads were not delivered.",
+            "type": "Daily Lead Factory",
+            "impact": "100 new leads were NOT delivered to the dialer.",
+            "action": "Investigate immediately.",
         },
         NotificationKind.DAILY_BRIEF: {
-            "daily": {
-                "leads": {"verified": 127, "hot": 34, "high": 46, "warm": 47},
-                "email": {"replies": 14, "positive": 7},
-                "calling": {"connected": 19, "qualified": 8},
-                "meetings": {"booked": 3},
-                "pipeline": {"active_opportunities": 5},
-                "alerts": {"verification_failures": 0, "duplicates": 0},
+            "date": "2026-08-16",
+            "money": {
+                "confirmed_revenue_usd": 4000.0,
+                "new_pipeline_usd": 27500.0,
+                "expected_value_usd": 18900.0,
+                "proposals_count": 2,
+                "deals_won_count": 1,
             },
-            "top_actions": [
-                {"action": "CALL_DISCOVERY", "company": "Apex Mechanical"},
-                {"action": "SEND_COLD_EMAIL", "company": "Vanguard"},
-                {"action": "BOOK_MEETING", "company": "Premier Smile"},
+            "progress": {
+                "new_verified": 100,
+                "contacted": 63,
+                "connected": 31,
+                "warmed": 18,
+                "qualified": 9,
+                "meetings_booked": 4,
+                "proposals": 2,
+                "deals_won": 1,
+            },
+            "meetings": {
+                "booked": 4,
+                "confirmed": 3,
+                "today": 1,
+                "tomorrow": 2,
+                "briefs_ready": 4,
+            },
+            "outreach": {
+                "positive_replies": 7,
+                "demo_requests": 3,
+                "pricing_requests": 2,
+                "followups_due": 5,
+            },
+            "calling": {
+                "connected": 31,
+                "qualified": 9,
+                "meetings_requested": 4,
+            },
+            "top_opportunities": [
+                {
+                    "company": "Apex Mechanical & Air Solutions",
+                    "buyer": "Marcus Vance",
+                    "role": "Founder",
+                    "offer": "24/7 AI Emergency Call Agent",
+                    "stage": "DEMO_BOOKED",
+                    "expected_value_usd": 18000.0,
+                    "next_action": "Prepare 15-min diagnostic demo",
+                },
+                {
+                    "company": "Vanguard Commercial Roofing",
+                    "buyer": "Derek Holloway",
+                    "role": "Operations",
+                    "offer": "AI Lead Follow-Up Agent",
+                    "stage": "PROPOSAL",
+                    "expected_value_usd": 8400.0,
+                    "next_action": "Send Neteller retainer SOW",
+                },
+                {
+                    "company": "Premier Smile Partners Dental Group",
+                    "buyer": "Dr. Sarah Lin",
+                    "role": "Practice Owner",
+                    "offer": "AI Recall + Front Desk Assistant",
+                    "stage": "ENGAGED",
+                    "expected_value_usd": 6500.0,
+                    "next_action": "Call to confirm demo slot",
+                },
+            ],
+            "biggest_win": "Apex Mechanical converted from HOT lead → booked demo.",
+            "next_moves": [
+                "Prepare today's Apex demo (AI Emergency Call Agent)",
+                "Follow up with Vanguard on AI Lead Follow-Up proposal",
+                "Call Premier Smile Partners to confirm demo slot",
             ],
         },
     }
     payload = sample_payloads.get(kind, {})
     formatters = {
         NotificationKind.HOT_BUYER: format_hot_buyer_message,
+        NotificationKind.LEAD_WARMED: format_lead_warmed_message,
         NotificationKind.POSITIVE_REPLY: format_positive_reply_message,
         NotificationKind.MEETING_BOOKED: format_meeting_booked_message,
+        NotificationKind.DEAL_WON: format_deal_won_message,
+        NotificationKind.PROPOSAL_SENT: format_proposal_message,
         NotificationKind.CRITICAL_FAILURE: format_failure_message,
         NotificationKind.DAILY_BRIEF: format_telegram_daily_brief,
     }

@@ -16,14 +16,19 @@ from MBM.LeadEngine.gtm_notification_bus import (
     TEST_TELEGRAM_MESSAGE,
     format_telegram_daily_brief,
     format_hot_buyer_message,
+    format_lead_warmed_message,
     format_positive_reply_message,
     format_meeting_booked_message,
+    format_deal_won_message,
+    format_proposal_message,
     format_failure_message,
 )
 
 
 @pytest.fixture
 def adapter(monkeypatch):
+    monkeypatch.delenv("TELEGRAM_BOT_TOKEN", raising=False)
+    monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
     monkeypatch.setenv("GTM_TELEGRAM_ENABLED", "true")
     monkeypatch.setenv("GTM_TELEGRAM_BOT_TOKEN", "123456:ABCdef_xyz")
     monkeypatch.setenv("GTM_TELEGRAM_CHAT_ID", "-1001234567890")
@@ -53,6 +58,20 @@ def test_validation_missing_chat_id(adapter, monkeypatch):
     v = adapter.validate()
     assert v["ok"] is False
     assert any("GTM_TELEGRAM_CHAT_ID" in e for e in v["errors"])
+
+
+def test_validation_legacy_credentials_fallback(monkeypatch):
+    monkeypatch.delenv("GTM_TELEGRAM_BOT_TOKEN", raising=False)
+    monkeypatch.delenv("GTM_TELEGRAM_CHAT_ID", raising=False)
+    monkeypatch.delenv("GTM_TELEGRAM_ENABLED", raising=False)
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "123456:ABCdef_xyz")
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "-1001234567890")
+    a = TelegramDeliveryAdapter()
+    v = a.validate()
+    assert v["ok"] is True
+    assert v["enabled"] is True
+    assert v["token_set"] is True
+    assert v["chat_id_set"] is True
 
 
 def test_validation_disabled_is_not_error(monkeypatch):
@@ -117,7 +136,7 @@ def test_kind_toggles(adapter, monkeypatch):
 
 
 # ---------------------------------------------------------------------------
-# Message formatting (canonical Telegram layouts)
+# Message formatting (Executive Money + Progress Telegram layouts)
 # ---------------------------------------------------------------------------
 
 def test_test_message_clearly_marked():
@@ -126,32 +145,125 @@ def test_test_message_clearly_marked():
     assert "🧪" in TEST_TELEGRAM_MESSAGE
 
 
-def test_daily_brief_formatting():
+def test_daily_brief_money_and_progress_formatting():
     brief = {
-        "daily": {
-            "leads": {"verified": 127, "hot": 34, "high": 46, "warm": 47},
-            "email": {"replies": 14, "positive": 7},
-            "calling": {"connected": 19, "qualified": 8},
-            "meetings": {"booked": 3},
-            "pipeline": {"active_opportunities": 5},
-            "alerts": {"verification_failures": 0, "duplicates": 0},
+        "date": "2026-08-16",
+        "money": {
+            "confirmed_revenue_usd": 4000.0,
+            "new_pipeline_usd": 27500.0,
+            "expected_value_usd": 18900.0,
+            "proposals_count": 2,
+            "deals_won_count": 1,
         },
-        "top_actions": [
-            {"action": "CALL_DISCOVERY", "company": "Apex Mechanical"},
-            {"action": "SEND_COLD_EMAIL", "company": "Vanguard"},
-            {"action": "BOOK_MEETING", "company": "Premier Smile"},
+        "progress": {
+            "new_verified": 100,
+            "contacted": 63,
+            "connected": 31,
+            "warmed": 18,
+            "qualified": 9,
+            "meetings_booked": 4,
+            "proposals": 2,
+            "deals_won": 1,
+        },
+        "meetings": {
+            "booked": 4,
+            "confirmed": 3,
+            "today": 1,
+            "tomorrow": 2,
+        },
+        "outreach": {
+            "positive_replies": 7,
+            "demo_requests": 3,
+            "pricing_requests": 2,
+            "followups_due": 5,
+        },
+        "calling": {
+            "connected": 31,
+            "qualified": 9,
+            "meetings_requested": 4,
+        },
+        "top_opportunities": [
+            {
+                "company": "Apex Mechanical & Air Solutions",
+                "buyer": "Marcus Vance",
+                "role": "Founder",
+                "offer": "24/7 AI Emergency Call Agent",
+                "stage": "DEMO_BOOKED",
+                "expected_value_usd": 18000.0,
+                "next_action": "Prepare 15-min diagnostic demo",
+            },
+            {
+                "company": "Vanguard Commercial Roofing",
+                "buyer": "Derek Holloway",
+                "role": "Operations",
+                "offer": "AI Lead Follow-Up Agent",
+                "stage": "PROPOSAL",
+                "expected_value_usd": 8400.0,
+                "next_action": "Send Neteller retainer SOW",
+            },
+        ],
+        "biggest_win": "Apex Mechanical converted from HOT lead → booked demo.",
+        "next_moves": [
+            "Prepare today's Apex demo (AI Emergency Call Agent)",
+            "Follow up with Vanguard on AI Lead Follow-Up proposal",
+            "Call Premier Smile Partners to confirm demo slot",
         ],
     }
     text = format_telegram_daily_brief(brief)
-    assert "🚀 MBM GTM DAILY" in text
-    assert "127 new verified leads" in text
-    assert "34 HOT · 46 HIGH · 47 WARM" in text
-    assert "14 replies · 7 positive" in text
-    assert "19 conversations · 8 qualified" in text
-    assert "3 meetings" in text
-    assert "5 active opportunities" in text
-    assert "Dialer: ✅" in text
-    assert "Duplicates: 0" in text
+    assert "🚀 MBM GTM DAILY REVENUE BRIEF" in text
+    assert "💰 MONEY" in text
+    assert "Confirmed Revenue: $4,000" in text
+    assert "New Pipeline: $27,500" in text
+    assert "Expected Value: $18,900" in text
+    assert "Proposals: 2" in text
+    assert "Deals Won: 1" in text
+
+    assert "🔥 PROGRESS" in text
+    assert "New Verified Leads: 100" in text
+    assert "Contacted: 63" in text
+    assert "Connected: 31" in text
+    assert "Warmed: 18" in text
+    assert "Qualified: 9" in text
+
+    assert "📅 MEETINGS" in text
+    assert "Booked: 4" in text
+    assert "Confirmed: 3" in text
+    assert "Today: 1" in text
+    assert "Tomorrow: 2" in text
+
+    assert "📧 OUTREACH" in text
+    assert "Positive Replies: 7" in text
+    assert "Demo Requests: 3" in text
+    assert "Pricing Requests: 2"
+
+    assert "🎯 TOP OPPORTUNITIES" in text
+    assert "Apex Mechanical & Air Solutions" in text
+    assert "Vanguard Commercial Roofing" in text
+
+    assert "🏆 BIGGEST WIN" in text
+    assert "Apex Mechanical converted from HOT lead → booked demo." in text
+
+    assert "➡️ NEXT BEST MOVES" in text
+    assert "Prepare today's Apex demo" in text
+
+
+def test_zero_technical_diagnostics_in_telegram_brief():
+    brief = {
+        "date": "2026-08-16",
+        "money": {"confirmed_revenue_usd": 0.0, "new_pipeline_usd": 10000.0, "expected_value_usd": 5000.0, "proposals_count": 0, "deals_won_count": 0},
+        "progress": {"new_verified": 100, "contacted": 20, "connected": 10, "warmed": 5, "qualified": 3, "meetings_booked": 1, "proposals": 0, "deals_won": 0},
+        "meetings": {"booked": 1, "confirmed": 1, "today": 0, "tomorrow": 1},
+        "outreach": {"positive_replies": 2, "demo_requests": 1, "pricing_requests": 1, "followups_due": 0},
+        "calling": {"connected": 10, "qualified": 3, "meetings_requested": 1},
+        "top_opportunities": [{"company": "Acme Industrial", "buyer": "John Doe", "offer": "AI Receptionist", "stage": "HOT", "expected_value_usd": 5000.0, "next_action": "Call"}],
+        "biggest_win": "First meeting booked",
+        "next_moves": ["Move 1", "Move 2", "Move 3"],
+    }
+    text = format_telegram_daily_brief(brief)
+    # Strict check: zero technical leakages
+    forbidden_terms = ["cpu", "ram", "git commit", "git branch", "pytest", "typecheck", "process id", "build status", "daemon", "docker", "port 5173", "stack trace"]
+    for term in forbidden_terms:
+        assert term not in text.lower(), f"Found forbidden technical term '{term}' in Telegram brief!"
 
 
 def test_hot_buyer_formatting():
@@ -161,25 +273,40 @@ def test_hot_buyer_formatting():
         "role": "Founder",
         "pain": "After-hours calls being missed",
         "ai_fit": "24/7 AI Emergency Call Answering & Dispatch",
-        "priority": 20.4,
+        "expected_value_usd": 18000.0,
     })
-    assert "🔥 HOT AI BUYER" in text
+    assert "🔥 HOT BUYER" in text
+    assert "Apex Mechanical & Air Solutions" in text
+    assert "Marcus Vance · Founder" in text
+    assert "$18,000" in text
+    assert "📞 Call discovery" in text
+
+
+def test_lead_warmed_formatting():
+    text = format_lead_warmed_message({
+        "company": "Apex Mechanical & Air Solutions",
+        "decision_maker": "Marcus Vance",
+        "offer": "24/7 AI Emergency Call Assistant",
+        "signal": "Interested in seeing a live demo.",
+    })
+    assert "🔥 LEAD WARMED" in text
     assert "Apex Mechanical & Air Solutions" in text
     assert "Marcus Vance" in text
-    assert "20.4" in text
-    assert "📞 CALL" in text
+    assert "24/7 AI Emergency Call Assistant" in text
+    assert "📅 Book meeting" in text
 
 
 def test_positive_reply_formatting():
     text = format_positive_reply_message({
         "company": "Vanguard Commercial Roofing",
         "buyer": "Derek Holloway",
-        "signal": "Interested in the AI follow-up workflow.",
+        "signal": "Interested in the AI follow-up workflow and requested pricing.",
+        "next_action": "Send proposal & book 15-min walkthrough",
     })
     assert "🔥 POSITIVE REPLY" in text
     assert "Vanguard Commercial Roofing" in text
-    assert "Derek Holloway" in text
-    assert "📅 BOOK MEETING" in text
+    assert "Buyer: Derek Holloway" in text
+    assert "📅 Send proposal & book 15-min walkthrough" in text
 
 
 def test_meeting_booked_formatting():
@@ -188,22 +315,54 @@ def test_meeting_booked_formatting():
         "buyer": "Dr. Sarah Lin",
         "date": "Tomorrow",
         "time": "10:30 AM",
-        "ai_fit": "AI Recall / Front Desk Assistant",
+        "ai_fit": "AI Recall + Front Desk Assistant",
+        "why_agreed": "Overdue hygiene recalls causing $15k/mo uncollected revenue.",
+        "next_action": "Prepare 15-min ROI demo",
         "brief_ready": True,
     })
     assert "📅 MEETING BOOKED" in text
     assert "Premier Smile Partners" in text
-    assert "Dr. Sarah Lin" in text
-    assert "Tomorrow 10:30 AM" in text
+    assert "Buyer: Dr. Sarah Lin" in text
+    assert "Tomorrow · 10:30 AM" in text
+    assert "Why They Agreed:" in text
+    assert "Overdue hygiene recalls" in text
     assert "✅ Ready" in text
+    assert "Next Action:\nPrepare 15-min ROI demo" in text
+
+
+def test_deal_won_formatting():
+    text = format_deal_won_message({
+        "company": "Apex Mechanical",
+        "offer": "24/7 AI Emergency Call Agent",
+        "value": "$4,000/mo ($48,000 ARR)",
+        "revenue_state": "CONFIRMED (Neteller)",
+        "next_step": "Onboarding kickoff & client setup",
+    })
+    assert "💰 DEAL WON" in text
+    assert "Apex Mechanical" in text
+    assert "$4,000/mo ($48,000 ARR)" in text
+    assert "Revenue State:\nCONFIRMED (Neteller)" in text
+    assert "Next Step:\nOnboarding kickoff & client setup" in text
+
+
+def test_proposal_sent_formatting():
+    text = format_proposal_message({
+        "company": "Vanguard Commercial Roofing",
+        "offer": "AI Lead Follow-Up Agent",
+        "value": "$3,500/mo ($42,000 ARR)",
+    })
+    assert "📑 PROPOSAL" in text
+    assert "Vanguard Commercial Roofing" in text
+    assert "$3,500/mo ($42,000 ARR)" in text
+    assert "Awaiting decision" in text
 
 
 def test_failure_formatting():
     text = format_failure_message({
-        "type": "Dialer Sync",
-        "status": "FAILED",
-        "impact": "Today's new leads were not delivered.",
+        "type": "Daily Lead Factory",
+        "impact": "100 new leads were NOT delivered to the dialer.",
+        "action": "Investigate immediately.",
     })
-    assert "🚨 GTM FAILURE" in text
-    assert "Dialer Sync" in text
+    assert "🚨 GTM BLOCKER" in text
+    assert "Daily Lead Factory" in text
     assert "Investigate immediately." in text

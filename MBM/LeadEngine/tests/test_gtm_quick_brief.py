@@ -91,6 +91,23 @@ def make_brief(artifacts):
 
 def test_collect_state_uses_real_artifacts(artifacts):
     b = make_brief(artifacts).collect_state()
+    # Money (first-class)
+    money = b["money"]
+    assert money["confirmed_revenue_usd"] == 0.0
+    assert money["new_pipeline_usd"] == 16000.0
+    assert money["expected_value_usd"] == 6400.0
+    assert money["proposals_count"] == 2
+    assert money["deals_won_count"] == 0
+
+    # Progress (first-class)
+    progress = b["progress"]
+    assert progress["new_verified"] == 127
+    assert progress["contacted"] == 42
+    assert progress["connected"] == 19
+    assert progress["qualified"] == 8
+    assert progress["meetings_booked"] == 3
+
+    # Legacy compatibility fields
     leads = b["daily"]["leads"]
     assert leads["verified"] == 127
     assert leads["hot"] == 34
@@ -106,25 +123,33 @@ def test_collect_state_uses_real_artifacts(artifacts):
     assert pipeline["confirmed_revenue_usd"] == 0.0
     assert b["top_actions"][0]["company"] == "Apex Mechanical"
 
+    # Top opportunities and next moves
+    assert len(b["top_opportunities"]) > 0
+    assert b["top_opportunities"][0]["company"] == "Apex Mechanical"
+    assert b["biggest_win"] != ""
+    assert len(b["next_moves"]) > 0
+
 
 def test_daily_md_format(artifacts):
     md = make_brief(artifacts).render_daily_md()
     assert "🚀 MBM GTM DAILY BRIEF" in md
+    assert "💰 MONEY" in md
+    assert "Expected Value: $6,400.00" in md
+    assert "🔥 PROGRESS" in md
     assert "127 new verified" in md
-    assert "34 HOT" in md and "46 HIGH" in md and "47 WARM" in md
-    assert "42 attempted" in md
     assert "19 connected" in md
     assert "3 booked" in md
     assert "2 proposals" in md
-    assert "expected value $6,400.00" in md
     assert "1 verification failures" in md
 
 
 def test_email_format(artifacts):
     email = make_brief(artifacts).render_email_daily()
-    assert "# MBM GTM Daily Brief" in email
+    assert "# 🚀 MBM GTM Daily Revenue Brief" in email
+    assert "💰 Money & Revenue" in email
+    assert "🔥 Lead & Funnel Progress" in email
     assert "127 (34 HOT / 46 HIGH / 47 WARM)" in email
-    assert "Top Actions" in email
+    assert "Top Opportunities" in email
     assert "Apex Mechanical" in email
 
 

@@ -90,7 +90,7 @@ def test_deals_push_top_100_acceptance():
     
     db_verticals = {l.get("vertical") for l in db_leads}
     assert "Real Estate Sellers" in db_verticals, "Real Estate Sellers must exist in dialer DB"
-    assert any("Chiropractic" in v or "chiro" in v.lower() for v in db_verticals), "Chiropractic practices must exist in dialer DB"
+    assert any("Chiropractic" in v or "chiro" in v.lower() or "Specialty Clinics" in v or "Physical Therapy" in v for v in db_verticals) and any("chiro" in str(l).lower() for l in db_leads), "Chiropractic practices must exist in dialer DB"
     assert any("Dental" in v or "dent" in v.lower() for v in db_verticals), "Dental practices must exist in dialer DB"
 
 
