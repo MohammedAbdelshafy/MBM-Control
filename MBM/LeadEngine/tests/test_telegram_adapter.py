@@ -1,6 +1,13 @@
 """Hermetic tests for the Telegram delivery adapter (formatting, config, delivery state)."""
 
+import os
+import sys
 import pytest
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
 from MBM.LeadEngine.gtm_notification_bus import (
     TelegramDeliveryAdapter,

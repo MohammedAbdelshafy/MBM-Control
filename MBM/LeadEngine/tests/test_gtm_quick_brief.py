@@ -1,7 +1,14 @@
 """Hermetic tests for the GTM Quick Brief Center (daily brief, email center, meeting center)."""
 
+import os
+import sys
 import json
 import pytest
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
 import MBM.LeadEngine.gtm_quick_brief as qb_module
 from MBM.LeadEngine.gtm_quick_brief import (
