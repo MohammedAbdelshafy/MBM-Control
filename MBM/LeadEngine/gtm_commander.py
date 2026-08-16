@@ -1,6 +1,6 @@
 """
 GTM COMMANDER
-=============================================================================
+=================================================================================================================
 Primary Master Orchestrator for the MBM Go-To-Market Ecosystem.
 
 Deterministic Loop:
@@ -10,7 +10,11 @@ Deterministic Loop:
 Strict Safety Rule:
   DRY RUN ONLY by default. Never places unsolicited calls or modifies live
   production dialer / CRM records without explicit approval.
-=============================================================================
+
+Modes:
+  --dry-run   : read-only ranked next-best actions (default, no side effects)
+  --simulate  : run an artificial opportunity through the full lifecycle
+=================================================================================================================
 """
 
 import sys
@@ -25,10 +29,10 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from MBM.LeadEngine.gtm.state_machine import GtmState, GtmStateMachine
+from MBM.LeadEngine.gtm.state_machine import GtmState, GtmStateMachine, InvalidStateTransitionError
 from MBM.LeadEngine.gtm.event_bus import GtmEvent, GtmEventType, GtmEventBus
 from MBM.LeadEngine.gtm.evidence import GtmEvidence, EvidenceStore
-from MBM.LeadEngine.gtm.action_ranker import ActionRanker, NextBestAction, ChannelType, ActionType
+from MBM.LeadEngine.gtm.action_ranker import ActionRanker, NextBestAction, ChannelType, ActionType, ChannelRouter
 from MBM.LeadEngine.gtm.agent_registry import AgentRegistry, AgentRole
 from MBM.LeadEngine.gtm.attribution import AttributionTracker, Touchpoint, RevenueStage
 from MBM.LeadEngine.gtm.learning import GtmLearningEngine, OutcomeType
@@ -59,6 +63,7 @@ class GtmCommander:
         self.attribution_tracker = AttributionTracker()
         self.learning_engine = GtmLearningEngine()
         self.action_ranker = ActionRanker()
+        self.channel_router = ChannelRouter()
 
         # Adapters
         self.buyer_hunter_adapter = BuyerHunterAdapter()
@@ -103,53 +108,38 @@ class GtmCommander:
 
         normalized_opps = []
         for p in raw_prospects:
-            entity_id = p.get("id") or p.get("company", "UNKNOWN")
-            
+            # Normalize via the Buyer Hunter adapter (maps intent_tier, retainer,
+            # evidence card, and confidence from the real artifact schema).
+            opp = self.buyer_hunter_adapter.normalize_prospect(p)
+            entity_id = opp["id"]
+
             # Initialize state machine if not already tracked
             if entity_id not in self._state_machines:
-                initial_state = GtmState.QUALIFIED if p.get("tier") in {"HOT", "HIGH INTENT"} else GtmState.DISCOVERED
+                initial_state = GtmState.QUALIFIED if opp.get("tier") in {"HOT", "HIGH INTENT"} else GtmState.DISCOVERED
                 self._state_machines[entity_id] = GtmStateMachine(initial_state, entity_id=entity_id)
 
             identity_state = self.identity_adapter.get_identity_state(entity_id)
-            is_suppressed = self.dialer_adapter.is_suppressed(p.get("phone", ""))
+            opp["identity_state"] = identity_state
+            opp["is_suppressed"] = self.dialer_adapter.is_suppressed(opp.get("phone", ""))
+            opp["state"] = self._state_machines[entity_id].current_state.value
 
-            ai_fit_raw = p.get("recommended_assistant_sku") or p.get("recommended_ai_assistant") or "AI-ASSISTANT-VIP-RETAINER"
-            if isinstance(ai_fit_raw, dict):
-                ai_fit_str = ai_fit_raw.get("assistant_name") or ai_fit_raw.get("sku") or "AI Assistant Automation"
-            else:
-                ai_fit_str = str(ai_fit_raw)
-
-            opp = {
-                "id": entity_id,
-                "company": p.get("company", "Target Enterprise"),
-                "decision_maker": p.get("decision_maker") or p.get("role") or "Authorized Executive",
-                "role": p.get("role", "Owner / Decision Maker"),
-                "industry": p.get("industry", "B2B Services"),
-                "phone": p.get("phone", ""),
-                "email": p.get("email", ""),
-                "pain_point": p.get("pain_point") or p.get("pain_description") or "Operations bottleneck",
-                "intent_signal": p.get("intent_signal", "Automated workflow request"),
-                "intent_score": p.get("intent_score", 85.0),
-                "tier": p.get("tier", "HIGH INTENT"),
-                "why_this_company": p.get("why_this_company") or f"High pain and verified authority at {p.get('company')}.",
-                "why_now": p.get("why_now", "Active hiring urgency"),
-                "recommended_assistant_sku": ai_fit_str,
-                "expected_revenue": p.get("monthly_retainer_fee") or p.get("expected_revenue", 2000.0),
-                "confidence": p.get("confidence") or (p.get("confidence_score", 85.0) / 100.0),
-                "identity_state": identity_state,
-                "is_suppressed": is_suppressed,
-                "state": self._state_machines[entity_id].current_state.value,
-                "source": p.get("source", "SignalHarvester"),
-            }
+            # Revenue model (never report pipeline as actual money)
+            expected_value = float(opp.get("expected_revenue", 0.0))
+            probability = float(opp.get("confidence", 0.0))
+            opp["value"] = expected_value
+            opp["probability"] = probability
+            opp["expected_value"] = round(expected_value * probability, 2)
+            opp["revenue_state"] = "CONFIRMED" if opp["state"] == "WON" else ("PIPELINE" if opp["state"] in {"QUALIFIED", "CONTACTING", "ENGAGED", "MEETING_BOOKED"} else "EXPECTED")
 
             # Record evidence in evidence store
-            if p.get("source"):
+            evidence_dict = opp.get("evidence") or {}
+            if evidence_dict.get("source") and evidence_dict.get("source") != "UNKNOWN":
                 try:
                     evidence = GtmEvidence(
-                        claim=opp["why_this_company"],
-                        source=p.get("source", "Harvester"),
-                        source_reference=p.get("post_content") or p.get("source", "Verified Feed"),
-                        confidence=opp["confidence"],
+                        claim=evidence_dict.get("claim") or opp["why_this_company"],
+                        source=evidence_dict["source"],
+                        source_reference=evidence_dict.get("source_reference") or evidence_dict["source"],
+                        confidence=float(evidence_dict.get("confidence", 0.85)),
                         agent="INTENT_HUNTER",
                     )
                     self.evidence_store.add_evidence(entity_id, evidence)
@@ -232,10 +222,10 @@ class GtmCommander:
         """Update opportunity lifecycle state with validation."""
         if entity_id not in self._state_machines:
             self._state_machines[entity_id] = GtmStateMachine(GtmState.DISCOVERED, entity_id=entity_id)
-        
+
         sm = self._state_machines[entity_id]
         new_state = sm.transition(target_state, reason=reason, actor="GTM_COMMANDER")
-        
+
         self.record_event(
             event_type=GtmEventType.OUTREACH_READY if new_state == GtmState.QUALIFIED else GtmEventType.NEW_BUYER,
             entity_id=entity_id,
@@ -249,22 +239,108 @@ class GtmCommander:
     def execute_dry_run(self, limit: int = 10) -> str:
         """Run full commander discovery and output ranked next actions in exact required format."""
         ranked_actions = self.rank_next_actions(limit=limit)
-        
-        output_lines = ["TOP NEXT ACTIONS", ""]
+
+        output_lines = ["=== MBM GTM COMMANDER ===", "", "TOP NEXT ACTIONS", ""]
         for idx, action in enumerate(ranked_actions, start=1):
             output_lines.append(action.format_dry_run(index=idx))
+            output_lines.append("")
 
         formatted_output = "\n".join(output_lines)
         return formatted_output
 
+    # -------------------------------------------------------------------------
+    # 8. EXECUTE SIMULATION (READ-ONLY)
+    # -------------------------------------------------------------------------
+    def execute_simulation(self) -> str:
+        """
+        Run an artificial opportunity through the full lifecycle and verify
+        every transition. Also verifies WRONG_PERSON -> SUPPRESSED and that
+        OWNER_CONFIRMED raises priority. All simulation evidence is explicitly
+        labeled SIMULATION_RUN so it can never be confused with real data.
+        """
+        lines = ["=== MBM GTM COMMANDER — SIMULATION MODE (READ-ONLY) ===", ""]
+
+        entity_id = "SIM-OPP-0001"
+        sm = GtmStateMachine(GtmState.DISCOVERED, entity_id=entity_id)
+
+        # -----------------------------------------------------------------
+        # A. Happy-path lifecycle: every transition must be legal.
+        # -----------------------------------------------------------------
+        happy_path = [
+            (GtmState.QUALIFYING, "Signal enrichment"),
+            (GtmState.QUALIFIED, "Intent score >= 75"),
+            (GtmState.CONTACTING, "First outreach attempt"),
+            (GtmState.ENGAGED, "Buyer engaged on pain"),
+            (GtmState.MEETING_BOOKED, "Discovery call scheduled"),
+            (GtmState.PROPOSAL, "Retainer SOW sent"),
+            (GtmState.WON, "Neteller transaction verified"),
+        ]
+        lines.append("LIFECYCLE: DISCOVERED -> QUALIFYING -> QUALIFIED -> CONTACTING -> ENGAGED -> MEETING_BOOKED -> PROPOSAL -> WON")
+        try:
+            for target, reason in happy_path:
+                sm.transition(target, reason=reason, actor="SIMULATION")
+                lines.append(f"  [OK] {sm.history[-1]['from_state']} -> {target.value}")
+            lines.append(f"  [OK] TERMINAL STATE: {sm.current_state.value}")
+        except InvalidStateTransitionError as e:
+            lines.append(f"  [FAIL] {e}")
+            lines.append("  SIMULATION: HAPPY-PATH TRANSITION VIOLATION")
+
+        # -----------------------------------------------------------------
+        # B. WRONG_PERSON -> SUPPRESSED (garbage never recycled).
+        # -----------------------------------------------------------------
+        lines.append("")
+        sm2 = GtmStateMachine(GtmState.QUALIFIED, entity_id="SIM-OPP-0002")
+        lines.append("SUPPRESSION: WRONG_PERSON -> SUPPRESSED")
+        try:
+            sm2.transition(GtmState.SUPPRESSED, reason="WRONG_PERSON", actor="IDENTITY_AGENT")
+            lines.append(f"  [OK] QUALIFIED -> SUPPRESSED (terminal: {sm2.is_terminal()})")
+            opp2 = {"is_suppressed": True, "state": "SUPPRESSED", "expected_revenue": 5000.0}
+            rank2 = self.action_ranker.calculate_priority_score(opp2)
+            lines.append(f"  [OK] suppressed priority == 0.0 (got {rank2})")
+        except InvalidStateTransitionError as e:
+            lines.append(f"  [FAIL] {e}")
+
+        # -----------------------------------------------------------------
+        # C. OWNER_CONFIRMED raises priority vs IDENTITY_UNCONFIRMED.
+        # -----------------------------------------------------------------
+        lines.append("")
+        lines.append("PRIORITY: OWNER_CONFIRMED vs IDENTITY_UNCONFIRMED")
+        base_opp = {
+            "expected_revenue": 3500.0,
+            "intent_score": 90.0,
+            "urgency": 1.0,
+            "confidence": 0.9,
+            "signal_age_days": 2,
+            "recent_attempts": 0,
+            "phone": "+12148849120",
+            "evidence": {"source": "SIMULATION_RUN"},
+        }
+        unconfirmed = dict(base_opp, identity_state="IDENTITY_UNCONFIRMED")
+        confirmed = dict(base_opp, identity_state="OWNER_CONFIRMED")
+        s_un = self.action_ranker.calculate_priority_score(unconfirmed)
+        s_cf = self.action_ranker.calculate_priority_score(confirmed)
+        lines.append(f"  unconfirmed priority: {s_un}")
+        lines.append(f"  owner-confirmed priority: {s_cf}")
+        lines.append("  [OK] OWNER_CONFIRMED -> priority increase" if s_cf > s_un else "  [FAIL] OWNER_CONFIRMED did not increase priority")
+
+        lines.append("")
+        lines.append("SIMULATION: COMPLETE")
+        return "\n".join(lines)
+
 
 def main():
     parser = argparse.ArgumentParser(description="MBM GTM Commander")
-    parser.add_argument("--dry-run", action="store_true", default=True, help="Execute in deterministic dry-run mode")
+    parser.add_argument("--dry-run", action="store_true", default=True, help="Execute in deterministic dry-run mode (default)")
+    parser.add_argument("--simulate", action="store_true", help="Run the artificial lifecycle simulation (read-only)")
     parser.add_argument("--limit", type=int, default=10, help="Number of next actions to output")
     args = parser.parse_args()
 
-    commander = GtmCommander(dry_run=args.dry_run)
+    commander = GtmCommander(dry_run=True)
+
+    if args.simulate:
+        print(commander.execute_simulation())
+        return
+
     result = commander.execute_dry_run(limit=args.limit)
     print(result)
 

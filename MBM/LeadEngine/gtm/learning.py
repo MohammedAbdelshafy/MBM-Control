@@ -4,9 +4,9 @@ GTM LEARNING INTERFACE
 Consumes real-world sales outcomes to compute feedback weights for scoring.
 
 Outcomes:
-  WIN, LOSS, NO_RESPONSE, WRONG_PERSON, WRONG_NUMBER,
-  MEETING_BOOKED, OBJECTION, OFFER_ACCEPTED
-=============================================================================
+  WIN, LOSS, NO_RESPONSE, WRONG_PERSON, WRONG_NUMBER, OWNER_CONFIRMED,
+  MEETING_BOOKED, MEETING_HELD, OBJECTION, OFFER_ACCEPTED
+=================================================================================================================
 """
 
 from enum import Enum
@@ -20,7 +20,9 @@ class OutcomeType(str, Enum):
     NO_RESPONSE = "NO_RESPONSE"
     WRONG_PERSON = "WRONG_PERSON"
     WRONG_NUMBER = "WRONG_NUMBER"
+    OWNER_CONFIRMED = "OWNER_CONFIRMED"
     MEETING_BOOKED = "MEETING_BOOKED"
+    MEETING_HELD = "MEETING_HELD"
     OBJECTION = "OBJECTION"
     OFFER_ACCEPTED = "OFFER_ACCEPTED"
 

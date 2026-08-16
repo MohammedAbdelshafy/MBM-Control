@@ -6,9 +6,9 @@ Typed, deterministic in-memory event bus for GTM pipeline communication.
 Event Types:
   NEW_SIGNAL, NEW_BUYER, PAIN_IDENTIFIED, HOT_BUYER, OUTREACH_READY,
   CALL_CONNECTED, OWNER_CONFIRMED, ADM_CONFIRMED, WRONG_PERSON,
-  REPLY_RECEIVED, MEETING_BOOKED, MEETING_HELD, PROPOSAL_SENT,
-  OBJECTION_RAISED, DEAL_WON, DEAL_LOST
-=============================================================================
+  WRONG_NUMBER, REPLY_RECEIVED, MEETING_BOOKED, MEETING_HELD,
+  PROPOSAL_SENT, OBJECTION_RAISED, DEAL_WON, DEAL_LOST
+=================================================================================================================
 """
 
 from enum import Enum
@@ -27,6 +27,7 @@ class GtmEventType(str, Enum):
     OWNER_CONFIRMED = "OWNER_CONFIRMED"
     ADM_CONFIRMED = "ADM_CONFIRMED"
     WRONG_PERSON = "WRONG_PERSON"
+    WRONG_NUMBER = "WRONG_NUMBER"
     REPLY_RECEIVED = "REPLY_RECEIVED"
     MEETING_BOOKED = "MEETING_BOOKED"
     MEETING_HELD = "MEETING_HELD"

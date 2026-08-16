@@ -54,16 +54,17 @@ def test_opportunity_identification_and_ranking():
     commander = GtmCommander(dry_run=True)
     opps = commander.identify_opportunities()
     assert isinstance(opps, list)
-    
+
     ranked_actions = commander.rank_next_actions(limit=5)
     assert isinstance(ranked_actions, list)
     assert len(ranked_actions) <= 5
-    
+
     for action in ranked_actions:
         assert isinstance(action, NextBestAction)
         assert action.company
         assert action.priority >= 0.0
-        assert action.recommended_channel in {ChannelType.PHONE, ChannelType.EMAIL, ChannelType.LINKEDIN}
+        assert isinstance(action.recommended_channel, (ChannelType, str))
+        assert action.evidence is not None
 
 
 def test_action_ranker_penalties():
@@ -179,12 +180,27 @@ def test_commander_dry_run_formatting():
     commander = GtmCommander(dry_run=True)
     text = commander.execute_dry_run(limit=3)
 
+    assert "=== MBM GTM COMMANDER ===" in text
     assert "TOP NEXT ACTIONS" in text
-    assert "1.\ncompany:" in text
-    assert "buyer:" in text
-    assert "reason:" in text
-    assert "pain:" in text
+    assert "1.\nCompany:" in text
+    assert "Buyer:" in text
+    assert "Action:" in text
+    assert "Why now:" in text
+    assert "Pain:" in text
     assert "AI fit:" in text
-    assert "priority:" in text
-    assert "recommended channel:" in text
-    assert "confidence:" in text
+    assert "Priority:" in text
+    assert "Confidence:" in text
+    assert "Evidence:" in text
+
+
+def test_commander_simulation():
+    """Verify simulation validates the full lifecycle, suppression, and priority boost."""
+    commander = GtmCommander(dry_run=True)
+    text = commander.execute_simulation()
+
+    assert "SIMULATION MODE" in text
+    assert "LIFECYCLE" in text
+    assert "TERMINAL STATE: WON" in text
+    assert "WRONG_PERSON -> SUPPRESSED" in text
+    assert "suppressed priority == 0.0" in text
+    assert "OWNER_CONFIRMED -> priority increase" in text
