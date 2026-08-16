@@ -1184,6 +1184,44 @@ app.get('/api/dialer/top50', (req, res) => {
   }
 });
 
+// GET /api/gtm/brief — GTM Daily Quick Brief (reads the Quick Brief Center artifacts).
+app.get('/api/gtm/brief', (req, res) => {
+  try {
+    const briefFile = path.join(__dirname, '..', 'MBM', 'Artifacts', 'GTM', 'daily', 'latest.json');
+    if (fs.existsSync(briefFile)) {
+      const brief = JSON.parse(fs.readFileSync(briefFile, 'utf8'));
+      return res.json({ status: 'success', brief });
+    }
+    res.json({ status: 'success', brief: null, note: 'No daily brief generated yet. Run: python MBM/LeadEngine/gtm_quick_brief.py --daily' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/gtm/top-actions — GTM Top-N next actions (execution queue).
+app.get('/api/gtm/top-actions', (req, res) => {
+  try {
+    const limit = Math.min(25, parseInt(req.query.limit || '10', 10) || 10);
+    const queueFile = path.join(__dirname, '..', 'MBM', 'Artifacts', 'GTM_TOP25_EXECUTION_QUEUE.json');
+    if (fs.existsSync(queueFile)) {
+      const data = JSON.parse(fs.readFileSync(queueFile, 'utf8'));
+      const actions = (Array.isArray(data) ? data : []).slice(0, limit).map((item) => ({
+        rank: item.rank,
+        id: item.id || item.company || '',
+        company: item.company || '',
+        decision_maker: item.decision_maker || '',
+        channel: item.recommended_channel || '',
+        priority: item.priority || 0,
+        phone: (item.contactability && item.contactability.phone) || '',
+      }));
+      return res.json({ status: 'success', count: actions.length, actions });
+    }
+    res.json({ status: 'success', count: 0, actions: [] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/dialer/re-queue — Real Estate dialer queue (AutoDialer schema).
 // Phone app MUST only ever see dialable E.164 (+1XXXXXXXXXX) numbers backed by a
 // REAL lead. Fabricated 555/00x numbers are dropped, and the real NPI clinic

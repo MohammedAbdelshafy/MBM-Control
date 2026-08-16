@@ -118,8 +118,33 @@ export default function AutoDialer() {
   const [identityWrongNumber, setIdentityWrongNumber] = useState(false);
   const [identityDnc, setIdentityDnc] = useState(false);
   const [identitySaving, setIdentitySaving] = useState(false);
+  // ── GTM Quick Brief (delivery center) ─────────────────────────────────
+  const [brief, setBrief] = useState(null);
+  const [topActions, setTopActions] = useState([]);
+  const [briefLoading, setBriefLoading] = useState(true);
 
   useEffect(() => { fetchLeads(); loadDispositions(); }, []);
+  useEffect(() => { fetchGtmBrief(); }, []);
+
+  async function fetchGtmBrief() {
+    try {
+      const [briefRes, topRes] = await Promise.all([
+        fetch(`${API}/gtm/brief`),
+        fetch(`${API}/gtm/top-actions?limit=5`),
+      ]);
+      const briefData = await briefRes.json();
+      const topData = await topRes.json();
+      setBrief(briefData.brief || null);
+      setTopActions(topData.actions || []);
+    } catch (err) {
+      console.error('GTM brief unavailable:', err);
+    } finally { setBriefLoading(false); }
+  }
+
+  function jumpToAction(action) {
+    if (action?.phone) window.open(`tel:${action.phone}`, '_self');
+    if (action?.company) { setQuery(action.company); toast.info(`Queue filtered for: ${action.company}`); }
+  }
   useEffect(() => {
     if (callState === 'connected' || callState === 'ringing') timerRef.current = setInterval(() => setCallTimer((v) => v + 1), 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
@@ -255,6 +280,46 @@ export default function AutoDialer() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6">
+        <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2"><Target className="w-4 h-4 text-emerald-300" /><h2 className="font-semibold">GTM Quick Brief</h2><span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300">{brief?.date || '—'}</span></div>
+            <button onClick={fetchGtmBrief} className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1"><Zap className="w-3.5 h-3.5" />Refresh</button>
+          </div>
+          {briefLoading ? <div className="py-6 text-center text-xs text-slate-500">Loading GTM state...</div> : !brief ? <div className="py-6 text-center text-xs text-slate-500">No daily brief yet. Run <code className="text-slate-300">python MBM/LeadEngine/gtm_quick_brief.py --daily</code>.</div> : (
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-2 text-center">
+                {[
+                  ['🔥 Leads', `${brief.daily?.leads?.verified ?? '—'} (${brief.daily?.leads?.hot ?? 0} HOT)`, brief.daily?.leads?.hot > 0 ? 'text-amber-300' : 'text-white'],
+                  ['📧 Email', `${brief.daily?.email?.sent ?? 0} sent · ${brief.daily?.email?.positive ?? 0} positive`, 'text-sky-300'],
+                  ['📞 Calling', `${brief.daily?.calling?.attempted ?? 0} tried · ${brief.daily?.calling?.qualified ?? 0} qualified`, 'text-white'],
+                  ['📅 Meetings', `${brief.daily?.meetings?.booked ?? 0} booked · ${brief.daily?.meetings?.briefs_ready ?? 0} briefs`, 'text-emerald-300'],
+                  ['💰 Pipeline', `$${(brief.daily?.pipeline?.expected_value_usd ?? 0).toLocaleString()} exp`, 'text-violet-300'],
+                  ['💵 Confirmed', `$${(brief.daily?.pipeline?.confirmed_revenue_usd ?? 0).toLocaleString()}`, (brief.daily?.pipeline?.confirmed_revenue_usd ?? 0) > 0 ? 'text-emerald-300' : 'text-slate-400'],
+                ].map(([label, value, cls]) => (
+                  <div key={label} className="rounded-xl bg-slate-950/60 border border-white/5 p-3"><div className={`text-sm md:text-base font-bold truncate ${cls}`}>{value}</div><div className="text-[10px] text-slate-500 mt-1">{label}</div></div>
+                ))}
+              </div>
+              {brief.daily?.alerts && (brief.daily.alerts.critical > 0 || brief.daily.alerts.duplicates > 0) && (
+                <div className="flex flex-wrap gap-2 text-[11px]">
+                  {brief.daily.alerts.critical > 0 && <span className="px-2 py-1 rounded-full bg-red-500/15 text-red-300">⚠ {brief.daily.alerts.critical} critical</span>}
+                  {brief.daily.alerts.verification_failures > 0 && <span className="px-2 py-1 rounded-full bg-amber-500/15 text-amber-300">⚠ {brief.daily.alerts.verification_failures} verification failures</span>}
+                  {brief.daily.alerts.duplicates > 0 && <span className="px-2 py-1 rounded-full bg-white/5 text-slate-400">⚠ {brief.daily.alerts.duplicates} duplicates</span>}
+                </div>
+              )}
+              <div className="rounded-xl bg-slate-950/60 border border-white/5 p-3">
+                <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 mb-2"><Target className="w-3.5 h-3.5 text-emerald-300" />Top actions</div>
+                <div className="grid md:grid-cols-5 gap-2">{topActions.map((a) => (
+                  <button key={`${a.rank}-${a.company}`} onClick={() => jumpToAction(a)} className="text-left rounded-lg border border-white/10 bg-white/[0.03] hover:bg-emerald-500/10 hover:border-emerald-400/30 p-2.5 transition">
+                    <div className="text-[11px] font-semibold truncate">{a.company}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5 truncate">{a.decision_maker || a.company} · {a.channel} · pri {a.priority?.toFixed?.(1) ?? a.priority}</div>
+                    <div className="text-[10px] text-emerald-300 mt-1">Open →</div>
+                  </button>
+                ))}</div>
+              </div>
+            </div>
+          )}
+        </section>
+
         <section className="grid lg:grid-cols-[1.5fr_1fr] gap-4">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"><div className="flex items-center gap-2 mb-3"><Zap className="w-4 h-4 text-emerald-300" /><h2 className="font-semibold">Bridge setup</h2></div><div className="flex flex-col md:flex-row gap-3"><input type="tel" value={myPhone} onChange={(e) => setMyPhone(e.target.value)} placeholder="Your phone: +1 555 123 4567" className="flex-1 bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500/50" /><div className="flex items-center text-xs text-slate-400 px-2"><ShieldCheck className="w-4 h-4 text-emerald-300 mr-2" />Twilio bridge mode</div></div></div>
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"><div className="flex items-center gap-2 mb-3"><Target className="w-4 h-4 text-sky-300" /><h2 className="font-semibold">Queue controls</h2></div><div className="flex gap-2"><div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, city, address..." className="w-full bg-slate-950/80 border border-white/10 rounded-xl pl-9 pr-3 py-3 text-sm outline-none" /></div><select value={marketFilter} onChange={(e) => setMarketFilter(e.target.value)} className="bg-slate-950 border border-white/10 rounded-xl px-3 py-3 text-sm"><option value="all">All markets</option>{markets.map((market) => <option key={market} value={market}>{market}</option>)}</select></div></div>
