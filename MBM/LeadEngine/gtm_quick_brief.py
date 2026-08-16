@@ -329,17 +329,22 @@ class GtmQuickBrief:
     def _latest_daily_factory(self) -> Dict[str, Any]:
         """Read today's daily lead factory report; fall back to the latest by mtime."""
         today = date.today().isoformat()
+        path = ARTIFACTS_DIR / f"daily_lead_factory_{today}.json"
+        if path.exists():
+            return self._load_json(path)
         candidates = [
             GTM_ARTIFACTS_DIR / "daily" / f"{today}.json",
             GTM_ARTIFACTS_DIR / "daily" / "latest.json",
-            ARTIFACTS_DIR / f"daily_lead_factory_{today}.json",
             ARTIFACTS_DIR / "DAILY_LEAD_FACTORY_LATEST.json",
         ]
         for c in candidates:
             if c.exists():
                 data = self._load_json(c)
-                if data and ("verified_new" in data or "verified_leads" in data or "daily" in data):
+                if data and ("verified_new" in data or "verified" in data or "daily" in data):
                     return data
+        candidates_glob = sorted(glob.glob(str(ARTIFACTS_DIR / "daily_lead_factory_*.json")), key=os.path.getmtime, reverse=True)
+        if candidates_glob:
+            return self._load_json(Path(candidates_glob[0]))
         all_daily = sorted(glob.glob(str(GTM_ARTIFACTS_DIR / "daily" / "*.json")), key=os.path.getmtime, reverse=True)
         for cand_path in all_daily:
             if not cand_path.endswith("latest.json"):
@@ -365,7 +370,6 @@ class GtmQuickBrief:
                             "company": item.get("company", ""),
                             "buyer": item.get("decision_maker", ""),
                             "action": item.get("recommended_channel", "PHONE"),
-                            "offer": item.get("recommended_ai_assistant", "AI Assistant Retainer"),
                             "priority": item.get("priority", 0),
                             "phone": (item.get("contactability") or {}).get("phone", ""),
                             "id": item.get("id", item.get("company", "")),
@@ -387,7 +391,6 @@ class GtmQuickBrief:
                     "company": l.get("company", ""),
                     "buyer": l.get("decision_maker", ""),
                     "action": "PHONE",
-                    "offer": off.get("offer_name", "AI Assistant Retainer"),
                     "priority": l.get("intent_score", 90.0),
                     "phone": l.get("phone", ""),
                     "id": l.get("id", ""),
@@ -407,18 +410,18 @@ class GtmQuickBrief:
 
         # Extract leads counts
         leads_raw = factory.get("daily", {}).get("leads", {}) if "daily" in factory else factory
-        verified = int(factory.get("verified_new") or leads_raw.get("verified_new") or leads_raw.get("verified") or 0)
-        hot = int(factory.get("hot_buyers") or leads_raw.get("hot_buyers") or leads_raw.get("hot") or 0)
-        high = int(factory.get("high_intent") or leads_raw.get("high_intent") or leads_raw.get("high") or 0)
-        warm = int(factory.get("warm_leads") or leads_raw.get("warm_leads") or leads_raw.get("warm") or 0)
-        new_today = int(factory.get("verified_new") or leads_raw.get("new_today") or (verified if verified > 0 else 100))
-        callable_count = int(factory.get("callable_leads") or leads_raw.get("callable") or (verified if verified > 0 else 100))
-        target = int(factory.get("target") or 100)
-        shortfall = int(factory.get("shortfall") or max(0, target - verified))
+        verified = int(factory.get("verified") or factory.get("verified_new") or leads_raw.get("verified") or leads_raw.get("verified_new") or 0)
+        hot = int(factory.get("hot") or factory.get("hot_buyers") or leads_raw.get("hot") or leads_raw.get("hot_buyers") or 0)
+        high = int(factory.get("high") or factory.get("high_intent") or leads_raw.get("high") or leads_raw.get("high_intent") or 0)
+        warm = int(factory.get("warm") or factory.get("warm_leads") or leads_raw.get("warm") or leads_raw.get("warm_leads") or 0)
+        new_today = int(factory.get("new_today") or factory.get("verified_new") or leads_raw.get("new_today") or verified)
+        callable_count = int(factory.get("callable") or factory.get("callable_leads") or leads_raw.get("callable") or verified)
+        target = int(factory.get("target", 100))
+        shortfall = int(factory.get("shortfall", max(0, target - verified)))
 
         offer_breakdown = factory.get("offer_breakdown") or leads_raw.get("offer_breakdown") or {}
         offers_ready = int(factory.get("offers_generated_count") or (verified if verified > 0 else sum(offer_breakdown.values())))
-        scripts_ready = int(factory.get("scripts_generated_count") or (verified if verified > 0 else 100))
+        scripts_ready = int(factory.get("scripts_generated_count") or (verified if verified > 0 else 0))
 
         # Delivery-state alerts (real failures from the notification bus).
         delivery_path = GTM_ARTIFACTS_DIR / "delivery_state.json"
@@ -452,7 +455,7 @@ class GtmQuickBrief:
                 },
                 "scripts": {
                     "ready": scripts_ready,
-                    "total": new_today,
+                    "total": verified,
                 },
                 "email": {
                     "prepared": int(email.get("prepared", 0)),
@@ -465,24 +468,22 @@ class GtmQuickBrief:
                     "opt_out": int(email.get("opt_out", 0)),
                 },
                 "calling": {
-                    "queued": int(funnel.get("queued", new_today)),
-                    "attempted": int(funnel.get("contacted", 10)),
-                    "connected": int(funnel.get("connected", 9)),
-                    "qualified": int(funnel.get("qualified", 9)),
+                    "attempted": int(funnel.get("contacted", 0)),
+                    "connected": int(funnel.get("connected", 0)),
+                    "qualified": int(funnel.get("qualified", 0)),
                     "dialer_ok": True,
                 },
                 "meetings": {
-                    "requested": int(funnel.get("meetings_requested", 4)),
-                    "booked": int(funnel.get("meetings_booked", 4)),
-                    "confirmed": int(funnel.get("meetings_booked", 4)),
+                    "booked": int(funnel.get("meetings_booked", 0)),
+                    "confirmed": int(funnel.get("meetings_booked", 0)),
                     "today": len([m for m in meetings if m.get("date") == date.today().isoformat()]),
                     "briefs_ready": self.meeting_center.briefs_ready(),
                 },
                 "pipeline": {
-                    "active_opportunities": int(funnel.get("meetings_booked", 4)) + int(funnel.get("proposals_sent", 2)),
-                    "proposals": int(funnel.get("proposals_sent", 2)),
-                    "pipeline_value_usd": float(revenue.get("pipeline_value_usd", 16000.0)),
-                    "expected_value_usd": float(revenue.get("expected_value_usd", 6400.0)),
+                    "active_opportunities": int(funnel.get("meetings_booked", 0)) + int(funnel.get("proposals_sent", 0)),
+                    "proposals": int(funnel.get("proposals_sent", 0)),
+                    "pipeline_value_usd": float(revenue.get("pipeline_value_usd", 0.0)),
+                    "expected_value_usd": float(revenue.get("expected_value_usd", 0.0)),
                     "confirmed_revenue_usd": float(revenue.get("confirmed_realized_usd", 0.0)),
                 },
                 "alerts": {
@@ -505,125 +506,73 @@ class GtmQuickBrief:
     def render_daily_md(self, brief: Optional[Dict[str, Any]] = None) -> str:
         b = brief or self.collect_state()
         d = b["daily"]
-        L, O, S, E, C, M, P, A = (
-            d["leads"],
-            d.get("offers", {}),
-            d.get("scripts", {}),
-            d["email"],
-            d["calling"],
-            d["meetings"],
-            d["pipeline"],
-            d["alerts"],
-        )
+        L, E, C, M, P, A = d["leads"], d["email"], d["calling"], d["meetings"], d["pipeline"], d["alerts"]
         lines = [
             "🚀 MBM GTM DAILY BRIEF",
             "",
             "🔥 LEADS",
-            f"{L['new_today']} NEW TODAY",
+            f"{L['verified']} new verified",
             f"{L['hot']} HOT",
             f"{L['high']} HIGH",
             f"{L['warm']} WARM",
             "",
-            "🤖 OFFERS",
-        ]
-        breakdown = O.get("breakdown", {})
-        if breakdown:
-            for name, count in breakdown.items():
-                short_name = name.replace("Autonomous ", "").replace("AI ", "")
-                lines.append(f"{count} {short_name[:30]}")
-        else:
-            lines.append(f"{O.get('ready', L['new_today'])} Offers Ready")
-
-        lines += [
-            "",
-            "🎙 SCRIPTS",
-            f"{S.get('ready', L['new_today'])}/{L['new_today']} READY",
-            "",
             "📧 EMAIL",
-            f"Prepared: {E.get('prepared', 0)}",
-            f"Sent: {E.get('sent', 0)}",
-            f"Replies: {E.get('replies', 0)}",
-            f"Positive: {E.get('positive', 0)}",
+            f"{E['sent']} sent",
+            f"{E['replies']} replies",
+            f"{E['positive']} positive",
+            f"{E['followups']} follow-ups",
             "",
             "📞 CALLING",
-            f"Queued: {C.get('queued', L['new_today'])}",
-            f"Attempted: {C.get('attempted', 0)}",
-            f"Connected: {C.get('connected', 0)}",
-            f"Qualified: {C.get('qualified', 0)}",
+            f"{C['attempted']} attempted",
+            f"{C['connected']} connected",
+            f"{C['qualified']} qualified",
             "",
             "📅 MEETINGS",
-            f"Requested: {M.get('requested', 0)}",
-            f"Booked: {M.get('booked', 0)}",
-            f"Confirmed: {M.get('confirmed', 0)}",
-            f"Today: {M.get('today', 0)}",
+            f"{M['booked']} booked",
+            f"{M['confirmed']} confirmed",
+            f"{M['today']} today",
+            f"{M['briefs_ready']} briefs ready",
             "",
             "💰 PIPELINE",
-            f"Active: {P.get('active_opportunities', 0)}",
-            f"Proposals: {P.get('proposals', 0)}",
-            f"Expected: ${P.get('expected_value_usd', 0):,.2f}",
-            f"Confirmed: ${P.get('confirmed_revenue_usd', 0):,.2f}",
+            f"{P['active_opportunities']} active opportunities",
+            f"{P['proposals']} proposals",
+            f"expected value ${P['expected_value_usd']:,.2f}",
+            f"confirmed revenue ${P['confirmed_revenue_usd']:,.2f}",
             "",
-            "🎯 TOP 3 ACTIONS",
+            "🎯 TOP ACTIONS",
         ]
-        for i, a in enumerate(b["top_actions"][:3], start=1):
-            lines.append(f"{i}. {a.get('company', '')} — {a.get('offer', a.get('action', ''))}")
+        for i, a in enumerate(b["top_actions"][:5], start=1):
+            lines.append(f"{i}. {a['action']} {a['company']}")
         lines += [
             "",
             "⚠️ ALERTS",
-            f"Critical: {A.get('critical', 0)}",
-            f"Verification Failures: {A.get('verification_failures', 0)}",
-            f"Duplicates: {A.get('duplicates', 0)}",
+            f"{A['critical']} critical",
+            f"{A['verification_failures']} verification failures",
+            f"{A['duplicates']} duplicates",
         ]
         return "\n".join(lines)
 
     def render_email_daily(self, brief: Optional[Dict[str, Any]] = None) -> str:
         b = brief or self.collect_state()
         d = b["daily"]
-        L, O, S, E, C, M, P, A = (
-            d["leads"],
-            d.get("offers", {}),
-            d.get("scripts", {}),
-            d["email"],
-            d["calling"],
-            d["meetings"],
-            d["pipeline"],
-            d["alerts"],
-        )
+        L, E, C, M, P, A = d["leads"], d["email"], d["calling"], d["meetings"], d["pipeline"], d["alerts"]
         lines = [
-            f"# 🚀 MBM GTM Daily Brief — {L.get('new_today', 100)} New Leads",
+            f"# MBM GTM Daily Brief — {b['date']}",
             "",
-            f"**Execution Date:** `{b.get('date', date.today().isoformat())}`",
+            f"- **New verified leads:** {L['verified']} ({L['hot']} HOT / {L['high']} HIGH / {L['warm']} WARM)",
+            f"- **Email:** {E['sent']} sent · {E['replies']} replies · {E['positive']} positive · {E['followups']} follow-ups",
+            f"- **Calling:** {C['attempted']} attempted · {C['connected']} connected · {C['qualified']} qualified",
+            f"- **Meetings:** {M['booked']} booked · {M['confirmed']} confirmed · {M['briefs_ready']} briefs ready",
+            f"- **Pipeline:** {P['active_opportunities']} active · {P['proposals']} proposals · expected ${P['expected_value_usd']:,.2f} · confirmed ${P['confirmed_revenue_usd']:,.2f}",
             "",
-            "## 🔥 Leads Summary",
-            f"- **New Today:** {L.get('new_today', 0)}",
-            f"- **HOT Intent:** {L.get('hot', 0)}",
-            f"- **HIGH Intent:** {L.get('high', 0)}",
-            f"- **WARM:** {L.get('warm', 0)}",
-            f"- **Callable (100%):** {L.get('callable', 0)}",
-            "",
-            "## 🤖 Offers & Scripts",
-            f"- **Offers Ready:** {O.get('ready', L.get('new_today', 0))}",
-            f"- **Dynamic Scripts Ready:** {S.get('ready', L.get('new_today', 0))}/{L.get('new_today', 0)}",
-            "",
-            "## 📞 Calling & Email Activity",
-            f"- **Calling:** {C.get('attempted', 0)} attempted · {C.get('connected', 0)} connected · {C.get('qualified', 0)} qualified",
-            f"- **Email:** {E.get('sent', 0)} sent · {E.get('replies', 0)} replies · {E.get('positive', 0)} positive",
-            "",
-            "## 📅 Meetings & Pipeline",
-            f"- **Meetings Booked:** {M.get('booked', 0)} (Confirmed: {M.get('confirmed', 0)}, Today: {M.get('today', 0)})",
-            f"- **Active Pipeline Opportunities:** {P.get('active_opportunities', 0)}",
-            f"- **Proposals Sent:** {P.get('proposals', 0)}",
-            f"- **Expected Revenue:** ${P.get('expected_value_usd', 0):,.2f}",
-            f"- **Confirmed Revenue:** ${P.get('confirmed_revenue_usd', 0):,.2f}",
-            "",
-            "## 🎯 Top Actions",
+            "## Top Actions",
         ]
         for a in b["top_actions"][:5]:
-            lines.append(f"- **{a['company']}** — {a.get('offer', a.get('action', ''))} (Phone: {a.get('phone', '—')})")
+            lines.append(f"- **{a['company']}** — {a['action']} (priority {a['priority']})")
         lines += [
             "",
-            "## ⚠️ Alerts",
-            f"- Critical: {A.get('critical', 0)} · Verification Failures: {A.get('verification_failures', 0)} · Duplicates Filtered: {A.get('duplicates', 0)}",
+            "## Alerts",
+            f"- Critical: {A['critical']} · Verification failures: {A['verification_failures']} · Duplicates: {A['duplicates']}",
         ]
         return "\n".join(lines)
 
