@@ -38,6 +38,8 @@ class FakeHTTPPost:
 
 @pytest.fixture
 def bus_env(tmp_path, monkeypatch):
+    monkeypatch.delenv("TELEGRAM_BOT_TOKEN", raising=False)
+    monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
     monkeypatch.setenv("GTM_TELEGRAM_ENABLED", "true")
     monkeypatch.setenv("GTM_TELEGRAM_BOT_TOKEN", "123456:ABCdef_xyz")
     monkeypatch.setenv("GTM_TELEGRAM_CHAT_ID", "-1001234567890")
