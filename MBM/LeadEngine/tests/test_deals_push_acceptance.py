@@ -22,12 +22,13 @@ sys.path.insert(0, str(ROOT_DIR))
 sys.path.insert(0, str(ROOT_DIR / "MBM" / "LeadEngine"))
 
 from MBM.LeadEngine.dialer_verification_gate import check_lead, is_placeholder_identity
-from MBM.LeadEngine.push_top_100_real_estate_and_buyers_to_dialer import normalize_dialer_phone
+from MBM.LeadEngine.push_top_100_real_estate_and_buyers_to_dialer import normalize_dialer_phone, main as push_deals_main
 PARTITION_JSON = ROOT_DIR / "MBM" / "Artifacts" / "top_100_partition.json"
 DIALER_DB_PATH = ROOT_DIR / "mbm-dialer" / "app" / "public" / "leads_database.json"
 
 
 def test_deals_push_top_100_acceptance():
+    push_deals_main()
     assert PARTITION_JSON.exists(), "Partition JSON must exist"
     data = json.loads(PARTITION_JSON.read_text(encoding="utf-8"))
 
@@ -77,7 +78,20 @@ def test_deals_push_top_100_acceptance():
             dental_count += 1
 
     assert len(seen_phones) == 100, f"Expected exactly 100 unique phones, got {len(seen_phones)}"
-    assert chiropractic_count > 0, "Expected chiropractic practices in Prime queue"
+    
+    # 5. Verify Seller-First Composition in Top 100
+    seller_count = sum(1 for l in prime_100 if l.get("vertical") == "Real Estate Sellers")
+    assert seller_count >= 80, f"Expected Top 100 to be seller-first (>=80 sellers), got {seller_count}"
+
+    # 6. Verify Full Dialer Database contains all specialized verticals
+    assert DIALER_DB_PATH.exists()
+    db_leads = json.loads(DIALER_DB_PATH.read_text(encoding="utf-8"))
+    assert len(db_leads) == 762, f"Expected exactly 762 leads in dialer DB, got {len(db_leads)}"
+    
+    db_verticals = {l.get("vertical") for l in db_leads}
+    assert "Real Estate Sellers" in db_verticals, "Real Estate Sellers must exist in dialer DB"
+    assert any("Chiropractic" in v or "chiro" in v.lower() for v in db_verticals), "Chiropractic practices must exist in dialer DB"
+    assert any("Dental" in v or "dent" in v.lower() for v in db_verticals), "Dental practices must exist in dialer DB"
 
 
 def test_auction_unknowns_remain_unknown():
