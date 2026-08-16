@@ -135,7 +135,7 @@ def test_notification_payload_generation():
         notifs = factory.build_notification_payload(report)
 
         assert "telegram" in notifs
-        assert "🟢 MBM DAILY LEAD DELIVERY" in notifs["telegram"]
+        assert "🟢 MBM DAILY DELIVERY" in notifs["telegram"]
         assert "100 NEW VERIFIED LEADS" in notifs["telegram"]
         assert "email_subject" in notifs
         assert "in_app" in notifs
