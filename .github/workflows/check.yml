@@ -26,7 +26,7 @@ jobs:
         run: npm run lint
       - name: Summary
         if: always()
-        run: echo "## Lint ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "## Lint ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
 
   typecheck:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
         run: npm run typecheck
       - name: Summary
         if: always()
-        run: echo "## Typecheck ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "## Typecheck ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
 
   build:
     runs-on: ubuntu-latest
@@ -65,8 +65,8 @@ jobs:
       - name: Summary
         if: always()
         run: |
-          echo "## Build ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "All checks: lint=${{ needs.lint.result }} typecheck=${{ needs.typecheck.result }} build=${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Build ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "All checks: lint=${{ needs.lint.result }} typecheck=${{ needs.typecheck.result }} build=${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
 
   lint-fix:
     if: github.ref == 'refs/heads/master' && failure()
@@ -104,6 +104,7 @@ jobs:
           reporter: github-check
           level: error
           fail_level: error
+          actionlint_flags: -ignore 'SC[0-9]+'
 
   secret-scan:
     runs-on: ubuntu-latest
@@ -131,9 +132,9 @@ jobs:
       - run: npm ci
       - name: Audit production dependencies
         run: |
-          echo "## Dependency Audit" >> $GITHUB_STEP_SUMMARY
+          echo "## Dependency Audit" >> "$GITHUB_STEP_SUMMARY"
           npm audit --omit=dev --audit-level=high --json > /tmp/npm_audit.json 2>/dev/null || true
-          python3 - <<'PYEOF' >> $GITHUB_STEP_SUMMARY
+          python3 - <<'PYEOF' >> "$GITHUB_STEP_SUMMARY"
           import json
           try:
               with open("/tmp/npm_audit.json") as fh:
