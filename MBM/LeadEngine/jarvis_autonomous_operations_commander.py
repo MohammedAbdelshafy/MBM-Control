@@ -177,7 +177,7 @@ class JarvisLeadRunner:
         self.crm = crm or SalesforceOS()
         self.deal_memory = CanonicalDealMemory()
 
-    def run_lead_cycle(self) -> Dict[str, Any]:
+    def run_lead_cycle(self, dialer_db_path=None) -> Dict[str, Any]:
         """Executes full lead runner pipeline with evidence-based truth semantics."""
         raw_pool = self._ingest_all_sources()
         
@@ -351,7 +351,7 @@ class JarvisLeadRunner:
         total_active = len(top_25_call_now) + len(next_75) + len(lower_priority_active)
 
         # Sync master dialer database
-        self._sync_dialer_database(top_25_call_now, next_75, lower_priority_active)
+        self._sync_dialer_database(top_25_call_now, next_75, lower_priority_active, dialer_db_path=dialer_db_path)
 
         return {
             "total_raw": len(raw_pool),
@@ -519,7 +519,7 @@ class JarvisLeadRunner:
             "next_action": f"CALL_{lane}_DECISION_MAKER"
         }
 
-    def _sync_dialer_database(self, top_25: list, next_75: list, lower_active: list) -> None:
+    def _sync_dialer_database(self, top_25: list, next_75: list, lower_active: list, dialer_db_path=None) -> None:
         master_feed = top_25 + next_75 + lower_active
         payloads = []
         for l in master_feed:
@@ -566,7 +566,8 @@ class JarvisLeadRunner:
 
         DIALER_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
         from MBM.LeadEngine.dialer_gateway import commit_dialer_db
-        commit_dialer_db(payloads, reason="jarvis_autonomous_operations_commander", author="JARVIS_OPS_COMMANDER")
+        commit_dialer_db(payloads, reason="jarvis_autonomous_operations_commander",
+                         author="JARVIS_OPS_COMMANDER", db_path=dialer_db_path)
 
 
 # ════════════════════════════════════════════════════════════════════════════════

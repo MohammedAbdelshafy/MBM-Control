@@ -24,7 +24,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from MBM.LeadEngine.lead_history_ledger import LeadHistoryLedger, normalize_phone_digits
-from MBM.LeadEngine.lead_provenance import production_synthetic_count, LeadProvenanceGate
+from MBM.LeadEngine.lead_provenance import production_synthetic_count, LeadProvenanceGate, build_provenance_fields
 from MBM.LeadEngine.daily_lead_factory import (
     DailyLeadFactory,
     DailyLeadFactoryReport,
@@ -32,9 +32,76 @@ from MBM.LeadEngine.daily_lead_factory import (
 )
 
 
+def _build_fixture_candidates(n: int):
+    """Deterministic REAL-looking NPI candidate pool (hermetic — never touches the
+    live callsheet or live dialer DB). Every candidate carries real provenance."""
+    firsts = ["Jessica", "Marcus", "Sofia", "David", "Amara", "Kevin", "Lena", "Tyler",
+              "Nora", "Victor", "Maya", "Omar", "Priya", "Ethan", "Ruby", "Miguel",
+              "Chloe", "Aaron", "Isla", "Sam"]
+    lasts = ["Carter", "Nguyen", "Rivera", "Patel", "Brooks", "Kim", "Silva", "Johnson",
+             "Garcia", "Lee", "Brown", "Davis", "Wilson", "Moore", "Taylor", "Anderson",
+             "Thomas", "Jackson", "White", "Harris"]
+    out = []
+    for i in range(n):
+        npi = str(1000000000 + i)  # fake NPI number (10 digits)
+        industry = "Dental Clinics & Orthodontics" if i % 2 == 0 else "Medical Clinics & Urgent Care"
+        company = f"Family Dental Care {i:03d}" if i % 2 == 0 else f"Urgent Care Clinic {i:03d}"
+        phone = f"+1{214}{8000000 + i:07d}"
+        prov = build_provenance_fields(
+            source="CMS NPI Registry API v2.1",
+            source_reference=f"NPI-{npi}",
+            source_type="government_registry",
+            verification_method="npi_registry_api",
+        )
+        cand = {
+            "id": f"NPI-{npi}",
+            "company": company,
+            "decision_maker": f"Dr. {firsts[i % 20]} {lasts[i % 20]}",
+            "role": "Practice Owner",
+            "industry": industry,
+            "phone": phone,
+            "email": f"info@clinic{i:03d}.com",
+            "city": "Dallas",
+            "state": "TX",
+            "why_this_company": f"Real licensed {industry} business (NPI {npi}) verified via CMS NPI Registry.",
+            "source_class": "NPI",
+        }
+        cand.update(prov)
+        out.append(cand)
+    return out
+
+
+def _slice_pool(pool, count: int, seed_base: int):
+    if not pool:
+        return []
+    start = seed_base % len(pool)
+    picked = pool[start:start + count]
+    if len(picked) < count:
+        picked += pool[:count - len(picked)]
+    return picked
+
+
+@pytest.fixture(autouse=True)
+def _hermetic_pool(monkeypatch, tmp_path):
+    """Serve a fixed real-candidate pool so factory tests never read the live
+    callsheet / live dialer DB (deterministic yield), and redirect ALL daily
+    artifact exports to a temp dir so the real MBM/Artifacts/GTM/daily tree is
+    never touched."""
+    import MBM.LeadEngine.daily_lead_factory as dlf
+    tmp_artifacts = tmp_path / "artifacts"
+    tmp_artifacts.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setattr(dlf, "DAILY_GTM_DIR", tmp_path / "gtm" / "daily")
+    monkeypatch.setattr(dlf, "ARTIFACTS_DIR", tmp_artifacts)
+    pool = _build_fixture_candidates(220)
+    monkeypatch.setattr(
+        DailyLeadFactory, "_harvest_candidate_wave",
+        lambda self, count, seed: _slice_pool(pool, count, seed),
+    )
+
+
 def _fresh_factory(td: str, target: int):
     ledger_file = Path(td) / "test_ledger.json"
-    ledger = LeadHistoryLedger(ledger_file=ledger_file)
+    ledger = LeadHistoryLedger(ledger_file=ledger_file, bootstrap=False)
     # Hermetic: never read the live dialer DB during tests.
     return DailyLeadFactory(history_ledger=ledger, dialer_rows_reader=lambda: [])
 
@@ -86,7 +153,7 @@ def test_daily_factory_global_historical_deduplication():
     """Run #2 must NEVER recycle Run #1's phones (zero overlap, honest dedupe)."""
     with tempfile.TemporaryDirectory() as td:
         ledger_file = Path(td) / "test_ledger.json"
-        ledger = LeadHistoryLedger(ledger_file=ledger_file)
+        ledger = LeadHistoryLedger(ledger_file=ledger_file, bootstrap=False)
         factory = DailyLeadFactory(history_ledger=ledger, dialer_rows_reader=lambda: [])
 
         # Run 1

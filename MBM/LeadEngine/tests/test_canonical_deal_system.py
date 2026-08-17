@@ -447,12 +447,13 @@ def test_evidence_backed_claims_can_render():
     assert "}" not in deal.sales_script
 
 
-def test_jarvis_lead_runner_cycle():
+def test_jarvis_lead_runner_cycle(tmp_path):
     """Test Q: Autonomous Lead Runner executes ingestion, multi-factor scoring, 13-point script, and dialer sync."""
     from MBM.LeadEngine.jarvis_autonomous_operations_commander import JarvisLeadRunner
 
     runner = JarvisLeadRunner()
-    results = runner.run_lead_cycle()
+    # Hermetic: sync to a temp dialer DB — NEVER the live production dataset.
+    results = runner.run_lead_cycle(dialer_db_path=tmp_path / "leads_database.json")
 
     assert results["total_raw"] > 0
     assert results["valid_candidates"] > 0

@@ -57,7 +57,7 @@ class LeadHistoryLedger:
     Durable historical exclusion ledger preventing recycling of seen leads.
     """
 
-    def __init__(self, ledger_file: Optional[Path] = None):
+    def __init__(self, ledger_file: Optional[Path] = None, bootstrap: bool = True):
         self.ledger_file = ledger_file or LEDGER_PATH
         self.records: Dict[str, Dict[str, Any]] = {}
         
@@ -69,7 +69,9 @@ class LeadHistoryLedger:
         self.seen_lead_ids: Set[str] = set()
 
         self._load()
-        if len(self.records) == 0:
+        # HERMETIC OPT-OUT: tests pass bootstrap=False so the ledger never reads
+        # the live dialer DB / production artifacts.
+        if bootstrap and len(self.records) == 0:
             self.bootstrap_from_existing_data()
 
     def _load(self) -> None:
