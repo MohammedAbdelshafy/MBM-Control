@@ -47,6 +47,7 @@ from MBM.GLM.single_writer_lock import DialerSingleWriter, SingleWriterViolation
 from MBM.LeadEngine.lead_provenance import (
     is_persona_contact,
     is_placeholder_phone,
+    is_sequential_numbered_company,
     is_sequential_registry_ref,
     is_template_company,
 )
@@ -85,6 +86,8 @@ def is_strong_synthetic(record: Dict[str, Any]) -> List[str]:
         reasons.append("generated_id")
     if is_template_company(str(record.get("company", "") or record.get("company_name", ""))):
         reasons.append("template_company")
+    if is_sequential_numbered_company(str(record.get("company", "") or record.get("company_name", ""))):
+        reasons.append("sequential_numbered_company")
     contact = (
         record.get("contact")
         or record.get("decision_maker")
@@ -143,13 +146,18 @@ def commit_dialer_db(
     reason: str = "dialer_gateway",
     allow_shrink: bool = False,
     author: str = "dialer_gateway",
+    db_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
-    """Authorized whole-file commit of the dialer DB (validated, locked, atomic)."""
+    """Authorized whole-file commit of the dialer DB (validated, locked, atomic).
+
+    `db_path` defaults to the live dialer DB; hermetic callers (tests) pass a
+    temp path so they never touch production data.
+    """
     if not isinstance(records, list):
         raise SingleWriterViolation("commit_dialer_db requires a list of records")
 
     filtered = validate_records(records)
-    writer = DialerSingleWriter(db_path=DIALER_DB_PATH)
+    writer = DialerSingleWriter(db_path=db_path or DIALER_DB_PATH)
     result = writer.full_replace(filtered["clean"], author=author, allow_shrink=allow_shrink)
 
     result.update(
@@ -169,10 +177,11 @@ def patch_dialer_db(
     reason: str = "dialer_gateway",
     author: str = "dialer_gateway",
     allow_upsert: bool = True,
+    db_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
     """Authorized merge/upsert commit (never shrinks; patches specific leads)."""
     filtered = validate_records(new_or_updated)
-    writer = DialerSingleWriter(db_path=DIALER_DB_PATH)
+    writer = DialerSingleWriter(db_path=db_path or DIALER_DB_PATH)
     result = writer.commit_update(filtered["clean"], author=author, allow_upsert=allow_upsert)
     result.update(
         {

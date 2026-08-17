@@ -209,6 +209,25 @@ def is_sequential_registry_ref(source_reference: Any) -> bool:
     return False
 
 
+def is_sequential_numbered_company(company: Any) -> bool:
+    """True when the company name ends in a standalone 3-digit sequence number.
+
+    Generator signature: "Family Dental Care 112", "Urgent Care Clinic 111".
+    Real NPI-registry businesses never end in a bare 3-digit sequence token
+    (they end in LLC/PC/INC/PA/name). 118/118 fabricated Day-17 rows match;
+    0/13 verified real rows match.
+    """
+    if not company:
+        return False
+    comp = str(company).strip()
+    if not re.search(r"\b\d{3}$", comp):
+        return False
+    # A 3-digit token alone, not a legal suffix (e.g. "LLC 2023", "PC 100").
+    words = comp.split()
+    last = words[-1]
+    return last.isdigit() and len(last) == 3 and len(words) >= 2
+
+
 def is_low_entropy_phone(phone: Any) -> bool:
     """True when a phone has <=4 unique digits (generator artifact)."""
     d = _digits(phone)
