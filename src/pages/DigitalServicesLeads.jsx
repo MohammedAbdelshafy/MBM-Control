@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Globe, Smartphone, Wrench, Search, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { Globe, Wrench, Search, ExternalLink, CheckCircle2 } from 'lucide-react';
 
 const SAMPLE_LEADS = [
   { name: 'Martins Investment Group (MIG)', domain: 'martins-ig.com', location: 'United States', intent: 65, offer: '$49 Business Website', reason: 'Website design + replatform intent' },
