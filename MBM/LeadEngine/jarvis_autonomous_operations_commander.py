@@ -565,11 +565,8 @@ class JarvisLeadRunner:
             })
 
         DIALER_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            from MBM.GLM.single_writer_lock import DialerSingleWriter
-            DialerSingleWriter().full_replace(payloads, author="JARVIS_OPS_COMMANDER")
-        except Exception:
-            DIALER_DB_PATH.write_text(json.dumps(payloads, indent=2), encoding="utf-8")
+        from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+        commit_dialer_db(payloads, reason="jarvis_autonomous_operations_commander", author="JARVIS_OPS_COMMANDER")
 
 
 # ════════════════════════════════════════════════════════════════════════════════

@@ -406,8 +406,9 @@ def save_db(db, apply=True):
     backup = bak_dir / f"leads_database.{stamp}.bak.json"
     if DIALER_DB.exists():
         shutil.copy2(DIALER_DB, backup)
-    with open(DIALER_DB, "w", encoding="utf-8") as f:
-        json.dump(db, f, indent=2, default=str)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(db, reason="seller_skip_tracer", author="SELLER_SKIP_TRACER")
 
 
 def summarize(results):

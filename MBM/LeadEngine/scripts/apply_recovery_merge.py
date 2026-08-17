@@ -225,11 +225,9 @@ def main():
     else:
         dialer = leads
 
-    if _SINGLE_WRITER is not None:
-        out = dialer if isinstance(dialer, list) else dialer.get("leads", leads)
-        _SINGLE_WRITER.full_replace(out, author="APPLY_RECOVERY_MERGE", allow_shrink=False)
-    else:
-        DIALER_DB.write_text(json.dumps(dialer, indent=2, ensure_ascii=False), encoding="utf-8")
+    out = dialer if isinstance(dialer, list) else dialer.get("leads", leads)
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(out, reason="apply_recovery_merge", allow_shrink=False, author="APPLY_RECOVERY_MERGE")
 
     memory = CanonicalDealMemory(storage_path=DEAL_MEMORY_PATH)
     memory_phones = {norm_phone(d.contact_phone) for d in memory.deals.values() if d.contact_phone}

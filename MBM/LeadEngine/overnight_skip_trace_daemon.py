@@ -318,11 +318,8 @@ def main():
                         log(f"[{already_done + processed_count}/{total}] [{status}] {contact} ({note})")
 
                     if processed_count % SAVE_INTERVAL == 0:
-                        if _SINGLE_WRITER is not None:
-                            _SINGLE_WRITER.full_replace(leads, author="OVERNIGHT_SKIP_TRACE_DAEMON")
-                        else:
-                            with open(DIALER_DB, "w", encoding="utf-8") as f:
-                                json.dump(leads, f, separators=(",", ":"), default=str)
+                        from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+                        commit_dialer_db(leads, reason="overnight_skip_trace_daemon", author="OVERNIGHT_SKIP_TRACE_DAEMON")
                         log(f"[AUTO-SAVE] Progress saved ({verified_count} VERIFIED, {enriched_count} ENRICHED, {unverified_count} UNVERIFIED)")
                         # Auto-dispatch to all agents
                         try:
@@ -338,11 +335,8 @@ def main():
                     log(f"[WORKER ERROR] {e}")
 
         # Final Save & Push for this pass
-        if _SINGLE_WRITER is not None:
-            _SINGLE_WRITER.full_replace(leads, author="OVERNIGHT_SKIP_TRACE_DAEMON")
-        else:
-            with open(DIALER_DB, "w", encoding="utf-8") as f:
-                json.dump(leads, f, separators=(",", ":"), default=str)
+        from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+        commit_dialer_db(leads, reason="overnight_skip_trace_daemon", author="OVERNIGHT_SKIP_TRACE_DAEMON")
         git_push()
         log(f"Completed pass. Verified: {verified_count}, Enriched: {enriched_count}, Unverified: {unverified_count}")
         time.sleep(5)

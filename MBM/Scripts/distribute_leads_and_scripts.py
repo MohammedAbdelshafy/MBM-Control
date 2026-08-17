@@ -133,11 +133,11 @@ def run():
     final_list = [lead for lead in db_map.values() if lead.get("phone") and "ACTION_REQUIRED" not in lead.get("phone")]
     
     # Save back to database
-    if _SINGLE_WRITER is not None:
-        _SINGLE_WRITER.full_replace(final_list, author="DISTRIBUTE_LEADS_AND_SCRIPTS")
-    else:
-        with open(DATABASE_PATH, 'w', encoding='utf-8') as f:
-            json.dump(final_list, f, indent=2)
+    import sys as _sys
+    from pathlib import Path as _Path
+    _sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(final_list, reason="distribute_leads_and_scripts", author="DISTRIBUTE_LEADS_AND_SCRIPTS")
         
     print(f"Success! {len(final_list)} total leads distributed into sections with verified scripts.")
     

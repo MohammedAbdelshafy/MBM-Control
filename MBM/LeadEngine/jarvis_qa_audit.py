@@ -274,13 +274,9 @@ class JarvisQAGateAuditor:
 
         # Format and write strictly PRIME_CALLABLE records
         DIALER_DB.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            sys.path.insert(0, str(REPO_ROOT))
-            from MBM.GLM.single_writer_lock import DialerSingleWriter
-            DialerSingleWriter().full_replace(prime_leads, author="JARVIS_QA_AUDIT")
-        except Exception:
-            with open(DIALER_DB, "w", encoding="utf-8") as f:
-                json.dump(prime_leads, f, indent=2)
+        sys.path.insert(0, str(REPO_ROOT))
+        from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+        commit_dialer_db(prime_leads, reason="jarvis_qa_audit", allow_shrink=True, author="JARVIS_QA_AUDIT")
 
         print(f"✅ JARVIS QA GATE PASSED: Synced {len(prime_leads)} verified PRIME_CALLABLE leads to {DIALER_DB}")
         return True

@@ -228,14 +228,11 @@ def main():
         print(f"  [{ts}] [{i+1}/{total}] [X] UNVERIFIED: {contact} | {phone}")
 
     # Save progress via the canonical single-writer gateway (never raw direct writes)
-    if _writer is not None:
-        res = _writer.full_replace(leads, author="DIALER_SKIP_TRACE_VERIFIER")
-        if not res.get("ok"):
-            raise RuntimeError(f"Single-writer commit failed: {res}")
-        print(f"[SAVE] Wrote {res['final_count']} leads via single-writer gateway")
-    else:
-        with open(DB_PATH, "w", encoding="utf-8") as f:
-            json.dump(leads, f, indent=2, default=str)
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    res = commit_dialer_db(leads, reason="dialer_skip_trace_verifier", author="DIALER_SKIP_TRACE_VERIFIER")
+    if not res.get("ok"):
+        raise RuntimeError(f"Single-writer commit failed: {res}")
+    print(f"[SAVE] Wrote {res['final_count']} leads via single-writer gateway")
 
     remaining = total - already_done - processed
     print()

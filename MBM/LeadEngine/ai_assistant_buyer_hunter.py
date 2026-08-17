@@ -405,6 +405,7 @@ class EvidenceCard:
         self.outreach_linkedin_angle = outreach_linkedin_angle
         self.outreach_reddit_angle = outreach_reddit_angle
         self.personalized_script = personalized_script
+        self.provenance_fields = dict(kwargs)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -441,7 +442,8 @@ class EvidenceCard:
             "outreach_linkedin_angle": self.outreach_linkedin_angle,
             "outreach_reddit_angle": self.outreach_reddit_angle,
             "personalized_script": self.personalized_script,
-            "created_at": datetime.now(timezone.utc).isoformat()
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            **self.provenance_fields
         }
 
 
@@ -835,7 +837,49 @@ class SignalHarvester:
         # Layer 5: New Market Niche Intent Signals (Solar, Veterinary, Auto Collision)
         all_candidates.extend(self._harvest_new_niche_signals())
 
-        return all_candidates
+        # ZERO-SYNTHETIC ENFORCEMENT (P0): every candidate that enters the
+        # buyer pipeline must carry real provenance and ZERO fabrication
+        # fingerprints. Hardcoded persona signals (LinkedIn/Reddit fiction) and
+        # template companies are rejected here; real registry candidates are
+        # tagged with a full provenance block.
+        from MBM.LeadEngine.lead_provenance import (
+            LeadProvenanceGate,
+            is_persona_contact,
+            is_template_company,
+            is_sequential_registry_ref,
+            build_provenance_fields,
+        )
+        from datetime import datetime as _dt, timezone as _tz
+
+        gate = LeadProvenanceGate()
+        kept: List[Dict[str, Any]] = []
+        for cand in all_candidates:
+            if not isinstance(cand, dict):
+                continue
+            idv = str(cand.get("id", "") or "")
+            if idv.startswith("GEN-NEW") or idv.startswith("GEN-FAC"):
+                continue
+            if is_persona_contact(str(cand.get("decision_maker", ""))):
+                continue
+            if is_template_company(str(cand.get("company", ""))):
+                continue
+            if is_sequential_registry_ref(str(cand.get("source_url", "") or cand.get("source", ""))):
+                continue
+            # Registry-backed candidates are REAL businesses; strip any fabricated
+            # contact email/website and attach a full, honest provenance block.
+            if "NPI" in str(cand.get("source", "")):
+                cand["email"] = ""
+                cand.update(
+                    build_provenance_fields(
+                        source="CMS NPI Registry API v2.1",
+                        source_reference="NPI-REGISTRY",
+                        source_type="government_registry",
+                        verification_method="npi_registry_api",
+                    )
+                )
+            if gate.evaluate(cand)["ok"]:
+                kept.append(cand)
+        return kept
 
     def _harvest_social_signals(self) -> List[Dict[str, Any]]:
         return [
@@ -1506,7 +1550,12 @@ class AIAssistantBuyerHunter:
                 outreach_email_angle=angles["EMAIL_ANGLE"],
                 outreach_linkedin_angle=angles["LINKEDIN_ANGLE"],
                 outreach_reddit_angle=angles["REDDIT_ANGLE"],
-                personalized_script=angles
+                personalized_script=angles,
+                source_reference=prospect.get("source_reference", ""),
+                source_type=prospect.get("source_type", ""),
+                observed_at=prospect.get("observed_at", ""),
+                verified_at=prospect.get("verified_at", ""),
+                verification_method=prospect.get("verification_method", "")
             )
 
             evaluated_cards.append(card)

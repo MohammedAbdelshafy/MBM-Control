@@ -260,6 +260,12 @@ def save_json(path, data, backup=False):
         bak_dir.mkdir(parents=True, exist_ok=True)
         stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         shutil.copy2(path, bak_dir / f"{path.stem}.{stamp}.bak.json")
+    if path == DIALER_DB:
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+        from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+        rows = data if isinstance(data, list) else data.get("leads", [])
+        commit_dialer_db(rows, reason="seller_motivation_scorer", author="SELLER_MOTIVATION_SCORER")
+        return
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, default=str)
 

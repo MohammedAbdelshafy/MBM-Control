@@ -31,11 +31,9 @@ except Exception:
     _SINGLE_WRITER = None
 
 def _save_enrichment(db, out_path):
-    if _SINGLE_WRITER is not None:
-        _SINGLE_WRITER.full_replace(db, author="DCAD_OWNER_LOOKUP")
-    else:
-        with open(out_path, "w", encoding="utf-8") as f:
-            json.dump(db, f, indent=2, default=str)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(db, reason="dcad_owner_lookup", author="DCAD_OWNER_LOOKUP")
 
 DCAD_QUERY_URL = (
     "https://maps.dcad.org/prdwa/rest/services/Property/ParcelQuery/MapServer/4/query"

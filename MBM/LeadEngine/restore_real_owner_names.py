@@ -97,13 +97,9 @@ def main():
             prop_addr = lead.get('details', {}).get('Property_Address') or lead.get('details', {}).get('Address') or 'your property'
             lead["details"]["Call_Script"] = f"Hi {lead['contact']}, I'm calling from MBM regarding the property at {prop_addr}. We are looking to buy properties in the area. Are you the owner and open to a cash offer?"
 
-    try:
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-        from MBM.GLM.single_writer_lock import DialerSingleWriter
-        DialerSingleWriter().full_replace(leads, author="RESTORE_REAL_OWNER_NAMES")
-    except Exception:
-        with open(db_path, "w", encoding="utf-8") as f:
-            json.dump(leads, f, indent=2, default=str)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(leads, reason="restore_real_owner_names", author="RESTORE_REAL_OWNER_NAMES")
         
     print(f"Successfully updated {updated_count} real estate seller leads with REAL owner names and phone numbers!")
 

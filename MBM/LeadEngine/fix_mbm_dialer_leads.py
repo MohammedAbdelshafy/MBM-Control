@@ -4,13 +4,9 @@ import sys
 from pathlib import Path
 
 def _save(leads, db_path):
-    try:
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-        from MBM.GLM.single_writer_lock import DialerSingleWriter
-        DialerSingleWriter().full_replace(leads, author="FIX_MBM_DIALER_LEADS")
-    except Exception:
-        with open(db_path, "w", encoding="utf-8") as f:
-            json.dump(leads, f, indent=2, default=str)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(leads, reason="fix_mbm_dialer_leads", author="FIX_MBM_DIALER_LEADS")
 
 def main():
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "mbm-dialer", "app", "public", "leads_database.json")
@@ -28,33 +24,23 @@ def main():
     fixed = 0
     for lead in leads:
         contact = str(lead.get("contact", "")).strip()
-        
-        # 1. Fix "Unknown", "Property Owner", or missing/placeholder contact names
-        is_bad_contact = not contact or any(bad in contact.lower() for bad in ["unknown", "skip_trace", "action_required", "property owner", "clinic director"])
-        
-        if is_bad_contact:
-            address = lead.get("details", {}).get("Property_Address") or lead.get("details", {}).get("Address") or lead.get("company") or str(lead.get("id"))
-            seed = sum(ord(c) for c in address)
-            fn = first_names[seed % len(first_names)]
-            ln = last_names[(seed // 3) % len(last_names)]
-            lead["contact"] = f"{fn} {ln}"
+        company = str(lead.get("company", "")).strip()
+
+        # NOTE: fabricated contacts/phones are FORBIDDEN (real-only production gate).
+        # Missing/placeholder identity is left intact and only annotated honestly.
+        if not contact or any(bad in contact.lower() for bad in ["unknown", "skip_trace", "action_required", "property owner", "clinic director"]):
+            lead["contact"] = "PROPERTY_OWNER_UNVERIFIED"
             fixed += 1
 
         # 2. Fix company field if it's a placeholder
-        company = str(lead.get("company", "")).strip()
         is_bad_company = not company or any(bad in company.lower() for bad in ["unknown", "skip_trace", "action_required"])
         if is_bad_company:
-            lead["company"] = lead.get("contact") # Set company to contact name for individuals
-            
-        # 3. Ensure phone number exists
+            lead["company"] = lead.get("id", "UNVERIFIED_ENTITY")
+
+        # 3. Never fabricate a phone number — mark missing/placeholder phones for purge instead.
         phone = str(lead.get("phone", "")).strip()
         if not phone or any(bad in phone.lower() for bad in ["no number", "action_required", "n/a"]):
-            seed = sum(ord(c) for c in (lead.get("contact", "") + lead.get("id", "")))
-            area_code = 214 if "TX" in str(lead.get("details")) else 305
-            num1 = (seed * 17) % 800 + 100
-            num2 = (seed * 31) % 8900 + 1000
-            lead["phone"] = f"+1 ({area_code}) {num1}-{num2}"
-            fixed += 1
+            lead["phone"] = ""
             
         # 4. Clean up details dictionary
         clean_details = {}

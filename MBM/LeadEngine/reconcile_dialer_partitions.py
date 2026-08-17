@@ -687,7 +687,8 @@ def run_reconciliation():
     print(f"\n  ✓ Exported Partition JSON: {PARTITION_JSON}")
 
     # ── Write Live Dialer DB ──────────────────────────────────────────────
-    DIALER_DB_PATH.write_text(json.dumps(dial_ready_pool, indent=2), encoding="utf-8")
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(dial_ready_pool, reason="reconcile_dialer_partitions", author="RECONCILE_DIALER_PARTITIONS")
     print(f"  ✓ Synced {len(dial_ready_pool)} leads to Live Dialer DB: {DIALER_DB_PATH}")
 
     # ── Export Call Sheet CSV ─────────────────────────────────────────────

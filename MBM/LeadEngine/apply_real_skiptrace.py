@@ -14,11 +14,9 @@ except Exception:
     _SINGLE_WRITER = None
 
 def _save(verified_db, compact=False):
-    if _SINGLE_WRITER is not None:
-        _SINGLE_WRITER.full_replace(verified_db, author="APPLY_REAL_SKIPTRACE", allow_shrink=True)
-    else:
-        with open(DB_PATH, 'w', encoding='utf-8') as f:
-            json.dump(verified_db, f, indent=2)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(verified_db, reason="apply_real_skiptrace", allow_shrink=True, author="APPLY_REAL_SKIPTRACE")
 
 def run_ensurement():
     if not os.path.exists(DB_PATH):

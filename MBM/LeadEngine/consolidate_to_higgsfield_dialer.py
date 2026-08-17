@@ -239,13 +239,9 @@ def main():
         shutil.copy2(DIALER_DB, backup)
         print(f"\n  💾 Backup: {backup.name}")
 
-    try:
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-        from MBM.GLM.single_writer_lock import DialerSingleWriter
-        DialerSingleWriter().full_replace(master, author="CONSOLIDATE_HIGGSFIELD_DIALER")
-    except Exception:
-        with open(DIALER_DB, "w", encoding="utf-8") as f:
-            json.dump(master, f, indent=2)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(master, reason="consolidate_to_higgsfield_dialer", author="CONSOLIDATE_HIGGSFIELD_DIALER")
 
     # Stats
     verticals = {}

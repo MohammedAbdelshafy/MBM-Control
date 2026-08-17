@@ -228,7 +228,7 @@ def test_multi_channel_outreach_script_builder():
 
 
 def test_prospect_relevance_graph_querying():
-    """Verify structured graph queries across Vertical, Pain, Location, and Tier."""
+    """Verify structured graph queries across Vertical, Pain, Location, and Tier (REAL NPI supply)."""
     hunter = AIAssistantBuyerHunter()
     results = hunter.run_discovery_pipeline()
     graph_dict = results["graph"]
@@ -237,18 +237,17 @@ def test_prospect_relevance_graph_querying():
     # Test Graph Query Filter
     graph = ProspectRelevanceGraph(results["cards"])
 
-    # 1. Query by Vertical
-    hvac_nodes = graph.query(vertical="HVAC")
-    assert len(hvac_nodes) >= 1
-    assert any("Apex" in n["company"] for n in hvac_nodes)
+    # 1. Query by Vertical (real medical verticals from the NPI registry)
+    medical_nodes = graph.query(vertical="Medical")
+    assert len(medical_nodes) >= 1
 
-    # 2. Query by Location
+    # 2. Query by Location (nationwide NPI registry — TX present)
     tx_nodes = graph.query(location="TX")
-    assert len(tx_nodes) >= 10
+    assert len(tx_nodes) >= 1
 
     # 3. Query by Tier
-    hot_nodes = graph.query(tier="HOT")
-    assert len(hot_nodes) >= 3
+    high_nodes = graph.query(tier="HIGH INTENT")
+    assert len(high_nodes) >= 1
 
 
 def test_niche_discovery_clustering():
@@ -283,15 +282,21 @@ def test_idempotent_crm_ingestion():
 
 
 def test_zero_synthetic_identity_placeholders():
-    """Verify that all high-intent cards use authentic real identities that pass verification gate."""
+    """Verify every high-intent card is REAL: passes the provenance gate, zero fabricated data."""
+    from MBM.LeadEngine.lead_provenance import LeadProvenanceGate
     hunter = AIAssistantBuyerHunter()
     results = hunter.run_discovery_pipeline()
+    gate = LeadProvenanceGate()
 
+    assert results["summary"]["hot_buyers"] == 0, "Zero-synthetic rule: HOT personas must never appear"
     for card in results["cards"]:
-        if card["intent_tier"] in ["HOT", "HIGH INTENT"]:
-            assert not is_placeholder_identity({"contact": card["decision_maker"], "company": card["company"]})
-            assert len(card["phone"]) >= 10
-            assert card["email"]
-            assert card["why_this_company"]
-            assert card["why_now"]
-            assert card["outreach_phone_angle"]
+        assert not is_placeholder_identity({"contact": card["decision_maker"], "company": card["company"]})
+        assert len(card["phone"]) >= 10
+        # Every card must pass the strict provenance gate (source, ref, method, timestamps).
+        assert gate.evaluate(card)["ok"], f"Card failed provenance gate: {card['company']}"
+        assert card["source"] == "CMS NPI Registry API v2.1"
+        assert card["source_reference"] == "NPI-REGISTRY"
+        assert card["verification_method"] == "npi_registry_api"
+        assert card["why_this_company"]
+        assert card["why_now"]
+        assert card["outreach_phone_angle"]
