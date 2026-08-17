@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total_artifacts_read": 242,
-    "unique_npis": 242,
+    "total_artifacts_read": 261,
+    "unique_npis": 261,
     "duplicate_npis": 0,
-    "unique_phones": 242,
+    "unique_phones": 261,
     "duplicate_phones": 0,
     "invalid_provenance_count": 0,
-    "manifest_generated_at": "2026-08-16 23:20:26 UTC"
+    "manifest_generated_at": "2026-08-17 00:59:05 UTC"
   },
   "manifest": [
     {
@@ -21,6 +21,19 @@
       "callability": 95.0,
       "priority": "3",
       "deal_score": 82.0
+    },
+    {
+      "artifact_filename": "lead_NPI-1003234238.json",
+      "npi": "1003234238",
+      "normalized_phone": "+18176561215",
+      "company": "ABC FAMILY DENTAL BASSWOOD PLLC",
+      "contact": "PETER VO",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
     },
     {
       "artifact_filename": "lead_NPI-1003664822.json",
@@ -296,6 +309,19 @@
       "deal_score": 82.0
     },
     {
+      "artifact_filename": "lead_NPI-1083840979.json",
+      "npi": "1083840979",
+      "normalized_phone": "+17737285333",
+      "company": "1ST FAMILY DENTAL OF AURORA INC",
+      "contact": "VESNA BELKIC",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
+    },
+    {
       "artifact_filename": "lead_NPI-1083932099.json",
       "npi": "1083932099",
       "normalized_phone": "+12105203737",
@@ -307,6 +333,32 @@
       "callability": 95.0,
       "priority": "3",
       "deal_score": 82.0
+    },
+    {
+      "artifact_filename": "lead_NPI-1083957161.json",
+      "npi": "1083957161",
+      "normalized_phone": "+17704332414",
+      "company": "AF IMAGING & DIAGNOSTICS, INC.",
+      "contact": "AARON LARSEN",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "3",
+      "deal_score": 82.0
+    },
+    {
+      "artifact_filename": "lead_NPI-1093048571.json",
+      "npi": "1093048571",
+      "normalized_phone": "+17137743999",
+      "company": "A 1 DENTAL",
+      "contact": "JEANNETH CASTRO",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
     },
     {
       "artifact_filename": "lead_NPI-1093633984.json",
@@ -327,6 +379,19 @@
       "normalized_phone": "+12818536653",
       "company": "610 MEDICAL CLINIC INC",
       "contact": "T J BOYCE",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "3",
+      "deal_score": 82.0
+    },
+    {
+      "artifact_filename": "lead_NPI-1104092352.json",
+      "npi": "1104092352",
+      "normalized_phone": "+17137741136",
+      "company": "21ST CENTURY DENTISTRY",
+      "contact": "WENDER JIANG",
       "verification_method": "npi_registry_api",
       "first_seen_date": "2026-08-16",
       "new_today": true,
@@ -379,6 +444,19 @@
       "normalized_phone": "+14402368484",
       "company": "A T & ASSOCIATES, INC.",
       "contact": "ADNAN TAHIR",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "3",
+      "deal_score": 82.0
+    },
+    {
+      "artifact_filename": "lead_NPI-1114795721.json",
+      "npi": "1114795721",
+      "normalized_phone": "+19549930542",
+      "company": "ADVANCE PRACTICE PRACTITIONER LLC",
+      "contact": "ALLISTAIR SMITH",
       "verification_method": "npi_registry_api",
       "first_seen_date": "2026-08-16",
       "new_today": true,
@@ -1115,6 +1193,19 @@
       "deal_score": 82.0
     },
     {
+      "artifact_filename": "lead_NPI-1336290758.json",
+      "npi": "1336290758",
+      "normalized_phone": "+18172638500",
+      "company": "ACCESS DENTAL OF MCCART",
+      "contact": "TIEN PHAN",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
+    },
+    {
       "artifact_filename": "lead_NPI-1336744119.json",
       "npi": "1336744119",
       "normalized_phone": "+12175039546",
@@ -1295,6 +1386,19 @@
       "callability": 95.0,
       "priority": "3",
       "deal_score": 82.0
+    },
+    {
+      "artifact_filename": "lead_NPI-1417252008.json",
+      "npi": "1417252008",
+      "normalized_phone": "+18174962343",
+      "company": "ABC 123 DENTAL CENTERS PROFESSIONAL",
+      "contact": "PETER VO",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
     },
     {
       "artifact_filename": "lead_NPI-1417294232.json",
@@ -1934,6 +2038,19 @@
       "deal_score": 82.0
     },
     {
+      "artifact_filename": "lead_NPI-1578682191.json",
+      "npi": "1578682191",
+      "normalized_phone": "+19198181590",
+      "company": "A UNITED COMMUNITY, LLC",
+      "contact": "LISA BRADLEY",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "3",
+      "deal_score": 82.0
+    },
+    {
       "artifact_filename": "lead_NPI-1578736112.json",
       "npi": "1578736112",
       "normalized_phone": "+13125440200",
@@ -2017,6 +2134,19 @@
       "normalized_phone": "+17134666666",
       "company": "A DENTAL GROUP",
       "contact": "SHAHRZAD JAMEA",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
+    },
+    {
+      "artifact_filename": "lead_NPI-1609390632.json",
+      "npi": "1609390632",
+      "normalized_phone": "+17192662717",
+      "company": "38TH MODERN DENTAL PRACTICE, LLC",
+      "contact": "SCOTT FREDERICK",
       "verification_method": "npi_registry_api",
       "first_seen_date": "2026-08-16",
       "new_today": true,
@@ -2207,6 +2337,19 @@
       "deal_score": 92.0
     },
     {
+      "artifact_filename": "lead_NPI-1659790897.json",
+      "npi": "1659790897",
+      "normalized_phone": "+17148458890",
+      "company": "7TH AND BELL DENTAL GROUP LLP",
+      "contact": "PAUL GEBHART",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
+    },
+    {
       "artifact_filename": "lead_NPI-1679066658.json",
       "npi": "1679066658",
       "normalized_phone": "+14234765990",
@@ -2311,6 +2454,19 @@
       "deal_score": 82.0
     },
     {
+      "artifact_filename": "lead_NPI-1710099353.json",
+      "npi": "1710099353",
+      "normalized_phone": "+18139911088",
+      "company": "AESTHETIC DENTISTRY OF NEW TAMPA",
+      "contact": "FARDIN ZARE",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "3",
+      "deal_score": 82.0
+    },
+    {
       "artifact_filename": "lead_NPI-1710450192.json",
       "npi": "1710450192",
       "normalized_phone": "+13036913333",
@@ -2402,6 +2558,19 @@
       "deal_score": 82.0
     },
     {
+      "artifact_filename": "lead_NPI-1730363094.json",
+      "npi": "1730363094",
+      "normalized_phone": "+17735099200",
+      "company": "1ST FAMILY DENTAL INC",
+      "contact": "VESNA BELKIC",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
+    },
+    {
       "artifact_filename": "lead_NPI-1730532821.json",
       "npi": "1730532821",
       "normalized_phone": "+16158157673",
@@ -2441,6 +2610,19 @@
       "deal_score": 82.0
     },
     {
+      "artifact_filename": "lead_NPI-1740464874.json",
+      "npi": "1740464874",
+      "normalized_phone": "+17735615106",
+      "company": "1ST FAMILY DENTAL OF LINCOLN",
+      "contact": "VESNA BELKIC",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
+    },
+    {
       "artifact_filename": "lead_NPI-1740590132.json",
       "npi": "1740590132",
       "normalized_phone": "+13059332303",
@@ -2465,6 +2647,19 @@
       "callability": 95.0,
       "priority": "3",
       "deal_score": 82.0
+    },
+    {
+      "artifact_filename": "lead_NPI-1740945260.json",
+      "npi": "1740945260",
+      "normalized_phone": "+18177257500",
+      "company": "1ST DENTAL & ORTHODONTICS",
+      "contact": "OMAR FETOUH",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
     },
     {
       "artifact_filename": "lead_NPI-1750989109.json",
@@ -2675,6 +2870,19 @@
       "deal_score": 82.0
     },
     {
+      "artifact_filename": "lead_NPI-1811255219.json",
+      "npi": "1811255219",
+      "normalized_phone": "+19195561008",
+      "company": "A PLUS FAMILY CARE, PLLC",
+      "contact": "KATHERINE BARRETT",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "3",
+      "deal_score": 82.0
+    },
+    {
       "artifact_filename": "lead_NPI-1811681059.json",
       "npi": "1811681059",
       "normalized_phone": "+16026882342",
@@ -2810,6 +3018,19 @@
       "normalized_phone": "+13035239917",
       "company": "A C D C INC.",
       "contact": "JOHN TRAHAN",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "3",
+      "deal_score": 82.0
+    },
+    {
+      "artifact_filename": "lead_NPI-1851150981.json",
+      "npi": "1851150981",
+      "normalized_phone": "+17574635105",
+      "company": "AFFORDABLE DENTURES & IMPLANTS - VIRGINIA BEACH III, P.C.",
+      "contact": "MUAZZAM FAROOQ",
       "verification_method": "npi_registry_api",
       "first_seen_date": "2026-08-16",
       "new_today": true,
@@ -3026,6 +3247,19 @@
       "deal_score": 92.0
     },
     {
+      "artifact_filename": "lead_NPI-1942927843.json",
+      "npi": "1942927843",
+      "normalized_phone": "+18178094860",
+      "company": "3515 SYCAMORE SCHOOL RD PLLC",
+      "contact": "GUNJAN DHIR",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "3",
+      "deal_score": 82.0
+    },
+    {
       "artifact_filename": "lead_NPI-1952009995.json",
       "npi": "1952009995",
       "normalized_phone": "+14072127113",
@@ -3089,6 +3323,19 @@
       "callability": 95.0,
       "priority": "3",
       "deal_score": 82.0
+    },
+    {
+      "artifact_filename": "lead_NPI-1962264226.json",
+      "npi": "1962264226",
+      "normalized_phone": "+18175298151",
+      "company": "290 CROSSING DENTAL AND ORTHODONTICS PLLC",
+      "contact": "RAFFY KOUYOUMDJIAN",
+      "verification_method": "npi_registry_api",
+      "first_seen_date": "2026-08-16",
+      "new_today": true,
+      "callability": 95.0,
+      "priority": "1",
+      "deal_score": 92.0
     },
     {
       "artifact_filename": "lead_NPI-1962790626.json",
