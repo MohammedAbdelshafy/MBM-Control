@@ -219,7 +219,13 @@ def is_low_entropy_phone(phone: Any) -> bool:
 
 def is_placeholder_phone(phone: Any) -> bool:
     d = _digits(phone)
-    return (not d) or len(d) < 10 or d.startswith(("0", "1")) or "555" in d or "000" in d
+    # _digits strips a leading country code "1", so a remaining leading "1"
+    # is a legitimate NANP trunk prefix (e.g. +11787306835 -> 1787306835).
+    # Only flag: 0-leading area codes, short numbers, and reserved NANP
+    # patterns. "555" is reserved only in the 3-digit EXCHANGE position
+    # (digits[3:6]); a "555"/"000" substring in the subscriber part is real
+    # (e.g. 216-445-8000, 702-545-0555) and must not be rejected.
+    return (not d) or len(d) < 10 or d.startswith("0") or d[3:6] == "555" or d.startswith("000")
 
 
 # ---------------------------------------------------------------------------
