@@ -1,0 +1,28 @@
+{
+  "mode": "WARM",
+  "opening": "Hey JONATHAN SNIPES, Omar here. I know I caught you out of the blue. Saw 3 PEAKS MEDICAL GROUP, P.C.'s recent operations in PHOENIX and had a quick 20-second question on how your team manages front-office intake spikes?",
+  "first_question": "How is your team currently handling unworked inbound lead follow-ups?",
+  "discovery_questions": [
+    "How is your team currently handling unworked inbound lead follow-ups?",
+    "What happens when front-office staff are occupied and new inquiries call in?"
+  ],
+  "quantification_question": "If you recover 10 hours of staff admin time and 2 missed deals each month, what is that worth to your bottom line?",
+  "reflection_script": "So if I understand correctly, the issue isn't lead volume \u2014 it's that high-value opportunities slip through when your team is occupied. Is that fair?",
+  "ai_fit_transition": "We deploy custom AI voice assistants that automate that exact bottleneck so zero inquiries slip through to voicemail. Would you be open to a 2-minute audio simulation showing how it handles a live scenario?",
+  "objection_playbook": {
+    "PRICE": "I completely understand. Our retainer is $2,000.00/mo with a 30-day performance SLA \u2014 recovering just two missed jobs pays for 100% of the cost. If it doesn't, you cancel immediately.",
+    "TIMING": "Totally respect that you're busy right now. When is a better 5-minute window tomorrow morning to reconnect?",
+    "TRUST": "Fair point \u2014 we don't ask for any trust upfront. We run a 5-minute live diagnostic simulation with your actual test scenarios so you hear it work before deciding.",
+    "AI_SKEPTICISM": "I hear that a lot because most AI chatbots sound robotic. Ours uses sub-second neural voice trained specifically on your industry's exact terminology and workflow.",
+    "ALREADY_HAVE_SOLUTION": "That's great you have a system in place. Most operators we work with use this as a 24/7 backup overflow failover so zero calls drop when your team is occupied.",
+    "DO_IT_INTERNALLY": "Your team's time is best spent closing deals and serving clients, not playing phone tag. The AI handles the repetitive triage at a fraction of human staffing cost.",
+    "NO_NEED": "Understood. If you ever experience missed calls during peak season, keep us in mind.",
+    "NO_BUDGET": "If budget is tight, that's even more reason to stop leaking high-value leads. We can start with our diagnostic audit at zero upfront commitment.",
+    "AUTHORITY": "Got it. Who on your management team handles operational technology and intake software so I can include them?",
+    "SECURITY": "All our pipelines are SOC-2 and HIPAA compliant with end-to-end encryption. Your client data never trains public models.",
+    "INTEGRATION": "We connect directly via webhooks to your existing CRM and calendar (ServiceTitan, Clio, Dentrix, Procore, HubSpot) with zero migration hassle.",
+    "STAFF": "This doesn't replace your staff \u2014 it empowers them by handling repetitive triage and 2 AM emergencies so they arrive to work with organized, booked appointments."
+  },
+  "primary_cta": "Would it be helpful if I sent over a 1-page architecture tear-down and audio benchmark to your email?",
+  "fallback_cta": "No problem at all JONATHAN SNIPES. What's the best email address to send our 1-page operational benchmark report to?"
+}

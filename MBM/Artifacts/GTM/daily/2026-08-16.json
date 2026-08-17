@@ -1,117 +1,30 @@
 {
-  "date": "2026-08-16",
-  "target": 150,
-  "daily": {
-    "leads": {
-      "verified": 150,
-      "hot": 0,
-      "high": 150,
-      "warm": 0,
-      "new_today": 150,
-      "callable": 150,
-      "shortfall": 0
-    },
-    "offers": {
-      "ready": 150,
-      "breakdown": {}
-    },
-    "scripts": {
-      "ready": 150,
-      "total": 150
-    },
-    "email": {
-      "prepared": 0,
-      "sent": 0,
-      "replies": 0,
-      "positive": 0,
-      "followups": 0,
-      "approved": 0,
-      "bounce": 0,
-      "opt_out": 0
-    },
-    "calling": {
-      "queued": 150,
-      "attempted": 10,
-      "connected": 9,
-      "qualified": 9,
-      "dialer_ok": true
-    },
-    "meetings": {
-      "requested": 4,
-      "booked": 4,
-      "confirmed": 4,
-      "today": 0,
-      "briefs_ready": 5
-    },
-    "pipeline": {
-      "active_opportunities": 6,
-      "proposals": 2,
-      "pipeline_value_usd": 16000.0,
-      "expected_value_usd": 6400.0,
-      "confirmed_revenue_usd": 0.0
-    },
-    "alerts": {
-      "critical": 0,
-      "verification_failures": 0,
-      "duplicates": 0
-    }
-  },
-  "top_actions": [
-    {
-      "rank": 1,
-      "company": "Titan Infrastructure & Civil Contracting",
-      "buyer": "David Sterling",
-      "action": "PHONE",
-      "offer": "AI-ASSISTANT-CONTECH-TAKEOFF",
-      "priority": 28.83,
-      "phone": "+17134498823",
-      "id": "Titan Infrastructure & Civil Contracting"
-    },
-    {
-      "rank": 2,
-      "company": "Patriot Commercial Electric & Controls",
-      "buyer": "Greg Thornton",
-      "action": "PHONE",
-      "offer": "AI-ASSISTANT-CONTECH-TAKEOFF",
-      "priority": 22.76,
-      "phone": "+18178829100",
-      "id": "Patriot Commercial Electric & Controls"
-    },
-    {
-      "rank": 3,
-      "company": "Luxe Sculpt & Aesthetics Med Spa",
-      "buyer": "Dr. Elena Vasquez",
-      "action": "PHONE",
-      "offer": "AI-ASSISTANT-MEDSPA-VIP",
-      "priority": 21.68,
-      "phone": "+18179924401",
-      "id": "Luxe Sculpt & Aesthetics Med Spa"
-    },
-    {
-      "rank": 4,
-      "company": "Sterling & Vance Injury Law Firm",
-      "buyer": "Robert Vance",
-      "action": "PHONE",
-      "offer": "AI-ASSISTANT-LEGAL-INTAKE",
-      "priority": 21.24,
-      "phone": "+12147391100",
-      "id": "Sterling & Vance Injury Law Firm"
-    },
-    {
-      "rank": 5,
-      "company": "Premier Smile Partners Dental Group",
-      "buyer": "Dr. Sarah Lin",
-      "action": "PHONE",
-      "offer": "AI-ASSISTANT-DENTAL-RECALL",
-      "priority": 15.72,
-      "phone": "+19726658140",
-      "id": "Premier Smile Partners Dental Group"
-    }
-  ],
-  "sources": {
-    "factory": "2026-08-16",
-    "production_metrics": true,
-    "email_state": false,
-    "meetings_index": 5
-  }
+  "run_date": "2026-08-16",
+  "target": 100,
+  "raw_signals": 0,
+  "candidates_evaluated": 0,
+  "verified_new": 0,
+  "callable_new": 0,
+  "hot_count": 0,
+  "high_count": 0,
+  "warm_count": 0,
+  "historical_overlap": 0,
+  "duplicates_filtered": 0,
+  "suppressed": 0,
+  "quarantined": 0,
+  "rejected": 0,
+  "shortfall": 100,
+  "phone_verified_count": 0,
+  "email_available_count": 0,
+  "decision_maker_verified_count": 0,
+  "verification_rate_pct": 0.0,
+  "callability_rate_pct": 100.0,
+  "offer_breakdown": {},
+  "vertical_breakdown": {},
+  "geography_breakdown": {},
+  "source_breakdown": {},
+  "pipeline_value_usd": 0.0,
+  "verified_leads": [],
+  "dialer_synced": false,
+  "dialer_total_count": 0
 }

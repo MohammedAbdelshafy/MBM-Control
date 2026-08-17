@@ -1,0 +1,22 @@
+{
+  "sku": "AI-ASSISTANT-DENTAL-RECALL",
+  "offer_name": "AI Front-Desk Overflow & Hygiene Recall Recovery Agent",
+  "problem_solved": "Front desk overwhelmed with incoming calls and 600+ overdue hygiene recall patients left uncalled",
+  "core_workflow": "Answers overflow calls during morning rushes, proactively dials overdue hygiene recall patients, reschedules directly in Dentrix/Eaglesoft",
+  "implementation_scope": "Dentrix/Eaglesoft/OpenDental API connector, HIPAA-compliant neural voice bridge, automated SMS confirmation",
+  "pricing_model": "MONTHLY_RETAINER",
+  "setup_fee_usd": 1000.0,
+  "monthly_fee_usd": 1800.0,
+  "performance_fee": "$15 per completed hygiene recall appointment",
+  "neteller_checkout_link": "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=1800.00&currency=USD&item=AI-ASSISTANT-DENTAL-RECALL",
+  "entry_diagnostic": "Dormant Patient Revenue Leakage Calculation Audit",
+  "expansion_paths": [
+    "Unaccepted Treatment Plan Follow-Up Bot",
+    "After-Hours Dental Emergency Intake"
+  ],
+  "roi_hypothesis": {
+    "observed": "Average dental hygiene appointment produces $200 - $350 in revenue plus diagnostic upside",
+    "estimated": "A practice with 800 unscheduled recall patients has $160,000+ in trapped revenue",
+    "assumed": "Recovering 15 overdue hygiene patients/mo generates $3,750+ recurring production for a $1,800 fee (2x ROI)"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "quarantined_at": "2026-08-17T00:42:56Z",
+  "reason": "150 GEN-FAC synthetic rows fabricated from State Business Licensing Directory persona pools (0/150 pass LeadProvenanceGate)",
+  "source_file": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\MBM\\Artifacts\\daily_lead_factory_2026-08-16.json",
+  "verified_claim": 150,
+  "real_replacement": "MBM/Artifacts/GTM/daily/2026-08-16/lead_NPI-*.json (261 real CMS NPI artifacts)",
+  "synthetic_offer_artifacts_quarantined": 1527,
+  "quarantined_offer_files_at": "2026-08-17T01:20:02Z"
+}

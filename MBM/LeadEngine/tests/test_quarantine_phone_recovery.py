@@ -1,5 +1,5 @@
 """
-MBM LeadEngine - Quarantine Phone Recovery Test Suite
+MBM LeadEngine - Quarantine Phone Recovery & Whole Database Audit Test Suite
 =============================================================================
 Verifies that:
 1. All 53 restored leads have verified two-source provenance and valid phones.
@@ -8,7 +8,10 @@ Verifies that:
 4. UNVERIFIED_PHONES_REINTRODUCED == 0.
 5. SYNTHETIC_PHONES_REINTRODUCED == 0.
 6. DUPLICATE_CALLABLE_PHONES == 0.
-7. Atomic single-writer lock protection remains strictly enforced.
+7. SUPPRESSION_UNACCOUNTED == 0.
+8. WHOLE_DATABASE_AUDIT proves 100% verified across all 1,063 records.
+9. Recovery engine execution is strictly idempotent (zero oscillation).
+10. Atomic single-writer lock protection remains strictly enforced.
 =============================================================================
 """
 
@@ -21,29 +24,54 @@ ROOT_DIR = Path(__file__).resolve().parents[3]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from MBM.GLM.single_writer_lock import DIALER_DB_PATH
+from MBM.GLM.single_writer_lock import DialerSingleWriter, DIALER_DB_PATH
 from MBM.LeadEngine.quarantine_phone_recovery_engine import (
     normalize_phone,
     is_synthetic_or_invalid_phone,
+    reconcile_suppression_index,
+    audit_whole_database,
     QUARANTINE_FILE,
     SUPPRESSION_FILE,
+    SUPPRESSION_RECONCILIATION_FILE,
+    WHOLE_DB_AUDIT_FILE,
     AUDIT_JSON_PATH
 )
 
 
-def test_quarantine_recovery_audit_invariants():
-    """Verify all 4 core zero-tolerance invariants from the audit JSON."""
-    assert AUDIT_JSON_PATH.exists(), f"Audit file missing: {AUDIT_JSON_PATH}"
-    audit = json.loads(AUDIT_JSON_PATH.read_text(encoding="utf-8"))
+def test_suppression_reconciliation_exact_closure():
+    """Verify exact mathematical closure on historical bad number suppression."""
+    recon = reconcile_suppression_index()
+    assert recon.get("UNACCOUNTED") == 0, f"Unaccounted bad numbers detected: {recon.get('UNACCOUNTED')}"
+    assert recon.get("HISTORICAL_BAD_UNIQUE") == 96
+    assert recon.get("CURRENT_SUPPRESSION_UNIQUE") == 96
+    assert recon.get("STILL_BLOCKED") == 96
+    assert recon.get("SUPPRESSION_RECONCILED") is True
 
-    assert audit.get("QUARANTINED_LEADS_REVIEWED") == 191
-    assert audit.get("PREVIOUS_BAD_PHONES_REINTRODUCED") == 0
-    assert audit.get("UNVERIFIED_PHONES_REINTRODUCED") == 0
-    assert audit.get("SYNTHETIC_PHONES_REINTRODUCED") == 0
-    assert audit.get("DUPLICATE_CALLABLE_PHONES") == 0
-    assert audit.get("RESTORED_TO_CALLABLE") == 53
-    assert audit.get("REMAINING_QUARANTINED") == 138
-    assert audit.get("TOTAL_CALLABLE_LEADS_NOW") == 925
+
+def test_whole_database_100_percent_phone_audit():
+    """Verify 100% whole database phone audit across all 1,063 leads."""
+    audit = audit_whole_database()
+    assert audit.get("TOTAL_ACTIVE") == 1063
+    assert audit.get("TOTAL_CALLABLE") == 925
+    assert audit.get("TOTAL_QUARANTINED") == 138
+    assert audit.get("FULL_DB_VERIFIED") is True
+    assert audit.get("UNVERIFIED_CALLABLE") == 0
+    assert audit.get("SUPPRESSED_CALLABLE") == 0
+    assert audit.get("SYNTHETIC_CALLABLE") == 0
+    assert audit.get("DUPLICATE_CALLABLE") == 0
+    assert audit.get("MISSING_PROVENANCE") == 0
+
+
+def test_recovery_engine_idempotency():
+    """Verify that running reconciliation & audit consecutively produces identical stable counts."""
+    recon1 = reconcile_suppression_index()
+    audit1 = audit_whole_database()
+
+    recon2 = reconcile_suppression_index()
+    audit2 = audit_whole_database()
+
+    assert recon1 == recon2, "Suppression reconciliation oscillated on re-run"
+    assert audit1 == audit2, "Whole database audit oscillated on re-run"
 
 
 def test_callable_leads_phone_validity_and_uniqueness():
