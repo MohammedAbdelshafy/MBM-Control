@@ -47,6 +47,7 @@ from MBM.SalesforceOS.salesforce_os import SalesforceOS
 from MBM.LeadEngine.dialer_verification_gate import check_lead, is_valid_phone, is_valid_name
 from MBM.LeadEngine.push_top_100_real_estate_and_buyers_to_dialer import normalize_dialer_phone
 from MBM.Scripts.neteller_config import neteller_link
+from MBM.GLM.single_writer_lock import DialerSingleWriter
 
 ARTIFACTS = ROOT_DIR / "MBM" / "Artifacts"
 DIALER_DB_PATH = ROOT_DIR / "mbm-dialer" / "app" / "public" / "leads_database.json"
@@ -471,7 +472,7 @@ def run_pre_live_audit() -> Dict[str, Any]:
     except Exception as e:
         print(f"[WARN] Existing DB merge skipped: {e}")
 
-    DIALER_DB_PATH.write_text(json.dumps(dialer_payloads, indent=2), encoding="utf-8")
+    DialerSingleWriter().full_replace(dialer_payloads, author="PRE_LIVE_SALES_ACCEPTANCE")
     print(f"\n  ✓ Synced {len(dialer_payloads)} verified truthful leads to React Dialer DB: {DIALER_DB_PATH}")
     print(f"      • pool leads: {len(master_dialer_feed)}")
     print(f"      • canonical memory merged: {canonical_merged}")

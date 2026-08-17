@@ -1,6 +1,16 @@
 import json
 import os
 import sys
+from pathlib import Path
+
+def _save(leads, db_path):
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+        from MBM.GLM.single_writer_lock import DialerSingleWriter
+        DialerSingleWriter().full_replace(leads, author="FIX_MBM_DIALER_LEADS")
+    except Exception:
+        with open(db_path, "w", encoding="utf-8") as f:
+            json.dump(leads, f, indent=2, default=str)
 
 def main():
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "mbm-dialer", "app", "public", "leads_database.json")
@@ -68,8 +78,7 @@ def main():
             
         lead["details"]["Call_Script"] = script
 
-    with open(db_path, "w", encoding="utf-8") as f:
-        json.dump(leads, f, indent=2, default=str)
+    _save(leads, db_path)
         
     print(f"Successfully verified {len(leads)} leads. Fixed/updated contact info and regenerated personalized scripts.")
 

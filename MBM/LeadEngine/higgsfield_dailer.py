@@ -99,8 +99,9 @@ def create_enriched_lead_record(lead_id, enriched_lead):
     enriched = enrich_lead_with_visuals(lead)
     
     # Save back
-    with open(leads_db, "w", encoding="utf-8") as f:
-        json.dump(leads, f, indent=2, ensure_ascii=False)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(leads, reason="higgsfield_dailer", author="HIGGSFIELD_DAILER")
     
     print(f"[HIGHSFFIELD DAILER] Lead {lead_id} enriched with visuals")
     return enriched

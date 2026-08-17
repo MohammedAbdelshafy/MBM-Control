@@ -464,11 +464,16 @@ def stamp_identity_into_dialer_db(result: IdentityResult | dict, db_path: Path |
             lead["database_ownership_verified"] = _has_authoritative_ownership_evidence(lead)
             patched += 1
     if patched:
-        if isinstance(data, list):
-            db_path.write_text(json.dumps(arr, indent=2), encoding="utf-8")
-        else:
-            data["leads"] = arr
-            db_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        try:
+            sys.path.insert(0, str(ROOT_DIR))
+            from MBM.GLM.single_writer_lock import DialerSingleWriter
+            DialerSingleWriter().full_replace(arr, author="OWNER_IDENTITY_STAMP")
+        except Exception:
+            if isinstance(data, list):
+                db_path.write_text(json.dumps(arr, indent=2), encoding="utf-8")
+            else:
+                data["leads"] = arr
+                db_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
     return patched
 
 

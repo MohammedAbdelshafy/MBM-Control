@@ -1,11 +1,20 @@
 import json
 import csv
 import os
+import sys
 from datetime import datetime
+from pathlib import Path
 
 DATABASE_PATH = "mbm-dialer/app/public/leads_database.json"
 NPI_CSV = "MBM/Artifacts/npi_verified_callsheet.csv"
 RE_CSV = "us_real_estate_top_200_prospects.csv"
+
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.GLM.single_writer_lock import DialerSingleWriter
+    _SINGLE_WRITER = DialerSingleWriter()
+except Exception:
+    _SINGLE_WRITER = None
 
 # Pre-defined scripts per vertical
 SCRIPTS = {
@@ -124,8 +133,11 @@ def run():
     final_list = [lead for lead in db_map.values() if lead.get("phone") and "ACTION_REQUIRED" not in lead.get("phone")]
     
     # Save back to database
-    with open(DATABASE_PATH, 'w', encoding='utf-8') as f:
-        json.dump(final_list, f, indent=2)
+    if _SINGLE_WRITER is not None:
+        _SINGLE_WRITER.full_replace(final_list, author="DISTRIBUTE_LEADS_AND_SCRIPTS")
+    else:
+        with open(DATABASE_PATH, 'w', encoding='utf-8') as f:
+            json.dump(final_list, f, indent=2)
         
     print(f"Success! {len(final_list)} total leads distributed into sections with verified scripts.")
     

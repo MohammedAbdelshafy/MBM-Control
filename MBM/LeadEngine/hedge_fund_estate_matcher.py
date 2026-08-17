@@ -168,8 +168,15 @@ def main():
             })
 
     # Save database
-    with open(db_path, "w", encoding="utf-8") as f:
-        json.dump(leads, f, indent=2, default=str)
+    try:
+        import sys as _sys
+        from pathlib import Path as _Path
+        _sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+        from MBM.GLM.single_writer_lock import DialerSingleWriter
+        DialerSingleWriter().full_replace(leads, author="HEDGE_FUND_ESTATE_MATCHER")
+    except Exception:
+        with open(db_path, "w", encoding="utf-8") as f:
+            json.dump(leads, f, indent=2, default=str)
 
     # 5. Output Matched Opportunity Report in required Industrial Exchange format
     print("================================================================================")

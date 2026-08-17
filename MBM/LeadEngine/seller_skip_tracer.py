@@ -51,6 +51,14 @@ REPORT = LOGS / "seller_skiptrace_report.json"
 DEFAULT_VERTICALS = ["Real Estate Sellers", "Texas Real Estate", "Master Catch-All"]
 
 try:
+    sys.path.insert(0, str(BASE.parent.parent))
+    from MBM.GLM.single_writer_lock import DialerSingleWriter
+    _SINGLE_WRITER = DialerSingleWriter()
+except Exception as e:
+    print(f"[WARN] Single-writer gateway unavailable ({e}); using direct write fallback.")
+    _SINGLE_WRITER = None
+
+try:
     from dotenv import load_dotenv
     load_dotenv(BASE.parent.parent / ".env")
 except ImportError:
@@ -383,6 +391,12 @@ def load_db():
 
 def save_db(db, apply=True):
     if not apply:
+        return
+    if _SINGLE_WRITER is not None:
+        res = _SINGLE_WRITER.full_replace(db, author="SELLER_SKIP_TRACER")
+        if not res.get("ok"):
+            raise RuntimeError(f"Single-writer commit failed: {res}")
+        log(f"Saved {res['final_count']} leads via single-writer gateway")
         return
     # Backups go OUTSIDE the served app/public dir — .bak files written into the
     # Vite-watched public folder crash the dev server (EBUSY watcher).

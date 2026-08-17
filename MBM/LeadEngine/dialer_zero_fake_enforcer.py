@@ -94,8 +94,9 @@ def main():
         print(f"  {lead.get('contact','?'):<30} | {lead.get('phone','?'):<18} | {lead.get('vertical','?')}")
 
     # Save cleaned database
-    with open(DB, "w", encoding="utf-8") as f:
-        json.dump(kept, f, indent=2, default=str)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(kept, reason="zero_fake_enforcer", allow_shrink=True, author="ZERO_FAKE_ENFORCER")
 
     print(f"\n[DONE] Saved {len(kept)} verified leads to leads_database.json")
     print(f"[DONE] Purged {removed_total} entries without real name + real phone.")

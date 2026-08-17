@@ -383,5 +383,9 @@ class CanonicalDealMemory:
         filtered_existing = [e for e in existing if e.get("phone") not in existing_phones]
 
         final_feed = payloads + filtered_existing
-        out_path.write_text(json.dumps(final_feed, indent=2), encoding="utf-8")
+        try:
+            from MBM.GLM.single_writer_lock import DialerSingleWriter
+            DialerSingleWriter().full_replace(final_feed, author="CANONICAL_DEAL_ENGINE_EXPORT")
+        except Exception:
+            out_path.write_text(json.dumps(final_feed, indent=2), encoding="utf-8")
         return out_path

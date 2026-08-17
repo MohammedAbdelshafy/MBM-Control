@@ -1,9 +1,24 @@
 import json
 import os
 import sys
+from pathlib import Path
 from free_skip_tracer import FreeSkipTracer
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "mbm-dialer", "app", "public", "leads_database.json")
+
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.GLM.single_writer_lock import DialerSingleWriter
+    _SINGLE_WRITER = DialerSingleWriter()
+except Exception:
+    _SINGLE_WRITER = None
+
+def _save(verified_db, compact=False):
+    if _SINGLE_WRITER is not None:
+        _SINGLE_WRITER.full_replace(verified_db, author="APPLY_REAL_SKIPTRACE", allow_shrink=True)
+    else:
+        with open(DB_PATH, 'w', encoding='utf-8') as f:
+            json.dump(verified_db, f, indent=2)
 
 def run_ensurement():
     if not os.path.exists(DB_PATH):
@@ -70,12 +85,10 @@ def run_ensurement():
             
         # Save incrementally every 10 leads to not lose data
         if i % 10 == 0:
-            with open(DB_PATH, 'w', encoding='utf-8') as f:
-                json.dump(verified_db, f, indent=2)
+            _save(verified_db)
 
     # Final save
-    with open(DB_PATH, 'w', encoding='utf-8') as f:
-        json.dump(verified_db, f, indent=2)
+    _save(verified_db)
         
     print(f"\nEnsurement Complete. Kept {len(verified_db)} verified leads with real numbers.")
 

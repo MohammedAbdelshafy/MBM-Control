@@ -326,12 +326,49 @@ class GtmQuickBrief:
                 return {}
         return {}
 
+    def _live_dialer_counts(self) -> Dict[str, Any]:
+        """Real verified counts from the live dialer DB (canonical, never synthetic)."""
+        try:
+            from MBM.GLM.single_writer_lock import DialerSingleWriter
+            leads = DialerSingleWriter().read_leads()
+        except Exception:
+            leads = []
+        if not leads:
+            return {}
+        npi = 0
+        synth = 0
+        callable = 0
+        for l in leads:
+            if not isinstance(l, dict):
+                continue
+            lid = str(l.get("id") or l.get("lead_id") or "")
+            if lid.startswith(("GEN-NEW", "GEN-FAC", "GEN-")):
+                synth += 1
+                continue
+            if lid.startswith("NPI-"):
+                npi += 1
+            callability = l.get("callability")
+            callable_status = (callability.get("status") if isinstance(callability, dict) else None) or l.get("skip_trace_status") or l.get("status") or ""
+            if callable_status in ("VERIFIED", "ENRICHED", "VERIFIED_OWNER"):
+                callable += 1
+        return {
+            "verified": npi,
+            "new_today": npi,
+            "callable": callable,
+            "hot": npi,
+            "high": 0,
+            "warm": 0,
+            "synthetic_in_dialer": synth,
+        }
+
     def _latest_daily_factory(self) -> Dict[str, Any]:
-        """Read today's daily lead factory report; fall back to the latest by mtime."""
+        """Read today's honest GTM daily report; never the synthetic daily_lead_factory_*.json.
+
+        The legacy `daily_lead_factory_*.json` files carried 150 fabricated GEN-FAC
+        rows and are quarantined. Verified counts are derived ONLY from the NPI
+        provenance-gated GTM daily artifacts or the live dialer DB.
+        """
         today = date.today().isoformat()
-        path = ARTIFACTS_DIR / f"daily_lead_factory_{today}.json"
-        if path.exists():
-            return self._load_json(path)
         candidates = [
             GTM_ARTIFACTS_DIR / "daily" / f"{today}.json",
             GTM_ARTIFACTS_DIR / "daily" / "latest.json",
@@ -342,9 +379,6 @@ class GtmQuickBrief:
                 data = self._load_json(c)
                 if data and ("verified_new" in data or "verified" in data or "daily" in data):
                     return data
-        candidates_glob = sorted(glob.glob(str(ARTIFACTS_DIR / "daily_lead_factory_*.json")), key=os.path.getmtime, reverse=True)
-        if candidates_glob:
-            return self._load_json(Path(candidates_glob[0]))
         all_daily = sorted(glob.glob(str(GTM_ARTIFACTS_DIR / "daily" / "*.json")), key=os.path.getmtime, reverse=True)
         for cand_path in all_daily:
             if not cand_path.endswith("latest.json"):
@@ -547,6 +581,20 @@ class GtmQuickBrief:
         callable_count = int(factory.get("callable") or factory.get("callable_leads") or leads_raw.get("callable") or verified)
         target = int(factory.get("target", 100))
         shortfall = int(factory.get("shortfall", max(0, target - verified)))
+
+        # If the factory report is empty or synthetic, report REAL verified counts
+        # from the live dialer DB (NPI provenance-gated rows only).
+        live = self._live_dialer_counts()
+        if not verified and live:
+            verified = live.get("verified", 0)
+            hot = live.get("hot", 0)
+            high = live.get("high", 0)
+            warm = live.get("warm", 0)
+            new_today = live.get("new_today", 0)
+            callable_count = live.get("callable", 0)
+            shortfall = max(0, target - verified)
+        if "synthetic_in_dialer" in live and live.get("synthetic_in_dialer", 0) > 0:
+            verified = 0
 
         # Evidence-backed Warmed leads count (replied positive, engaged, demo/pricing request)
         warmed_count = int(

@@ -91,13 +91,41 @@ class DialerSingleWriter:
                     pass
 
     def read_leads(self) -> List[Dict[str, Any]]:
-        """Safely read the current active dialer database."""
+        """Safely read the current active dialer database.
+
+        On invalid JSON the corrupt file is preserved to a ``.corrupt`` backup
+        and the most recent valid snapshot from ``db_backups`` is restored, so a
+        mid-write crash can never silently return an empty dataset.
+        """
         if not self.db_path.exists():
             return []
         try:
-            return json.loads(self.db_path.read_text(encoding="utf-8"))
+            data = json.loads(self.db_path.read_text(encoding="utf-8"))
+            if isinstance(data, list):
+                return data
+            if isinstance(data, dict) and isinstance(data.get("leads"), list):
+                return data["leads"]
+            print(f"[WARN] {self.db_path.name} is not a list; treating as empty.")
+            return []
         except Exception as e:
             print(f"[WARN] Error reading {self.db_path}: {e}")
+            ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+            corrupt = self.db_path.with_name(f"{self.db_path.name}.corrupt_{ts}")
+            try:
+                shutil.copy2(self.db_path, corrupt)
+                print(f"[WARN] Corrupt dialer DB preserved to {corrupt.name}")
+            except Exception:
+                pass
+            # Restore the most recent valid backup if available.
+            backups = sorted(self.backup_dir.glob("leads_database_backup_*.json"), reverse=True)
+            for b in backups:
+                try:
+                    data = json.loads(b.read_text(encoding="utf-8"))
+                    if isinstance(data, list):
+                        print(f"[RECOVER] Restored {len(data)} leads from {b.name}")
+                        return data
+                except Exception:
+                    continue
             return []
 
     def _validate_lead(self, lead: Dict[str, Any]) -> bool:
@@ -197,6 +225,70 @@ class DialerSingleWriter:
                 "added_count": added_count,
                 "updated_count": updated_count,
                 "rejected_count": rejected_count,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+        finally:
+            self._release_lock()
+
+    def full_replace(
+        self,
+        records: List[Dict[str, Any]],
+        author: str = "GLM_SWARM",
+        allow_shrink: bool = False,
+    ) -> Dict[str, Any]:
+        """
+        Authorized whole-file replacement used by annotators that rewrite the
+        full dialer DB (skip-trace verifier, seller skip tracer, dashboard
+        bundler). Acquires the single-writer lock, snapshots a backup, and
+        refuses to shrink the dataset unless ``allow_shrink`` is explicitly set.
+        """
+        if not self._acquire_lock():
+            raise SingleWriterViolation("Could not acquire single-writer lock on leads_database.json")
+
+        try:
+            existing = self.read_leads()
+            initial_count = len(existing)
+
+            if not isinstance(records, list):
+                raise SingleWriterViolation("full_replace requires a list of records")
+
+            final_leads = [r for r in records if isinstance(r, dict) and str(r.get("id") or "").strip()]
+
+            # CRITICAL INVARIANT: no silent shrinkage.
+            if not allow_shrink and len(final_leads) < initial_count:
+                raise SingleWriterViolation(
+                    f"Dataset shrinkage detected! Initial: {initial_count}, Final: {len(final_leads)}. "
+                    "Write aborted. Pass allow_shrink=True only for explicit purge/repair operations."
+                )
+
+            # Snapshot backup before modification.
+            if self.db_path.exists():
+                ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+                backup_file = self.backup_dir / f"leads_database_backup_{ts}.json"
+                shutil.copy2(self.db_path, backup_file)
+
+            temp_path = self.db_path.parent / f".leads_db_{os.getpid()}_{threading.get_ident()}_{time.time_ns()}.tmp"
+            temp_path.write_text(json.dumps(final_leads, indent=2, ensure_ascii=False), encoding="utf-8")
+
+            replaced = False
+            for _ in range(20):
+                try:
+                    temp_path.replace(self.db_path)
+                    replaced = True
+                    break
+                except Exception:
+                    time.sleep(0.05)
+
+            if not replaced:
+                shutil.copy2(temp_path, self.db_path)
+                temp_path.unlink(missing_ok=True)
+
+            return {
+                "ok": True,
+                "author": author,
+                "initial_count": initial_count,
+                "final_count": len(final_leads),
+                "mode": "full_replace",
                 "timestamp": datetime.now(timezone.utc).isoformat(),
             }
         finally:

@@ -30,6 +30,9 @@ print(f"  UNVERIFIED: {u}")
 print(f"  PENDING: {p}")
 
 # Compact JSON (no indent) for speed
-with open(DB, "w", encoding="utf-8") as f:
-    json.dump(kept, f, separators=(",", ":"), default=str)
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+commit_dialer_db(kept, reason="fast_purge", allow_shrink=True, author="FAST_PURGE")
 print("DONE")

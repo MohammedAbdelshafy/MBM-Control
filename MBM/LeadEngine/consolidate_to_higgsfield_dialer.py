@@ -239,8 +239,13 @@ def main():
         shutil.copy2(DIALER_DB, backup)
         print(f"\n  💾 Backup: {backup.name}")
 
-    with open(DIALER_DB, "w", encoding="utf-8") as f:
-        json.dump(master, f, indent=2)
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+        from MBM.GLM.single_writer_lock import DialerSingleWriter
+        DialerSingleWriter().full_replace(master, author="CONSOLIDATE_HIGGSFIELD_DIALER")
+    except Exception:
+        with open(DIALER_DB, "w", encoding="utf-8") as f:
+            json.dump(master, f, indent=2)
 
     # Stats
     verticals = {}

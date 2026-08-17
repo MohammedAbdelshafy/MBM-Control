@@ -1,10 +1,18 @@
 import csv
 import json
+import sys
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent
 ARTIFACTS = BASE.parent / "Artifacts"
 OUTPUT = BASE.parent.parent / "mbm-dialer" / "app" / "public" / "leads_database.json"
+
+try:
+    sys.path.insert(0, str(BASE.parent.parent))
+    from MBM.GLM.single_writer_lock import DialerSingleWriter
+    _SINGLE_WRITER = DialerSingleWriter()
+except Exception:
+    _SINGLE_WRITER = None
 
 def load_csv(filename, vertical):
     path = ARTIFACTS / filename
@@ -82,8 +90,11 @@ def main():
     all_leads.extend(load_csv("all_leads_master.csv", "Master Catch-All"))
     all_leads.extend(load_csv("all_verified_numbers.csv", "Verified Numbers"))
     
-    with open(OUTPUT, "w", encoding="utf-8") as f:
-        json.dump(all_leads, f, indent=2)
+    if _SINGLE_WRITER is not None:
+        _SINGLE_WRITER.full_replace(all_leads, author="BUNDLE_DASHBOARD_DATA")
+    else:
+        with open(OUTPUT, "w", encoding="utf-8") as f:
+            json.dump(all_leads, f, indent=2)
     print(f"Bundled {len(all_leads)} leads into {OUTPUT}")
 
 if __name__ == "__main__":

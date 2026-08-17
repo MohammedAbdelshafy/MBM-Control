@@ -17,6 +17,13 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='repla
 DB_PATH = Path(r"C:\Users\omare\OneDrive\Desktop\AI\mbm-dialer\app\public\leads_database.json")
 RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
 
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.GLM.single_writer_lock import DialerSingleWriter
+    _SINGLE_WRITER = DialerSingleWriter()
+except Exception:
+    _SINGLE_WRITER = None
+
 # CMS NPI Registry — free, no API key
 NPI_API = "https://npiregistry.cms.hhs.gov/api/"
 
@@ -299,8 +306,11 @@ def main():
         print(f"  [{ts}] [{i+1}/{total}] [X] UNVERIFIED: {contact} | {phone}")
 
     # Save
-    with open(DB_PATH, "w", encoding="utf-8") as f:
-        json.dump(leads, f, indent=2, default=str)
+    if _SINGLE_WRITER is not None:
+        _SINGLE_WRITER.full_replace(leads, author="NPI_GMAPS_VERIFIER")
+    else:
+        with open(DB_PATH, "w", encoding="utf-8") as f:
+            json.dump(leads, f, indent=2, default=str)
 
     remaining = total - already_done - processed
     print()

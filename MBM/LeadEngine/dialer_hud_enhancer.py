@@ -154,7 +154,11 @@ def enhance_dialer_database() -> int:
     enhanced_leads.sort(key=lambda x: (int(x.get("priority", 5)), -float(x.get("deal_score", 0))))
 
     # Save to dialer database
-    dialer_db_path.write_text(json.dumps(enhanced_leads, indent=2), encoding="utf-8")
+    try:
+        from MBM.GLM.single_writer_lock import DialerSingleWriter
+        DialerSingleWriter().full_replace(enhanced_leads, author="DIALER_HUD_ENHANCER")
+    except Exception:
+        dialer_db_path.write_text(json.dumps(enhanced_leads, indent=2), encoding="utf-8")
     print(f"[OK] Enhanced {len(enhanced_leads)} leads with dynamic conversation HUD & Neteller rails.")
     return len(enhanced_leads)
 

@@ -663,7 +663,11 @@ def main():
     prime_phones = {normalize_phone(p["phone"]) for p in prime_payloads_all if p.get("phone")}
     filtered_existing = [e for e in existing if normalize_phone(e.get("phone") or "") not in prime_phones]
     master_db = prime_payloads_all + filtered_existing
-    DIALER_DB_PATH.write_text(json.dumps(master_db, indent=2), encoding="utf-8")
+    try:
+        from MBM.GLM.single_writer_lock import DialerSingleWriter
+        DialerSingleWriter().full_replace(master_db, author="RERANK_TOP_100")
+    except Exception:
+        DIALER_DB_PATH.write_text(json.dumps(master_db, indent=2), encoding="utf-8")
 
     # 10. Export TOP_100_CALL_SHEET.csv
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as f:

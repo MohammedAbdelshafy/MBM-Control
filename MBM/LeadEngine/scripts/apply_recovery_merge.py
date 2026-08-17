@@ -25,6 +25,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 LEADENGINE_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(LEADENGINE_DIR))
 from canonical_deal_engine import (  # noqa: E402
     CanonicalDeal,
@@ -35,6 +36,12 @@ from canonical_deal_engine import (  # noqa: E402
     OwnerStatus,
     SourceClass,
 )
+
+try:
+    from MBM.GLM.single_writer_lock import DialerSingleWriter
+    _SINGLE_WRITER = DialerSingleWriter()
+except Exception:
+    _SINGLE_WRITER = None
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")
@@ -218,7 +225,11 @@ def main():
     else:
         dialer = leads
 
-    DIALER_DB.write_text(json.dumps(dialer, indent=2, ensure_ascii=False), encoding="utf-8")
+    if _SINGLE_WRITER is not None:
+        out = dialer if isinstance(dialer, list) else dialer.get("leads", leads)
+        _SINGLE_WRITER.full_replace(out, author="APPLY_RECOVERY_MERGE", allow_shrink=False)
+    else:
+        DIALER_DB.write_text(json.dumps(dialer, indent=2, ensure_ascii=False), encoding="utf-8")
 
     memory = CanonicalDealMemory(storage_path=DEAL_MEMORY_PATH)
     memory_phones = {norm_phone(d.contact_phone) for d in memory.deals.values() if d.contact_phone}

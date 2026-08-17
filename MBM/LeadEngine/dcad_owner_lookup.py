@@ -21,6 +21,21 @@ import time
 import argparse
 import urllib.parse
 import urllib.request
+from pathlib import Path
+
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.GLM.single_writer_lock import DialerSingleWriter
+    _SINGLE_WRITER = DialerSingleWriter()
+except Exception:
+    _SINGLE_WRITER = None
+
+def _save_enrichment(db, out_path):
+    if _SINGLE_WRITER is not None:
+        _SINGLE_WRITER.full_replace(db, author="DCAD_OWNER_LOOKUP")
+    else:
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(db, f, indent=2, default=str)
 
 DCAD_QUERY_URL = (
     "https://maps.dcad.org/prdwa/rest/services/Property/ParcelQuery/MapServer/4/query"
@@ -214,8 +229,7 @@ def enrich_file(db_path, verticals=None, out_path=None, dry_run=False):
 
         # Checkpoint: save partial results every 25 leads so a long run can be resumed
         if not dry_run and out_path and i % 25 == 0 and i > 0:
-            with open(out_path, "w", encoding="utf-8") as f:
-                json.dump(db, f, indent=2, default=str)
+            _save_enrichment(db, out_path)
             print("  [checkpoint @%d saved]" % (i + 1), flush=True)
 
     print("STATS: %r" % stats, flush=True)
@@ -233,8 +247,7 @@ def enrich_file(db_path, verticals=None, out_path=None, dry_run=False):
         return db
 
     if out_path:
-        with open(out_path, "w", encoding="utf-8") as f:
-            json.dump(db, f, indent=2, default=str)
+        _save_enrichment(db, out_path)
         print("Saved enrichment to %s" % out_path)
     return db
 

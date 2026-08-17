@@ -9,6 +9,7 @@ import { generateAllDemos, queuePromoCampaign } from './demoCampaign.js';
 import { queueBuyerCampaign, queueAICampaign, queueSellerCampaign, generateSellerWhatsAppReport, loadStats } from './leadPipeline.js';
 import { hunt } from './clientHunter.js';
 import { netellerLink, netellerWalletLabel, NETELLER_EMAIL, NETELLER_ACCOUNT_ID } from './neteller.js';
+import { patchLeads as gatewayPatchLeads } from './dialer/dialerDbGateway.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -1470,7 +1471,7 @@ function getLeadIdentityState(leadId) {
 //   AND property_confirmed. NEVER derived from phone/address/DB alone.
 //   AUTHORIZED_DECISION_MAKER stays separate and is never collapsed into
 //   OWNER_CONFIRMED.
-app.post('/api/dialer/identity', (req, res) => {
+app.post('/api/dialer/identity', async (req, res) => {
   try {
     const {
       lead_id, caller_name, relationship, property_confirmed,
@@ -1524,26 +1525,22 @@ app.post('/api/dialer/identity', (req, res) => {
     // existing sales data — dispositions, notes, attempts, stage, source).
     if (fs.existsSync(mbmDialerFile)) {
       try {
-        const data = JSON.parse(fs.readFileSync(mbmDialerFile, 'utf8'));
-        const arr = Array.isArray(data) ? data : (data.leads || []);
-        let patched = 0;
-        for (const lead of arr) {
-          if (String(lead.id) === String(lead_id)) {
-            lead.identity_state = identity_state;
-            lead.identity_relationship = entry.relationship;
-            lead.identity_property_confirmed = entry.property_confirmed;
-            lead.identity_name_confirmed = entry.name_confirmed;
-            lead.identity_caller_name = entry.caller_name;
-            lead.identity_updated_at = entry.timestamp;
-            lead.caller_identity_verified = entry.caller_identity_verified;
-            lead.database_ownership_verified = !!(lead.owner_status === 'VERIFIED_OWNER' ||
-              (lead.details && lead.details.Owner_Status === 'VERIFIED_OWNER'));
-            if (lead.details) lead.details.identity_state = identity_state;
-            patched += 1;
-          }
-        }
-        if (patched) {
-          fs.writeFileSync(mbmDialerFile, JSON.stringify(arr, null, 2));
+        const targetLead = (Array.isArray(data) ? data : (data.leads || [])).find((l) => String(l.id) === String(lead_id));
+        if (targetLead) {
+          const fields = {
+            identity_state,
+            identity_relationship: entry.relationship,
+            identity_property_confirmed: entry.property_confirmed,
+            identity_name_confirmed: entry.name_confirmed,
+            identity_caller_name: entry.caller_name,
+            identity_updated_at: entry.timestamp,
+            caller_identity_verified: entry.caller_identity_verified,
+            database_ownership_verified: !!(targetLead.owner_status === 'VERIFIED_OWNER' ||
+              (targetLead.details && targetLead.details.Owner_Status === 'VERIFIED_OWNER')),
+            details: Object.assign({}, targetLead.details || {}, { identity_state }),
+          };
+          const res = await gatewayPatchLeads([{ id: lead_id, fields }], { author: 'node-identity-stamp' });
+          if (!res.ok) console.error('[identity] gateway patch failed');
         }
       } catch (err) {
         console.error('[identity] DB patch failed:', err.message);

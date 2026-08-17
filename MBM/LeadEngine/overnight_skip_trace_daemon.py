@@ -42,6 +42,13 @@ DIALER_REPO = ROOT_DIR / "mbm-dialer" / "app"
 LOG_FILE = BASE_DIR / "logs" / "overnight_skiptrace.log"
 LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
 
+try:
+    sys.path.insert(0, str(ROOT_DIR))
+    from MBM.GLM.single_writer_lock import DialerSingleWriter
+    _SINGLE_WRITER = DialerSingleWriter()
+except Exception:
+    _SINGLE_WRITER = None
+
 OTHER_QUEUES = [
     BASE_DIR / "real_estate_calling_queue.json",
     BASE_DIR / "us_re_dialer_queue.json",
@@ -311,8 +318,11 @@ def main():
                         log(f"[{already_done + processed_count}/{total}] [{status}] {contact} ({note})")
 
                     if processed_count % SAVE_INTERVAL == 0:
-                        with open(DIALER_DB, "w", encoding="utf-8") as f:
-                            json.dump(leads, f, separators=(",", ":"), default=str)
+                        if _SINGLE_WRITER is not None:
+                            _SINGLE_WRITER.full_replace(leads, author="OVERNIGHT_SKIP_TRACE_DAEMON")
+                        else:
+                            with open(DIALER_DB, "w", encoding="utf-8") as f:
+                                json.dump(leads, f, separators=(",", ":"), default=str)
                         log(f"[AUTO-SAVE] Progress saved ({verified_count} VERIFIED, {enriched_count} ENRICHED, {unverified_count} UNVERIFIED)")
                         # Auto-dispatch to all agents
                         try:
@@ -328,8 +338,11 @@ def main():
                     log(f"[WORKER ERROR] {e}")
 
         # Final Save & Push for this pass
-        with open(DIALER_DB, "w", encoding="utf-8") as f:
-            json.dump(leads, f, separators=(",", ":"), default=str)
+        if _SINGLE_WRITER is not None:
+            _SINGLE_WRITER.full_replace(leads, author="OVERNIGHT_SKIP_TRACE_DAEMON")
+        else:
+            with open(DIALER_DB, "w", encoding="utf-8") as f:
+                json.dump(leads, f, separators=(",", ":"), default=str)
         git_push()
         log(f"Completed pass. Verified: {verified_count}, Enriched: {enriched_count}, Unverified: {unverified_count}")
         time.sleep(5)

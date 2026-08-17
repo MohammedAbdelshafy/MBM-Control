@@ -27,6 +27,14 @@ try:
 except Exception:
     gate_check = None
 
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.GLM.single_writer_lock import DialerSingleWriter
+    _writer = DialerSingleWriter()
+except Exception as e:
+    print(f"[WARN] Single-writer gateway unavailable ({e}); using direct write fallback.")
+    _writer = None
+
 DB_PATH = Path(r"C:\Users\omare\OneDrive\Desktop\AI\mbm-dialer\app\public\leads_database.json")
 RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
 SKIP_TRACE_URL = "https://skip-tracing-working-api.p.rapidapi.com/search"
@@ -219,9 +227,15 @@ def main():
         unverified += 1
         print(f"  [{ts}] [{i+1}/{total}] [X] UNVERIFIED: {contact} | {phone}")
 
-    # Save progress
-    with open(DB_PATH, "w", encoding="utf-8") as f:
-        json.dump(leads, f, indent=2, default=str)
+    # Save progress via the canonical single-writer gateway (never raw direct writes)
+    if _writer is not None:
+        res = _writer.full_replace(leads, author="DIALER_SKIP_TRACE_VERIFIER")
+        if not res.get("ok"):
+            raise RuntimeError(f"Single-writer commit failed: {res}")
+        print(f"[SAVE] Wrote {res['final_count']} leads via single-writer gateway")
+    else:
+        with open(DB_PATH, "w", encoding="utf-8") as f:
+            json.dump(leads, f, indent=2, default=str)
 
     remaining = total - already_done - processed
     print()
