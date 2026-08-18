@@ -150,12 +150,11 @@ export default function MobileDialer() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const rows = leads.filter((lead) => {
+    return leads.filter((lead) => {
       if (!q) return true;
       return [lead.prospect_name, lead.address, lead.city, lead.formatted_phone, lead.phone_number, lead.owner_name, lead.phone_owner_name]
         .filter(Boolean).join(' ').toLowerCase().includes(q);
     });
-    return [...rows].sort((a, b) => scorePhoneOwnerMatch(b).score - scorePhoneOwnerMatch(a).score);
   }, [leads, query]);
 
   async function copy(text, label) {
@@ -180,7 +179,7 @@ export default function MobileDialer() {
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5"><Phone className="h-4 w-4 shrink-0 text-emerald-300 sm:h-5 sm:w-5" /><h1 className="md-header-title truncate text-sm font-bold sm:text-base">MBM Mobile Dialer</h1></div>
-              <p className="md-header-subtitle mt-0.5 truncate text-[9px] text-slate-500 sm:mt-1 sm:text-[11px]">Owner-confidence queue · copy number → Phound → return for script</p>
+              <p className="md-header-subtitle mt-0.5 truncate text-[9px] text-slate-500 sm:mt-1 sm:text-[11px]">Freshness-first queue · copy number → Phound → return for script</p>
             </div>
             <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-300 sm:h-5 sm:w-5" />
           </div>

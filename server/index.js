@@ -10,6 +10,7 @@ import { queueBuyerCampaign, queueAICampaign, queueSellerCampaign, generateSelle
 import { hunt } from './clientHunter.js';
 import { netellerLink, netellerWalletLabel, NETELLER_EMAIL, NETELLER_ACCOUNT_ID } from './neteller.js';
 import { patchLeads as gatewayPatchLeads } from './dialer/dialerDbGateway.js';
+import { compareDialerLeads } from './dialer/freshnessOrder.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -1223,13 +1224,14 @@ app.get('/api/gtm/top-actions', (req, res) => {
   }
 });
 
-// GET /api/dialer/re-queue — Real Estate dialer queue (AutoDialer schema).
-// Phone app MUST only ever see dialable E.164 (+1XXXXXXXXXX) numbers backed by a
-// REAL lead. Fabricated 555/00x numbers are dropped, and the real NPI clinic
-// queue is served when the RE queue has nothing verifiable.
+// GET /api/dialer/re-queue — dialer queue (AutoDialer schema).
+// SINGLE source of truth is mbm-dialer/app/public/leads_database.json as
+// ordered by the backend engine (dialer_queue_engine.py). Legacy queue files
+// (real_estate_calling_queue.json / cold_calling_queue.json) are NOT read and
+// can never override the canonical order. Phone app MUST only ever see dialable
+// E.164 (+1XXXXXXXXXX) numbers backed by a REAL lead; fabricated 555/00x numbers
+// and suppressed identity states are dropped here.
 const mbmDialerFile = path.join(__dirname, '..', 'mbm-dialer', 'app', 'public', 'leads_database.json');
-const realEstateQueueFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'real_estate_calling_queue.json');
-const npiQueueFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'cold_calling_queue.json');
 
 function isFakePhoneNumber(phone) {
   const digits = String(phone || '').replace(/[^\d+]/g, '');
@@ -1299,6 +1301,19 @@ function transformReLead(lead, idx) {
     identity_property_confirmed: !!lead.identity_property_confirmed,
     identity_caller_name: lead.identity_caller_name || '',
     caller_identity_verified: !!lead.caller_identity_verified,
+    // Canonical ordering metadata — carried verbatim from the engine-stamped
+    // DB record so compareDialerLeads sorts on real values, not defaults.
+    queue_bucket: lead.queue_bucket || '',
+    freshness_stage: lead.freshness_stage || 'OLD',
+    freshness_score: lead.freshness_score || 0,
+    priority_score: lead.priority_score || 0,
+    priority_rank: lead.priority_rank || 0,
+    new_today: !!lead.new_today,
+    freshness_label: lead.freshness_label || '',
+    callable: lead.callable !== false,
+    main_queue: lead.main_queue === true,
+    verification_status: lead.verification_status || '',
+    phone_verified: !!lead.phone_verified,
     owner_name: lead.owner_name || lead.owner || '',
   };
 }
@@ -1328,6 +1343,9 @@ function getUnifiedDialerLeads() {
     prospects.push(p);
   };
 
+  // CANONICAL DB = single source of truth.
+  // The backend queue engine (dialer_queue_engine.py) writes leads in the
+  // correct freshness-first order. We read that order and preserve it.
   if (fs.existsSync(mbmDialerFile)) {
     try {
       const data = JSON.parse(fs.readFileSync(mbmDialerFile, 'utf8'));
@@ -1336,42 +1354,10 @@ function getUnifiedDialerLeads() {
     } catch {}
   }
 
-  if (fs.existsSync(realEstateQueueFile)) {
-    try {
-      const data = JSON.parse(fs.readFileSync(realEstateQueueFile, 'utf8'));
-      const arr = Array.isArray(data) ? data : (data.queue || data.prospects || []);
-      for (const [i, lead] of arr.entries()) addLead(lead, prospects.length + i);
-    } catch {}
-  }
-
-  if (fs.existsSync(npiQueueFile)) {
-    try {
-      const data = JSON.parse(fs.readFileSync(npiQueueFile, 'utf8'));
-      const arr = Array.isArray(data) ? data : (data.queue || data.prospects || []);
-      for (const [i, lead] of arr.entries()) addLead(lead, prospects.length + i);
-    } catch {}
-  }
-
-  // Identity-aware ranking: live-confirmed owners/decision-makers surface
-  // first, then unconfirmed-but-callable, and unconfirmed lower priority.
-  // (Suppressed states are already excluded above.) This mirrors
-  // owner_identity.IDENTITY_QUEUE_PRIORITY — lower rank = called first.
-  const IDENTITY_PRIORITY = {
-    OWNER_CONFIRMED: 0,
-    AUTHORIZED_DECISION_MAKER: 1,
-    OWNER_LIKELY: 2,
-    IDENTITY_UNCONFIRMED: 3,
-  };
-  const rankLead = (p) => {
-    const st = p.identity_state || '';
-    if (st in IDENTITY_PRIORITY) return IDENTITY_PRIORITY[st];
-    return 2; // no recorded identity state = callable but unconfirmed
-  };
-  prospects.sort((a, b) => {
-    const ra = rankLead(a), rb = rankLead(b);
-    if (ra !== rb) return ra - rb;
-    return (b.distress_score || 0) - (a.distress_score || 0);
-  });
+  // Freshness-first ordering via the shared canonical comparator
+  // (server/dialer/freshnessOrder.js). transformReLead carries the engine's
+  // queue_bucket/freshness_stage/scores, so this preserves DB order.
+  prospects.sort(compareDialerLeads);
 
   return prospects;
 }
