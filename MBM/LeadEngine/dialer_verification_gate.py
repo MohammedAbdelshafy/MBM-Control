@@ -140,6 +140,11 @@ def is_valid_phone(phone: str) -> tuple[bool, str]:
         # foreign country code (fabricated 591/593/506... rows).
         if d10[:3] in FOREIGN_NANP_CODES:
             return False, f"foreign_area_code_{d10[:3]}"
+        # Reject non-toll-free numbers ending in 000 (NPI registry
+        # fax/placeholder numbers that are not callable).
+        TOLL_FREE_AREAS = {"800", "888", "877", "866", "855", "844", "833"}
+        if d10[-3:] == "000" and d10[:3] not in TOLL_FREE_AREAS:
+            return False, "fake_suffix_000"
 
     return True, "ok"
 
