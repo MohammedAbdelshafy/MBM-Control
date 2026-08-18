@@ -35,7 +35,7 @@ def test_gtm_commander_initialization():
     assert commander.dry_run is True
     assert commander.event_bus is not None
     assert commander.agent_registry is not None
-    assert len(commander.agent_registry.list_agents()) == 23
+    assert len(commander.agent_registry.list_agents()) == 26
 
 
 def test_read_gtm_state():

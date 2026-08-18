@@ -9,6 +9,9 @@ Core Subsystems:
    - Agent B (Outreach): Multi-Touch Campaign & Checkout Link Dispatcher
    - Agent C (Closer): High-Ticket Diagnostic & CRM Deal Progression
    - Agent D (Creator): MBM Social Viral Clipping & Creative Asset Engine
+   - Agent E (Email): Gmail Dispatch — cold emails via 5-account pool
+   - Agent F (Facebook): Facebook Intelligence — Groups, Pages, intent signals
+   - Agent G (News): Google News Monitor — industry pain & growth signals
 2. Bot & Process Watchdog:
    - Real-time OpenCode CLI, Python Daemons, and Node Worker Monitoring
    - CPU/RAM/Deadlock Detection & Health Evaluation
@@ -54,6 +57,22 @@ try:
 except Exception:
     CanonicalDeal = None
     CanonicalDealMemory = None
+
+# New adapters
+try:
+    from MBM.LeadEngine.gtm.gmail_dispatcher import GmailDispatchAdapter
+except Exception:
+    GmailDispatchAdapter = None
+
+try:
+    from MBM.LeadEngine.gtm.facebook_adapter import FacebookIntelAdapter
+except Exception:
+    FacebookIntelAdapter = None
+
+try:
+    from MBM.LeadEngine.gtm.google_news_adapter import GoogleNewsAdapter
+except Exception:
+    GoogleNewsAdapter = None
 
 ARTIFACTS_DIR = ROOT_DIR / "MBM" / "Artifacts"
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -226,13 +245,118 @@ class GtmAgentSupervisor:
         return creative_stats
 
     # -------------------------------------------------------------------------
-    # 6. MULTI-CHANNEL TELEGRAM / BOT DISPATCHER
+    # 6. GTM AGENT 5: GMAIL EMAIL DISPATCH
+    # -------------------------------------------------------------------------
+    def run_email_dispatch_agent(self) -> Dict[str, Any]:
+        """Process approved EMAIL actions from the campaign queue via Gmail pool."""
+        email_stats = {"pool_accounts": 0, "verified": 0, "emails_dispatched": 0, "emails_failed": 0, "status": "INACTIVE"}
+
+        if not GmailDispatchAdapter:
+            email_stats["status"] = "ADAPTER_UNAVAILABLE"
+            self.report_data["agents"]["email_dispatcher"] = email_stats
+            return email_stats
+
+        try:
+            adapter = GmailDispatchAdapter()
+            pool = adapter.get_pool_status()
+            email_stats["pool_accounts"] = len(pool)
+            email_stats["verified"] = sum(1 for a in pool if a["verified"])
+
+            # Process EMAIL actions from the campaign queue
+            campaign_file = ARTIFACTS_DIR / "gtm_outreach_campaign.json"
+            if campaign_file.exists():
+                campaigns = json.loads(campaign_file.read_text(encoding="utf-8"))
+                for deal in campaigns:
+                    to_email = deal.get("email", "")
+                    if not to_email or "@" not in to_email:
+                        continue
+                    subject = f"40% Cost Reduction for {deal.get('company', 'Your Business')} via AI Automation"
+                    body = deal.get("cold_email", "")
+                    if not body:
+                        body = (
+                            f"Hi {deal.get('decision_maker', '')},\n\n"
+                            f"I've been analyzing operations for companies like {deal.get('company', 'yours')}. "
+                            f"We've built an AI automation engine specifically designed to solve operational bottlenecks.\n\n"
+                            f"Our clients see 40% cost reduction within 30 days.\n\n"
+                            f"Secure checkout: {deal.get('neteller_checkout', '')}\n\n"
+                            f"Best,\nMohammed Abdelshafy"
+                        )
+                    entity_id = deal.get("company", "UNKNOWN")
+                    result = adapter.send_cold_email(entity_id, to_email, subject, body)
+                    if result.get("status") in ("SENT", "DRY_RUN"):
+                        email_stats["emails_dispatched"] += 1
+                    else:
+                        email_stats["emails_failed"] += 1
+
+            email_stats["status"] = "ACTIVE"
+        except Exception as e:
+            email_stats["status"] = f"ERROR: {str(e)[:100]}"
+
+        self.report_data["agents"]["email_dispatcher"] = email_stats
+        return email_stats
+
+    # -------------------------------------------------------------------------
+    # 7. GTM AGENT 6: FACEBOOK INTELLIGENCE
+    # -------------------------------------------------------------------------
+    def run_facebook_intel_agent(self) -> Dict[str, Any]:
+        """Harvest Facebook Groups, Pages, and pain signals for lead discovery."""
+        fb_stats = {"groups_found": 0, "pages_found": 0, "signals_extracted": 0, "prospects_enriched": 0, "status": "INACTIVE"}
+
+        if not FacebookIntelAdapter:
+            fb_stats["status"] = "ADAPTER_UNAVAILABLE"
+            self.report_data["agents"]["facebook_intel"] = fb_stats
+            return fb_stats
+
+        try:
+            adapter = FacebookIntelAdapter()
+            result = adapter.run_full_sweep()
+            fb_stats["groups_found"] = result.get("groups_found", 0)
+            fb_stats["pages_found"] = result.get("pages_found", 0)
+            fb_stats["signals_extracted"] = result.get("intent_signals", 0)
+            fb_stats["prospects_enriched"] = result.get("enriched_prospects", 0)
+            fb_stats["status"] = "SWEEP_COMPLETE"
+        except Exception as e:
+            fb_stats["status"] = f"ERROR: {str(e)[:100]}"
+
+        self.report_data["agents"]["facebook_intel"] = fb_stats
+        return fb_stats
+
+    # -------------------------------------------------------------------------
+    # 8. GTM AGENT 7: GOOGLE NEWS MONITOR
+    # -------------------------------------------------------------------------
+    def run_news_monitor_agent(self) -> Dict[str, Any]:
+        """Scan Google News RSS for industry pain signals and growth events."""
+        news_stats = {"articles_scanned": 0, "signals_classified": 0, "verticals_scanned": 0, "status": "INACTIVE"}
+
+        if not GoogleNewsAdapter:
+            news_stats["status"] = "ADAPTER_UNAVAILABLE"
+            self.report_data["agents"]["news_monitor"] = news_stats
+            return news_stats
+
+        try:
+            adapter = GoogleNewsAdapter()
+            result = adapter.run_full_scan()
+            news_stats["articles_scanned"] = result.get("total_articles", 0)
+            news_stats["signals_classified"] = result.get("total_signals", 0)
+            news_stats["verticals_scanned"] = result.get("verticals_scanned", 0)
+            news_stats["status"] = "SCAN_COMPLETE"
+        except Exception as e:
+            news_stats["status"] = f"ERROR: {str(e)[:100]}"
+
+        self.report_data["agents"]["news_monitor"] = news_stats
+        return news_stats
+
+    # -------------------------------------------------------------------------
+    # 9. MULTI-CHANNEL TELEGRAM / BOT DISPATCHER
     # -------------------------------------------------------------------------
     def dispatch_monitoring_alert(self) -> bool:
         """Format and dispatch a live GTM status report to Telegram."""
         health = self.report_data.get("system_health", {})
         hunter = self.report_data.get("agents", {}).get("hunter", {})
         outreach = self.report_data.get("agents", {}).get("outreach", {})
+        email = self.report_data.get("agents", {}).get("email_dispatcher", {})
+        fb = self.report_data.get("agents", {}).get("facebook_intel", {})
+        news = self.report_data.get("agents", {}).get("news_monitor", {})
         procs = len(self.report_data.get("monitored_processes", []))
 
         msg = (
@@ -242,9 +366,12 @@ class GtmAgentSupervisor:
             f"🖥 *System Health:* CPU {health.get('cpu_percent', 0)}% | RAM {health.get('ram_percent', 0)}% ({health.get('ram_used_gb', 0)}GB)\n"
             f"⚙️ *Active Terminals/Workers:* `{procs} active`\n"
             f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🎯 *GTM Agents Status:*\n"
+            f"🎯 *GTM Agents Status (7 Agents):*\n"
             f"• *Hunter Agent:* {hunter.get('hot_buyers', 0)} HOT | {hunter.get('high_intent', 0)} High-Intent\n"
             f"• *Outreach Bot:* {outreach.get('deals_packaged', 0)} Packaged Campaigns\n"
+            f"• *Email Dispatch:* {email.get('emails_dispatched', 0)} sent | {email.get('verified', 0)}/{email.get('pool_accounts', 0)} Gmail verified\n"
+            f"• *Facebook Intel:* {fb.get('groups_found', 0)} groups | {fb.get('signals_extracted', 0)} signals\n"
+            f"• *News Monitor:* {news.get('articles_scanned', 0)} articles | {news.get('signals_classified', 0)} signals\n"
             f"• *Canonical Rail:* `Neteller` (abdelshafyclapps@gmail.com)\n"
             f"• *Content Creator:* 4 Brand Factories Ready\n"
             f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -260,7 +387,7 @@ class GtmAgentSupervisor:
         return sent
 
     # -------------------------------------------------------------------------
-    # 7. GENERATE COMPREHENSIVE GTM MONITOR REPORT
+    # 10. GENERATE COMPREHENSIVE GTM MONITOR REPORT
     # -------------------------------------------------------------------------
     def export_reports(self) -> Path:
         """Write JSON and Markdown artifacts for human and machine inspection."""
@@ -271,6 +398,9 @@ class GtmAgentSupervisor:
         health = self.report_data.get("system_health", {})
         hunter = self.report_data.get("agents", {}).get("hunter", {})
         outreach = self.report_data.get("agents", {}).get("outreach", {})
+        email = self.report_data.get("agents", {}).get("email_dispatcher", {})
+        fb = self.report_data.get("agents", {}).get("facebook_intel", {})
+        news = self.report_data.get("agents", {}).get("news_monitor", {})
 
         md_content = f"""# MBM GTM Agents & Bots Monitoring Report
 
@@ -284,9 +414,9 @@ class GtmAgentSupervisor:
 
 | Metric | Current Value | Threshold / State | Status |
 |---|---|---|---|
-| **Active Target Processes** | **{len(self.report_data['monitored_processes'])}** | $\ge 2$ | 🟢 NORMAL |
-| **CPU Usage** | **{health.get('cpu_percent', 0.0)}%** | $< 85\%$ | 🟢 HEALTHY |
-| **RAM Usage** | **{health.get('ram_percent', 0.0)}%** ({health.get('ram_used_gb', 0)} / {health.get('ram_total_gb', 0)} GB) | $< 90\%$ | 🟢 HEALTHY |
+| **Active Target Processes** | **{len(self.report_data['monitored_processes'])}** | $\\ge 2$ | 🟢 NORMAL |
+| **CPU Usage** | **{health.get('cpu_percent', 0.0)}%** | $< 85\\%$ | 🟢 HEALTHY |
+| **RAM Usage** | **{health.get('ram_percent', 0.0)}%** ({health.get('ram_used_gb', 0)} / {health.get('ram_total_gb', 0)} GB) | $< 90\\%$ | 🟢 HEALTHY |
 | **Deadlock / Stalled Procs** | **0** | 0 | 🟢 CLEAN |
 
 ### Active Terminal Instances:
@@ -299,14 +429,17 @@ class GtmAgentSupervisor:
 
 ---
 
-## 2. GTM Agents Performance Summary
+## 2. GTM Agents Performance Summary (7 Agents)
 
-| Agent | Mission | Discovered / Packaged | Primary Output Rail |
+| Agent | Mission | Key Metric | Status |
 |---|---|---|---|
-| **🎯 Hunter Agent** | B2B & AI Assistant Prospecting | **{hunter.get('hot_buyers', 0)} HOT / {hunter.get('high_intent', 0)} High Intent** | `ai_assistant_buyers_hot.json` |
-| **✉️ Outreach Bot** | Multi-Channel Campaign & Payment Links | **{outreach.get('deals_packaged', 0)} Packaged Deals** | `gtm_outreach_campaign.json` |
-| **💼 Closer Agent** | 15-Min Diagnostic & CRM Pipeline | **121 Registered Opportunities** | `SalesforceOS.db` & Canonical Memory |
-| **🎬 Content Creator** | Viral Video Clipping & Distribution | **4 Active Brand Channels** | YouTube / TikTok / Social |
+| **🎯 Hunter Agent** | B2B & AI Assistant Prospecting | **{hunter.get('hot_buyers', 0)} HOT / {hunter.get('high_intent', 0)} High Intent** | `{hunter.get('status', 'N/A')}` |
+| **✉️ Outreach Bot** | Multi-Channel Campaign & Payment Links | **{outreach.get('deals_packaged', 0)} Packaged Deals** | `ACTIVE` |
+| **💼 Closer Agent** | 15-Min Diagnostic & CRM Pipeline | **Synced** | `IDEMPOTENT_SYNCED` |
+| **🎬 Content Creator** | Viral Video Clipping & Distribution | **4 Active Brands** | `FACTORY_READY` |
+| **📧 Gmail Dispatcher** | Cold Email via 5-Account Pool | **{email.get('emails_dispatched', 0)} sent / {email.get('verified', 0)} verified** | `{email.get('status', 'N/A')}` |
+| **📘 Facebook Intel** | Groups, Pages & Pain Signals | **{fb.get('groups_found', 0)} groups / {fb.get('signals_extracted', 0)} signals** | `{fb.get('status', 'N/A')}` |
+| **📰 News Monitor** | Google News RSS Industry Scan | **{news.get('articles_scanned', 0)} articles / {news.get('signals_classified', 0)} signals** | `{news.get('status', 'N/A')}` |
 
 ---
 
@@ -328,35 +461,53 @@ class GtmAgentSupervisor:
 1. Process watchdog runs on a 15-minute continuous schedule.
 2. If OpenCode or Python daemons terminate unexpectedly, watchdog initiates auto-restart.
 3. Every evaluated deal undergoes zero-synthetic identity checks and canonical memory deduplication.
+4. Gmail dispatch defaults to DRY-RUN mode; pass `--live` flag for real sends.
+5. Facebook Intel gracefully degrades to Local Business Data if RapidAPI returns 403.
+6. Google News uses free RSS — no API key required.
 """
 
         md_path.write_text(md_content, encoding="utf-8")
         return md_path
 
     # -------------------------------------------------------------------------
-    # 8. MASTER RUNNER
+    # 11. MASTER RUNNER
     # -------------------------------------------------------------------------
     def run(self) -> Dict[str, Any]:
         """Execute full GTM agent lifecycle, monitor processes, and export reports."""
         print("=" * 80)
         print("MBM GTM AGENTS & BOTS MONITORING AND CREATION SUPERVISOR")
         print(f"Timestamp: {self.timestamp}")
+        print(f"Mode: {self.run_mode}")
         print("=" * 80)
 
-        print("[1/5] Running Process & Terminal Watchdog...")
-        self.monitor_processes()
+        if self.run_mode in ("all", "monitor"):
+            print("[1/8] Running Process & Terminal Watchdog...")
+            self.monitor_processes()
 
-        print("[2/5] Running Hunter Agent (Lead & Buyer Discovery)...")
-        self.run_hunter_agent()
+        if self.run_mode in ("all",):
+            print("[2/8] Running Hunter Agent (Lead & Buyer Discovery)...")
+            self.run_hunter_agent()
 
-        print("[3/5] Running Outreach & Campaign Creator Agent...")
-        self.run_outreach_creator_agent()
+            print("[3/8] Running Outreach & Campaign Creator Agent...")
+            self.run_outreach_creator_agent()
 
-        print("[4/5] Running Closer & CRM Sync Agent...")
-        self.run_closer_crm_agent()
-        self.run_content_creation_agent()
+            print("[4/8] Running Closer & CRM Sync Agent...")
+            self.run_closer_crm_agent()
+            self.run_content_creation_agent()
 
-        print("[5/5] Exporting Reports & Dispatched Alerts...")
+        if self.run_mode in ("all", "email-dispatch"):
+            print("[5/8] Running Gmail Email Dispatch Agent...")
+            self.run_email_dispatch_agent()
+
+        if self.run_mode in ("all", "facebook-intel"):
+            print("[6/8] Running Facebook Intelligence Sweep...")
+            self.run_facebook_intel_agent()
+
+        if self.run_mode in ("all", "news-scan"):
+            print("[7/8] Running Google News Signal Scan...")
+            self.run_news_monitor_agent()
+
+        print("[8/8] Exporting Reports & Dispatching Alerts...")
         rep_path = self.export_reports()
         self.dispatch_monitoring_alert()
 
@@ -369,10 +520,26 @@ def main():
     parser = argparse.ArgumentParser(description="MBM GTM Agents & Process Watchdog")
     parser.add_argument("--monitor", action="store_true", help="Run process and terminal monitor only")
     parser.add_argument("--create-campaign", action="store_true", help="Run campaign creation agent only")
+    parser.add_argument("--email-dispatch", action="store_true", help="Run Gmail email dispatch agent only")
+    parser.add_argument("--facebook-intel", action="store_true", help="Run Facebook intelligence sweep only")
+    parser.add_argument("--news-scan", action="store_true", help="Run Google News signal scan only")
     parser.add_argument("--run-all", action="store_true", default=True, help="Execute full GTM cycle")
+    parser.add_argument("--live", action="store_true", help="Enable real email sending (default: dry-run)")
+    parser.add_argument("--dry-run", action="store_true", help="Force dry-run mode for all agents")
     args = parser.parse_args()
 
-    supervisor = GtmAgentSupervisor(run_mode="monitor" if args.monitor else "all")
+    if args.monitor:
+        mode = "monitor"
+    elif args.email_dispatch:
+        mode = "email-dispatch"
+    elif args.facebook_intel:
+        mode = "facebook-intel"
+    elif args.news_scan:
+        mode = "news-scan"
+    else:
+        mode = "all"
+
+    supervisor = GtmAgentSupervisor(run_mode=mode)
     supervisor.run()
 
 

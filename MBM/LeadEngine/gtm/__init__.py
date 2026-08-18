@@ -2,7 +2,8 @@
 MBM GTM (Go-To-Market) Architecture Package
 =============================================================================
 Parallel-safe GTM orchestration layer, event bus, state machine, evidence,
-attribution, action ranking, agent registry, and learning feedback.
+attribution, action ranking, agent registry, learning feedback, and adapters
+for Gmail email dispatch, Facebook intelligence, and Google News signals.
 """
 
 from MBM.LeadEngine.gtm.state_machine import GtmState, GtmStateMachine, InvalidStateTransitionError
@@ -20,6 +21,9 @@ from MBM.LeadEngine.gtm.adapters import (
     CRMAdapter,
     VerificationAdapter,
 )
+from MBM.LeadEngine.gtm.gmail_dispatcher import GmailDispatchAdapter
+from MBM.LeadEngine.gtm.facebook_adapter import FacebookIntelAdapter
+from MBM.LeadEngine.gtm.google_news_adapter import GoogleNewsAdapter
 
 __all__ = [
     "GtmState",
@@ -49,4 +53,8 @@ __all__ = [
     "IdentityAdapter",
     "CRMAdapter",
     "VerificationAdapter",
+    # Expanded scope
+    "GmailDispatchAdapter",
+    "FacebookIntelAdapter",
+    "GoogleNewsAdapter",
 ]

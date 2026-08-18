@@ -1,7 +1,7 @@
 """
 GTM AGENT REGISTRY
 =============================================================================
-Defines the 23-agent GTM swarm contracts, capabilities, and dispatch interfaces.
+Defines the 26-agent GTM swarm contracts, capabilities, and dispatch interfaces.
 
 Agents:
   RADAR, INTENT_HUNTER, SOCIAL_LISTENER, ACCOUNT_RESEARCHER, BUYER_MAPPER,
@@ -9,7 +9,7 @@ Agents:
   CHANNEL_ROUTER, VOICE_AGENT, CONVERSATION_AGENT, IDENTITY_AGENT,
   MEETING_AGENT, FOLLOWUP_AGENT, OBJECTION_AGENT, DEAL_STRATEGIST,
   REVOPS_AGENT, ATTRIBUTION_AGENT, EXPERIMENT_AGENT, LEARNING_AGENT,
-  GTM_COMMANDER
+  GTM_COMMANDER, EMAIL_DISPATCHER, FACEBOOK_INTEL, NEWS_MONITOR
 =============================================================================
 """
 
@@ -42,6 +42,10 @@ class AgentRole(str, Enum):
     EXPERIMENT_AGENT = "EXPERIMENT_AGENT"
     LEARNING_AGENT = "LEARNING_AGENT"
     GTM_COMMANDER = "GTM_COMMANDER"
+    # Expanded scope: email, Facebook, Google News
+    EMAIL_DISPATCHER = "EMAIL_DISPATCHER"
+    FACEBOOK_INTEL = "FACEBOOK_INTEL"
+    NEWS_MONITOR = "NEWS_MONITOR"
 
 
 class GtmAgentContract:
@@ -95,14 +99,14 @@ class GtmAgentContract:
 
 
 class AgentRegistry:
-    """Central registry managing all 23 GTM agent contracts and routing."""
+    """Central registry managing all 26 GTM agent contracts and routing."""
 
     def __init__(self):
         self._agents: Dict[AgentRole, GtmAgentContract] = {}
         self._initialize_default_registry()
 
     def _initialize_default_registry(self) -> None:
-        """Register the 23 standard GTM agent contracts."""
+        """Register the 26 standard GTM agent contracts."""
         contracts = [
             GtmAgentContract(
                 role=AgentRole.RADAR,
@@ -265,6 +269,28 @@ class AgentRegistry:
                 input_types=["gtm_state"],
                 output_types=["next_best_actions", "delegations"],
             ),
+            # --- Expanded scope agents ---
+            GtmAgentContract(
+                role=AgentRole.EMAIL_DISPATCHER,
+                name="Gmail Outbound Agent",
+                description="Sends production cold emails, follow-ups, and proposals via the Gmail pool with Production Gate enforcement.",
+                input_types=["entity_id", "to_email", "subject", "body"],
+                output_types=["send_result", "dispatch_log"],
+            ),
+            GtmAgentContract(
+                role=AgentRole.FACEBOOK_INTEL,
+                name="Facebook Intelligence Agent",
+                description="Harvests Facebook Groups, Pages, and marketplace posts for B2B pain signals, buyer contacts, and competitor intelligence.",
+                input_types=["keywords", "group_ids", "page_queries"],
+                output_types=["groups", "pages", "intent_signals", "enriched_prospects"],
+            ),
+            GtmAgentContract(
+                role=AgentRole.NEWS_MONITOR,
+                name="Google News Monitor",
+                description="Scans Google News RSS for industry pain signals, funding events, hiring surges, and technology adoption trends.",
+                input_types=["verticals", "company_names"],
+                output_types=["news_signals", "vertical_trends"],
+            ),
         ]
 
         for contract in contracts:
@@ -280,5 +306,5 @@ class AgentRegistry:
             self._agents[role].handler = handler
 
     def list_agents(self) -> List[Dict[str, Any]]:
-        """List all 23 registered GTM agent contracts."""
+        """List all 26 registered GTM agent contracts."""
         return [c.to_dict() for c in self._agents.values()]
