@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Revenue Dashboard — Productized Services (P4 / P1 / P2)</title>
+<style>
+  :root{--ink:#0f172a;--muted:#475569;--brand:#0e7490;--bg:#f8fafc;--card:#fff;--ok:#16a34a;--warn:#d97706;--bad:#dc2626;--line:#e2e8f0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5;}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 24px 60px;}
+  h1{font-size:26px;letter-spacing:-0.01em;}
+  .sub{color:var(--muted);margin:6px 0 22px;font-size:14.5px;}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:26px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;}
+  .kpi .n{font-size:26px;font-weight:800;}
+  .kpi .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:700;}
+  .kpi.ok .n{color:var(--ok);}.kpi.warn .n{color:var(--warn);}.kpi.bad .n{color:var(--bad);}
+  h2{font-size:19px;margin:26px 0 12px;}
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{background:#f1f5f9;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);}
+  tr:last-child td{border-bottom:0;}
+  .tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;}
+  .tag.ok{background:#dcfce7;color:#166534;}.tag.warn{background:#fef3c7;color:#92400e;}.tag.bad{background:#fee2e2;color:#991b1b;}.tag.muted{background:#f1f5f9;color:#475569;}
+  .tag.brand{background:#ccfbf1;color:#115e59;}
+  a.pay{color:#fff;background:var(--brand);text-decoration:none;padding:4px 12px;border-radius:8px;font-weight:700;font-size:12.5px;white-space:nowrap;}
+  a.pay:hover{background:#155e75;}
+  .note{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:10px;padding:12px 16px;font-size:13.5px;margin-top:14px;}
+  .footer{margin-top:30px;color:var(--muted);font-size:12.5px;}
+  code{background:#f1f5f9;padding:1px 5px;border-radius:5px;font-size:12.5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Revenue Dashboard — Productized Services</h1>
+  <p class="sub">Canonical rail: Neteller (<code>abdelshafyclapps@gmail.com</code> · Account <code>4599228811</code>). Links built by <code>MBM/Scripts/neteller_config.py</code> / <code>server/neteller.js</code>.</p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="n" id="k-customers">0</div><div class="l">Paying customers</div></div>
+    <div class="kpi"><div class="n" id="k-rev">$0</div><div class="l">Confirmed revenue</div></div>
+    <div class="kpi warn"><div class="n" id="k-prospects">9</div><div class="l">Prospects in queue</div></div>
+    <div class="kpi"><div class="n" id="k-demos">1</div><div class="l">Demos delivered</div></div>
+  </div>
+
+  <h2>Checkout links (ready to send)</h2>
+  <table>
+    <thead><tr><th>SKU</th><th>Offer</th><th>Price</th><th>Checkout</th></tr></thead>
+    <tbody>
+      <tr><td><code>P4_FREE_SAMPLE_1K</code></td><td>Free 1,000-lead sample (gate-opening demo)</td><td>$0</td><td><a class="pay" target="_blank" rel="noopener" href="https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=0.00&currency=USD&item=P4_FREE_SAMPLE_1K">Send</a></td></tr>
+      <tr><td><code>P4_LEAD_CLEAN_DFY_10K</code></td><td>DFY cleanup — up to 10,000 leads, 48h turnaround</td><td>$499</td><td><a class="pay" target="_blank" rel="noopener" href="https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=499.00&currency=USD&item=P4_LEAD_CLEAN_DFY_10K">Send</a></td></tr>
+      <tr><td><code>P4_LEAD_CLEAN_MONTHLY_1K</code></td><td>Monthly qualification — 1,000 leads/mo + API</td><td>$49/mo</td><td><a class="pay" target="_blank" rel="noopener" href="https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=49.00&currency=USD&item=P4_LEAD_CLEAN_MONTHLY_1K">Send</a></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Prospect pipeline (real contacts — batch 1)</h2>
+  <table>
+    <thead><tr><th>#</th><th>Contact / Company</th><th>Vertical</th><th>Intent</th><th>Status</th><th>Next step</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Marcus Vance — Apex Mechanical &amp; Air Solutions</td><td>Home services</td><td>HOT</td><td><span class="tag warn">PENDING</span></td><td>Send free 1,000-lead sample offer</td></tr>
+      <tr><td>2</td><td>Dr. Elena Vasquez — Luxe Sculpt &amp; Aesthetics Med Spa</td><td>Med spa</td><td>HOT</td><td><span class="tag warn">PENDING</span></td><td>Send free 1,000-lead sample offer</td></tr>
+      <tr><td>3</td><td>Robert Vance — Sterling &amp; Vance Injury Law</td><td>Legal</td><td>HOT</td><td><span class="tag warn">PENDING</span></td><td>Case-lead list audit pitch</td></tr>
+      <tr><td>4</td><td>David Sterling — Titan Infrastructure</td><td>ConTech</td><td>HOT</td><td><span class="tag warn">PENDING</span></td><td>Bid/subcontractor list audit</td></tr>
+      <tr><td>5</td><td>Greg Thornton — Patriot Electric</td><td>Commercial</td><td>HIGH</td><td><span class="tag warn">PENDING</span></td><td>Property-owner list audit</td></tr>
+      <tr><td>6</td><td>Humaira Zakrea — 2 Friends Home Health</td><td>Healthcare</td><td>HIGH</td><td><span class="tag warn">PENDING</span></td><td>Referral list audit</td></tr>
+      <tr><td>7</td><td>Christopher Burds — Ability Pro Therapy</td><td>Healthcare</td><td>HIGH</td><td><span class="tag warn">PENDING</span></td><td>Referral list audit</td></tr>
+      <tr><td>8</td><td>Arcilio Alvarado — Advantage Medical</td><td>Healthcare</td><td>HIGH</td><td><span class="tag warn">PENDING</span></td><td>Referral list audit</td></tr>
+      <tr><td>9</td><td>Becky Wright — A Step Ahead Pediatric PT</td><td>Healthcare</td><td>HIGH</td><td><span class="tag warn">PENDING</span></td><td>Referral list audit</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Next revenue product (P1 — Wholesaler Lead Engine)</h2>
+  <table>
+    <thead><tr><th>SKU</th><th>Offer</th><th>Price</th><th>Gate</th></tr></thead>
+    <tbody>
+      <tr><td><code>P1_SKIP_TRACE_PACK_50</code></td><td>50 verified owner leads (skip-traced, county-verified)</td><td>from $997</td><td><span class="tag bad">BLOCKED</span> — dead-DNS skip-trace host must be fixed first</td></tr>
+      <tr><td><code>P1_DIALER_SETUP</code></td><td>Dialer deployment + list load</td><td>from $1,997</td><td><span class="tag warn">READY</span> — dialer sellable standalone</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">Integrity rule: prospects are real workspace contacts only (meeting briefs / NPI / outreach queues). Demo/test records are labeled synthetic. Revenue KPI updates happen in <code>campaign_tracker.md</code> — this page reflects current numbers; edit the numbers below the divider to refresh.</div>
+
+  <hr style="border:none;border-top:1px solid var(--line);margin:26px 0 14px;" />
+  <h2 style="margin-top:0;">Live numbers (edit me)</h2>
+  <div class="footer">
+    <p><code>EDIT KPI VALUES</code>: paying_customers=0 · confirmed_revenue=0 · prospects_in_queue=9 · demos_delivered=1</p>
+  </div>
+</div>
+</body>
+</html>

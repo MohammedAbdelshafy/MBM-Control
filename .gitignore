@@ -22,6 +22,13 @@
 !/CLAUDE.md
 !/IDENTITY.md
 !/REVENUE_CI_ENHANCEMENTS.md
+!/productized-service/
+!/productized-service/**
+!/PRODUCT_PORTFOLIO.md
+!/PRODUCT_FACTORY_PLATFORM_MAP.md
+!/PRODUCT_REGISTRY.md
+!/PRODUCT_LANDING_PAGES.md
+!/PRODUCT_EXECUTION_PLAN.md
 !/.claude/
 !/.claude/**
 /.claude/**/*.local*
@@ -208,6 +215,7 @@ clipping-factory/MBM-Social/clipping_factory.db
 clipping-factory/MBM-Social/clipping_factory.db-*
 
 # Lead runtime queues + config state (regenerated; PII)
+productized-service/**/output/
 MBM/LeadEngine/multi_touch_queue.json
 MBM/LeadEngine/real_estate_calling_queue.json
 MBM/LeadEngine/ulio_voice_queue.json

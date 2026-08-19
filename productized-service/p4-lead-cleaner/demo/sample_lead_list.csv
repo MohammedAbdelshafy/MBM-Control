@@ -1,0 +1,14 @@
+# P4 DEMO SAMPLE — SYNTHETIC/TEST DATA ONLY (not real customer records)
+# "case" documents the classification path each row is expected to take.
+case,phone,name,company,source,skip_trace_status,verification_status,notes
+real_verified,+12142223301,John Carter,Greenfield Holdings,county_record,VERIFIED,,Verified owner + skip trace -> CALLABLE
+real_verified_npi,+13035592201,Dr. Emily Watson,Bayside Family Clinic,US Government CMS NPI Registry,,,NPI registry source -> CALLABLE
+real_verified_flag,+17185514401,Sandra Mills,Apex Rentals,,,VERIFIED_TWILIO,Twilio-verified -> CALLABLE
+real_unverified,no_phone,Sarah Blake,,, ,,Missing phone -> NOT CALLABLE
+real_bad_phone,+15559998888,Mike Turner,Highland Properties,,, ,555 fake number -> NOT CALLABLE
+real_foreign_area,+15912030405,Raul Mendez,Mexco Imports,,, ,Foreign NANP area code -> NOT CALLABLE
+real_placeholder_identity,+14695586601,Practice Principal,Northgate Medical,,, ,Placeholder identity -> NEEDS REVIEW
+real_no_verification,+16125577701,Alice Nguyen,Parkview Realty,,, ,Valid phone/name but unverified -> NOT CALLABLE
+duplicate_1,+12142223301,John Carter,Greenfield Holdings,county_record,VERIFIED,,Duplicate of row 1
+duplicate_2,+12142223301,John Carter,Greenfield Holdings,county_record,VERIFIED,,Duplicate of row 1
+suppressed,+12082078500,Robert Sterling,Legacy Group,,, ,Phone on DNC suppression index

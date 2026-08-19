@@ -7,10 +7,12 @@ Sources (all free, no registration required):
   1. TruePeopleSearch.com — people search by name/address
   2. ThatsThem.com — name/address/phone/email lookup
   3. ZabaSearch.com — people search by name
-  4. OpenPeopleSearch.com — people search by name/address
-  5. FastPeopleSearch.com — address/name search (improved scraping)
-  6. DuckDuckGo HTML search — email/phone extraction from web results
-  7. USPhonebook.com — reverse phone lookup
+  4. FastPeopleSearch.com — address/name search (improved scraping)
+  5. DuckDuckGo HTML search — email/phone extraction from web results
+  6. USPhonebook.com — reverse phone lookup
+
+Note: OpenPeopleSearch.org was removed as a source — its domain no longer
+resolves (DNS NXDOMAIN), and every lookup burned the full 10s timeout.
 
 Usage:
   tracer = FreeSkipTracer()
@@ -438,7 +440,6 @@ class FreeSkipTracer:
             ("truepeoplesearch", lambda: self._search_truepeoplesearch(name, address)),
             ("thatsthem", lambda: self._search_thatsthem(name, address)),
             ("zabasearch", lambda: self._search_zabasearch(name, address)),
-            ("openpeoplesearch", lambda: self._search_openpeoplesearch(name, address)),
             ("fastpeoplesearch", lambda: self._search_fastpeoplesearch(name, address)),
             ("duckduckgo", lambda: self._search_duckduckgo(name, city)),
         ]
