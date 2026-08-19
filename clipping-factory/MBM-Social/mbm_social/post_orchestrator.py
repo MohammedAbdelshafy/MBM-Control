@@ -154,7 +154,7 @@ def resolve_video(package: dict) -> str:
     return ""
 
 
-def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool) -> tuple[bool, str | None, str | None]:
+def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool, privacy_status: str = "public") -> tuple[bool, str | None, str | None]:
     title = (package.get("title") or "Untitled Short")[:100]
     description = (package.get("description") or title)[:5000]
     channel_id = package.get("youtube_channel_id") or resolve_registry_channel(brand)
@@ -169,7 +169,7 @@ def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool) -> tu
             else:
                 print(f"[dry-run] Would publish YouTube '{title}' via OAuth API (NO token -- needs reauth).")
         elif api.tokens_exist_for(brand):
-            ok, video_id = api.publish_via_api(video, title, description, brand=brand, channel_id=channel_id)
+            ok, video_id = api.publish_via_api(video, title, description, brand=brand, channel_id=channel_id, privacy_status=privacy_status)
             if ok and video_id:
                 return True, video_id, channel_id
             print(f"[ORCH] OAuth API publish failed for '{title}'; falling back to CDP.")
@@ -251,22 +251,25 @@ def publish_package(filepath: Path, package: dict, dry_run: bool = False, mode: 
     # Mode enforcement
     if mode == "dry_run":
         dry_run = True
+        privacy_status = "private"
     elif mode == "test":
         dry_run = False
-        # In test mode, mark package for unlisted publishing
+        privacy_status = "unlisted"
         package["publish_visibility"] = "unlisted"
         package["publish_mode"] = "test"
     elif mode == "live":
         dry_run = False
+        privacy_status = "public"
         package["publish_visibility"] = "public"
         package["publish_mode"] = "live"
     else:
         print(f"[ORCH] Unknown mode '{mode}', defaulting to dry_run.")
         dry_run = True
+        privacy_status = "private"
 
     print(f"[ORCH] Processing [{brand}] (mode={mode}): '{title}' ({filepath.name})")
 
-    yt_ok, yt_id, yt_channel = _publish_youtube(package, brand, video, dry_run)
+    yt_ok, yt_id, yt_channel = _publish_youtube(package, brand, video, dry_run, privacy_status=privacy_status)
     social = _publish_social(package, brand, dry_run)
 
     published_platforms: dict[str, bool] = {}

@@ -125,12 +125,18 @@ def _load_token_entry(brand, channel_id=None):
     return info, ""
 
 
-def publish_via_api(video_path, title, description, brand=None, channel_id=None):
+def publish_via_api(video_path, title, description, brand=None, channel_id=None, privacy_status="public"):
     """Publish via YouTube Data API v3 using the BRAND's OWN OAuth token.
 
     The token is resolved strictly by brand (never another brand's token), and
     the live session is verified against the requested channel before upload so
     content can never land on the wrong channel.
+
+    Args:
+        privacy_status: "public", "unlisted", or "private".
+            - "public" = live mode (full production)
+            - "unlisted" = test mode (only accessible via link)
+            - "private" = draft mode (only owner can see)
     """
     try:
         from google.oauth2.credentials import Credentials
@@ -208,7 +214,7 @@ def publish_via_api(video_path, title, description, brand=None, channel_id=None)
                 "categoryId": "28",
             },
             "status": {
-                "privacyStatus": "public",
+                "privacyStatus": privacy_status,
                 "selfDeclaredMadeForKids": False,
                 "embeddable": True,
                 "publicStatsViewable": True,
@@ -232,7 +238,7 @@ def publish_via_api(video_path, title, description, brand=None, channel_id=None)
         print(f"[YOUTUBE PUBLISHER] API upload failed: {e}")
         return False, None
 
-def publish_via_playwright(video_path, title, description, brand=None, channel_id=None, prefer_api=True):
+def publish_via_playwright(video_path, title, description, brand=None, channel_id=None, prefer_api=True, privacy_status="public"):
     """Publish a video to YouTube.
 
     Priority: OAuth Data API (when the brand has a valid token) -> Playwright
@@ -245,7 +251,7 @@ def publish_via_playwright(video_path, title, description, brand=None, channel_i
     resolved_channel = channel_id or resolve_channel_id(brand)
     if prefer_api and tokens_exist_for(brand):
         print(f"[YOUTUBE PUBLISHER] Publishing '{title}' via YouTube Data API v3 (brand token found)...")
-        ok, video_id = publish_via_api(video_path, title, description, brand=brand, channel_id=resolved_channel)
+        ok, video_id = publish_via_api(video_path, title, description, brand=brand, channel_id=resolved_channel, privacy_status=privacy_status)
         if ok:
             return True, video_id
         print(f"[YOUTUBE PUBLISHER] API publish failed for '{title}'; falling back to Studio automation.")
