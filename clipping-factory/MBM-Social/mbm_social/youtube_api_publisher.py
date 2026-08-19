@@ -125,7 +125,7 @@ def _load_token_entry(brand, channel_id=None):
     return info, ""
 
 
-def publish_via_api(video_path, title, description, brand=None, channel_id=None, privacy_status="public"):
+def publish_via_api(video_path, title, description, brand=None, channel_id=None, privacy_status="public", allow_public=False):
     """Publish via YouTube Data API v3 using the BRAND's OWN OAuth token.
 
     The token is resolved strictly by brand (never another brand's token), and
@@ -137,7 +137,18 @@ def publish_via_api(video_path, title, description, brand=None, channel_id=None,
             - "public" = live mode (full production)
             - "unlisted" = test mode (only accessible via link)
             - "private" = draft mode (only owner can see)
+        allow_public: MUST be True when privacy_status="public". Prevents
+            test/dry_run modes from accidentally publishing publicly.
+
+    Returns:
+        (success: bool, video_id: str | None)
     """
+    # MODE SAFETY: "public" requires explicit authorization
+    if privacy_status == "public" and not allow_public:
+        print(f"[YOUTUBE PUBLISHER] BLOCKED: privacy_status='public' requires allow_public=True. "
+              f"This prevents test/dry_run modes from publishing publicly. "
+              f"Use allow_public=True only for explicit live production mode.")
+        return False, None
     try:
         from google.oauth2.credentials import Credentials
         from google.auth.transport.requests import Request
@@ -252,7 +263,17 @@ def publish_via_playwright(video_path, title, description, brand=None, channel_i
 
     Priority: OAuth Data API (when the brand has a valid token) -> Playwright
     Studio automation. Falls back to Studio automation when no token exists.
+
+    MODE SAFETY: privacy_status is passed through to the Playwright UI.
+    If privacy_status="public" and the caller did not explicitly authorize
+    live mode, the caller should NOT invoke this function.
     """
+    # MODE SAFETY: validate privacy_status at the lowest layer
+    allowed_privacies = {"public", "unlisted", "private"}
+    if privacy_status not in allowed_privacies:
+        print(f"[YOUTUBE PUBLISHER] Invalid privacy_status '{privacy_status}'. "
+              f"Must be one of {allowed_privacies}.")
+        return False, None
     if not os.path.exists(video_path):
         print(f"[YOUTUBE PUBLISHER] Video file does not exist: {video_path}")
         return False, None
@@ -425,11 +446,19 @@ def publish_via_playwright(video_path, title, description, brand=None, channel_i
             time.sleep(1)
             
             try:
+                # Set visibility based on privacy_status — never hard-code PUBLIC
+                privacy_map = {
+                    "public": "PUBLIC",
+                    "unlisted": "UNLISTED",
+                    "private": "PRIVATE",
+                }
+                visibility = privacy_map.get(privacy_status, "UNLISTED")
+                radio_name = f"VIDEO_PRIVACY_{visibility}"
                 mouse_move_random(page)
-                page.locator('tp-yt-paper-radio-button[name="PUBLIC"], #privacy-radio-public').first.click(timeout=5000)
+                page.locator(f'tp-yt-paper-radio-button[name="{radio_name}"]').first.click(timeout=5000)
             except Exception:
                 try:
-                    page.locator("input[value='public']").first.click(timeout=5000)
+                    page.locator(f"input[value='{privacy_status}']").first.click(timeout=5000)
                 except Exception:
                     pass
             

@@ -45,6 +45,7 @@ QUEUE_DIR = ROOT / "publish_queue"
 STATUS_DRAFT = "draft"
 STATUS_PUBLISHED = "published"
 STATUS_PUBLISH_BLOCKED = "publish_blocked"
+STATUS_PUBLISH_PENDING = "publish_pending_verification"
 
 # Publish mode control — enforced at orchestrator level
 PUBLISH_MODES = ("dry_run", "test", "live")
@@ -156,7 +157,7 @@ def resolve_video(package: dict) -> str:
     return ""
 
 
-def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool, privacy_status: str = "public") -> tuple[bool, str | None, str | None]:
+def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool, privacy_status: str = "public", mode: str = "dry_run") -> tuple[bool, str | None, str | None]:
     title = (package.get("title") or "Untitled Short")[:100]
     description = (package.get("description") or title)[:5000]
     channel_id = package.get("youtube_channel_id") or resolve_registry_channel(brand)
@@ -171,7 +172,10 @@ def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool, priva
             else:
                 print(f"[dry-run] Would publish YouTube '{title}' via OAuth API (NO token -- needs reauth).")
         elif api.tokens_exist_for(brand):
-            ok, video_id = api.publish_via_api(video, title, description, brand=brand, channel_id=channel_id, privacy_status=privacy_status)
+            # allow_public only when explicitly in live mode
+            allow_pub = (mode == "live")
+            ok, video_id = api.publish_via_api(video, title, description, brand=brand, channel_id=channel_id,
+                                               privacy_status=privacy_status, allow_public=allow_pub)
             if ok and video_id:
                 return True, video_id, channel_id
             print(f"[ORCH] OAuth API publish failed for '{title}'; falling back to CDP.")
@@ -210,7 +214,7 @@ def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool, priva
     try:
         from mbm_social import publisher as pw
         if not dry_run:
-            ok = pw.upload_to_youtube(video, title, description, brand=brand)
+            ok = pw.upload_to_youtube(video, title, description, brand=brand, privacy_status=privacy_status)
             if isinstance(ok, tuple):
                 ok, real_id = ok
             else:
@@ -225,18 +229,28 @@ def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool, priva
     return False, "", None
 
 
-def _publish_social(package: dict, brand: str, dry_run: bool) -> dict[str, bool]:
-    """Cross-post to Instagram Reels + TikTok. Returns platform -> success."""
+def _publish_social(package: dict, brand: str, dry_run: bool, mode: str = "dry_run") -> dict[str, bool]:
+    """Cross-post to Instagram Reels + TikTok. Returns platform -> success.
+
+    TEST mode: Instagram and TikTok have no unlisted/private sandbox endpoint.
+    All test-mode social publishes are SKIPPED (not silently faked).
+    """
     results: dict[str, bool] = {}
+    platforms = ["instagram", "tiktok"]
+    if dry_run:
+        for platform in platforms:
+            results[platform] = False
+        print(f"[dry-run] Would cross-post '{package.get('title')}' to {platforms}.")
+        return results
+    # TEST mode: IG/TikTok have no sandbox/test endpoint — skip entirely
+    if mode == "test":
+        for platform in platforms:
+            results[platform] = False
+        print(f"[ORCH] TEST mode: skipping IG/TikTok cross-post for '{package.get('title')}' "
+              "(no sandbox/test endpoint available).")
+        return results
     try:
         from mbm_social import shortform_publisher as sf
-
-        platforms = ["instagram", "tiktok"]
-        if dry_run:
-            for platform in platforms:
-                results[platform] = False
-            print(f"[dry-run] Would cross-post '{package.get('title')}' to {platforms}.")
-            return results
         results = sf.publish(package, platforms=platforms, _brand=brand)
     except Exception as e:
         print(f"[ORCH] Short-form publisher unavailable ({e}); skipping IG/TikTok.")
@@ -271,8 +285,8 @@ def publish_package(filepath: Path, package: dict, dry_run: bool = False, mode: 
 
     print(f"[ORCH] Processing [{brand}] (mode={mode}): '{title}' ({filepath.name})")
 
-    yt_ok, yt_id, yt_channel = _publish_youtube(package, brand, video, dry_run, privacy_status=privacy_status)
-    social = _publish_social(package, brand, dry_run)
+    yt_ok, yt_id, yt_channel = _publish_youtube(package, brand, video, dry_run, privacy_status=privacy_status, mode=mode)
+    social = _publish_social(package, brand, dry_run, mode=mode)
 
     published_platforms: dict[str, bool] = {}
     if yt_ok:
@@ -290,9 +304,18 @@ def publish_package(filepath: Path, package: dict, dry_run: bool = False, mode: 
     package["publish_mode"] = mode
 
     if any(published_platforms.values()):
-        package["status"] = STATUS_PUBLISHED
-        package["published_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
-        print(f"[ORCH] PUBLISHED ({mode}) {brand}: {published_platforms}")
+        # If YouTube succeeded but has no video ID, it submitted but cannot be verified
+        # → PUBLISH_PENDING_VERIFICATION (prevents auto-retry / duplicate upload)
+        if yt_ok and not yt_id:
+            package["status"] = STATUS_PUBLISH_PENDING
+            package["publish_pending_reason"] = "submitted_without_verified_id"
+            package["publish_pending_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+            print(f"[ORCH] PUBLISH_PENDING_VERIFICATION ({mode}) {brand}: "
+                  "upload submitted but video ID not extracted. Will verify before retry.")
+        else:
+            package["status"] = STATUS_PUBLISHED
+            package["published_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+            print(f"[ORCH] PUBLISHED ({mode}) {brand}: {published_platforms}")
     else:
         package["status"] = STATUS_DRAFT
         print(f"[ORCH] No real post succeeded for '{title}' -- kept as draft. "

@@ -33,7 +33,7 @@ class VideoProbeResult:
     video_duration: float = 0.0
     audio_duration: float = 0.0
     file_size_bytes: int = 0
-    nb_frames: int = 0
+    nb_frames: Optional[int] = None
     pixel_format: str = ""
     level: str = ""
     profile: str = ""
@@ -83,8 +83,14 @@ def ffprobe_json(video_path: Path) -> VideoProbeResult:
     # Format info
     fmt = data.get("format", {})
     result.container = fmt.get("format_name", "")
-    result.duration = float(fmt.get("duration", 0))
-    result.file_size_bytes = int(fmt.get("size", 0))
+    try:
+        result.duration = float(fmt.get("duration", 0))
+    except (ValueError, TypeError):
+        result.duration = 0
+    try:
+        result.file_size_bytes = int(fmt.get("size", 0))
+    except (ValueError, TypeError):
+        result.file_size_bytes = 0
 
     # Stream info
     streams = data.get("streams", [])
@@ -92,13 +98,27 @@ def ffprobe_json(video_path: Path) -> VideoProbeResult:
         codec_type = s.get("codec_type", "")
         if codec_type == "video" and not result.video_codec:
             result.video_codec = s.get("codec_name", "")
-            result.width = int(s.get("width", 0))
-            result.height = int(s.get("height", 0))
+            try:
+                result.width = int(s.get("width", 0))
+            except (ValueError, TypeError):
+                result.width = 0
+            try:
+                result.height = int(s.get("height", 0))
+            except (ValueError, TypeError):
+                result.height = 0
             result.aspect_ratio = s.get("display_aspect_ratio", "")
             result.pixel_format = s.get("pix_fmt", "")
             result.profile = s.get("profile", "")
             result.level = str(s.get("level", ""))
-            result.nb_frames = int(s.get("nb_frames", 0))
+            # nb_frames: can be missing, "N/A", or invalid — treat all as None
+            raw_nb = s.get("nb_frames")
+            if raw_nb is None or str(raw_nb).strip().upper() == "N/A" or str(raw_nb).strip() == "":
+                result.nb_frames = None
+            else:
+                try:
+                    result.nb_frames = int(raw_nb)
+                except (ValueError, TypeError):
+                    result.nb_frames = None
             fps_str = s.get("r_frame_rate", "0/1")
             if "/" in fps_str:
                 num, den = fps_str.split("/")
@@ -208,8 +228,12 @@ def validate_video_file(
     # Pixel format
     checks["pixel_format_valid"] = probe.pixel_format in ("yuv420p", "yuv420p10le", "yuv444p", "yuv422p")
 
-    # Has frames
-    checks["has_frames"] = probe.nb_frames > 0 if probe.nb_frames else probe.duration > 0
+    # Has frames — nb_frames is optional (can be None/missing/N/A)
+    if probe.nb_frames is not None:
+        checks["has_frames"] = probe.nb_frames > 0
+    else:
+        # Fall back to duration check when nb_frames is unavailable
+        checks["has_frames"] = probe.duration > 0
 
     gate.checks = checks
     passed = sum(1 for v in checks.values() if v)
