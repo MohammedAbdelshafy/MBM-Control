@@ -100,7 +100,7 @@ A product is NOT customer ready unless ALL are true:
 | TEST STATUS | `test_qualification_runner.py`, `test_lead_provenance.py`, `test_phone_recovery_and_bad_number_purge.py` |
 | MONETIZATION | Per-1,000-lead fee + monthly API |
 | PRICE | Starter $49/mo (1k leads) · Pro $149/mo (10k) · Agency $499/mo (100k + API) · DFY $499/setup (we clean your lists, ≤10k, 48h) |
-| NEXT ACTION | FIRST PAYING CUSTOMER: send free 1,000-lead sample offers to the 9-prospect batch (`campaign_tracker.md`), close one $499 DFY, then add credit-based billing to the API |
+| NEXT ACTION | FIRST PAYING CUSTOMER: reject the synthetic meeting-brief batch (all demo fixtures), source a real prospect from the NPI registry or canonical dialer DB, pass the prospect evidence gate, then send the free 1,000-lead sample offer and close one $499 DFY. Add credit-based billing to the API after. |
 | OWNER | system/founder |
 | BLOCKER | None — execution only (send outreach to batch 1) |
 
