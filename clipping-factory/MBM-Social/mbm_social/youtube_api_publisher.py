@@ -67,12 +67,24 @@ def get_pending_drafts():
     return drafts
 
 def mark_published(filepath, data, video_id=None):
-    """Mark package as published with timestamp and optional video_id."""
+    """Mark package as published with timestamp and real platform video_id.
+
+    NEVER fabricates a video_id. If no real ID is provided, the package
+    is marked as publish_blocked, not published.
+    """
+    if not video_id:
+        data["status"] = "publish_blocked"
+        data["publish_blocked_reason"] = "platform_identity_not_verified"
+        data["publish_blocked_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2)
+        print(f"[YOUTUBE PUBLISHER] Marked as PUBLISH_BLOCKED (no real video ID): {filepath}")
+        return
+
     data["status"] = "published"
     data["published_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
-    if video_id:
-        data["youtube_video_id"] = video_id
-        data["youtube_url"] = f"https://www.youtube.com/watch?v={video_id}"
+    data["youtube_video_id"] = video_id
+    data["youtube_url"] = f"https://www.youtube.com/watch?v={video_id}"
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
     print(f"[YOUTUBE PUBLISHER] Marked as published: {filepath}")
@@ -418,7 +430,10 @@ def publish_via_playwright(video_path, title, description, brand=None, channel_i
             print("[YOUTUBE PUBLISHER] Video submitted for processing...")
             
             browser.close()
-            return True, f"yt_{int(time.time())}"
+            # Playwright automation cannot extract the platform-assigned video ID.
+            # Returning a fabricated ID would be a false success — strictly prohibited.
+            # The caller must treat this as PUBLISH_BLOCKED, not PUBLISHED.
+            return False, None
             
     except PWTimeout:
         print("[YOUTUBE PUBLISHER] Timeout during YouTube Studio automation")

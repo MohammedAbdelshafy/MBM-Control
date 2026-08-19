@@ -23,11 +23,23 @@ def get_next_draft():
     return None, None
 
 def mark_published(filepath, data, video_id=None):
+    """Mark package as published with real platform video_id.
+
+    NEVER fabricates a video_id. Without a real ID, marks as publish_blocked.
+    """
+    if not video_id:
+        data["status"] = "publish_blocked"
+        data["publish_blocked_reason"] = "platform_identity_not_verified"
+        data["publish_blocked_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+        with open(filepath, 'w') as f:
+            json.dump(data, f, indent=2)
+        print(f"[PUBLISHER] Marked as PUBLISH_BLOCKED (no real video ID): {filepath}")
+        return
+
     data["status"] = "published"
     data["published_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
-    if video_id:
-        data["youtube_video_id"] = video_id
-        data["youtube_url"] = f"https://www.youtube.com/watch?v={video_id}"
+    data["youtube_video_id"] = video_id
+    data["youtube_url"] = f"https://www.youtube.com/watch?v={video_id}"
     with open(filepath, 'w') as f:
         json.dump(data, f, indent=2)
     print(f"[PUBLISHER] Marked as published: {filepath}")
