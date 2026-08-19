@@ -1,0 +1,25 @@
+{
+  "platform": "youtube",
+  "brand": "clippingfactorymbm",
+  "mode": "test",
+  "privacy": "unlisted",
+  "timestamp": "2026-08-20T00:17:54Z",
+  "video_id": "Mv4nTopTiFw",
+  "url": "https://www.youtube.com/watch?v=Mv4nTopTiFw",
+  "title": "MBM Social - First Real Test Upload [UNLISTED]",
+  "creative_score": 7.5,
+  "creative_tier": "PUBLISH",
+  "source_video": "publish_queue\\first_real_publish.mp4",
+  "post_publish": {
+    "verification": "PASS",
+    "analytics": {
+      "views": 0,
+      "likes": 0,
+      "comments": 0,
+      "timestamp": "2026-08-20T00:19:08Z",
+      "note": "Fresh upload \u2014 analytics will populate within 24-48 hours"
+    },
+    "duplicate_protection": "applied",
+    "package_status": "published"
+  }
+}

@@ -109,6 +109,8 @@ def pending_packages(brand: str | None = None, dedupe: bool = True, limit: int |
         except (json.JSONDecodeError, OSError) as e:
             print(f"[ORCH] Skipping unreadable {filepath.name}: {e}")
             continue
+        if not isinstance(package, dict):
+            continue
         if package.get("status") != STATUS_DRAFT:
             continue
         pkg_brand = resolve_brand(package)
