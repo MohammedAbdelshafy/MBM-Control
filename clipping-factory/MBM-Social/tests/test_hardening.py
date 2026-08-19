@@ -523,3 +523,90 @@ class TestP3_PublishModeControl:
         # dry_run mode — won't actually publish
         result = orch.publish_package(filepath, pkg, dry_run=True, mode="dry_run")
         assert result.get("publish_mode") == "dry_run"
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# P8: VISUAL QA ARTIFACTS
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestP8_VisualQAArtifacts:
+    """Visual QA must extract real frames and produce machine-readable reports."""
+
+    def test_visual_qa_generates_five_frames(self, clip):
+        """Visual QA must extract 5 representative frames."""
+        from mbm_social.visual_qa import generate_visual_qa
+        from pathlib import Path
+        out = Path(tempfile.mkdtemp()) / "qa"
+        result = generate_visual_qa(clip, output_dir=out)
+        assert len(result.frames) == 5
+        assert result.overall_status in ("PASS", "ISSUES_FOUND")
+
+    def test_visual_qa_report_is_json(self, clip):
+        """Visual QA must produce a valid JSON report."""
+        from mbm_social.visual_qa import generate_visual_qa
+        from pathlib import Path
+        out = Path(tempfile.mkdtemp()) / "qa"
+        result = generate_visual_qa(clip, output_dir=out)
+        report = out / "visual_qa_report.json"
+        assert report.exists()
+        data = json.loads(report.read_text(encoding="utf-8"))
+        assert "frames" in data
+        assert "overall_status" in data
+
+    def test_visual_qa_frame_files_exist(self, clip):
+        """Each frame must be written to disk."""
+        from mbm_social.visual_qa import generate_visual_qa
+        from pathlib import Path
+        out = Path(tempfile.mkdtemp()) / "qa"
+        result = generate_visual_qa(clip, output_dir=out)
+        for frame in result.frames:
+            assert Path(frame.frame_path).exists(), f"Frame {frame.position} missing"
+
+    def test_visual_qa_detects_real_dimensions(self, clip):
+        """Visual QA must detect real video dimensions."""
+        from mbm_social.visual_qa import generate_visual_qa
+        from pathlib import Path
+        out = Path(tempfile.mkdtemp()) / "qa"
+        result = generate_visual_qa(clip, output_dir=out)
+        assert result.width == 1080
+        assert result.height == 1920
+
+    def test_visual_qa_blocks_on_missing_file(self, tmp_path):
+        """Visual QA must block on missing file."""
+        from mbm_social.visual_qa import generate_visual_qa
+        out = Path(tempfile.mkdtemp()) / "qa"
+        result = generate_visual_qa(tmp_path / "nonexistent.mp4", output_dir=out)
+        assert result.overall_status == "BLOCKED"
+
+    def test_visual_qa_frame_positions(self, clip):
+        """Frame positions must cover opening, 25%, 50%, 75%, final."""
+        from mbm_social.visual_qa import generate_visual_qa
+        from pathlib import Path
+        out = Path(tempfile.mkdtemp()) / "qa"
+        result = generate_visual_qa(clip, output_dir=out)
+        positions = [f.position for f in result.frames]
+        assert "opening" in positions
+        assert "pct_25" in positions
+        assert "pct_50" in positions
+        assert "pct_75" in positions
+        assert "final" in positions
+
+    def test_visual_qa_machine_readable_report(self, clip):
+        """Report must contain all required fields."""
+        from mbm_social.visual_qa import generate_visual_qa
+        from pathlib import Path
+        out = Path(tempfile.mkdtemp()) / "qa"
+        result = generate_visual_qa(clip, output_dir=out)
+        d = result.to_dict()
+        assert "source" in d
+        assert "clip_id" in d
+        assert "timestamp" in d
+        assert "frames" in d
+        for frame in d["frames"]:
+            assert "position" in frame
+            assert "frame_path" in frame
+            assert "width" in frame
+            assert "height" in frame
+            assert "is_black_frame" in frame
+            assert "safe_zone_ok" in frame
+            assert "caption_state" in frame
