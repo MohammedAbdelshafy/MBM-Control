@@ -1,0 +1,103 @@
+{
+  "dna_id": "bb25b8e37746",
+  "content_id": "campaign:History:youtube_shorts",
+  "variants": {
+    "hooks": [
+      "Did you know these mind-blowing history facts in under 60 seconds?",
+      "Unlock ancient secrets: 1 minute, 3 incredible historical revelations!",
+      "Your history class never taught you THIS! Quick facts to amaze you.",
+      "From forgotten empires to legendary figures – all in 60 seconds!",
+      "Challenge your historical knowledge: Can you handle these rapid-fire facts?"
+    ],
+    "short_form_scripts": [
+      {
+        "hook": "Did you know these mind-blowing history facts in under 60 seconds?",
+        "script": "Get ready! Did you know the Roman Empire lasted over 1000 years, but its western half fell in 476 AD? That's incredible! And did you know the shortest war in history was between Britain and Zanzibar in 1896, lasting only 38 minutes? Imagine that! Plus, ancient Egyptians used toothpaste made of ox hooves and eggshells! History is truly wild, right? Follow for more quick facts!",
+        "duration_sec": 48
+      },
+      {
+        "hook": "Unlock ancient secrets: 1 minute, 3 incredible historical revelations!",
+        "script": "Time to uncover some hidden history! The Great Pyramid of Giza was the tallest man-made structure for over 3,800 years. Imagine that scale! Also, Vikings actually used a 'sunstone' to navigate on cloudy days, a crystal that could find the sun's position. And here's a bizarre one: Emperor Caligula made his horse a consul! What a world. Hit that like button if you learned something new!",
+        "duration_sec": 49
+      },
+      {
+        "hook": "Your history class never taught you THIS! Quick facts to amaze you.",
+        "script": "Forget the textbooks, here are facts you won't believe! The ancient Greeks invented vending machines – for holy water! Seriously. And did you know that during the reign of Henry VIII, people believed tomatoes were poisonous? They were called 'poison apples.' Finally, the Library of Alexandria was not just one building, but a complex of several, housing hundreds of thousands of scrolls. Mind blown? Subscribe for your daily dose of history!",
+        "duration_sec": 52
+      }
+    ],
+    "captions": [
+      "Mind-blowing history in under a minute! 🤯 Which fact surprised you the most? Drop a comment below! #HistoryFacts #AncientCivilizations #QuickHistory",
+      "Your daily dose of fascinating history is here! ✨ From forgotten stories to ancient wonders, get smarter in 60 seconds. What topic should we cover next? #HistoricalEvents #DidYouKnow #LearnOnShorts",
+      "Ready for some rapid-fire historical revelations? 🚀 We're diving deep into the past, one amazing fact at a time. Tap the link in bio for more! #HistoryBuff #WorldHistory #Shorts"
+    ],
+    "cta_variants": [
+      "Follow for more amazing history facts every day!",
+      "Subscribe and never miss another incredible historical discovery!",
+      "Hit the like button if you learned something new and share with a history lover!"
+    ],
+    "titles": [
+      "60 Second History: Mind-Blowing Facts You Never Knew!",
+      "Unbelievable History: Quick Facts That Will Amaze You!",
+      "Rapid History: Ancient Secrets in Under a Minute!"
+    ]
+  },
+  "repurposed": {
+    "dna_id": "bb25b8e37746",
+    "content_id": "campaign:History:youtube_shorts",
+    "outputs": {
+      "reel": {
+        "hook": "Ever wonder what history's craziest secrets are? Get ready for 3 mind-blowing facts in under a minute!",
+        "script": "**(Fast-paced, energetic music throughout)**\n\n**[0-5s] Visual: Rapid montage of ancient artifacts, battle scenes, historical figures.**\n**VO:** Think you know history? Think again! We're diving into three insane facts you won't believe!\n\n**[5-15s] Visual: Animation of Roman architecture, then a close-up of something concrete-like.**\n**VO:** First up: Roman concrete! We still can't replicate its durability. Structures like the Pantheon have stood for over 2,000 years, outlasting most modern concrete. Their secret? Volcanic ash!\n\n**[15-25s] Visual: Cleopatra imagery, then a map showing Macedonia/Greece.**\n**VO:** Next: Cleopatra wasn't Egyptian! The last pharaoh of Egypt was actually of Greek Macedonian descent, a direct descendant of Ptolemy I Soter, one of Alexander the Great's generals. Mind blown yet?\n\n**[25-35s] Visual: Old photos/footage of emus, then soldiers with old rifles.**\n**VO:** And finally: The Great Emu War! In 1932, the Australian military was deployed to combat a population of emus destroying crops. The emus *won*! Seriously, they outmaneuvered the soldiers. \n\n**[35-45s] Visual: Quick recap of facts, text overlays.**\n**VO:** From ancient engineering marvels to royal lineage surprises and feathered military victories, history is wild! \n\n**[45-50s] Visual: Call to action text: 'Follow for more amazing history!'**\n**VO:** Want more jaw-dropping facts? Hit that follow button! \n\n**(Music fades out with a final flourish)**",
+        "duration_sec": 50
+      },
+      "short": {
+        "hook": "Did you know THIS about ancient Rome?",
+        "script": "**(Upbeat, quirky music)**\n\n**[0-3s] Visual: Animated graphic of a Roman citizen brushing teeth.**\n**VO:** Okay, history buffs, prepare to cringe!\n\n**[3-15s] Visual: Graphic depicting Roman toiletries, then a surprised face.**\n**VO:** Ancient Romans often used... wait for it... human urine as mouthwash! Yep, the ammonia in it was a powerful cleaning agent. They even imported it from Portugal! Talk about fresh breath!\n\n**[15-20s] Visual: Text overlay: 'Gross, but true!' and a quick transition.**\n**VO:** Gross, but effective, apparently! \n\n**[20-25s] Visual: Call to action: 'Follow for more wild history facts!'**\n**VO:** Want more bizarre historical truths? Follow for your daily dose of the past!\n\n**(Music fades)**",
+        "duration_sec": 25
+      },
+      "short_variant": {
+        "hook": "The shortest war in history lasted HOW long?!",
+        "script": "**(Intense, dramatic music builds then drops)**\n\n**[0-5s] Visual: Rapid cuts of old war footage, then a clock ticking fast.**\n**VO:** You think your meetings are long? Try the Anglo-Zanzibar War!\n\n**[5-15s] Visual: Map highlighting Zanzibar, then text graphic: 'August 27, 1896'.**\n**VO:** On August 27th, 1896, Great Britain declared war on the Sultanate of Zanzibar. The reason? A new sultan took power without British approval.\n\n**[15-25s] Visual: Text graphic: '38 MINUTES'. Clock graphic quickly counting down.**\n**VO:** The war began at 9:02 AM. By 9:40 AM, just 38 minutes later, Zanzibar surrendered. It's officially the shortest war ever recorded! \n\n**[25-30s] Visual: Call to action: 'History is full of surprises! Follow for more!'**\n**VO:** History is full of wild, blink-and-you-miss-it moments! Hit follow for your next surprise!\n\n**(Music fades with a final dramatic chord)**",
+        "duration_sec": 30
+      },
+      "linkedin_post": "🔍 Dive into history with 'History Clips'! \n\nAs professionals, we constantly seek knowledge and context. What if you could unlock fascinating historical events, ancient civilizations, and forgotten stories in just 60 seconds? \n\nOur new short-form video series, 'History Clips,' delivers exactly that: concise, engaging, and mind-blowing historical facts designed to pique your curiosity and expand your perspective, even on your busiest days. \n\nFrom the engineering marvels of ancient Rome to the shortest war ever fought, you'll discover insights that connect our past to the present. \n\n👉 Ready to spark your intellectual curiosity? Watch our latest clip and follow 'History Clips' for your daily dose of inspiration and knowledge! [Link to your latest video/playlist]\n\n#History #AncientCivilizations #Archaeology #Learning #ProfessionalDevelopment #Curiosity #Knowledge #HistoryClips",
+      "x_post": "Mind blown! 🤯 Did you know ancient Romans used *urine* as mouthwash? Or that the shortest war in history lasted just 38 minutes? \n\nGet your daily dose of insane history facts in 60 seconds or less! \n\n#History #Facts #AncientHistory #FunFacts #HistoryClips [Link to your latest video]",
+      "carousel_caption": "Unlock the secrets of the past! 🗝️ Swipe through for a glimpse into some of history's most fascinating, bizarre, and overlooked moments. \n\nFrom incredible ancient inventions to surprising royal truths, we're bringing you the 'amazing history facts' you won't find in textbooks. \n\nEach slide is a snapshot of a story waiting to be discovered. Want the full, engaging breakdown? Check out our 'History Clips' for bite-sized videos that will leave you hungry for more! \n\n#HistoryFacts #AncientCivilizations #ForgottenStories #Curiosity #LearnSomethingNew #HistoryClips #Archaeology #Culture",
+      "email_idea": {
+        "subject": "🤯 Your Daily Dose of 'Mind Blown' History – In 60 Seconds!",
+        "body": "Hey [Name],\n\nEver feel like you're too busy to dive deep into a history book, but still crave that intellectual spark?\n\nWe get it. That's why we created 'History Clips' – your new go-to for fascinating historical events, ancient civilizations, and forgotten stories from around the world, all delivered in engaging, bite-sized videos under 60 seconds.\n\nImagine discovering:\n*   How Roman concrete has outlasted modern materials for 2,000 years.\n*   The true lineage of Cleopatra (hint: she wasn't Egyptian!).\n*   The bizarre story of a war that lasted just 38 minutes.\n\nOur mission is to make learning history easy, fun, and utterly captivating. You don't need hours; just a minute of your day to unlock something truly amazing.\n\nReady to ignite your curiosity? Click below to watch our latest 'History Clip' and join a community passionate about the past:\n\n[Link to your latest video/channel]\n\nStay curious,\nThe History Clips Team"
+      },
+      "sales_talking_point": "Our 'History Clips' brand is built on delivering high-impact, short-form historical content. We tap into the universal human desire for curiosity and knowledge, offering 'amazing history facts in 60 seconds' that are not only educational but highly entertaining. This allows us to rapidly build an engaged audience interested in ancient civilizations, forgotten stories, and diverse historical events, providing a unique platform for brand integration and educational partnerships.",
+      "faq": [
+        {
+          "question": "What kind of history facts do you cover?",
+          "answer": "We cover a vast range of history, from ancient civilizations and forgotten stories to surprising events and lesser-known historical figures from around the world. Our goal is to find the most fascinating and mind-blowing facts."
+        },
+        {
+          "question": "How long are your videos?",
+          "answer": "Our videos are designed to be concise and engaging, typically running under 60 seconds. Perfect for a quick learning boost!"
+        },
+        {
+          "question": "Are your facts thoroughly researched?",
+          "answer": "Absolutely. We pride ourselves on accuracy. All our facts are meticulously researched and cross-referenced to ensure they are historically sound and verified."
+        },
+        {
+          "question": "Who is 'History Clips' for?",
+          "answer": "'History Clips' is for anyone with a curious mind – individuals interested in history, ancient civilizations, archaeology, mythology, science, and culture, who appreciate learning in a quick, engaging format."
+        },
+        {
+          "question": "How often do you release new content?",
+          "answer": "We aim for regular releases to keep your curiosity piqued! Follow us on your preferred platform to stay updated on our latest 'amazing history facts'."
+        }
+      ],
+      "gtm_talk_track": "Our 'History Clips' initiative is a highly scalable content strategy designed to capture and retain a broad, intellectually curious audience. We leverage the power of short-form video to deliver 'amazing history facts in 60 seconds,' tapping into the core emotional triggers of curiosity and wonder. This approach allows us to rapidly build brand recognition and audience engagement by providing high-value, easily digestible educational entertainment. Our content's diverse topics – from ancient civilizations to forgotten stories – ensure broad appeal, making 'History Clips' an ideal partner for platforms seeking to enhance educational offerings, drive user retention through engaging content, and attract an audience segment keen on continuous, effortless learning."
+    },
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "call_status": "fallback",
+    "fallback_reason": "glm_not_configured"
+  },
+  "diversity_issues": [],
+  "created_at": "2026-08-16T23:08:13.367754+00:00"
+}

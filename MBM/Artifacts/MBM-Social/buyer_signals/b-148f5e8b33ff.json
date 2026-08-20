@@ -1,0 +1,20 @@
+{
+  "signal_id": "148f5e8b33ff",
+  "pain": "customer-service overload",
+  "intent": "BUYING_SIGNAL",
+  "signal_kind": "BUYING_SIGNAL",
+  "confidence": 0.85,
+  "source_comment_id": "fixture:demo:07",
+  "source_content_id": "campaign:AI",
+  "source_text": "Our front desk is drowning in repetitive support questions. Does this replace the customer service queue?",
+  "offer": "AI Support",
+  "secondary_offer": "AI FAQ Assistant",
+  "consultancy_angle": "Your team is drowning in the same 20 questions.",
+  "matched_offer": true,
+  "timestamp": "2026-08-12T11:45:00Z",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "person": "UNKNOWN",
+  "company": "UNKNOWN",
+  "kind": "real"
+}

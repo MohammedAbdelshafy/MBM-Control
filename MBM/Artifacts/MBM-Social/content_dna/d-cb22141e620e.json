@@ -1,0 +1,41 @@
+{
+  "content_id": "viral_pool:transformed_viral_make_money_01",
+  "dna_id": "cb22141e620e",
+  "hook": "UNKNOWN",
+  "topic": "UNKNOWN",
+  "niche": "UNKNOWN",
+  "audience": "UNKNOWN",
+  "emotional_trigger": "UNKNOWN",
+  "pacing": "UNKNOWN",
+  "visual_pattern": "UNKNOWN",
+  "narrative_structure": "UNKNOWN",
+  "cta": "UNKNOWN",
+  "offer_signal": "UNKNOWN",
+  "retention_hypothesis": "UNKNOWN",
+  "content_format": "UNKNOWN",
+  "pain": "UNKNOWN",
+  "desire": "UNKNOWN",
+  "proof": "UNKNOWN",
+  "objection": "UNKNOWN",
+  "reuse_opportunities": [],
+  "business_intent": "UNKNOWN",
+  "confidence": 0.0,
+  "source_ref": {
+    "source_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\MBM-Social\\viral_pool\\transformed_viral_make_money_01.mp4",
+    "source_url": "",
+    "kind": "viral_pool",
+    "brand": "MBM-Social",
+    "platform": "tiktok",
+    "provider": "rules",
+    "model": "rules-deterministic",
+    "fallback_reason": "glm_not_configured_no_model",
+    "call_status": "fallback"
+  },
+  "metadata": {
+    "title": "Transformed Viral Make Money 01",
+    "niche_hint": "UNKNOWN",
+    "tags": [],
+    "metrics": {}
+  },
+  "created_at": "2026-08-17T02:24:10.347242+00:00"
+}

@@ -1,0 +1,27 @@
+🚀 MBM-Social GLM Intelligence
+📅 Daily Brief
+
+🧠 Model: gemini · GLM OFF · fallback auto
+
+🎬 Content DNA analyzed: **40**
+📊 Highest-confidence hook: `—`
+
+💬 Engagement classified: **10**
+🔥 HOT buyer signals: **4**
+⚡ HIGH buyer signals: **2**
+🌡 WARM: **1** · 🚫 Noise/spam: **3**
+
+💰 Revenue offers surfaced:
+  • missed calls → **AI Receptionist**
+  • scheduling bottleneck → **AI Scheduling**
+  • manual estimating → **AI Estimating**
+  • customer-service overload → **AI Support**
+
+🎯 GTM handoff: 0 new, 0 dupes skipped, 6 human-review
+   buyer file 99 → 99 (no shrink)
+
+
+🔄 Repurposed outputs: **0**
+
+✅ Status: **success**
+➡️ Next: Promote GLM dry-run to live by enabling GLM_ENABLED and, after human review of human_review.json, running with --apply to merge buyer signals into ai_assistant_buyers_all.json.

@@ -1,0 +1,20 @@
+{
+  "signal_id": "baad5b13462d",
+  "pain": "UNKNOWN",
+  "intent": "PRICE_SIGNAL",
+  "signal_kind": "PRICE_SIGNAL",
+  "confidence": 0.85,
+  "source_comment_id": "fixture:demo:03",
+  "source_content_id": "published:wholesaling-re-contract",
+  "source_text": "How much does it cost to set up?",
+  "offer": "UNKNOWN",
+  "secondary_offer": "UNKNOWN",
+  "consultancy_angle": "UNKNOWN",
+  "matched_offer": false,
+  "timestamp": "2026-08-11T09:12:00Z",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "person": "UNKNOWN",
+  "company": "UNKNOWN",
+  "kind": "real"
+}

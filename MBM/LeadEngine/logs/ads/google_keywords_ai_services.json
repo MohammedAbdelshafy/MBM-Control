@@ -1,0 +1,144 @@
+{
+  "status": "OFFLINE",
+  "vertical": "ai_services",
+  "name": "AI Consultancy & Automation",
+  "ideas_count": 14,
+  "ideas": [
+    {
+      "keyword": "AI consultant for business",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "hire AI developer",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "AI automation agency",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "custom AI solution",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "AI chatbot for business",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "AI integration services",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "business process automation AI",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "machine learning consultant",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "AI strategy consulting",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "AI powered customer service",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "automate my business with AI",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "AI agent development",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "enterprise AI solutions",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    },
+    {
+      "keyword": "AI workflow automation",
+      "avg_monthly_searches": "N/A (API not connected)",
+      "competition": "ESTIMATED_MEDIUM",
+      "low_bid_usd": "$1.50",
+      "high_bid_usd": "$8.00",
+      "note": "Connect Google Ads API for real data"
+    }
+  ],
+  "seed_keywords": [
+    "AI consultant for business",
+    "hire AI developer",
+    "AI automation agency",
+    "custom AI solution",
+    "AI chatbot for business",
+    "AI integration services",
+    "business process automation AI",
+    "machine learning consultant",
+    "AI strategy consulting",
+    "AI powered customer service",
+    "automate my business with AI",
+    "AI agent development",
+    "enterprise AI solutions",
+    "AI workflow automation"
+  ],
+  "negative_keywords": [
+    "free AI course",
+    "AI tutorial",
+    "AI certification",
+    "learn AI",
+    "AI jobs",
+    "AI salary"
+  ]
+}

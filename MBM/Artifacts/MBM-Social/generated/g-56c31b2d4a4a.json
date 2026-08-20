@@ -1,0 +1,99 @@
+{
+  "dna_id": "56c31b2d4a4a",
+  "content_id": "campaign:Muslim:youtube_shorts",
+  "variants": {
+    "hooks": [
+      "Unlock Islamic wisdom in 60 seconds!",
+      "Your daily dose of faith, fast.",
+      "Quick Quran reflections for a deeper heart.",
+      "Prophetic stories, instant inspiration.",
+      "Muslim life insights, under a minute."
+    ],
+    "short_form_scripts": [
+      {
+        "hook": "Unlock Islamic wisdom in 60 seconds!",
+        "script": "Assalamu Alaikum! Ever wondered about the deeper meaning of 'Tawakkul'? It's not just passive reliance, but active trust in Allah after taking all necessary steps. Imagine Prophet Yaqub (AS) sending his sons out, yet trusting Allah's plan. This powerful concept, explored by scholars at Yaqeen Institute, reminds us to strive, then surrender. It's about finding peace in Allah's decree, knowing He is the best disposer of affairs. Apply this in your life today: do your best, then truly trust. What's one area you can practice Tawakkul? Share below! Follow for more daily Islamic insights!",
+        "duration_sec": 55
+      },
+      {
+        "hook": "Your daily dose of faith, fast.",
+        "script": "Did you know the Prophet Muhammad (PBUH) taught us the power of a simple smile? He said, 'Your smiling in the face of your brother is charity.' This isn't just about good manners; it's a profound act of worship that brightens someone's day and earns you reward. IslamicFinder highlights how such small deeds can have immense spiritual impact. In a world full of challenges, a genuine smile can be a beacon of hope and connection, fostering brotherhood and sisterhood. Let's spread this Sunnah today! What makes you smile? Tell us in the comments! Subscribe for your regular dose of inspiration!",
+        "duration_sec": 50
+      },
+      {
+        "hook": "Quick Quran reflections for a deeper heart.",
+        "script": "Let's reflect on Surah Al-Asr, just three verses, yet a complete guide to success. 'By time, indeed, mankind is in loss, except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience.' About Islam often emphasizes the timeless wisdom in short Surahs. This Surah teaches us that time is precious, and salvation lies in faith, good deeds, upholding truth, and cultivating patience. Are you making the most of your time? How can you incorporate these four pillars into your day? Let us know! Tap the link in bio to deepen your faith!",
+        "duration_sec": 58
+      }
+    ],
+    "captions": [
+      "Unlock profound Islamic wisdom in just 60 seconds! 🚀 Today, we dive into the beautiful concept of Tawakkul, active trust in Allah. Drawing insights from reputable sources like Yaqeen Institute, we explore how this principle, exemplified by prophets, can transform your daily life. It’s about striving with all your might, then leaving the outcome to the Divine. What does Tawakkul mean to you? Share your thoughts below! #IslamicKnowledge #Tawakkul #Faith #Inspiration #MuslimsClipping #60SecondIslam",
+      "Get your daily dose of faith and inspiration, fast! ✨ Discover the simple yet profound power of a smile in Islam, as taught by our beloved Prophet Muhammad (PBUH). This beautiful Sunnah, highlighted by IslamicFinder, is a charity that costs nothing but brings immense reward and spreads positivity. Let's brighten someone's day today! What's a small act of kindness that inspires you? Comment below! 👇 #DailyInspiration #PropheticWisdom #Sunnah #MuslimLife #Spirituality #Shorts",
+      "Deepen your heart with quick Quran reflections! 📖 In this 60-second insight, we explore the timeless lessons of Surah Al-Asr – a powerful reminder about the value of time, faith, righteous deeds, truth, and patience. Content derived from trusted sources like About Islam helps us unpack these vital principles for contemporary Muslim life. How do you apply these pillars in your life? Let's discuss! #QuranReflection #IslamicInsights #SurahAlAsr #FaithJourney #MuslimCommunity #Knowledge"
+    ],
+    "cta_variants": [
+      "Follow for more daily Islamic insights!",
+      "Subscribe for your regular dose of inspiration!",
+      "Tap the link in bio to deepen your faith!"
+    ],
+    "titles": [
+      "60-Second Wisdom: Understanding Tawakkul",
+      "The Power of a Smile: Prophetic Wisdom in Under a Minute",
+      "Surah Al-Asr: A Full Guide to Success in 60 Seconds"
+    ]
+  },
+  "repurposed": {
+    "dna_id": "56c31b2d4a4a",
+    "content_id": "campaign:Muslim:youtube_shorts",
+    "outputs": {
+      "reel": {
+        "hook": "Unlock profound Islamic wisdom in just 60 seconds!",
+        "script": "Time is precious. But do we truly understand its value from an Islamic perspective? Surah Al-Asr, one of the shortest chapters in the Quran, delivers a profound message. It states that humanity is in loss, *except* for those who believe, do righteous deeds, urge each other to truth, and urge each other to patience. This isn't just about avoiding sin; it's an active call to faith, good actions, community support, and steadfastness in the face of challenges. How are *you* investing your time today for your eternal benefit? Stay inspired. Follow MuslimsClipping for daily doses of faith.",
+        "duration_sec": 60
+      },
+      "short": {
+        "hook": "Quick Islamic insight: The power of patience!",
+        "script": "The Quran teaches us that 'Indeed, Allah is with the patient.' But what does true patience (Sabr) mean in Islam? It's not passive waiting, but active perseverance, steadfastness in the face of adversity, and self-restraint in times of ease. From the trials of Prophet Ayub to the steadfastness of the early Muslims, patience is a cornerstone of faith. It's about trusting Allah's plan, even when circumstances are challenging, and seeking reward in the hereafter. How can you cultivate more Sabr in your daily life? Reflect on this wisdom and find strength in faith. Follow MuslimsClipping for more inspiration.",
+        "duration_sec": 60
+      },
+      "short_variant": {
+        "hook": "Did you know this amazing fact from Islamic history?",
+        "script": "The Hijra wasn't just a journey; it was a strategic masterclass guided by divine wisdom. When Prophet Muhammad (PBUH) migrated from Makkah to Madinah, it wasn't a spontaneous act. It involved careful planning, trusting allies, and immense reliance on Allah. From choosing a less obvious route to seeking refuge in the cave of Thawr, every step showed courage and foresight. This event teaches us the importance of preparation, trust in Allah, and perseverance even in the face of extreme adversity. What lessons from the Hijra inspire you most? Dive deeper into Islamic history with MuslimsClipping.",
+        "duration_sec": 60
+      },
+      "linkedin_post": "Elevate your perspective with daily doses of Islamic knowledge and inspiration. Our 60-second insights, meticulously crafted from reputable sources like About Islam and Yaqeen Institute, offer profound reflections on the Quran, prophetic stories, Islamic history, and contemporary Muslim life. Perfect for leaders, professionals, and anyone seeking spiritual growth and a deeper understanding of their faith. Cultivate mindfulness and wisdom in your busy schedule. #IslamicKnowledge #SpiritualGrowth #MuslimProfessionals #FaithInAction #Leadership #DailyInspiration",
+      "x_post": "Unlock daily #IslamicWisdom in just 60 seconds! 🚀 Dive into #Quran reflections, #PropheticStories & more for your dose of #Faith & #Inspiration. Quick, authentic, impactful. #MuslimsClipping",
+      "carousel_caption": "Unlock Daily Inspiration: A Series of 60-Second Islamic Wisdom Bites ✨ Swipe through for quick reflections on the Quran, powerful prophetic stories, fascinating Islamic history, and insights into contemporary Muslim life. Each slide brings you closer to your faith, sourced from reputable institutions. Save your favorites and share the light! #IslamicKnowledge #DailyInspiration #MuslimLife #QuranReflections #PropheticGuidance",
+      "email_idea": {
+        "subject": "Your Daily Dose of Islamic Inspiration Awaits! ✨",
+        "body": "Assalamu Alaikum! In our fast-paced world, finding moments for spiritual reflection can be a challenge. That's why we're thrilled to bring you 'MuslimsClipping' – your new go-to for potent Islamic knowledge and inspiration, delivered in just 60 seconds.\n\nEach day, we distill profound insights from the Quran, captivating prophetic stories, rich Islamic history, and relevant lessons for contemporary Muslim life. Our content is carefully curated from trusted sources like About Islam, IslamicFinder, and Yaqeen Institute, ensuring authenticity and depth.\n\nWhether you're looking for a quick spiritual boost, a deeper understanding of your faith, or simply a moment of inspiration, our short videos are designed to fit seamlessly into your day. \n\nClick here to watch today's 60-second reflection [Link to video/platform].\n\nMay these insights enrich your journey of faith. \n\nWarmly,\nThe MuslimsClipping Team"
+      },
+      "sales_talking_point": "We provide consistent, high-quality, short-form Islamic knowledge and inspiration content, leveraging reputable sources to engage the Muslim demographic effectively. Our 60-second format ensures high retention and deliverability across digital platforms, building brand authority and fostering a loyal community around shared values.",
+      "faq": [
+        {
+          "question": "What kind of topics does MuslimsClipping cover?",
+          "answer": "We cover a wide range of topics including Quranic reflections, inspiring prophetic stories, significant events from Islamic history, and relevant insights into contemporary Muslim life."
+        },
+        {
+          "question": "How long are the videos?",
+          "answer": "Each video is precisely 60 seconds long, designed for quick, digestible learning and inspiration that fits into your busy day."
+        },
+        {
+          "question": "What are your sources for the content?",
+          "answer": "Our content is derived from reputable and trusted Islamic sources such as About Islam, IslamicFinder, and Yaqeen Institute, ensuring authenticity and accuracy."
+        },
+        {
+          "question": "Who is the target audience for this content?",
+          "answer": "Our content is primarily for Muslims seeking to deepen their knowledge, strengthen their faith, and find daily inspiration and spirituality."
+        }
+      ],
+      "gtm_talk_track": "In today's saturated digital landscape, effectively engaging the Muslim audience requires content that is not only authentic and relevant but also highly consumable. Our 'MuslimsClipping' initiative offers a unique, high-impact solution: daily 60-second video snippets of profound Islamic knowledge and inspiration, meticulously crafted from trusted sources like About Islam and Yaqeen Institute. This strategy allows brands to build deep engagement and authority within this significant demographic, fostering loyalty and community around shared values, without the burden of content creation. We ensure consistent delivery, high-quality production, and content that resonates deeply, leveraging our expertise in niche content creation and platform optimization to drive unparalleled spiritual connection and audience retention."
+    },
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "call_status": "fallback",
+    "fallback_reason": "glm_not_configured"
+  },
+  "diversity_issues": [],
+  "created_at": "2026-08-16T23:09:25.601251+00:00"
+}

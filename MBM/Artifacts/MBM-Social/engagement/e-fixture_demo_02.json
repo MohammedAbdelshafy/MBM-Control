@@ -1,0 +1,13 @@
+{
+  "comment_id": "fixture:demo:02",
+  "signal": "PRAISE",
+  "confidence": 0.9,
+  "tier": "NOISE",
+  "source": "fixture:youtube",
+  "content_id": "published:wholesaling-re-contract",
+  "timestamp": "2026-08-10T14:05:00Z",
+  "reasoning": "rule-based pre-classification",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "text": "Nice video."
+}

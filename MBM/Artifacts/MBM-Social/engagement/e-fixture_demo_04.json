@@ -1,0 +1,13 @@
+{
+  "comment_id": "fixture:demo:04",
+  "signal": "BUYING_SIGNAL",
+  "confidence": 0.85,
+  "tier": "HOT",
+  "source": "fixture:tiktok",
+  "content_id": "published:wholesaling-re-contract",
+  "timestamp": "2026-08-11T09:20:00Z",
+  "reasoning": "rule-based keyword signal",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "text": "We are a construction company and our team spends 12 hours a week manually quoting. Do you handle estimating?"
+}

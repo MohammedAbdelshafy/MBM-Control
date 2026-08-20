@@ -1,0 +1,13 @@
+{
+  "comment_id": "fixture:demo:01",
+  "signal": "BUYING_SIGNAL",
+  "confidence": 0.85,
+  "tier": "HOT",
+  "source": "fixture:youtube",
+  "content_id": "published:wholesaling-re-contract",
+  "timestamp": "2026-08-10T14:00:00Z",
+  "reasoning": "rule-based keyword signal",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "text": "This is exactly what happened to us last month — we had 23 missed calls in a week and I had no idea. Can you do this for clinics?"
+}

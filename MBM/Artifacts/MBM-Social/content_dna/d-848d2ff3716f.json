@@ -1,0 +1,41 @@
+{
+  "content_id": "campaign:AI:youtube_shorts",
+  "dna_id": "848d2ff3716f",
+  "hook": "UNKNOWN",
+  "topic": "UNKNOWN",
+  "niche": "UNKNOWN",
+  "audience": "UNKNOWN",
+  "emotional_trigger": "UNKNOWN",
+  "pacing": "UNKNOWN",
+  "visual_pattern": "UNKNOWN",
+  "narrative_structure": "UNKNOWN",
+  "cta": "UNKNOWN",
+  "offer_signal": "UNKNOWN",
+  "retention_hypothesis": "UNKNOWN",
+  "content_format": "UNKNOWN",
+  "pain": "UNKNOWN",
+  "desire": "UNKNOWN",
+  "proof": "UNKNOWN",
+  "objection": "UNKNOWN",
+  "reuse_opportunities": [],
+  "business_intent": "UNKNOWN",
+  "confidence": 0.0,
+  "source_ref": {
+    "source_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\MBM-Social\\Campaigns\\AI\\config.yaml",
+    "source_url": "",
+    "kind": "campaign_config",
+    "brand": "MBM-Social",
+    "platform": "youtube_shorts",
+    "provider": "rules",
+    "model": "rules-deterministic",
+    "fallback_reason": "glm_not_configured_no_model",
+    "call_status": "fallback"
+  },
+  "metadata": {
+    "title": "",
+    "niche_hint": "AI",
+    "tags": [],
+    "metrics": {}
+  },
+  "created_at": "2026-08-16T23:20:49.997459+00:00"
+}
