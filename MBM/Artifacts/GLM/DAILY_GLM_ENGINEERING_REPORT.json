@@ -1,6 +1,6 @@
 {
   "title": "🚀 GLM ENGINEERING DAILY BRIEF",
-  "generated_at": "2026-08-20 15:51:45 UTC",
+  "generated_at": "2026-08-20 15:52:45 UTC",
   "tasks_summary": {
     "lead_research": 5,
     "classification": 120,
@@ -14,7 +14,7 @@
     "cached": 0,
     "total_tokens": 2109,
     "estimated_cost_usd": 0.01612,
-    "avg_latency_ms": 6.52
+    "avg_latency_ms": 8.89
   },
   "summary": {
     "repos_improved": 7,
