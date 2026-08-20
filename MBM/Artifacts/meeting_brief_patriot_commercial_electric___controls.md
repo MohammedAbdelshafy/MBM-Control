@@ -5,7 +5,7 @@
 **Vertical:** Construction & Engineering (ConTech)  
 **Phone:** `+18178829100` | **Email:** `gthornton@patriotelectrictexas.com`  
 **Intent Score:** `75.0/100` (HIGH INTENT)  
-**Generated At:** 2026-08-16 19:51:41 UTC  
+**Generated At:** 2026-08-16 22:58:42 UTC  
 
 ---
 

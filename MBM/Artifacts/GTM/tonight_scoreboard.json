@@ -1,0 +1,15 @@
+{
+  "calls": 12,
+  "connected": 8,
+  "conversations": 6,
+  "sellers_warmed": 3,
+  "ai_buyers_warmed": 2,
+  "qualified": 4,
+  "meetings": 2,
+  "proposals": 1,
+  "deals": 1,
+  "new_pipeline_usd": 24800.0,
+  "confirmed_revenue_usd": 4000.0,
+  "session_start": null,
+  "last_updated": "2026-08-20T15:23:03.601072+00:00"
+}

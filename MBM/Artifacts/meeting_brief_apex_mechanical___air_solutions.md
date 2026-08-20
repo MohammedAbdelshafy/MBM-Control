@@ -5,7 +5,7 @@
 **Vertical:** HVAC & Mechanical Contractors  
 **Phone:** `+12148849120` | **Email:** `marcus@apex.com`  
 **Intent Score:** `100/100` (HOT)  
-**Generated At:** 2026-08-16 19:51:41 UTC  
+**Generated At:** 2026-08-20 15:37:37 UTC  
 
 ---
 

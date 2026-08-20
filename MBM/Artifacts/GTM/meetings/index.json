@@ -94,7 +94,24 @@
       "brief_ready": true,
       "source": "meeting_brief artifact",
       "id": "meeting_titan_infrastructure___civil_contracting"
+    },
+    "TEST-LEAD-001": {
+      "id": "TEST-LEAD-001",
+      "company": "Summit Dental Group",
+      "buyer": "Dr. John Summit",
+      "role": "Owner & Lead Dentist",
+      "date": "Tomorrow",
+      "time": "10:30 AM",
+      "ai_fit": "24/7 AI Receptionist & Voice Agent",
+      "offer": "24/7 AI Receptionist & Voice Agent",
+      "pain": "Overdue patient recall backlog and missed calls",
+      "why_agreed": "Agreed to 15-minute diagnostic demo",
+      "phone": "+1-214-555-0199",
+      "email": "drjohn@summitdental.com",
+      "notes": "Interested in after-hours phone triage.",
+      "expected_value_usd": 8400.0,
+      "created_at": "2026-08-20T15:22:49.977457+00:00"
     }
   },
-  "last_synced": "2026-08-16T14:22:32.807729+00:00"
+  "last_synced": "2026-08-20T15:22:49.977457+00:00"
 }

@@ -1,0 +1,70 @@
+{
+  "status": "success",
+  "run_id": "CV-2026-08-19-235b",
+  "mode": "dry-run",
+  "date": "2026-08-19",
+  "started_at": "2026-08-19T13:24:40Z",
+  "finished_at": "2026-08-19T13:24:40Z",
+  "sources": {
+    "dallas": {
+      "status": "error",
+      "records_seen": 0,
+      "records_new": 0,
+      "records_updated": 0,
+      "records_rejected": 0,
+      "errors": [
+        "dallas: HTTP Error 404: Not Found"
+      ],
+      "last_seen_max": ""
+    },
+    "fort_worth": {
+      "status": "error",
+      "records_seen": 0,
+      "records_new": 0,
+      "records_updated": 0,
+      "records_rejected": 0,
+      "errors": [
+        "fort_worth: 'str' object has no attribute 'get'"
+      ],
+      "last_seen_max": ""
+    },
+    "arlington": {
+      "status": "error",
+      "records_seen": 0,
+      "records_new": 0,
+      "records_updated": 0,
+      "records_rejected": 0,
+      "errors": [
+        "arlington: 'str' object has no attribute 'get'"
+      ],
+      "last_seen_max": ""
+    },
+    "plano": {
+      "status": "error",
+      "records_seen": 0,
+      "records_new": 0,
+      "records_updated": 0,
+      "records_rejected": 0,
+      "errors": [
+        "plano: HTTP Error 404: Not Found"
+      ],
+      "last_seen_max": ""
+    }
+  },
+  "totals": {
+    "properties_scored": 0,
+    "tiers": {
+      "TIER 1": 0,
+      "TIER 2": 0,
+      "TIER 3": 0
+    },
+    "new_properties": 0,
+    "upgraded_properties": 0,
+    "case_duplicates": 0,
+    "dialer_segment_entries": 0
+  },
+  "errors": [],
+  "next_action": "Review TIER 1 in the dialer segment CODE_VIOLATION_DAILY and place calls.",
+  "owner": "human",
+  "timestamp": "2026-08-19T13:24:40Z"
+}

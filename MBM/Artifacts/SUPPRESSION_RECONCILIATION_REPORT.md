@@ -1,21 +1,21 @@
 # MBM SUPPRESSION RECONCILIATION AUDIT REPORT
-**Timestamp**: 2026-08-17T01:36:51Z
+**Timestamp**: 2026-08-20T15:40:27Z
 
 ## Reconciliation Metrics
 ```text
-HISTORICAL_BAD_FINDINGS_TOTAL=325
+HISTORICAL_BAD_FINDINGS_TOTAL=192
 HISTORICAL_BAD_UNIQUE=96
 CURRENT_SUPPRESSION_UNIQUE=96
-DUPLICATES_COLLAPSED=229
-SUPERSEDED=53
+DUPLICATES_COLLAPSED=96
+SUPERSEDED=0
 STILL_BLOCKED=96
 UNACCOUNTED=0
 SUPPRESSION_RECONCILED=True
 ```
 
 ## Mathematical Trace
-1. Total negative disposition occurrences indexed: **325**
-2. Duplicates collapsed across duplicate lead batches: **229**
+1. Total negative disposition occurrences indexed: **192**
+2. Duplicates collapsed across duplicate lead batches: **96**
 3. Unique bad numbers locked into permanent suppression: **96**
-4. Numbers replaced with verified 2-source phones: **53** (old numbers remain blocked)
+4. Numbers replaced with verified 2-source phones: **0** (old numbers remain blocked)
 5. Numbers with zero unverified leak: **0** (`UNACCOUNTED=0`)

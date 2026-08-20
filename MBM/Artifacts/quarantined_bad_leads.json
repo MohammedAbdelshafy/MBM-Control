@@ -1,6 +1,6 @@
 {
   "total_quarantined": 146,
-  "last_updated": "2026-08-19T20:56:59Z",
+  "last_updated": "2026-08-20T15:40:13Z",
   "quarantined_leads": [
     {
       "id": "DS-04b001a2057812f735cbcab76fd44e11",
@@ -133,7 +133,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-118324209ffc61f83e661b922ddd9a95",
@@ -266,7 +266,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-1820f20ee5932f2f54e446f1a06ce10f",
@@ -399,7 +399,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-18231a80883ac5572eb0049fe87bd4c2",
@@ -532,7 +532,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-1a3adb43f84df7b3c95cdc64e3660ff1",
@@ -665,7 +665,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-2761cb57fab8380cad8561998abd84db",
@@ -798,7 +798,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-2886c21520a3459c3441f44d71b4f513",
@@ -931,7 +931,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-32407fec0de6e9e2c1c5ea4ed57cf4ab",
@@ -1064,7 +1064,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-380767a4be8df61e0e3cb0614c5bb7e9",
@@ -1197,7 +1197,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-398beef2bcbf2ca9c87aa205f01b0f1b",
@@ -1330,7 +1330,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-3afe62125aa5d013682c91a283282751",
@@ -1463,7 +1463,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-3b50c78e8ef194d765998a41e68b07f6",
@@ -1596,7 +1596,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-3cfc4cc317d4ed90abf8dfeb522c8999",
@@ -1729,7 +1729,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-462fcceffca34c65ac298cb54b5cda1e",
@@ -1862,7 +1862,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-4648c6ea268ccc280611da681f2e008e",
@@ -1995,7 +1995,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-5a42675bce8dff8aa8c12653e732d374",
@@ -2128,7 +2128,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-5be928bdab07a1c8ae05e8013c11b455",
@@ -2261,7 +2261,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-62cdb44edd43364309d2a1d97941fe5c",
@@ -2394,7 +2394,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-6477f465aa927ff67dce3f9f22248c0f",
@@ -2527,7 +2527,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-66276b19ba7ad3bb54e564df556f811d",
@@ -2660,7 +2660,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-7815508560652715deb9a1e1ec1e7db5",
@@ -2793,7 +2793,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-785adaa8d251aba78b2e27fb21b77e70",
@@ -2926,7 +2926,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-7c36de7cb57124dc2465919eca30096e",
@@ -3059,7 +3059,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-85faf12b1e21ed6611f4abddfe8e2ce5",
@@ -3192,7 +3192,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-8a858bfdbccea5274d4bba19d9722ce9",
@@ -3325,7 +3325,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-91ee2532cae74bbca3bea0d156e13c7e",
@@ -3458,7 +3458,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-939edb8a79b449cc1c0ec4bd0a9758a0",
@@ -3591,7 +3591,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-9409c35afc559aa28a54230ef5713bf9",
@@ -3724,7 +3724,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-965bf98a72bc750152b6b4ef4044ca86",
@@ -3857,7 +3857,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-96ed047499a3d10e7bd86a7903759221",
@@ -3990,7 +3990,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-983f1ba06f2c4b3788be09e386276330",
@@ -4123,7 +4123,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-9ad3bcd9bd4506398ecf01408ec22e84",
@@ -4256,7 +4256,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-9b8bbd3ad51fd4e0ab0a57b1771e4324",
@@ -4389,7 +4389,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-a679818851514d07d1ec2a46f471b7b0",
@@ -4522,7 +4522,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-a8003923be303a09376356c305a64832",
@@ -4655,7 +4655,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-b1cc78cb477e6d9e8fc11d5ceb6694a7",
@@ -4788,7 +4788,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-b37dafaa5cad78bc2fa78223aa39b949",
@@ -4921,7 +4921,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-b49b16b1009b015bc7f62bd5b90b00fd",
@@ -5054,7 +5054,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-b57ba565e7f87a750eee44294220100b",
@@ -5187,7 +5187,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-b86a6152ff0cba91ff93c784e47845d6",
@@ -5320,7 +5320,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-bb3ee63042223fede3c5476835f277d5",
@@ -5453,7 +5453,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-be6e14cf8c4fd129d2064fc1f544c118",
@@ -5586,7 +5586,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-c1b345bfff83d57f3e5b0305c2b6bc72",
@@ -5719,7 +5719,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-d54fe88baecc00818f665a57248f9ac0",
@@ -5852,7 +5852,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-de4af891f6832f2ec35606c4784aa8e2",
@@ -5985,7 +5985,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-df22f9855265e70ae203da6034632164",
@@ -6118,7 +6118,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-e1855715cda95442e6f43fdd48bc009c",
@@ -6251,7 +6251,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-f0ec0ebe7a0a51f4979ade2998a23a11",
@@ -6384,7 +6384,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-f3cab2854e348e9babdefc72ba08b9ab",
@@ -6517,7 +6517,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "DS-f7ddbf67f97c0ae13b635d0bc0a9d5d1",
@@ -6650,7 +6650,7 @@
       "expected_value_usd": 2997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "SYNTHETIC_OR_INVALID_PHONE",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "RE-BUYER-080",
@@ -6736,7 +6736,7 @@
       "expected_value_usd": 2497.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "AI-BUYER-E4A9B1D3",
@@ -6844,7 +6844,7 @@
       "expected_value_usd": 1997.0,
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1003068792",
@@ -7008,7 +7008,7 @@
       "Call_Script": "Hi JOHN, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE OF OHIO, P.A., CO., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CLEVELAND. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1013249481",
@@ -7172,7 +7172,7 @@
       "Call_Script": "Hi JODI, this is Mohammed calling. I know you're focused on patient care at AIRPORT MD - LAS VEGAS, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in LAS VEGAS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1023193638",
@@ -7336,7 +7336,7 @@
       "Call_Script": "Hi MICHONE, this is Mohammed calling. I know you're focused on patient care at ALTA MESA CHIROPRACTIC LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MESA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1023504966",
@@ -7500,7 +7500,7 @@
       "Call_Script": "Hi ROBERT, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE P.A ., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in INDIANAPOLIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1033147798",
@@ -7664,7 +7664,7 @@
       "Call_Script": "Hi ARTURO, this is Mohammed calling. I know you're focused on patient care at ALLIANCE CHIROPRACTIC & REHABILITATION, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in VIRGINIA BEACH. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1033234935",
@@ -7828,7 +7828,7 @@
       "Call_Script": "Hi RUTH, this is Mohammed calling. I know you're focused on patient care at CAPITAL URGENT CARE, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in RALEIGH. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1053583559",
@@ -7992,7 +7992,7 @@
       "Call_Script": "Hi ROBERT, this is Mohammed calling. I know you're focused on patient care at AMBIENT MEDICAL CARE, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in SEAFORD. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1063686657",
@@ -8156,7 +8156,7 @@
       "Call_Script": "Hi JAMES, this is Mohammed calling. I know you're focused on patient care at AMERICAN PHYSICAL MEDICINE AND REABILITATION, PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in INDIANAPOLIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1073394748",
@@ -8320,7 +8320,7 @@
       "Call_Script": "Hi CECILIO, this is Mohammed calling. I know you're focused on patient care at ARK MEDICAL OF LAS VEGAS LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in LAS VEGAS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1083075576",
@@ -8484,7 +8484,7 @@
       "Call_Script": "Hi DEYA, this is Mohammed calling. I know you're focused on patient care at AFFORDABLE URGENT CARE AND FAMILY PRACTICE, PLLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in HOUSTON. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1083932099",
@@ -8648,7 +8648,7 @@
       "Call_Script": "Hi BRAD, this is Mohammed calling. I know you're focused on patient care at ALAMO URGENT CARE DBA COMPLETE URGENT CARE, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in SAN ANTONIO. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1093633984",
@@ -8812,7 +8812,7 @@
       "Call_Script": "Hi MARLEY, this is Mohammed calling. I know you're focused on patient care at CARBON HEALTH URGENT CARE OF CALIFORNIA PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in BERKELEY. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1104796424",
@@ -8976,7 +8976,7 @@
       "Call_Script": "Hi JENNIFER, this is Mohammed calling. I know you're focused on patient care at DUKE UNIVERSITY AFFILIATED PHYSICIANS, INC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in DURHAM. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1114040797",
@@ -9140,7 +9140,7 @@
       "Call_Script": "Hi MEDHAT, this is Mohammed calling. I know you're focused on patient care at BEST CARE MEDICAL CENTER P C, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in OKLAHOMA CITY. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1134628480",
@@ -9304,7 +9304,7 @@
       "Call_Script": "Hi BEVERLY, this is Mohammed calling. I know you're focused on patient care at BACCHUS PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in HENDERSON. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1134722481",
@@ -9468,7 +9468,7 @@
       "Call_Script": "Hi YUGAL, this is Mohammed calling. I know you're focused on patient care at BEHL HEALTH CARE SUPPORT ORGANIZATION LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in VIRGINIA BEACH. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1134801483",
@@ -9632,7 +9632,7 @@
       "Call_Script": "Hi FEMI, this is Mohammed calling. I know you're focused on patient care at ALTON BEHAVIORAL HEALTH MANAGEMENT, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MEMPHIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1134888688",
@@ -9796,7 +9796,7 @@
       "Call_Script": "Hi KAILTIN, this is Mohammed calling. I know you're focused on patient care at CARBON HEALTH MEDICAL GROUP OF NEW JERSEY PA, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in COLUMBUS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1144824699",
@@ -9960,7 +9960,7 @@
       "Call_Script": "Hi PIERRE, this is Mohammed calling. I know you're focused on patient care at HOLY CROSS URGENT CARE, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CLEVELAND. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1164608790",
@@ -10124,7 +10124,7 @@
       "Call_Script": "Hi ROBERT, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE P.A., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in OKLAHOMA CITY. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1184416117",
@@ -10288,7 +10288,7 @@
       "Call_Script": "Hi MATTHEW, this is Mohammed calling. I know you're focused on patient care at DEVOTEDDOC FL PA, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in WESLEY CHAPEL. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1194051870",
@@ -10452,7 +10452,7 @@
       "Call_Script": "Hi BRENDA, this is Mohammed calling. I know you're focused on patient care at BOSS URGENT CARE PLLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in FUQUAY VARINA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1194210658",
@@ -10616,7 +10616,7 @@
       "Call_Script": "Hi PATRICIA, this is Mohammed calling. I know you're focused on patient care at 5 STAR INTEGRITY HEALTHCARE, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in SAN ANTONIO. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1215082003",
@@ -10780,7 +10780,7 @@
       "Call_Script": "Hi AMANDA, this is Mohammed calling. I know you're focused on patient care at AVECINA MEDICAL PA, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in JACKSONVILLE. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1215649942",
@@ -10944,7 +10944,7 @@
       "Call_Script": "Hi BRANDI, this is Mohammed calling. I know you're focused on patient care at CLINICARE, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CHESAPEAKE. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1235019985",
@@ -11108,7 +11108,7 @@
       "Call_Script": "Hi SARITA, this is Mohammed calling. I know you're focused on patient care at ALPHA HEALTH & WELLNESS LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in INDIANAPOLIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1235461104",
@@ -11272,7 +11272,7 @@
       "Call_Script": "Hi ROSEMARY, this is Mohammed calling. I know you're focused on patient care at AEROCLINIC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in ATLANTA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1245721406",
@@ -11436,7 +11436,7 @@
       "Call_Script": "Hi ADRIAN, this is Mohammed calling. I know you're focused on patient care at ALAMO CITY URGENT CARE, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in SAN ANTONIO. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1255624722",
@@ -11600,7 +11600,7 @@
       "Call_Script": "Hi MICHAEL, this is Mohammed calling. I know you're focused on patient care at ARLINGTON URGENT CARE INC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in UPPER ARLINGTON. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1295316602",
@@ -11764,7 +11764,7 @@
       "Call_Script": "Hi MARLEY, this is Mohammed calling. I know you're focused on patient care at CARBON HEALTH MEDICAL GROUP OF FLORIDA PA, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in COLUMBUS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1295758464",
@@ -11928,7 +11928,7 @@
       "Call_Script": "Hi BRIAN, this is Mohammed calling. I know you're focused on patient care at APPLIED CHIROPRACTIC CENTER, INC., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in GERMANTOWN. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1306438569",
@@ -12092,7 +12092,7 @@
       "Call_Script": "Hi STEPHANIE, this is Mohammed calling. I know you're focused on patient care at ARIAN URGENT CARE, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in LAS VEGAS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1316136955",
@@ -12256,7 +12256,7 @@
       "Call_Script": "Hi RAAD, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE OF ILLINOIS PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CHICAGO. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1316615362",
@@ -12420,7 +12420,7 @@
       "Call_Script": "Hi DONALD, this is Mohammed calling. I know you're focused on patient care at AFTER HOURS PEDIATRICS, INC., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in KNOXVILLE. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1326324039",
@@ -12584,7 +12584,7 @@
       "Call_Script": "Hi JOHN, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE OF NORTH CAROLINA PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CHARLOTTE. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1396118303",
@@ -12748,7 +12748,7 @@
       "Call_Script": "Hi ARTOUR, this is Mohammed calling. I know you're focused on patient care at AGE OF WELLNESS, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CLEVELAND. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1396231239",
@@ -12912,7 +12912,7 @@
       "Call_Script": "Hi ROBERT, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE P.A ., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in INDIANAPOLIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1407582752",
@@ -13076,7 +13076,7 @@
       "Call_Script": "Hi NICK, this is Mohammed calling. I know you're focused on patient care at CITRA PHYSICIAN SERVICES PLLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in FORT WORTH. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1407888969",
@@ -13240,7 +13240,7 @@
       "Call_Script": "Hi KENNETH, this is Mohammed calling. I know you're focused on patient care at ALLISON L BOMAR DC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MEMPHIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1417294232",
@@ -13404,7 +13404,7 @@
       "Call_Script": "Hi MARLEY, this is Mohammed calling. I know you're focused on patient care at CARBON HEALTH MEDICAL GROUP OF CALIFORNIA PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in BERKELEY. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1417694936",
@@ -13568,7 +13568,7 @@
       "Call_Script": "Hi BRITTANY, this is Mohammed calling. I know you're focused on patient care at AHEAD OF THE CURVE CHIROPRACTIC AUSTIN, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in AUSTIN. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1427364710",
@@ -13732,7 +13732,7 @@
       "Call_Script": "Hi AMANDA, this is Mohammed calling. I know you're focused on patient care at AMANDA J MEYERS, DC, MS, PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in VIRGINIA BEACH. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1437597044",
@@ -13896,7 +13896,7 @@
       "Call_Script": "Hi ROBERT, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE PA, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in SAN ANTONIO. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1467449553",
@@ -14060,7 +14060,7 @@
       "Call_Script": "Hi NINO, this is Mohammed calling. I know you're focused on patient care at AMERICAS URGENT CARE OF LEWIS CENTER LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in COLUMBUS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1467516294",
@@ -14224,7 +14224,7 @@
       "Call_Script": "Hi MICHAEL, this is Mohammed calling. I know you're focused on patient care at ALPINE II CHIROPRACTIC P.C., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in VIRGINIA BEACH. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1487773784",
@@ -14388,7 +14388,7 @@
       "Call_Script": "Hi JUDY, this is Mohammed calling. I know you're focused on patient care at BROADWAY CHIROPRACTIC AND THERAPY CENTER INC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CLEVELAND. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1487827390",
@@ -14552,7 +14552,7 @@
       "Call_Script": "Hi NORMAN, this is Mohammed calling. I know you're focused on patient care at 14TH STREET CHIROPRACTIC, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in ATLANTA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1497964829",
@@ -14716,7 +14716,7 @@
       "Call_Script": "Hi MARS, this is Mohammed calling. I know you're focused on patient care at AM-PM DOCTORS URGENT CARE LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in OKLAHOMA CITY. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1508133208",
@@ -14880,7 +14880,7 @@
       "Call_Script": "Hi BEVERLY, this is Mohammed calling. I know you're focused on patient care at CAPITOL URGENT CARE INC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in SACRAMENTO. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1518182898",
@@ -15044,7 +15044,7 @@
       "Call_Script": "Hi RONALD, this is Mohammed calling. I know you're focused on patient care at ALT INC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MESA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1518274927",
@@ -15208,7 +15208,7 @@
       "Call_Script": "Hi TIMOTHY, this is Mohammed calling. I know you're focused on patient care at HARPER MEDICAL GROUP, PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MEMPHIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1528691961",
@@ -15372,7 +15372,7 @@
       "Call_Script": "Hi ANIBAL, this is Mohammed calling. I know you're focused on patient care at FB HEALTH SOLUTIONS, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in HALLANDALE BEACH. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1538380332",
@@ -15536,7 +15536,7 @@
       "Call_Script": "Hi IKENNA, this is Mohammed calling. I know you're focused on patient care at CENTRAL OHIO URGENT CARE, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in COLUMBUS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1548649213",
@@ -15700,7 +15700,7 @@
       "Call_Script": "Hi MICHAEL, this is Mohammed calling. I know you're focused on patient care at AHFC, PLLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in AUSTIN. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1558539858",
@@ -15864,7 +15864,7 @@
       "Call_Script": "Hi ROGER, this is Mohammed calling. I know you're focused on patient care at 27TH AVE MEDICAL PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in PHOENIX. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1558994178",
@@ -16028,7 +16028,7 @@
       "Call_Script": "Hi CATHERINE, this is Mohammed calling. I know you're focused on patient care at ARTEMIS HEALTH SERVICES, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in COLUMBUS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1588923924",
@@ -16192,7 +16192,7 @@
       "Call_Script": "Hi JASON, this is Mohammed calling. I know you're focused on patient care at AIRROSTI BUCKEYE, INC., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CLEVELAND. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1609584002",
@@ -16356,7 +16356,7 @@
       "Call_Script": "Hi QURATUL, this is Mohammed calling. I know you're focused on patient care at CARE VENTURE UC LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in SACRAMENTO. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1619349388",
@@ -16520,7 +16520,7 @@
       "Call_Script": "Hi LINCOLN, this is Mohammed calling. I know you're focused on patient care at BACK AND NECK SPECIALISTS LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MEMPHIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1629369319",
@@ -16684,7 +16684,7 @@
       "Call_Script": "Hi JOEL, this is Mohammed calling. I know you're focused on patient care at AFFORDABLE CHIROPRACTIC CLINIC LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in INDIANAPOLIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1629662267",
@@ -16848,7 +16848,7 @@
       "Call_Script": "Hi SANDEEP, this is Mohammed calling. I know you're focused on patient care at BLOOM COLORADO LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in GRAND JUNCTION. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1639643307",
@@ -17012,7 +17012,7 @@
       "Call_Script": "Hi MONICA, this is Mohammed calling. I know you're focused on patient care at APEX PAIN SPECIALIST LAS VEGAS INC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in LAS VEGAS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1639912256",
@@ -17176,7 +17176,7 @@
       "Call_Script": "Hi MELISSA, this is Mohammed calling. I know you're focused on patient care at FAST PACE MEDICAL CLINIC PLLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in FRANKLIN. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1649599614",
@@ -17340,7 +17340,7 @@
       "Call_Script": "Hi CHARLES, this is Mohammed calling. I know you're focused on patient care at AFTEROURS HOUSTON PA, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in DENVER. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1679066658",
@@ -17504,7 +17504,7 @@
       "Call_Script": "Hi CHARLES, this is Mohammed calling. I know you're focused on patient care at AFC URGENT CARE AND FAMILY CARE OF WNC, PLLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CLEVELAND. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1679378723",
@@ -17668,7 +17668,7 @@
       "Call_Script": "Hi LISBELLE, this is Mohammed calling. I know you're focused on patient care at ANGEL URGENT CARE CORP, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MIAMI. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1689297442",
@@ -17832,7 +17832,7 @@
       "Call_Script": "Hi TONDA, this is Mohammed calling. I know you're focused on patient care at FREEDOM 2 GO BIOMED & PERMITTING, INC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MEMPHIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1699067678",
@@ -17996,7 +17996,7 @@
       "Call_Script": "Hi MARION, this is Mohammed calling. I know you're focused on patient care at APPLIED HEALTH CHIROPRACTIC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in VIRGINIA BEACH. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1710690433",
@@ -18160,7 +18160,7 @@
       "Call_Script": "Hi CARLOS, this is Mohammed calling. I know you're focused on patient care at CARLOS A. SMITH, M.D, PROFESSIONAL CORPORATION, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in NEW YORK. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1720364003",
@@ -18324,7 +18324,7 @@
       "Call_Script": "Hi PHILIP, this is Mohammed calling. I know you're focused on patient care at ATRINA HEALTH LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in PHOENIX. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1720400245",
@@ -18488,7 +18488,7 @@
       "Call_Script": "Hi ALMA, this is Mohammed calling. I know you're focused on patient care at AFTER HOURS URGENT CARE, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in PHOENIX. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1720932122",
@@ -18652,7 +18652,7 @@
       "Call_Script": "Hi OSCAR, this is Mohammed calling. I know you're focused on patient care at ALENA MEDSPA & WELLNESS LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in LAS VEGAS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1730532821",
@@ -18816,7 +18816,7 @@
       "Call_Script": "Hi J., this is Mohammed calling. I know you're focused on patient care at GRASSDALE MED PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MEMPHIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1760365126",
@@ -18980,7 +18980,7 @@
       "Call_Script": "Hi CHUKWUKANENE, this is Mohammed calling. I know you're focused on patient care at AFTERHOURURGENTCAREATL, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in ATLANTA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1780291088",
@@ -19144,7 +19144,7 @@
       "Call_Script": "Hi SPENCER, this is Mohammed calling. I know you're focused on patient care at BLOOM IDAHO LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in NAMPA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1780528000",
@@ -19308,7 +19308,7 @@
       "Call_Script": "Hi ABDELRAHMAN, this is Mohammed calling. I know you're focused on patient care at CHURCH SQUARE URGENT CARE LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CLEVELAND. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1780813972",
@@ -19472,7 +19472,7 @@
       "Call_Script": "Hi GREGG, this is Mohammed calling. I know you're focused on patient care at ANDERSON CHIROPRACTIC CLINIC, INC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in SACRAMENTO. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1790244341",
@@ -19636,7 +19636,7 @@
       "Call_Script": "Hi ALLEN, this is Mohammed calling. I know you're focused on patient care at AMERICAN ADVANCED PRACTICE NETWORK, P.C., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in WATERTOWN. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1801524095",
@@ -19800,7 +19800,7 @@
       "Call_Script": "Hi DASHARDRA, this is Mohammed calling. I know you're focused on patient care at HELIOS MEDICAL SERVICES, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MEMPHIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1811098221",
@@ -19964,7 +19964,7 @@
       "Call_Script": "Hi DEAN, this is Mohammed calling. I know you're focused on patient care at ALLKIDS URGENT CARE, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MESA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1821639642",
@@ -20128,7 +20128,7 @@
       "Call_Script": "Hi MEDINA, this is Mohammed calling. I know you're focused on patient care at ARIZONA INTERGRATED TELE PSYCHIATRY AND TELE MEDICINE SERVICES LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MESA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1821711268",
@@ -20292,7 +20292,7 @@
       "Call_Script": "Hi JEREMY, this is Mohammed calling. I know you're focused on patient care at AFC PHYSICIANS OF MASSACHUSETTS, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in WORCESTER. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1831388404",
@@ -20456,7 +20456,7 @@
       "Call_Script": "Hi RAAD, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE OF ILLINOIS PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CHICAGO. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1831575190",
@@ -20620,7 +20620,7 @@
       "Call_Script": "Hi RADHAKRISHNAN, this is Mohammed calling. I know you're focused on patient care at CHAMPION HEALTH SYSTEM, PA, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in DUNN. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1851577498",
@@ -20784,7 +20784,7 @@
       "Call_Script": "Hi ROBERT, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE P.A., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in OKLAHOMA CITY. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1871419911",
@@ -20948,7 +20948,7 @@
       "Call_Script": "Hi BRIANA, this is Mohammed calling. I know you're focused on patient care at AMZ GLOBAL SUPPLIES LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in DALLAS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1881334175",
@@ -21113,7 +21113,7 @@
       "Call_Script": "Hi SHERRIE, this is Mohammed calling. I know you're focused on patient care at ADVANTAGE DENTAL ORAL HEALTH CENTER OF FLORIDA PA, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in PACE. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1881463511",
@@ -21277,7 +21277,7 @@
       "Call_Script": "Hi VALENTINA, this is Mohammed calling. I know you're focused on patient care at ALPHAMED DME LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in TAMPA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1891267415",
@@ -21441,7 +21441,7 @@
       "Call_Script": "Hi BRIAN, this is Mohammed calling. I know you're focused on patient care at BANNER URGENT CARE SERVICES, LLC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MESA. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1902087307",
@@ -21605,7 +21605,7 @@
       "Call_Script": "Hi WILLIAM, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE PA, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in ADDISON. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1942443130",
@@ -21769,7 +21769,7 @@
       "Call_Script": "Hi DORIS, this is Mohammed calling. I know you're focused on patient care at ALBEMARLE PHYSICIAN SERVICES - SENTARA, INC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in NORFOLK. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1952742645",
@@ -21933,7 +21933,7 @@
       "Call_Script": "Hi RAAD, this is Mohammed calling. I know you're focused on patient care at AMERICAN CURRENT CARE OF ILLINOIS PC, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CHICAGO. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1952917635",
@@ -22097,7 +22097,7 @@
       "Call_Script": "Hi FARAZ, this is Mohammed calling. I know you're focused on patient care at ALL INCLUSIVE MEDICAL SERVICES URGENT CARE, INC., so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in CARMICHAEL. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     },
     {
       "id": "NPI-1992329569",
@@ -22261,7 +22261,7 @@
       "Call_Script": "Hi PHILIP, this is Mohammed calling. I know you're focused on patient care at BERARDI ENTERPRISES, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in MEMPHIS. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
       "status": "QUARANTINED_UNVERIFIED_PHONE",
       "quarantine_reason": "PREVIOUSLY_SUPPRESSED_BAD_NUMBER",
-      "quarantined_at": "2026-08-19T20:56:59Z"
+      "quarantined_at": "2026-08-20T15:40:13Z"
     }
   ]
 }
