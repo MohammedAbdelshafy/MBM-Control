@@ -133,6 +133,7 @@ clipping-factory/backend/youtube_tokens.json
 clipping-factory/youtube_tokens.json
 clipping-factory/MBM-Social/youtube_tokens.json
 clipping-factory/MBM-Social/youtube_profile/
+clipping-factory/MBM-Social/youtube_profiles/
 clipping-factory/backend/youtube_profile/
 
 # Ops secrets / local LLM registry tokens (may embed API keys) — never commit
@@ -274,3 +275,4 @@ MBM/Artifacts/GTM/quarantine/20260817_synthetic_factory_150/daily_offers_GEN-NEW
 MBM/Phound/campaigns/
 MBM/Recruitment/outreach_packs/
 MBM/Recruitment/reddit_recruitment_posts.json
+.vercel

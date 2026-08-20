@@ -21,6 +21,7 @@ Guarantees:
 import json
 import re
 import sys
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -201,7 +202,9 @@ def main():
     backup_path = DIALER_DB.with_suffix(".bak")
     if backup_path.exists():
         backup_path.unlink()
-    DIALER_DB.rename(backup_path)
+    # COPY (do not rename) so a crash between backup and commit never leaves the
+    # live DB absent — commit_dialer_db then writes atomically under the lock.
+    shutil.copy2(DIALER_DB, backup_path)
     print(f"[OK] Backup written: {backup_path}")
 
     existing_phones = {norm_phone(l.get("phone") or l.get("phone_number") or l.get("verified_phone")) for l in leads}

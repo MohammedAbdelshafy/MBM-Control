@@ -165,7 +165,12 @@ def apply_quarantine() -> Dict[str, Any]:
         # Rewrite the production surface with ONLY real records.
         if name == "dialer":
             with DialerDatabaseLock() as lock:
-                total = lock.write(kept)
+                total = lock.write(
+                    kept,
+                    author="QUARANTINE_SYNTHETIC_PRODUCTION",
+                    reason="quarantine",
+                    allow_shrink=True,
+                )
         else:
             path.write_text(json.dumps(kept, indent=2), encoding="utf-8")
             total = len(kept)

@@ -52,19 +52,29 @@ A product is NOT customer ready unless ALL are true:
 |---|---|
 | PRODUCT | AI Cold Calling Assistant |
 | CATEGORY | Sales / Voice |
-| STATUS | MVP (dialer + scripts live; caller workspace exists) |
+| STATUS | MVP→CUSTOMER READY (dialer + scripts live on Vercel; pending tenant isolation) |
 | REPOSITORY | this repo — `mbm-dialer/app/` (primary) + `coldcall/dialer/` (sellable standalone) + `server/dialer/` |
-| DEPLOYMENT | Vite dev :5173; coldcall cockpit :8878 (Python stdlib) |
+| DEPLOYMENT | Vercel (Production) + Vite dev :5173; coldcall cockpit :8878 (Python stdlib) |
 | CORE COMPONENTS | `mbm-dialer/app/public/leads_database.json`, `server/dialer/{dialerDbGateway,freshnessOrder,phoundSmsProvider}.js`, `MBM/LeadEngine/dialer_script_engine.py`, `close_queue_dialer.py` |
 | SHARED COMPONENTS | canonical DB + single-writer, queue engine, script engine, Phound/Twilio, `src/pages/MobileDialer.jsx` |
 | CUSTOMER | SMB sales teams, RE agents, agencies |
-| MVP STATUS | ✅ lead queue + freshness + scripts + tap-to-call + dispositions UI; ❌ tenant isolation; ❌ billing; ❌ analytics per tenant |
+| MVP STATUS | ✅ lead queue + freshness + scripts + tap-to-call + dispositions UI; ✅ deployed to Vercel; ❌ tenant isolation; ❌ billing; ❌ analytics per tenant |
 | TEST STATUS | `freshnessOrder.test.js`, `phoundSmsProvider.test.js`, `test_dialer_script_engine.py`, `test_dialer_freshness_ordering.py` |
 | MONETIZATION | SaaS seat model + call minutes |
 | PRICE | Starter $199/mo (1 seat) · Pro $499/mo (3 seats + CRM) · Agency $999/mo (10 seats + white-label) · DFY $1,499/mo (we run your campaigns) |
 | NEXT ACTION | Tenant-scope the queue; script selection per segment already segment-aware (12 segments verified in `dialer_script_engine.py`); add call analytics |
 | OWNER | system/founder |
 | BLOCKER | None technical — multi-tenant queue + billing |
+| AUTOMATED FOLLOW-UP EMAIL | YES |
+| EMAIL ENGINE STATUS | LIVE - Verified 2026-08-19 |
+| EMAIL PROVIDER | Nodemailer (Google SMTP via .env.local) |
+| EMAIL TEST | PASS |
+| EMAIL IDEMPOTENCY | PASS |
+| EMAIL SUPPRESSION | PASS |
+| EMAIL UNSUBSCRIBE | PASS |
+| EMAIL TENANT ISOLATION | PASS |
+| EMAIL AUTH | PASS |
+| EMAIL PRODUCTION | LIVE (Vercel deployment initiated) |
 
 ### P3 — Construction BOQ AI Estimator
 | Field | Value |
@@ -165,3 +175,5 @@ Every product: STARTER / PRO / AGENCY-BUSINESS tiers + DONE-FOR-YOU. Path: SERVI
 
 ## NEXT PORTFOLIO UPDATE
 Whenever new work lands: classify (customer product / reusable component / internal tool / dead-end), update registry status, re-run readiness gate. Do not let work disappear inside MBM, Social, Construction, Voice, or individual experiments.
+O m n i R o u t e   A f t e r - C a l l   A u t o m a t i o n :   C U S T O M E R   R E A D Y  
+ 

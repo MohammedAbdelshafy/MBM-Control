@@ -17,3 +17,4 @@ export { default as exportRoutes } from './routes/exports';
 export { default as dashboardRoutes } from './routes/dashboard';
 export { default as adminRoutes } from './routes/admin';
 export { default as outreachRoutes } from './routes/outreach';
+export { default as qualifyRoutes } from './routes/qualify';

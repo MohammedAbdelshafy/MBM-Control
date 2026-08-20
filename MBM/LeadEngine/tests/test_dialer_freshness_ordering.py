@@ -27,7 +27,7 @@ def make_lead(overrides):
     lead = {
         "id": "LEAD",
         "contact": "Elena Vasquez",
-        "phone": "+18179924401",
+        "phone": "+18179924499",
         "skip_trace_status": "VERIFIED",
         "intent_score": 90,
         "motivation_score": 90,
@@ -44,7 +44,7 @@ def make_lead(overrides):
 
 def test_controlled_case_freshness_beats_raw_score():
     now = datetime.now(timezone.utc)
-    new_a = make_lead({"id": "NEW_A", "contact": "Alice Adams", "phone": "+18179924401",
+    new_a = make_lead({"id": "NEW_A", "contact": "Alice Adams", "phone": "+18179924499",
                        "intent_score": 80, "motivation_score": 80, "deal_score": 80,
                        "priority_score": 80, "freshness_score": 95})
     new_b = make_lead({"id": "NEW_B", "contact": "Bob Baker", "phone": "+19726658140",
@@ -69,7 +69,7 @@ def test_controlled_case_freshness_beats_raw_score():
 
 def test_global_queue_partition_preserves_controlled_order():
     now = datetime.now(timezone.utc)
-    new_a = make_lead({"id": "NEW_A", "contact": "Alice Adams", "phone": "+18179924401",
+    new_a = make_lead({"id": "NEW_A", "contact": "Alice Adams", "phone": "+18179924499",
                        "intent_score": 80, "motivation_score": 80, "deal_score": 80,
                        "priority_score": 80, "freshness_score": 95})
     new_b = make_lead({"id": "NEW_B", "contact": "Bob Baker", "phone": "+19726658140",

@@ -61,6 +61,7 @@ export default async function leadRoutes(fastify: FastifyInstance): Promise<void
   fastify.get<{ Querystring: ListQuery }>(
     '/api/leads',
     {
+      preHandler: [fastify.authenticate],
       schema: {
         summary: 'List leads',
         tags: ['Leads'],
@@ -94,6 +95,13 @@ export default async function leadRoutes(fastify: FastifyInstance): Promise<void
       const { page, limit, status, grade, niche, score_min, score_max, county } = ListQuerySchema.parse(request.query);
 
       const where: Prisma.LeadWhereInput = {};
+
+      if (request.user.role === 'client') {
+        if (!request.user.clientId) {
+          return reply.status(403).send({ error: 'Forbidden', message: 'Client token is missing a client scope' });
+        }
+        where.clientId = request.user.clientId;
+      }
 
       if (status) where.status = status as Prisma.EnumLeadStatusFilter['equals'];
       if (grade) where.grade = grade as LeadGrade;
@@ -129,6 +137,7 @@ export default async function leadRoutes(fastify: FastifyInstance): Promise<void
   fastify.get<{ Params: Params }>(
     '/api/leads/:id',
     {
+      preHandler: [fastify.authenticate],
       schema: {
         summary: 'Get lead by ID',
         tags: ['Leads'],
@@ -139,8 +148,16 @@ export default async function leadRoutes(fastify: FastifyInstance): Promise<void
     async (request: FastifyRequest<{ Params: Params }>, reply: FastifyReply) => {
       const { id } = ParamsSchema.parse(request.params);
 
-      const lead = await prisma.lead.findUnique({
-        where: { id },
+      const where: Prisma.LeadWhereInput = { id };
+      if (request.user.role === 'client') {
+        if (!request.user.clientId) {
+          return reply.status(403).send({ error: 'Forbidden', message: 'Client token is missing a client scope' });
+        }
+        where.clientId = request.user.clientId;
+      }
+
+      const lead = await prisma.lead.findFirst({
+        where,
         include: {
           property: {
             include: { owners: true, violations: true, taxRecords: true },
@@ -161,6 +178,7 @@ export default async function leadRoutes(fastify: FastifyInstance): Promise<void
   fastify.post<{ Params: Params; Body: ClaimBody }>(
     '/api/leads/:id/claim',
     {
+      preHandler: [fastify.authenticate, fastify.requireRole('admin')],
       schema: {
         summary: 'Claim a lead for a client',
         tags: ['Leads'],
@@ -207,6 +225,7 @@ export default async function leadRoutes(fastify: FastifyInstance): Promise<void
   fastify.post<{ Body: RecalculateBody }>(
     '/api/leads/recalculate',
     {
+      preHandler: [fastify.authenticate, fastify.requireRole('admin')],
       schema: {
         summary: 'Recalculate lead scores',
         tags: ['Leads'],
@@ -254,6 +273,7 @@ export default async function leadRoutes(fastify: FastifyInstance): Promise<void
   fastify.get<{ Querystring: ExportQuery }>(
     '/api/leads/export',
     {
+      preHandler: [fastify.authenticate],
       schema: {
         summary: 'Export leads',
         tags: ['Leads'],
@@ -274,6 +294,12 @@ export default async function leadRoutes(fastify: FastifyInstance): Promise<void
       const { format, status, grade, niche, county } = ExportQuerySchema.parse(request.query);
 
       const where: Prisma.LeadWhereInput = {};
+      if (request.user.role === 'client') {
+        if (!request.user.clientId) {
+          return reply.status(403).send({ error: 'Forbidden', message: 'Client token is missing a client scope' });
+        }
+        where.clientId = request.user.clientId;
+      }
       if (status) where.status = status as Prisma.EnumLeadStatusFilter['equals'];
       if (grade) where.grade = grade as LeadGrade;
       if (niche) where.niche = niche as Prisma.EnumNicheTypeFilter['equals'];

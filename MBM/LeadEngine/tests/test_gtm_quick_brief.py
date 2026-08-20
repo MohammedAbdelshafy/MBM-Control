@@ -40,7 +40,7 @@ def artifacts(tmp_path, monkeypatch):
         "verification_rate_pct": 28.6,
         "pipeline_value_usd": 329100.0,
     }
-    (a / "daily_lead_factory_2026-08-16.json").write_text(json.dumps(factory), encoding="utf-8")
+    (a / "GTM" / "daily" / "2026-08-16.json").write_text(json.dumps(factory), encoding="utf-8")
 
     metrics = {
         "funnel": {
@@ -169,6 +169,8 @@ def test_missing_factory_reports_zeros(tmp_path, monkeypatch):
     monkeypatch.setattr(qb_module, "ARTIFACTS_DIR", a)
     monkeypatch.setattr(qb_module, "GTM_ARTIFACTS_DIR", a / "GTM")
     monkeypatch.setattr(qb_module, "DAILY_DIR", a / "GTM" / "daily")
+    # Hermetic: never read the live dialer DB inside a test.
+    monkeypatch.setattr(qb_module.GtmQuickBrief, "_live_dialer_counts", lambda self: {})
     qb = GtmQuickBrief()
     qb.email_center = GtmEmailCenter(a / "GTM" / "email" / "state.json")
     qb.meeting_center = GtmMeetingCenter(a / "GTM" / "meetings" / "index.json", a / "GTM" / "meetings")
@@ -195,7 +197,7 @@ def test_daily_target_reached(artifacts):
 def test_daily_target_missed(artifacts):
     factory = {"date": "2026-08-16", "target": 150, "verified": 80, "shortfall": 70,
                "verification_rate_pct": 20.0}
-    (artifacts / "daily_lead_factory_2026-08-16.json").write_text(json.dumps(factory), encoding="utf-8")
+    (artifacts / "GTM" / "daily" / "2026-08-16.json").write_text(json.dumps(factory), encoding="utf-8")
     result = make_brief(artifacts).evaluate_daily_target()
     assert result["event"] == "DAILY_TARGET_MISSED"
     assert result["shortfall"] == 70

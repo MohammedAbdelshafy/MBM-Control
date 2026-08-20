@@ -144,7 +144,7 @@ JSON format: {{"category": "CATEGORY", "confidence": 0.0-1.0, "is_dnc": true/fal
 
         # Deterministic fallback
         latency = round((time.perf_counter() - start_t) * 1000, 2)
-        if "remove" in obj_lower or "stop" in obj_lower or "dnc" in obj_lower or "لا تتصل" in objection:
+        if "remove" in obj_lower or "stop" in obj_lower or "dnc" in obj_lower or "do not call" in obj_lower or "لا تتصل" in objection:
             cat = "DO_NOT_CALL"
             is_dnc = True
         elif "not interested" in obj_lower or "مش مهتم" in objection or "غير مهتم" in objection:
