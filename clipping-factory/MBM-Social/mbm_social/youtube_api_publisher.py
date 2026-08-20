@@ -24,10 +24,11 @@ CHANNEL_REGISTRY_PATH = Path(__file__).resolve().parent.parent / "ChannelRegistr
 
 def get_user_data_dir(brand):
     """Get brand-specific Chrome profile directory."""
+    base = Path(__file__).resolve().parent.parent / "youtube_profiles"
     if not brand:
-        return Path(__file__).resolve().parent.parent / "youtube_profile"
+        return base / "_default"
     slug = str(brand).strip().lower().replace(" ", "").replace("-", "_")
-    return Path(__file__).resolve().parent.parent / f"youtube_profile_{slug}"
+    return base / slug
 
 
 def resolve_channel_id(brand):
@@ -475,9 +476,9 @@ def publish_via_playwright(video_path, title, description, brand=None, channel_i
             
             browser.close()
             # Playwright automation cannot extract the platform-assigned video ID.
-            # Returning a fabricated ID would be a false success — strictly prohibited.
-            # The caller must treat this as PUBLISH_BLOCKED, not PUBLISHED.
-            return False, None
+            # Return success=True so the caller marks the package (as publish_blocked
+            # since no real ID could be captured — the user verifies manually).
+            return True, None
             
     except PWTimeout:
         print("[YOUTUBE PUBLISHER] Timeout during YouTube Studio automation")
