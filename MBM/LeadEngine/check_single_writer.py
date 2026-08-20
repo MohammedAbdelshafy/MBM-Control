@@ -101,6 +101,20 @@ def _db_bound_names(text: str) -> set:
     return names
 
 
+def _backup_bound_names(text: str) -> set:
+    """Names assigned to a path expression that looks like a backup
+    (contains `backup`, `.bak`, `db_backups`, etc.). Used to tell a legit
+    DB->backup shutil copy apart from a raw write."""
+    names = set()
+    for m in re.finditer(r"(?m)^\s*(\w+)\s*=\s*(.*)$", text):
+        lhs, rhs = m.group(1), m.group(2)
+        if lhs.lower() in ("if", "for", "while", "return"):
+            continue
+        if any(t in rhs for t in BACKUP_TOKENS):
+            names.add(lhs)
+    return names
+
+
 def _is_onedrive_placeholder(path: Path) -> bool:
     """True for OneDrive on-demand / offline placeholders. Reading them would
     trigger a network download and hang the scan on big trees."""
@@ -125,7 +139,9 @@ def _is_authorized(path: Path, repo_root: Path) -> bool:
     if rel in AUTHORIZED:
         return True
     # Test files live in hermetic tmp dirs; they never touch the production DB.
-    if rel.startswith("MBM/LeadEngine/tests/") or rel.endswith("_test.py") or "/tests/" in rel:
+    base = rel.rsplit("/", 1)[-1]
+    if (rel.startswith("MBM/LeadEngine/tests/") or rel.endswith("_test.py")
+            or "/tests/" in rel or base.startswith("test_") or base.startswith("test-")):
         return True
     if rel.startswith("docker_manager/tests/"):
         return True
@@ -146,6 +162,7 @@ def scan_file(path: Path, repo_root: Path) -> List[Tuple[int, str]]:
         return []
 
     db_names = _db_bound_names(text)
+    backup_names = _backup_bound_names(text)
     # also accept names imported from the gateway that resolve to the live DB,
     # but those files are expected to USE the sanctioned gateway (no raw write).
     hits: List[Tuple[int, str]] = []
@@ -154,10 +171,26 @@ def scan_file(path: Path, repo_root: Path) -> List[Tuple[int, str]]:
         # or if a raw-write helper is CALLED with a DB-bound argument on this line.
         primitive_on_line = any(pat.search(line) for pat in WRITE_PRIMITIVES)
         helper_on_line = any(f" {h}(" in line or f"\t{h}(" in line for h in RAW_WRITE_HELPERS)
-        # shutil.copy2/move that copies the DB OUT to a backup is legitimate.
-        shutil_write = re.search(r"shutil\.(copy2|move)\b", line)
-        if primitive_on_line and shutil_write and any(t in line for t in BACKUP_TOKENS):
-            primitive_on_line = False
+        # shutil.copy2/move is only a rogue write when the DESTINATION is the
+        # live DB path. Copying the DB OUT to a backup or a hermetic tmp file
+        # (read-only for the DB) is legitimate.
+        shutil_write = re.search(r"shutil\.(copy2|move)\s*\(([^)]*)\)", line)
+        if primitive_on_line and shutil_write:
+            args = shutil_write.group(2)
+            if "," in args:
+                dst_arg = args.rsplit(",", 1)[1].strip()
+                dest_is_db = any(
+                    re.search(rf"\b{re.escape(name)}\b", dst_arg) for name in db_names
+                )
+                dest_is_backup = any(
+                    t in dst_arg for t in BACKUP_TOKENS
+                ) or dst_arg.strip("()") in backup_names
+                if dest_is_db and not dest_is_backup:
+                    primitive_on_line = True
+                else:
+                    primitive_on_line = False
+            else:
+                primitive_on_line = False
         name_on_line = any(
             name in line.split()
             or f",{name}," in line

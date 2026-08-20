@@ -1,0 +1,74 @@
+{
+  "source": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\MBM-Social\\viral_pool\\viral_voice_agency_01.mp4",
+  "clip_id": "viral_voice_agency_01",
+  "clip_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\MBM-Social\\viral_pool\\viral_voice_agency_01.mp4",
+  "duration_sec": 15.0,
+  "width": 1080,
+  "height": 1920,
+  "timestamp": "2026-08-19T23:35:00Z",
+  "output_dir": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\MBM-Social\\artifacts\\production_qa\\visual\\test_run",
+  "frames": [
+    {
+      "position": "opening",
+      "timestamp_sec": 0.0,
+      "frame_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\MBM-Social\\artifacts\\production_qa\\visual\\test_run\\frames\\opening.jpg",
+      "width": 1080,
+      "height": 1920,
+      "is_black_frame": false,
+      "black_frame_pct": 0.0,
+      "safe_zone_ok": true,
+      "caption_state": "unknown",
+      "error": ""
+    },
+    {
+      "position": "pct_25",
+      "timestamp_sec": 3.75,
+      "frame_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\MBM-Social\\artifacts\\production_qa\\visual\\test_run\\frames\\pct_25.jpg",
+      "width": 1080,
+      "height": 1920,
+      "is_black_frame": false,
+      "black_frame_pct": 0.0,
+      "safe_zone_ok": true,
+      "caption_state": "unknown",
+      "error": ""
+    },
+    {
+      "position": "pct_50",
+      "timestamp_sec": 7.5,
+      "frame_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\MBM-Social\\artifacts\\production_qa\\visual\\test_run\\frames\\pct_50.jpg",
+      "width": 1080,
+      "height": 1920,
+      "is_black_frame": false,
+      "black_frame_pct": 0.0,
+      "safe_zone_ok": true,
+      "caption_state": "unknown",
+      "error": ""
+    },
+    {
+      "position": "pct_75",
+      "timestamp_sec": 11.25,
+      "frame_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\MBM-Social\\artifacts\\production_qa\\visual\\test_run\\frames\\pct_75.jpg",
+      "width": 1080,
+      "height": 1920,
+      "is_black_frame": false,
+      "black_frame_pct": 0.0,
+      "safe_zone_ok": true,
+      "caption_state": "unknown",
+      "error": ""
+    },
+    {
+      "position": "final",
+      "timestamp_sec": 14.85,
+      "frame_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\MBM-Social\\artifacts\\production_qa\\visual\\test_run\\frames\\final.jpg",
+      "width": 1080,
+      "height": 1920,
+      "is_black_frame": false,
+      "black_frame_pct": 0.0,
+      "safe_zone_ok": true,
+      "caption_state": "unknown",
+      "error": ""
+    }
+  ],
+  "overall_status": "PASS",
+  "issues": []
+}

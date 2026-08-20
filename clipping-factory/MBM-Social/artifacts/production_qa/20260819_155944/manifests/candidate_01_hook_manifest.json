@@ -1,0 +1,26 @@
+{
+  "asset_id": "prod_test_20260819_155944",
+  "source_file": "candidate_01_hook.mp4",
+  "title": "Production Quality Test Clip \u2014 MBM Social Pipeline Validation",
+  "description": "Testing the complete MBM Social production pipeline from source to publish.",
+  "hashtags": [
+    "#MBMSocial",
+    "#ProductionTest",
+    "#QualityAssurance",
+    "#VideoPipeline",
+    "#AutomatedQA"
+  ],
+  "platform": "youtube_shorts",
+  "brand": "clippingfactorymbm",
+  "thumbnail_text": "QA TEST",
+  "scheduled_for": "2026-08-19T13:03:47.819517+00:00",
+  "quality_gate": {
+    "passed": true,
+    "note": "Production smoke test"
+  },
+  "provenance": {
+    "source": "candidate_01_hook.mp4",
+    "generated_at": "2026-08-19T13:03:47.819517+00:00",
+    "pipeline_version": "production_smoke_v1"
+  }
+}

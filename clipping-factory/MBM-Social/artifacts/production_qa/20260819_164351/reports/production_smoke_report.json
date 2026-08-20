@@ -1,0 +1,836 @@
+{
+  "timestamp": "20260819_164351",
+  "source_file": "viral_voice_agency_01.mp4",
+  "passed": 14,
+  "failed": 0,
+  "blocked": 0,
+  "total": 14,
+  "verdict": "READY",
+  "results": [
+    {
+      "name": "01_source_ingestion",
+      "status": "PASS",
+      "reason": "Ingested viral_voice_agency_01.mp4: 1080x1920, 15.0s, h264/aac",
+      "details": {
+        "width": 1080,
+        "height": 1920,
+        "duration": 15.0,
+        "video_codec": "h264",
+        "audio_codec": "aac",
+        "bitrate_kbps": 4317,
+        "file_size_mb": 7.98
+      },
+      "duration_sec": 2.08
+    },
+    {
+      "name": "02_clip_selection",
+      "status": "PASS",
+      "reason": "Generated 3 candidate clips",
+      "details": {
+        "candidates": [
+          "candidate_01_hook.mp4",
+          "candidate_02_middle.mp4",
+          "candidate_03_late.mp4"
+        ]
+      },
+      "duration_sec": 57.95
+    },
+    {
+      "name": "03_render_quality",
+      "status": "PASS",
+      "reason": "Video gate: 3/3 clips passed",
+      "details": {
+        "candidate_01_hook.mp4": {
+          "gate": "VIDEO_GATE",
+          "status": "PASS",
+          "reason": "All 14 checks passed",
+          "checks": {
+            "has_container": true,
+            "video_codec_valid": true,
+            "audio_codec_valid": true,
+            "has_audio_stream": true,
+            "width_correct": true,
+            "height_correct": true,
+            "aspect_ratio_9_16": true,
+            "fps_in_range": true,
+            "bitrate_not_too_low": true,
+            "bitrate_not_too_high": true,
+            "duration_valid": true,
+            "av_sync_within_1s": true,
+            "pixel_format_valid": true,
+            "has_frames": true
+          },
+          "severity": "info",
+          "checks_passed": 14,
+          "checks_total": 14
+        },
+        "candidate_02_middle.mp4": {
+          "gate": "VIDEO_GATE",
+          "status": "PASS",
+          "reason": "All 14 checks passed",
+          "checks": {
+            "has_container": true,
+            "video_codec_valid": true,
+            "audio_codec_valid": true,
+            "has_audio_stream": true,
+            "width_correct": true,
+            "height_correct": true,
+            "aspect_ratio_9_16": true,
+            "fps_in_range": true,
+            "bitrate_not_too_low": true,
+            "bitrate_not_too_high": true,
+            "duration_valid": true,
+            "av_sync_within_1s": true,
+            "pixel_format_valid": true,
+            "has_frames": true
+          },
+          "severity": "info",
+          "checks_passed": 14,
+          "checks_total": 14
+        },
+        "candidate_03_late.mp4": {
+          "gate": "VIDEO_GATE",
+          "status": "PASS",
+          "reason": "All 14 checks passed",
+          "checks": {
+            "has_container": true,
+            "video_codec_valid": true,
+            "audio_codec_valid": true,
+            "has_audio_stream": true,
+            "width_correct": true,
+            "height_correct": true,
+            "aspect_ratio_9_16": true,
+            "fps_in_range": true,
+            "bitrate_not_too_low": true,
+            "bitrate_not_too_high": true,
+            "duration_valid": true,
+            "av_sync_within_1s": true,
+            "pixel_format_valid": true,
+            "has_frames": true
+          },
+          "severity": "info",
+          "checks_passed": 14,
+          "checks_total": 14
+        }
+      },
+      "duration_sec": 1.96
+    },
+    {
+      "name": "04_audio_quality",
+      "status": "PASS",
+      "reason": "Audio gate on candidate_01_hook.mp4: PASS \u2014 Audio passed (8/8 checks)",
+      "details": {
+        "candidate_01_hook.mp4": {
+          "gate": "AUDIO_GATE",
+          "status": "PASS",
+          "reason": "Audio passed (8/8 checks)",
+          "checks": {
+            "has_audio_stream": true,
+            "codec_valid": true,
+            "sample_rate_valid": true,
+            "channels_valid": true,
+            "bitrate_in_range": true,
+            "duration_valid": true,
+            "no_excessive_silence": true,
+            "loudness_in_range": true
+          },
+          "severity": "info",
+          "checks_passed": 8,
+          "checks_total": 8
+        }
+      },
+      "duration_sec": 0.54
+    },
+    {
+      "name": "05_creative_scoring",
+      "status": "PASS",
+      "reason": "Winner: candidate_01_hook.mp4 (score 7.42). Rejected: candidate_03_late.mp4 (score 7.35). Has production winner: True, Has reject: False",
+      "details": {
+        "scores": {
+          "candidate_01_hook.mp4": {
+            "gate": "CREATIVE_GATE",
+            "status": "PASS",
+            "reason": "Creative score 7.42 >= threshold 6.0",
+            "creative_score": 7.42,
+            "threshold": 6.0,
+            "dimensions": {
+              "hook": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Audio stream active; Video bitrate active"
+              },
+              "retention_potential": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Audio stream present, no decode-based silence check"
+              },
+              "information_density": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Optimal (10.0s)"
+              },
+              "visual_quality": {
+                "score": 8.5,
+                "weight": 1.0,
+                "notes": "High bitrate (6740kbps); Full HD vertical"
+              },
+              "audio_quality": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Codec: aac"
+              },
+              "ending": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Clean ending (silencedetect threshold passed)"
+              },
+              "standalone_context": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Self-contained"
+              },
+              "story_completeness": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires human review"
+              },
+              "pacing": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires visual inspection"
+              },
+              "framing": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires visual inspection"
+              },
+              "caption_quality": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Caption gate validates"
+              },
+              "platform_fit": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "9:16 format"
+              },
+              "brand_content_fit": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Brand router validates"
+              }
+            },
+            "severity": "info",
+            "winner_reason": "Score: 7.42/10. Strongest: Visual Quality (8.5/10). Weakest: Audio Quality (7.0/10). Needs review: "
+          },
+          "candidate_02_middle.mp4": {
+            "gate": "CREATIVE_GATE",
+            "status": "PASS",
+            "reason": "Creative score 7.42 >= threshold 6.0",
+            "creative_score": 7.42,
+            "threshold": 6.0,
+            "dimensions": {
+              "hook": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Audio stream active; Video bitrate active"
+              },
+              "retention_potential": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Audio stream present, no decode-based silence check"
+              },
+              "information_density": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Optimal (10.0s)"
+              },
+              "visual_quality": {
+                "score": 8.5,
+                "weight": 1.0,
+                "notes": "High bitrate (6783kbps); Full HD vertical"
+              },
+              "audio_quality": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Codec: aac"
+              },
+              "ending": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Clean ending (silencedetect threshold passed)"
+              },
+              "standalone_context": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Self-contained"
+              },
+              "story_completeness": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires human review"
+              },
+              "pacing": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires visual inspection"
+              },
+              "framing": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires visual inspection"
+              },
+              "caption_quality": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Caption gate validates"
+              },
+              "platform_fit": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "9:16 format"
+              },
+              "brand_content_fit": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Brand router validates"
+              }
+            },
+            "severity": "info",
+            "winner_reason": "Score: 7.42/10. Strongest: Visual Quality (8.5/10). Weakest: Audio Quality (7.0/10). Needs review: "
+          },
+          "candidate_03_late.mp4": {
+            "gate": "CREATIVE_GATE",
+            "status": "PASS",
+            "reason": "Creative score 7.35 >= threshold 6.0",
+            "creative_score": 7.35,
+            "threshold": 6.0,
+            "dimensions": {
+              "hook": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Audio stream active; Video bitrate active"
+              },
+              "retention_potential": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Audio stream present, no decode-based silence check"
+              },
+              "information_density": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Good (5.0s)"
+              },
+              "visual_quality": {
+                "score": 8.5,
+                "weight": 1.0,
+                "notes": "High bitrate (8241kbps); Full HD vertical"
+              },
+              "audio_quality": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Codec: aac"
+              },
+              "ending": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Clean ending (silencedetect threshold passed)"
+              },
+              "standalone_context": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Self-contained"
+              },
+              "story_completeness": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires human review"
+              },
+              "pacing": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires visual inspection"
+              },
+              "framing": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires visual inspection"
+              },
+              "caption_quality": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Caption gate validates"
+              },
+              "platform_fit": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "9:16 format"
+              },
+              "brand_content_fit": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Brand router validates"
+              }
+            },
+            "severity": "info",
+            "winner_reason": "Score: 7.35/10. Strongest: Visual Quality (8.5/10). Weakest: Information Density (7.0/10). Needs review: "
+          }
+        },
+        "winner": "candidate_01_hook.mp4",
+        "winner_score": 7.42,
+        "winner_reason": "Score: 7.42/10. Strongest: Visual Quality (8.5/10). Weakest: Audio Quality (7.0/10). Needs review: ",
+        "rejected": "candidate_03_late.mp4",
+        "rejected_score": 7.35
+      },
+      "duration_sec": 2.67
+    },
+    {
+      "name": "06_caption_generation",
+      "status": "PASS",
+      "reason": "Caption gate on candidate_01_hook.mp4: PASS \u2014 Captions passed (18/18 checks)",
+      "details": {
+        "candidate_01_hook.mp4": {
+          "gate": "CAPTION_GATE",
+          "status": "PASS",
+          "reason": "Captions passed (18/18 checks)",
+          "checks": {
+            "parseable": true,
+            "has_entries": true,
+            "chronological_order": true,
+            "no_zero_duration": true,
+            "duration_bounds": true,
+            "no_overlapping": true,
+            "sequential_index": true,
+            "max_words_per_entry": true,
+            "no_empty_text": true,
+            "no_duplicate_consecutive": true,
+            "no_corrupted_chars": true,
+            "valid_encoding": true,
+            "time_format_valid": true,
+            "no_duplicated_words": true,
+            "first_caption_near_start": true,
+            "last_caption_near_end": true,
+            "no_captions_beyond_video": true,
+            "caption_coverage_30pct": true
+          },
+          "severity": "info",
+          "entries_parsed": 10,
+          "checks_passed": 18,
+          "checks_total": 18
+        }
+      },
+      "duration_sec": 1.17
+    },
+    {
+      "name": "07_platform_formats",
+      "status": "PASS",
+      "reason": "Platform check: {'youtube_shorts': 'PASS', 'instagram_reels': 'PASS', 'tiktok': 'PASS'}",
+      "details": {
+        "youtube_shorts": {
+          "gate": "PLATFORM_GATE",
+          "platform": "youtube_shorts",
+          "status": "PASS",
+          "reason": "Platform YouTube Shorts all checks passed (10/10)",
+          "checks": {
+            "width": true,
+            "height": true,
+            "aspect_ratio": true,
+            "duration_min": true,
+            "duration_max": true,
+            "video_codec": true,
+            "audio_codec": true,
+            "file_size": true,
+            "fps": true,
+            "has_audio": true
+          },
+          "severity": "info",
+          "checks_passed": 10,
+          "checks_total": 10
+        },
+        "instagram_reels": {
+          "gate": "PLATFORM_GATE",
+          "platform": "instagram_reels",
+          "status": "PASS",
+          "reason": "Platform Instagram Reels all checks passed (10/10)",
+          "checks": {
+            "width": true,
+            "height": true,
+            "aspect_ratio": true,
+            "duration_min": true,
+            "duration_max": true,
+            "video_codec": true,
+            "audio_codec": true,
+            "file_size": true,
+            "fps": true,
+            "has_audio": true
+          },
+          "severity": "info",
+          "checks_passed": 10,
+          "checks_total": 10
+        },
+        "tiktok": {
+          "gate": "PLATFORM_GATE",
+          "platform": "tiktok",
+          "status": "PASS",
+          "reason": "Platform TikTok all checks passed (10/10)",
+          "checks": {
+            "width": true,
+            "height": true,
+            "aspect_ratio": true,
+            "duration_min": true,
+            "duration_max": true,
+            "video_codec": true,
+            "audio_codec": true,
+            "file_size": true,
+            "fps": true,
+            "has_audio": true
+          },
+          "severity": "info",
+          "checks_passed": 10,
+          "checks_total": 10
+        }
+      },
+      "duration_sec": 1.56
+    },
+    {
+      "name": "08_publish_package",
+      "status": "PASS",
+      "reason": "Package built for candidate_01_hook.mp4 with 5 hashtags",
+      "details": {
+        "asset_id": "prod_test_20260819_164351",
+        "source_file": "candidate_01_hook.mp4",
+        "title": "Production Quality Test Clip \u2014 MBM Social Pipeline Validation",
+        "description": "Testing the complete MBM Social production pipeline from source to publish.",
+        "hashtags": [
+          "#MBMSocial",
+          "#ProductionTest",
+          "#QualityAssurance",
+          "#VideoPipeline",
+          "#AutomatedQA"
+        ],
+        "platform": "youtube_shorts",
+        "brand": "clippingfactorymbm",
+        "thumbnail_text": "QA TEST",
+        "scheduled_for": "2026-08-19T13:44:59.076456+00:00",
+        "quality_gate": {
+          "passed": true,
+          "note": "Production smoke test"
+        },
+        "provenance": {
+          "source": "candidate_01_hook.mp4",
+          "generated_at": "2026-08-19T13:44:59.076456+00:00",
+          "pipeline_version": "production_smoke_v1"
+        }
+      },
+      "duration_sec": 0.01
+    },
+    {
+      "name": "09_duplicate_protection",
+      "status": "PASS",
+      "reason": "Duplicate detected for title: 'Production Quality Test Clip \u2014 MBM Social Pipeline...'",
+      "details": {
+        "duplicate_detected": true,
+        "title": "Production Quality Test Clip \u2014 MBM Social Pipeline Validation"
+      },
+      "duration_sec": 0.01
+    },
+    {
+      "name": "10_state_machine",
+      "status": "PASS",
+      "reason": "State machine: happy path completed (VERIFIED), invalid rejected, recovery works",
+      "details": {
+        "transitions": [
+          {
+            "from": "DISCOVERED",
+            "to": "PROCESSING",
+            "ok": true
+          },
+          {
+            "from": "PROCESSING",
+            "to": "CLIPPED",
+            "ok": true
+          },
+          {
+            "from": "CLIPPED",
+            "to": "RENDERED",
+            "ok": true
+          },
+          {
+            "from": "RENDERED",
+            "to": "QA_APPROVED",
+            "ok": true
+          },
+          {
+            "from": "QA_APPROVED",
+            "to": "READY_TO_PUBLISH",
+            "ok": true
+          },
+          {
+            "from": "READY_TO_PUBLISH",
+            "to": "PUBLISH_REQUESTED",
+            "ok": true
+          },
+          {
+            "from": "PUBLISH_REQUESTED",
+            "to": "PUBLISHED",
+            "ok": true
+          },
+          {
+            "from": "PUBLISHED",
+            "to": "VERIFIED",
+            "ok": true
+          },
+          {
+            "from": "VERIFIED",
+            "to": "PROCESSING",
+            "ok": true,
+            "expected": false
+          }
+        ],
+        "final_state": "VERIFIED",
+        "recovery_test": true,
+        "stats": {
+          "PROCESSING": 0,
+          "VERIFY_FAILED": 0,
+          "PUBLISH_BLOCKED": 0,
+          "PUBLISH_FAILED": 0,
+          "RENDERED": 0,
+          "QA_APPROVED": 0,
+          "QA_REJECTED": 0,
+          "PUBLISHED": 0,
+          "DISCOVERED": 0,
+          "PUBLISH_REQUESTED": 0,
+          "CLIPPED": 1,
+          "VERIFIED": 1,
+          "RETRY_PENDING": 0,
+          "READY_TO_PUBLISH": 0
+        }
+      },
+      "duration_sec": 0.99
+    },
+    {
+      "name": "11_retry_logic",
+      "status": "PASS",
+      "reason": "Retry exhaustion detected after 8 attempts",
+      "details": {
+        "retry_count": 8,
+        "state": "RETRY_PENDING"
+      },
+      "duration_sec": 0.0
+    },
+    {
+      "name": "12_frame_extraction",
+      "status": "PASS",
+      "reason": "Extracted 3/3 frames (sizes: ['1632KB', '1632KB', '1632KB'])",
+      "details": {
+        "frames": [
+          "frame_00.jpg",
+          "frame_01.jpg",
+          "frame_02.jpg"
+        ],
+        "sizes_bytes": [
+          1671365,
+          1671469,
+          1671554
+        ]
+      },
+      "duration_sec": 12.39
+    },
+    {
+      "name": "13_publishing_dry_run",
+      "status": "PASS",
+      "reason": "All preflight checks passed \u2014 ready for publish (dry-run only)",
+      "details": {
+        "preflight": {
+          "file_exists": true,
+          "file_is_video": true,
+          "file_size_ok": true,
+          "manifest_has_title": true,
+          "manifest_has_description": true,
+          "manifest_has_hashtags": true,
+          "manifest_has_platform": true,
+          "manifest_has_brand": true
+        },
+        "would_publish_to": "youtube_shorts",
+        "would_publish_brand": "clippingfactorymbm",
+        "actual_upload": false,
+        "reason": "Dry run \u2014 no credentials used, no upload attempted"
+      },
+      "duration_sec": 0.02
+    },
+    {
+      "name": "14_pipeline_e2e",
+      "status": "PASS",
+      "reason": "Full pipeline completed in 20.2s \u2014 all QA gates passed",
+      "details": {
+        "provenance": {
+          "source": "viral_voice_agency_01.mp4",
+          "pipeline_start": "2026-08-19T13:45:12.483086+00:00",
+          "stages": [
+            {
+              "name": "ingest",
+              "duration": 0.0007131099700927734,
+              "output": "viral_voice_agency_01.mp4"
+            },
+            {
+              "name": "clip",
+              "duration": 17.16748547554016,
+              "output": "e2e_winner.mp4"
+            },
+            {
+              "name": "caption",
+              "duration": 0.015511035919189453,
+              "output": "e2e_winner.srt"
+            },
+            {
+              "name": "qa",
+              "duration": 2.966770887374878
+            },
+            {
+              "name": "package",
+              "duration": 0.011790752410888672
+            }
+          ],
+          "total_duration": 20.16227126121521,
+          "pipeline_end": "2026-08-19T13:45:32.645357+00:00"
+        },
+        "qa_gates": {
+          "video": {
+            "gate": "VIDEO_GATE",
+            "status": "PASS",
+            "reason": "All 14 checks passed",
+            "checks": {
+              "has_container": true,
+              "video_codec_valid": true,
+              "audio_codec_valid": true,
+              "has_audio_stream": true,
+              "width_correct": true,
+              "height_correct": true,
+              "aspect_ratio_9_16": true,
+              "fps_in_range": true,
+              "bitrate_not_too_low": true,
+              "bitrate_not_too_high": true,
+              "duration_valid": true,
+              "av_sync_within_1s": true,
+              "pixel_format_valid": true,
+              "has_frames": true
+            },
+            "severity": "info",
+            "checks_passed": 14,
+            "checks_total": 14
+          },
+          "audio": {
+            "status": "PASS",
+            "codec": "aac"
+          },
+          "caption": {
+            "gate": "CAPTION_GATE",
+            "status": "PASS",
+            "reason": "Captions passed (16/18 checks)",
+            "checks": {
+              "parseable": true,
+              "has_entries": true,
+              "chronological_order": true,
+              "no_zero_duration": true,
+              "duration_bounds": true,
+              "no_overlapping": true,
+              "sequential_index": true,
+              "max_words_per_entry": true,
+              "no_empty_text": true,
+              "no_duplicate_consecutive": true,
+              "no_corrupted_chars": true,
+              "valid_encoding": true,
+              "time_format_valid": true,
+              "no_duplicated_words": true,
+              "first_caption_near_start": true,
+              "last_caption_near_end": false,
+              "no_captions_beyond_video": false,
+              "caption_coverage_30pct": true
+            },
+            "severity": "warning",
+            "entries_parsed": 10,
+            "checks_passed": 16,
+            "checks_total": 18
+          },
+          "creative": {
+            "gate": "CREATIVE_GATE",
+            "status": "PASS",
+            "reason": "Creative score 7.42 >= threshold 6.0",
+            "creative_score": 7.42,
+            "threshold": 6.0,
+            "dimensions": {
+              "hook": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Audio stream active; Video bitrate active"
+              },
+              "retention_potential": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Audio stream present, no decode-based silence check"
+              },
+              "information_density": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "Optimal (10.0s)"
+              },
+              "visual_quality": {
+                "score": 8.5,
+                "weight": 1.0,
+                "notes": "High bitrate (6740kbps); Full HD vertical"
+              },
+              "audio_quality": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Codec: aac"
+              },
+              "ending": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Clean ending (silencedetect threshold passed)"
+              },
+              "standalone_context": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Self-contained"
+              },
+              "story_completeness": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires human review"
+              },
+              "pacing": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires visual inspection"
+              },
+              "framing": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Requires visual inspection"
+              },
+              "caption_quality": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Caption gate validates"
+              },
+              "platform_fit": {
+                "score": 8.0,
+                "weight": 1.0,
+                "notes": "9:16 format"
+              },
+              "brand_content_fit": {
+                "score": 7.0,
+                "weight": 1.0,
+                "notes": "Brand router validates"
+              }
+            },
+            "severity": "info",
+            "winner_reason": "Score: 7.42/10. Strongest: Visual Quality (8.5/10). Weakest: Audio Quality (7.0/10). Needs review: "
+          }
+        }
+      },
+      "duration_sec": 20.16
+    }
+  ]
+}
