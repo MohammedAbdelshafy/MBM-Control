@@ -309,12 +309,19 @@ def test_empty_niche_and_duplicate_phones_are_stable():
     empty = rank_main_queue([])
     assert empty == []
 
+    # Pin ONE shared timestamp across every ingestion field: _ts()/now() drift
+    # by microseconds between calls, which would silently decide the race and
+    # never exercise the documented ID tie-break. Identical timestamps make
+    # this a true tie -> deterministic order must come from the ID.
+    same_ts = _ts(10)
     dup_a = make_lead({"id": "DUPPHONE-A", "phone": "+18179926601",
                        "company": "Same Company Inc", "vertical": "Niche Z",
-                       "imported_at": _ts(10), "first_seen_at": _ts(10)})
+                       "imported_at": same_ts, "first_seen_at": same_ts,
+                       "discovered_at": same_ts, "verified_at": same_ts})
     dup_b = make_lead({"id": "DUPPHONE-B", "phone": "+18179926601",
                        "company": "Same Company Inc", "vertical": "Niche Z",
-                       "imported_at": _ts(10), "first_seen_at": _ts(10)})
+                       "imported_at": same_ts, "first_seen_at": same_ts,
+                       "discovered_at": same_ts, "verified_at": same_ts})
     newer = make_lead({"id": "DUPPHONE-NEW", "phone": "+18179926602",
                        "company": "Same Company Inc", "vertical": "Niche Z",
                        "imported_at": _ts(2), "first_seen_at": _ts(2)})
