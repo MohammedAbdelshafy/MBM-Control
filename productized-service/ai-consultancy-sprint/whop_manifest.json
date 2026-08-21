@@ -1,0 +1,36 @@
+{
+  "offer": "AI Consultancy Sprint",
+  "company": "Contec AI Agentic Teamz",
+  "business_id": "biz_2VDyenKpD0KOyo",
+  "product_id": "prod_qoPikOSNXZBcI",
+  "currency": "USD",
+  "items": {
+    "sprint_audit": {
+      "plan_id": "plan_e3ibiYXeeAaZV",
+      "amount": 297.00,
+      "billing_type": "one_time",
+      "label": "AI Consultancy Sprint Audit (72h plan + 5 scripts + lead map)",
+      "checkout_url": "https://whop.com/checkout/plan_e3ibiYXeeAaZV"
+    },
+    "build_deploy": {
+      "plan_id": "plan_j5bQuNA8nRbWo",
+      "amount": 1497.00,
+      "billing_type": "one_time",
+      "label": "AI Consultancy Build & Deploy (live assistant + lead feed + follow-up)",
+      "checkout_url": "https://whop.com/checkout/plan_j5bQuNA8nRbWo"
+    },
+    "managed_growth": {
+      "plan_id": "plan_GM82PrzSTSmmK",
+      "amount": 497.00,
+      "billing_type": "recurring_monthly",
+      "label": "Managed AI Growth (monthly, recurring)",
+      "checkout_url": "https://whop.com/checkout/plan_GM82PrzSTSmmK"
+    }
+  },
+  "links": {
+    "sprint_audit": "https://whop.com/checkout/plan_e3ibiYXeeAaZV",
+    "build_deploy": "https://whop.com/checkout/plan_j5bQuNA8nRbWo",
+    "managed_growth": "https://whop.com/checkout/plan_GM82PrzSTSmmK"
+  },
+  "source_of_truth": "MBM/Whop/whop_monetize.py"
+}

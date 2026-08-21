@@ -145,10 +145,8 @@ PRODUCTS = [
         ],
     },
     # ─── AI Consultancy Sprint (Whop Money Mission) ───
-    # REPLACE id with the real prod_xxx after creating the hub on whop.com.
-    # Source of truth: MBM/Whop/ai-consultancy-agency/whop_product_spec.json
     {
-        "id": "prod_ai_consultancy_sprint",  # PLACEHOLDER — replace after hub creation
+        "id": "prod_qoPikOSNXZBcI",  # Live Whop Product: AI Consultancy Sprint (biz_2VDyenKpD0KOyo)
         "headline": "We build your AI assistant that finds, calls, qualifies, and follows up with your best customers — live in 14 days.",
         "description": (
             "AI Consultancy Sprint. Done-for-you AI growth system for local service businesses "

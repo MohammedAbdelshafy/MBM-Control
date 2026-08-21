@@ -1,6 +1,8 @@
 {
-  "product_key": "ai_consultancy_sprint",
-  "name": "AI Consultancy Sprint: Done-For-You AI Lead & Call System",
+  "product_key": "prod_qoPikOSNXZBcI",
+  "name": "AI Consultancy Sprint",
+  "company": "Contec AI Agentic Teamz",
+  "business_id": "biz_2VDyenKpD0KOyo",
   "headline": "We build your AI assistant that finds, calls, qualifies, and follows up with your best customers — live in 14 days. No sales team required.",
   "description": "Stop renting dead leads. We install a working AI growth system for your local service business using the exact stack we run on 1,222 real verified businesses every month. AI Cold-Calling Assistant + verified lead feed + tailored scripts + automated follow-up + after-call analytics. Plans: $297 Sprint Audit (72h), $1,497 Build & Deploy (14d), $497/mo Managed AI Growth.",
   "category": "business",
@@ -10,6 +12,8 @@
   "plans": [
     {
       "key": "sprint_audit",
+      "plan_id": "plan_e3ibiYXeeAaZV",
+      "checkout_url": "https://whop.com/checkout/plan_e3ibiYXeeAaZV",
       "title": "AI Consultancy Sprint Audit",
       "plan_type": "one_time",
       "initial_price": 297,
@@ -19,6 +23,8 @@
     },
     {
       "key": "build_deploy",
+      "plan_id": "plan_j5bQuNA8nRbWo",
+      "checkout_url": "https://whop.com/checkout/plan_j5bQuNA8nRbWo",
       "title": "AI Consultancy Build & Deploy",
       "plan_type": "one_time",
       "initial_price": 1497,
@@ -28,6 +34,8 @@
     },
     {
       "key": "managed_growth",
+      "plan_id": "plan_GM82PrzSTSmmK",
+      "checkout_url": "https://whop.com/checkout/plan_GM82PrzSTSmmK",
       "title": "Managed AI Growth",
       "plan_type": "renewal",
       "billing_period": 30,
@@ -40,5 +48,5 @@
   ],
   "affiliate_percentage": 20,
   "custom_cta": "get_access",
-  "notes": "After creating the hub manually on whop.com, replace product_key with the real prod_xxx id and add this block to MBM/Whop/whop_monetize.py PRODUCTS so publish/checkout/report/monitor cover it."
+  "notes": "Live Whop Product prod_qoPikOSNXZBcI under Contec AI Agentic Teamz (biz_2VDyenKpD0KOyo)."
 }

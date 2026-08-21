@@ -3,7 +3,7 @@
 **Offer:** AI Consultancy Sprint (Audit $297 / Build & Deploy $1,497 / Managed $497/mo)
 **Target:** Owner-operators of local service businesses (dental, med spa, roofing, HVAC, plumbing, contractors, home services) spending on leads, no in-house sales/AI ops.
 **Channel:** Phone (dialer, verified businesses) + email + LinkedIn.
-**Checkout:** Neteller — `AI_SPRINT_AUDIT` ($297), `AI_SPRINT_BUILD` ($1,497), `AI_SPRINT_MANAGED_MO` ($497).
+**Checkout:** Whop — Audit ($297: `https://whop.com/checkout/plan_e3ibiYXeeAaZV`), Build & Deploy ($1,497: `https://whop.com/checkout/plan_j5bQuNA8nRbWo`), Managed ($497/mo: `https://whop.com/checkout/plan_GM82PrzSTSmmK`).
 **Landing:** https://mbm-dialer-app.vercel.app/sprint
 **Booking:** mailto:abdelshafyclapps@gmail.com?subject=AI%20SPRINT%20-%20MY%20BUSINESS or paid link → 24h kickoff email.
 
@@ -17,11 +17,11 @@
 "You're already burning $[spend]/mo on leads. Half never get called back. Our AI assistant calls every lead, qualifies it, and follows up automatically — and we prove it on real, phone-verified businesses every day."
 
 ## 3. Tripwire close
-"Start with the $297 Audit — you get a custom AI plan, 5 call scripts, and your lead-source map in 72 hours. Worst case you're out $297 and know exactly where your pipeline leaks. Link's right here: [AI_SPRINT_AUDIT Neteller]. Want me to send the kickoff questions now?"
+"Start with the $297 Audit — you get a custom AI plan, 5 call scripts, and your lead-source map in 72 hours. Worst case you're out $297 and know exactly where your pipeline leaks. Link's right here: https://whop.com/checkout/plan_e3ibiYXeeAaZV. Want me to send the kickoff questions now?"
 
 ## 4. Email (send within 1h of call)
 Subject: Your [Business] AI plan — 72h turnaround
-Body: "[Name], enjoyed the call. Here's the deal: $297 Audit gets you a tailored AI growth plan + 5 scripts + lead-source map in 72h. Same stack we run on real verified businesses. Pay here → [AI_SPRINT_AUDIT]. Or reply 'plan' and I'll send the free version first."
+Body: "[Name], enjoyed the call. Here's the deal: $297 Audit gets you a tailored AI growth plan + 5 scripts + lead-source map in 72h. Same stack we run on real verified businesses. Pay here → https://whop.com/checkout/plan_e3ibiYXeeAaZV. Or reply 'plan' and I'll send the free version first."
 
 ## 5. LinkedIn / DM (warm)
 "Hey [Name] — saw [Business] is growing. We just launched a 14-day AI sprint that books local service businesses more jobs without a sales hire. $297 gets you the full plan. Want the link?"

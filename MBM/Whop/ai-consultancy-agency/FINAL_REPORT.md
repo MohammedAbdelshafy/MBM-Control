@@ -32,11 +32,14 @@ NPI verified lead engine · dialer_script_engine · OmniRoute after-call automat
 revenue_tracker · existing Whop fulfillment hub + whop_monetize.py.
 
 ## WHOP LISTING
-READY (copy in WHOP_LISTING.md + whop_product_spec.json). Action needed: create hub on
-whop.com, paste copy, set 3 plans, then replace placeholder id in whop_monetize.py.
+LIVE: Product ID `prod_qoPikOSNXZBcI` under Contec AI Agentic Teamz (`biz_2VDyenKpD0KOyo`).
+Three live plans:
+- AI Sprint Audit ($297): `plan_e3ibiYXeeAaZV` → `https://whop.com/checkout/plan_e3ibiYXeeAaZV`
+- Build & Deploy ($1,497): `plan_j5bQuNA8nRbWo` → `https://whop.com/checkout/plan_j5bQuNA8nRbWo`
+- Managed Growth ($497/mo): `plan_GM82PrzSTSmmK` → `https://whop.com/checkout/plan_GM82PrzSTSmmK`
 
 ## CHECKOUT
-READY (via existing `whop_monetize.py checkout`, after real prod id is set).
+LIVE & VERIFIED on Whop. Funnel landing page at `https://mbm-dialer-app.vercel.app/sprint`.
 
 ## DELIVERY
 READY (manual for first 10; deliverables = Files app; SAMPLE_DELIVERABLE.md as proof).
