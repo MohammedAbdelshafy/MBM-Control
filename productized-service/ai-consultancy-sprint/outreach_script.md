@@ -4,6 +4,7 @@
 **Target:** Owner-operators of local service businesses (dental, med spa, roofing, HVAC, plumbing, contractors, home services) spending on leads, no in-house sales/AI ops.
 **Channel:** Phone (dialer, verified businesses) + email + LinkedIn.
 **Checkout:** Neteller — `AI_SPRINT_AUDIT` ($297), `AI_SPRINT_BUILD` ($1,497), `AI_SPRINT_MANAGED_MO` ($497).
+**Landing:** https://mbm-dialer-app.vercel.app/sprint
 **Booking:** mailto:abdelshafyclapps@gmail.com?subject=AI%20SPRINT%20-%20MY%20BUSINESS or paid link → 24h kickoff email.
 
 ---
