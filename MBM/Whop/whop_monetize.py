@@ -61,6 +61,9 @@ try:
 except Exception:
     WHOP_API_KEY = WHOP_API_KEY or _load_env()
 
+# Re-read after load_dotenv() — ACCOUNT_ID was captured at line 37 before .env was loaded.
+ACCOUNT_ID = os.getenv("WHOP_ACCOUNT_ID", ACCOUNT_ID)
+
 # ─── Product + pricing config (from HUNTER sprint mission pricing) ───
 PRODUCTS = [
     {
