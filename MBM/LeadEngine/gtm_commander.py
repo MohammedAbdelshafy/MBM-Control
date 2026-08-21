@@ -44,6 +44,7 @@ from MBM.LeadEngine.gtm.adapters import (
     CRMAdapter,
     VerificationAdapter,
 )
+from MBM.LeadEngine.gtm.scoreboard import GtmSalesLedger, GtmRevenueScoreboard, SPRINT_OFFERS, LANDING_URL
 
 ARTIFACTS_DIR = ROOT_DIR / "MBM" / "Artifacts"
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -64,6 +65,8 @@ class GtmCommander:
         self.learning_engine = GtmLearningEngine()
         self.action_ranker = ActionRanker()
         self.channel_router = ChannelRouter()
+        self.sales_ledger = GtmSalesLedger()
+        self.scoreboard = GtmRevenueScoreboard(ledger=self.sales_ledger)
 
         # Adapters
         self.buyer_hunter_adapter = BuyerHunterAdapter()
@@ -75,6 +78,11 @@ class GtmCommander:
 
         # State tracking
         self._state_machines: Dict[str, GtmStateMachine] = {}
+
+    def export_scoreboard(self, prospects_count: int = 10) -> Path:
+        """Generate and export the GTM Revenue Scoreboard artifact."""
+        return self.scoreboard.export_reports(prospects_count=prospects_count)
+
 
     # -------------------------------------------------------------------------
     # 1. READ GTM STATE
@@ -332,10 +340,17 @@ def main():
     parser = argparse.ArgumentParser(description="MBM GTM Commander")
     parser.add_argument("--dry-run", action="store_true", default=True, help="Execute in deterministic dry-run mode (default)")
     parser.add_argument("--simulate", action="store_true", help="Run the artificial lifecycle simulation (read-only)")
+    parser.add_argument("--scoreboard", action="store_true", help="Generate and export the GTM Revenue Scoreboard")
     parser.add_argument("--limit", type=int, default=10, help="Number of next actions to output")
     args = parser.parse_args()
 
     commander = GtmCommander(dry_run=True)
+
+    if args.scoreboard:
+        path = commander.export_scoreboard()
+        print(f"[OK] GTM Revenue Scoreboard exported to: {path}")
+        return
+
 
     if args.simulate:
         print(commander.execute_simulation())

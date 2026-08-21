@@ -155,6 +155,40 @@ class CanonicalMemoryAdapter:
         return None
 
 
+_SHARED_LEADS: Optional[List[Dict[str, Any]]] = None
+_SHARED_SUPPRESSED_PHONES: Optional[set] = None
+_SHARED_LEADS_MAP: Optional[Dict[str, Dict[str, Any]]] = None
+
+
+def _load_shared_leads(db_path: Path = DIALER_DB_PATH) -> List[Dict[str, Any]]:
+    global _SHARED_LEADS, _SHARED_SUPPRESSED_PHONES, _SHARED_LEADS_MAP
+    if _SHARED_LEADS is not None:
+        return _SHARED_LEADS
+    if db_path.exists():
+        try:
+            _SHARED_LEADS = json.loads(db_path.read_text(encoding="utf-8"))
+        except Exception:
+            _SHARED_LEADS = []
+    else:
+        _SHARED_LEADS = []
+
+    _SHARED_SUPPRESSED_PHONES = set()
+    _SHARED_LEADS_MAP = {}
+    for lead in _SHARED_LEADS:
+        lid = lead.get("id")
+        if lid:
+            _SHARED_LEADS_MAP[str(lid).lower()] = lead
+        comp = lead.get("company") or lead.get("business_name") or ""
+        if comp:
+            _SHARED_LEADS_MAP[comp.lower()] = lead
+        p = _digits(lead.get("phone"))
+        if p:
+            _SHARED_LEADS_MAP[p] = lead
+            if lead.get("is_suppressed") or lead.get("status") in {"SUPPRESSED", "DNC", "BAD_NUMBER"}:
+                _SHARED_SUPPRESSED_PHONES.add(p)
+    return _SHARED_LEADS
+
+
 class DialerAdapter:
     """Read/status adapter for the production Dialer database (never mutates it)."""
 
@@ -162,22 +196,19 @@ class DialerAdapter:
         self.db_path = db_path
 
     def get_all_leads(self) -> List[Dict[str, Any]]:
-        if self.db_path.exists():
-            try:
-                return json.loads(self.db_path.read_text(encoding="utf-8"))
-            except Exception:
-                pass
-        return []
+        return _load_shared_leads(self.db_path)
 
     def get_lead(self, lead_id: str) -> Optional[Dict[str, Any]]:
         """Fetch a single lead by id, company, or normalized phone."""
-        for lead in self.get_all_leads():
-            if (
-                lead.get("id") == lead_id
-                or lead.get("company", "").lower() == str(lead_id).lower()
-                or _digits(lead.get("phone")) == _digits(lead_id)
-            ):
-                return lead
+        _load_shared_leads(self.db_path)
+        if not _SHARED_LEADS_MAP:
+            return None
+        key = str(lead_id).lower()
+        if key in _SHARED_LEADS_MAP:
+            return _SHARED_LEADS_MAP[key]
+        clean_p = _digits(lead_id)
+        if clean_p and clean_p in _SHARED_LEADS_MAP:
+            return _SHARED_LEADS_MAP[clean_p]
         return None
 
     def get_callable_leads(self) -> List[Dict[str, Any]]:
@@ -246,13 +277,13 @@ class DialerAdapter:
 
     def is_suppressed(self, phone: str) -> bool:
         """Check if phone number is suppressed or on DNC list."""
+        _load_shared_leads(self.db_path)
         clean_phone = _digits(phone)
-        for lead in self.get_all_leads():
-            if _digits(lead.get("phone")) == clean_phone and (
-                lead.get("is_suppressed") or lead.get("status") == "SUPPRESSED"
-            ):
-                return True
+        if clean_phone and _SHARED_SUPPRESSED_PHONES:
+            return clean_phone in _SHARED_SUPPRESSED_PHONES
         return False
+
+
 
 
 class IdentityAdapter:
