@@ -129,11 +129,15 @@ def is_lead_suppressed(lead: Dict[str, Any]) -> bool:
 
 def is_real_estate_seller(lead: Dict[str, Any]) -> bool:
     """Returns True if lead represents a real estate property seller opportunity."""
+    if lead.get("is_real_estate") is True:
+        return True
+
     vertical = str(lead.get("vertical") or lead.get("vertical_tag") or "").lower()
     sales_lane = str(lead.get("sales_lane") or "").lower()
     category = str(lead.get("category") or "").lower()
     segment = str(lead.get("segment") or "").upper()
     details = lead.get("details") or {}
+
 
     if segment in MOTIVATED_SELLER_SEGMENTS:
         return True
