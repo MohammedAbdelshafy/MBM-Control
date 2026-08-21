@@ -50,6 +50,7 @@ const OfferPage = lazy(() => import('@/pages/OfferPage'));
 const ShopifyStorefront = lazy(() => import('@/components/ShopifyStorefront'));
 const AgencyDashboard = lazy(() => import('@/pages/AgencyDashboard'));
 const MobileDialer = lazy(() => import('@/pages/MobileDialer'));
+const DigitalServicesLeads = lazy(() => import('@/pages/DigitalServicesLeads'));
 
 function PageLoader() {
   return <div className="flex items-center justify-center h-[50vh]"><div className="text-center"><div className="w-8 h-8 border-4 border-navy/20 border-t-navy rounded-full animate-spin mx-auto mb-3" /><p className="text-sm text-muted-foreground">Loading...</p></div></div>;
@@ -102,6 +103,7 @@ const AuthenticatedApp = () => {
         <Route path="/auto-dialer" element={<ResponsiveDialerHome />} />
         <Route path="/dialer/mobile" element={<MobileDialer />} />
         <Route path="/mobile-dialer" element={<MobileDialer />} />
+        <Route path="/digital-services" element={<DigitalServicesLeads />} />
         <Route path="/affiliates" element={<AffiliateAnalytics />} />
         <Route path="/mbm" element={<ResponsiveDialerHome />} />
         <Route path="/mbm-dashboard" element={<ResponsiveDialerHome />} />
