@@ -105,8 +105,37 @@ def is_strong_synthetic(record: Dict[str, Any]) -> List[str]:
     return reasons
 
 
+NON_CALLABLE_BUCKETS = {
+    "ALREADY_CONTACTED",
+    "VERIFICATION_REQUIRED",
+    "SUPPRESSED",
+    "QUARANTINED",
+}
+
+
+def _is_archival_non_callable(rec: Dict[str, Any]) -> bool:
+    """A record may live in the DB as NON-callable history (never dialed) when
+    it is explicitly stamped callable=False and assigned a non-main queue
+    bucket with a reason. This preserves suppressed/bad-number/quarantined and
+    verification-required history while guaranteeing it can NEVER enter the
+    prime-call path. Strong synthetic fingerprints still veto everything."""
+    if rec.get("callable") is not False:
+        return False
+    bucket = str(rec.get("queue_bucket") or "")
+    if bucket not in NON_CALLABLE_BUCKETS:
+        return False
+    has_reason = bool(rec.get("suppression_reason") or rec.get("blocked_reason"))
+    return has_reason
+
+
 def validate_records(records: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """Filter records through strong synthetic + suppression + phone sanity gates."""
+    """Filter records through strong synthetic + suppression + phone sanity gates.
+
+    Callable records must clear every gate. Non-callable archival records
+    (SUPPRESSED / QUARANTINED / VERIFICATION_REQUIRED / ALREADY_CONTACTED,
+    stamped callable=False + queue_bucket + reason) are preserved for history
+    but never dialed.
+    """
     suppressed = load_suppression_index()
     clean: List[Dict[str, Any]] = []
     rejected_synthetic = 0
@@ -120,10 +149,26 @@ def validate_records(records: List[Dict[str, Any]]) -> Dict[str, Any]:
         if reasons:
             rejected_synthetic += 1
             continue
+        if _is_archival_non_callable(rec):
+            # Preserved history (suppressed/bad/quarantined/verification-required)
+            # — kept in the DB, permanently OUT of every callable queue.
+            clean.append(rec)
+            continue
         phone = str(rec.get("phone", "") or rec.get("details", {}).get("Owner_Phone", "") or "")
         if is_placeholder_phone(phone):
-            rejected_bad_phone += 1
-            continue
+            # STRICT carve-out: company-only DIGITAL_SERVICES records (no phone in
+            # the source export) may exist in the DB as CONTACT_NEEDED, but they
+            # are NEVER callable and NEVER enter the prime-call path. They must be
+            # explicitly flagged with real provenance (source + source_reference)
+            # and marked callable=False + verification_status=CONTACT_NEEDED.
+            is_digital_lane = str(rec.get("sales_lane", "")) == "DIGITAL_SERVICES" or \
+                str(rec.get("vertical", "")) == "Digital Services"
+            has_provenance = bool(rec.get("source")) and bool(rec.get("source_reference"))
+            contact_needed = str(rec.get("verification_status", "")) == "CONTACT_NEEDED"
+            not_callable = not rec.get("callable") and not rec.get("phone_verified")
+            if not (is_digital_lane and has_provenance and contact_needed and not_callable):
+                rejected_bad_phone += 1
+                continue
         if phone and _norm_phone(phone) in suppressed:
             rejected_suppressed += 1
             continue

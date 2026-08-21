@@ -1,0 +1,13 @@
+{
+  "comment_id": "fixture:demo:06",
+  "signal": "SPAM",
+  "confidence": 0.95,
+  "tier": "NOISE",
+  "source": "fixture:instagram",
+  "content_id": "published:wholesaling-re-contract",
+  "timestamp": "2026-08-12T08:30:00Z",
+  "reasoning": "rule-based pre-classification",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "text": "DM me for 10k followers in 3 days!! 💯"
+}

@@ -57,7 +57,7 @@ def test_whole_database_100_percent_phone_audit():
     )
     assert audit.get("TOTAL_ACTIVE") >= 1063
     assert audit.get("TOTAL_CALLABLE") >= 500
-    assert audit.get("TOTAL_QUARANTINED") == 138
+    assert audit.get("TOTAL_QUARANTINED") == 146
     assert audit.get("FULL_DB_VERIFIED") is True
     assert audit.get("UNVERIFIED_CALLABLE") == 0
     assert audit.get("SUPPRESSED_CALLABLE") == 0
@@ -114,7 +114,7 @@ def test_remaining_quarantined_leads_are_uncallable():
     q_data = json.loads(QUARANTINE_FILE.read_text(encoding="utf-8"))
     q_leads = q_data.get("quarantined_leads", [])
 
-    assert len(q_leads) == 138, f"Expected 138 remaining quarantined leads, got {len(q_leads)}"
+    assert len(q_leads) == 146, f"Expected 146 remaining quarantined leads, got {len(q_leads)}"
     for q in q_leads:
         assert q.get("callable") is False, f"Quarantined lead {q.get('id')} has callable=True"
         assert q.get("status") == "QUARANTINED_UNVERIFIED_PHONE"

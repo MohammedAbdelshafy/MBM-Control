@@ -32,6 +32,7 @@ import os
 import sys
 import io
 import time
+import hashlib
 from pathlib import Path
 from datetime import datetime
 import sys
@@ -170,17 +171,31 @@ def run_enhanced_brand_clipping_cycle():
         log(f"  - Enhanced Hashtags ({len(camp['hashtags'])}): {' '.join(['#' + h for h in camp['hashtags']])}")
 
         source = MBM_SOCIAL_DIR / "public" / "demos" / camp["clip_source"]
-        if not source.exists():
-            source = MBM_SOCIAL_DIR / "public" / "demos" / "demo_ai-clipping.mp4"
 
         output_name = f"clip_enhanced_{camp['brand']}_{int(time.time())}.mp4"
         output_file = PUBLISH_QUEUE / output_name
 
-        if source.exists():
+        # INVARIANT: NO_REAL_SOURCE → NO_CLIP
+        # The demo-file fallback has been removed. A clip is NEVER
+        # created from a demo placeholder. Missing source = SOURCE_NOT_FOUND.
+        if not source.exists() or source.name.startswith("demo_"):
+            log(f"  ❌ SOURCE_NOT_FOUND: {camp['clip_source']} — clip NOT created (no demo fallback)")
+            source = None
+        else:
             import shutil
             shutil.copy(str(source), str(output_file))
             size_mb = output_file.stat().st_size / (1024 * 1024)
             log(f"  ✅ Rendered 1080x1920 60FPS Enhanced Clip -> {output_name} ({size_mb:.2f} MB)")
+
+        # Only create publish package if a real source was used
+        if source is None:
+            processed_clips.append({
+                "campaign_id": camp["id"],
+                "brand": camp["brand"],
+                "status": "SOURCE_NOT_FOUND",
+                "source_requested": camp["clip_source"],
+            })
+            continue
 
         # Create package JSON metadata with ultra-enhanced hashtags and Neteller links
         pkg_data = {
@@ -200,6 +215,14 @@ def run_enhanced_brand_clipping_cycle():
                            f"🌐 Live Portal: https://mbm-dialer.higgsfield.app (Neteller 1-Click Pay: {NETELLER_ACCOUNT_ID})",
             "neteller_checkout_link": camp["neteller_link"],
             "status": "QUEUED_FOR_ENHANCED_PUBLISHING",
+            "source_checksum": hashlib.sha256(source.read_bytes()).hexdigest()[:16] if source.exists() else "",
+            "render_evidence": {
+                "source_file": str(source),
+                "render_method": "file_copy",
+                "rendered_at": datetime.now().isoformat(),
+                "editor_version": "campaign_manager_v2",
+                "pipeline_steps": ["source_verified", "file_copied"],
+            },
             "created_at": datetime.now().isoformat()
         }
 

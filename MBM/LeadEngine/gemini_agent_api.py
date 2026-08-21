@@ -48,6 +48,7 @@ app.add_middleware(
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+COMMENTS_FILE = Path(__file__).resolve().parent / "dialer_comments.json"
 NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY")
 
 groq_client = None
@@ -387,6 +388,16 @@ async def record_decision(req: DecisionRequest):
                 "status": "Awaiting decision",
             },
         )
+
+    # Persist decision to dialer_comments.json for daily refresh processing
+    try:
+        comments: list = []
+        if COMMENTS_FILE.exists():
+            comments = json.loads(COMMENTS_FILE.read_text(encoding="utf-8"))
+        comments.append(payload)
+        COMMENTS_FILE.write_text(json.dumps(comments, indent=2, default=str), encoding="utf-8")
+    except Exception:
+        pass
 
     return {"ok": True, "status": req.status, "lead_id": req.lead_id}
 

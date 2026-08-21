@@ -1,0 +1,20 @@
+{
+  "signal_id": "bbd2e044c0d3",
+  "pain": "missed calls",
+  "intent": "BUYING_SIGNAL",
+  "signal_kind": "BUYING_SIGNAL",
+  "confidence": 0.85,
+  "source_comment_id": "fixture:demo:01",
+  "source_content_id": "published:wholesaling-re-contract",
+  "source_text": "This is exactly what happened to us last month — we had 23 missed calls in a week and I had no idea. Can you do this for clinics?",
+  "offer": "AI Receptionist",
+  "secondary_offer": "AI Call Handling",
+  "consultancy_angle": "How much revenue does a missed call cost your clinic per week?",
+  "matched_offer": true,
+  "timestamp": "2026-08-10T14:00:00Z",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "person": "UNKNOWN",
+  "company": "UNKNOWN",
+  "kind": "real"
+}

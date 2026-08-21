@@ -35,9 +35,12 @@ from MBM.GLM.revenue_and_gtm_agents import (
     RevenueAnalystAgent,
 )
 from MBM.GLM.delivery_report import get_delivery_reporter
+from MBM.GLM.glm_integration_worker import get_glm_worker, GLMWorker, GLMRecommendation
 
-TOP25_JSON_PATH = ROOT_DIR / "MBM" / "Artifacts" / "GLM_TOP25_MISSIONS.json"
-TOP25_MD_PATH = ROOT_DIR / "MBM" / "Artifacts" / "GLM_TOP25_MISSIONS.md"
+import os as _os
+_TOP25_ROOT = Path(_os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
+TOP25_JSON_PATH = _TOP25_ROOT / "GLM_TOP25_MISSIONS.json"
+TOP25_MD_PATH = _TOP25_ROOT / "GLM_TOP25_MISSIONS.md"
 
 
 class GLMOrchestrator:
@@ -47,6 +50,7 @@ class GLMOrchestrator:
         self.ledger = get_mission_ledger()
         self.single_writer = get_single_writer()
         self.reporter = get_delivery_reporter()
+        self.intelligence_worker = get_glm_worker()
         self.test_agent = TestAgent()
         self.review_agent = ReviewAgent()
         self.security_agent = SecurityAgent()
@@ -55,6 +59,22 @@ class GLMOrchestrator:
         self.dialer_agent = DialerEngineerAgent()
         self.monetization_agent = MonetizationEngineerAgent()
         self.revenue_analyst = RevenueAnalystAgent()
+
+    def classify_lead_niche(self, lead_data: Dict[str, Any]) -> GLMRecommendation:
+        """Advisory classification of incoming lead into canonical 9-niche taxonomy."""
+        return self.intelligence_worker.classify_lead_niche(lead_data)
+
+    def audit_lead_quality(self, lead_data: Dict[str, Any]) -> GLMRecommendation:
+        """Advisory quality audit on candidate lead before canonical dialer entry."""
+        return self.intelligence_worker.audit_lead_quality(lead_data)
+
+    def analyze_capacity_and_shortfalls(self, db_records: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+        """Analyzes niche capacity, detects shortfalls, and plans research missions."""
+        return self.intelligence_worker.analyze_shortfalls_and_plan_missions(db_records)
+
+    def review_duplicate_similarity(self, lead_a: Dict[str, Any], lead_b: Dict[str, Any]) -> Dict[str, Any]:
+        """Advisory semantic duplicate evaluation between two leads."""
+        return self.intelligence_worker.review_duplicate_similarity(lead_a, lead_b)
 
     def generate_top_25_missions(self) -> List[EngineeringMission]:
         """Constructs and scores the TOP 25 highest-value engineering missions across all MBM repos."""

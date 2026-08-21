@@ -286,7 +286,7 @@ def test_day17_sync_exact():
     """
     from MBM.LeadEngine.sync_npi_artifacts import validate_artifacts
 
-    days = sorted((p.name for p in ARTIFACTS_DAILY_DIR.glob("2026-08-*") if p.is_dir()))
+    days = sorted((p.name for p in ARTIFACTS_DAILY_DIR.glob("2026-08-*") if p.is_dir() and list(p.glob("lead_NPI-*.json"))))
     assert days, "No daily artifact dirs present"
     latest_day = days[-1]
     day17_dir = ARTIFACTS_DAILY_DIR / latest_day

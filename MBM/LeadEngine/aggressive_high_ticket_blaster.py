@@ -22,8 +22,8 @@ from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_
 BASE_DIR = Path(__file__).parent.resolve()
 ROOT_DIR = BASE_DIR.parent.parent.resolve()
 
-SUPABASE_URL = os.getenv("VITE_SUPABASE_URL", "https://prgmwljhbjtcjmwnjaao.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZ213bGpoYmp0Y2ptd25qYWFvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MzYxNTcyOSwiZXhwIjoyMDk5MTkxNzI5fQ.86LnXpzNHpC22s8dt5JgWnCqIturvK3eB_Rz2BwTY1g")
+SUPABASE_URL = os.getenv("VITE_SUPABASE_URL", "")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
 
 NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
 NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")

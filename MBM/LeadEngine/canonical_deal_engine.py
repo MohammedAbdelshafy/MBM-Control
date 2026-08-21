@@ -383,9 +383,19 @@ class CanonicalDealMemory:
         filtered_existing = [e for e in existing if e.get("phone") not in existing_phones]
 
         final_feed = payloads + filtered_existing
+        from MBM.GLM.single_writer_lock import SingleWriterViolation
         try:
             from MBM.GLM.single_writer_lock import DialerSingleWriter
-            DialerSingleWriter().full_replace(final_feed, author="CANONICAL_DEAL_ENGINE_EXPORT")
-        except Exception:
-            out_path.write_text(json.dumps(final_feed, indent=2), encoding="utf-8")
+            DialerSingleWriter().full_replace(
+                final_feed, author="CANONICAL_DEAL_ENGINE_EXPORT", allow_shrink=False,
+                reason="canonical_deal_engine_export",
+            )
+        except SingleWriterViolation:
+            raise
+        except Exception as exc:
+            # NEVER fall back to a raw write — that bypasses the single-writer
+            # lock, the atomic replace, and the no-shrink gate. Fail loud.
+            raise SingleWriterViolation(
+                f"canonical_deal_engine export refused: {exc}"
+            ) from exc
         return out_path

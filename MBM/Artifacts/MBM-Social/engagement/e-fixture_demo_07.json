@@ -1,0 +1,13 @@
+{
+  "comment_id": "fixture:demo:07",
+  "signal": "BUYING_SIGNAL",
+  "confidence": 0.85,
+  "tier": "HOT",
+  "source": "fixture:youtube",
+  "content_id": "campaign:AI",
+  "timestamp": "2026-08-12T11:45:00Z",
+  "reasoning": "rule-based keyword signal",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "text": "Our front desk is drowning in repetitive support questions. Does this replace the customer service queue?"
+}

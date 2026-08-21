@@ -1,0 +1,163 @@
+{
+  "registry_updated": "2026-08-18",
+  "description": "Verified municipal code-violation open-data sources. Each entry carries the connector type and the field map that maps source attributes to the canonical violation record. active=false entries are retained for provenance but never collected.",
+  "sources": {
+    "dallas": {
+      "active": true,
+      "market": "Dallas, TX",
+      "jurisdiction": "City of Dallas",
+      "county": "Dallas",
+      "state": "TX",
+      "source_name": "Dallas Open Data - Code Compliance 311",
+      "official_url": "https://www.dallasopendata.com/",
+      "dataset_url": "https://www.dallasopendata.com/d/gc4d-8a49",
+      "api_url": "https://www.dallasopendata.com/resource/gc4d-8a49.json",
+      "source_type": "socrata_soql",
+      "last_verified": "2026-08-18",
+      "verification_note": "Live-tested. Socrata JSON endpoint returns 311 cases incl. Code Compliance.",
+      "fields": {
+        "address_field": "address",
+        "case_id_field": "service_request_number",
+        "type_field": "service_request_type",
+        "status_field": "status",
+        "department_field": "department",
+        "created_date_field": "created_date",
+        "updated_date_field": "update_date",
+        "unique_key_field": "unique_key"
+      },
+      "connector": {
+        "type": "socrata",
+        "date_format": "socrata_iso",
+        "incremental_field": "created_date",
+        "update_field": "update_date",
+        "department_filter": ["Code Compliance"],
+        "type_filter": ["code concern", "code violation", "violation", "overgrown", "junk", "debris", "tall grass", "substandard", "unsafe", "abandoned", "vacant"]
+      }
+    },
+    "fort_worth": {
+      "active": true,
+      "market": "Fort Worth, TX",
+      "jurisdiction": "City of Fort Worth",
+      "county": "Tarrant",
+      "state": "TX",
+      "source_name": "Fort Worth Open Data - Code Violations",
+      "official_url": "https://data.fortworthtexas.gov/",
+      "dataset_url": "https://data.fortworthtexas.gov/dataset/code-violations",
+      "api_url": "https://services5.arcgis.com/3ddLCBXe1bRt7mzj/arcgis/rest/services/CFW_Open_Data_Code_Violations_Table_view/FeatureServer/0/query",
+      "source_type": "arcgis_feature_service",
+      "last_verified": "2026-08-18",
+      "verification_note": "ArcGIS FeatureServer verified. ~77k rows. Dates are epoch milliseconds. mapit.fortworthtexas.gov CodeComp service timed out - use services5 endpoint.",
+      "fields": {
+        "address_field": "Violation_Address",
+        "case_id_field": "Case_ID",
+        "type_field": "Complaint_Type_Description",
+        "status_field": "Case_Current_Status",
+        "created_date_field": "Case_Created_Date",
+        "updated_date_field": "Update_Date",
+        "violation_id_field": "Violation_ID",
+        "city_field": "City",
+        "state_field": "State"
+      },
+      "connector": {
+        "type": "arcgis",
+        "date_format": "epoch_millis",
+        "incremental_field": "Case_Created_Date",
+        "update_field": "Update_Date",
+        "address_field": "Violation_Address"
+      }
+    },
+    "arlington": {
+      "active": true,
+      "market": "Arlington, TX",
+      "jurisdiction": "City of Arlington",
+      "county": "Tarrant",
+      "state": "TX",
+      "source_name": "Arlington Open Data - DSSMap Public View",
+      "official_url": "https://data.arlingtontx.gov/",
+      "dataset_url": "https://data.arlingtontx.gov/dataset/development-services",
+      "api_url": "https://services.arcgis.com/jXi5GuMZwfCYtZP9/arcgis/rest/services/DSSMap_PublicView/FeatureServer/0/query",
+      "source_type": "arcgis_feature_service",
+      "last_verified": "2026-08-18",
+      "verification_note": "ArcGIS DSS layer verified. Contains ParcelId for parcel-first owner lookup. No opened-date field (CaseClosed is text) - collected in full and deduped by case.",
+      "fields": {
+        "address_field": "LocationAddress",
+        "case_id_field": "ObjectID",
+        "type_field": "CaseType",
+        "status_field": "CaseStatus",
+        "parcel_field": "ParcelId",
+        "property_type_field": "PropertyType",
+        "closed_date_field": "CaseClosed"
+      },
+      "connector": {
+        "type": "arcgis",
+        "date_format": "none",
+        "incremental_field": null,
+        "parcel_field": "ParcelId"
+      }
+    },
+    "plano": {
+      "active": true,
+      "market": "Plano, TX",
+      "jurisdiction": "City of Plano",
+      "county": "Collin",
+      "state": "TX",
+      "source_name": "Plano Open Data - Code Violations",
+      "official_url": "https://data.plano.gov/",
+      "dataset_url": "https://dashboard.plano.gov/",
+      "api_url": "https://dashboard.plano.gov/resource/iv2p-bjd2.json",
+      "source_type": "socrata_soql",
+      "last_verified": "2026-08-18",
+      "verification_note": "Socrata JSON endpoint verified.",
+      "fields": {
+        "address_field": "site_addr",
+        "case_id_field": null,
+        "type_field": "violation_type",
+        "status_field": "violation_status",
+        "created_date_field": "date_observed",
+        "property_type_field": "property_type",
+        "year_field": "year"
+      },
+      "connector": {
+        "type": "socrata",
+        "date_format": "socrata_iso",
+        "incremental_field": "date_observed",
+        "update_field": null
+      }
+    },
+    "irving": {
+      "active": false,
+      "active_note": "Stale - dataset only contains 2022 records. Retained for provenance.",
+      "market": "Irving, TX",
+      "jurisdiction": "City of Irving",
+      "county": "Dallas",
+      "state": "TX",
+      "source_name": "Irving Code Violations (2022)",
+      "api_url": "https://data.irvingtx.gov/resource/Code_Violations_2022.json",
+      "source_type": "socrata_soql",
+      "last_verified": "2026-08-18",
+      "fields": {}
+    },
+    "garland": {
+      "active": false,
+      "active_note": "UNVERIFIED - no live official endpoint found; legacy domain data.garlandtx.gov dead DNS.",
+      "market": "Garland, TX",
+      "jurisdiction": "City of Garland",
+      "county": "Dallas",
+      "state": "TX",
+      "source_type": "unverified",
+      "last_verified": "2026-08-18",
+      "fields": {}
+    },
+    "mesquite": {
+      "active": false,
+      "active_note": "UNVERIFIED - no live official endpoint found; legacy domain data.mesquitetx.gov dead DNS.",
+      "market": "Mesquite, TX",
+      "jurisdiction": "City of Mesquite",
+      "county": "Dallas",
+      "state": "TX",
+      "source_type": "unverified",
+      "last_verified": "2026-08-18",
+      "fields": {}
+    }
+  }
+}

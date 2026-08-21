@@ -1,0 +1,23 @@
+{
+  "dna_id": "5a63dff367f0",
+  "content_id": "campaign:Business:youtube_shorts",
+  "variants": {
+    "hooks": [],
+    "short_form_scripts": [],
+    "captions": [],
+    "cta_variants": [],
+    "titles": [],
+    "note": "model unavailable; no variants generated"
+  },
+  "repurposed": {
+    "dna_id": "5a63dff367f0",
+    "content_id": "campaign:Business:youtube_shorts",
+    "outputs": {},
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "call_status": "fallback",
+    "fallback_reason": "glm_not_configured"
+  },
+  "diversity_issues": [],
+  "created_at": "2026-08-16T23:06:58.117462+00:00"
+}

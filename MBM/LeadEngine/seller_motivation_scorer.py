@@ -57,6 +57,10 @@ ENTITY_MARKERS = (
     "LTD", "COMPANY", "PARTNERSHIP", "ESTATE",
 )
 
+# Canonical single-writer gateway for the live dialer DB (never raw-write it).
+sys.path.insert(0, str(ROOT))
+from MBM.LeadEngine.dialer_gateway import commit_dialer_db  # noqa: E402
+
 SIGNAL_WEIGHTS = {
     "code_concern": 10,
     "rental_registration": 18,
@@ -325,8 +329,14 @@ def main():
             f"{','.join(res['motivation_signals']) or '-'}")
 
     if args.apply:
-        save_json(DIALER_DB, db, backup=True)
-        log(f"Saved {len(db)} leads to {DIALER_DB.name} (backup written)")
+        # Route the live dialer DB through the canonical single-writer gateway
+        # (atomic + locked + audited). save_json() is only used for the
+        # non-authoritative RE dialer queues below.
+        commit_dialer_db(
+            db, reason="seller_motivation_scorer", author="SELLER_MOTIVATION_SCORER",
+            allow_shrink=False,
+        )
+        log(f"Updated {len(db)} leads in {DIALER_DB.name} via canonical gateway")
 
         if args.sync_queues:
             db_by_id = {l.get("id"): l for l in db}

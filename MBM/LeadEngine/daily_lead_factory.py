@@ -775,7 +775,13 @@ class DailyLeadFactory:
                     del existing_lead_map[p]
 
             combined_dialer = reconciled_new + list(existing_lead_map.values())
-            total = lock.write(combined_dialer)
+            # Canonical single-writer commit: atomic, locked, audited, no-shrink.
+            total = lock.write(
+                combined_dialer,
+                author="DAILY_LEAD_FACTORY",
+                reason="daily_lead_factory_dialer_sync",
+                allow_shrink=False,
+            )
         print(f"[OK] Ingested {len(reconciled_new)} real leads into Canonical Memory and Dialer Database (Total: {total}).")
         return total
 

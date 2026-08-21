@@ -15,7 +15,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='repla
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 DB_PATH = Path(r"C:\Users\omare\OneDrive\Desktop\AI\mbm-dialer\app\public\leads_database.json")
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
+RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "").strip()
 
 try:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -306,11 +306,9 @@ def main():
         print(f"  [{ts}] [{i+1}/{total}] [X] UNVERIFIED: {contact} | {phone}")
 
     # Save
-    if _SINGLE_WRITER is not None:
-        _SINGLE_WRITER.full_replace(leads, author="NPI_GMAPS_VERIFIER")
-    else:
-        with open(DB_PATH, "w", encoding="utf-8") as f:
-            json.dump(leads, f, indent=2, default=str)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    commit_dialer_db(leads, reason="npi_gmaps_verifier", author="NPI_GMAPS_VERIFIER")
 
     remaining = total - already_done - processed
     print()

@@ -1,0 +1,30 @@
+{
+  "timestamp": "20260819T131946Z",
+  "surfaces": {
+    "dialer": {
+      "before": 1213,
+      "quarantined": 122,
+      "after": 1091
+    },
+    "canonical": {
+      "before": 53,
+      "quarantined": 0,
+      "after": 53
+    },
+    "queue": {
+      "before": 25,
+      "quarantined": 0,
+      "after": 25
+    },
+    "ledger": {
+      "before": 856,
+      "quarantined": 0,
+      "after": 856
+    },
+    "daily_artifacts": {
+      "before": 0,
+      "quarantined": 0,
+      "after": 0
+    }
+  }
+}

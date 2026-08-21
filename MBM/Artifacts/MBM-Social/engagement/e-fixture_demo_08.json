@@ -1,0 +1,13 @@
+{
+  "comment_id": "fixture:demo:08",
+  "signal": "REQUEST_FOR_DEMO",
+  "confidence": 0.9,
+  "tier": "HOT",
+  "source": "fixture:youtube",
+  "content_id": "campaign:Construction",
+  "timestamp": "2026-08-13T16:00:00Z",
+  "reasoning": "rule-based keyword signal",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "text": "Do you offer a demo before we commit?"
+}

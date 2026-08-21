@@ -5,7 +5,7 @@
 **Vertical:** Law Firms & Legal Practices  
 **Phone:** `+12147391100` | **Email:** `rvance@sterlingvancelaw.com`  
 **Intent Score:** `98.0/100` (HOT)  
-**Generated At:** 2026-08-16 19:51:41 UTC  
+**Generated At:** 2026-08-16 22:58:43 UTC  
 
 ---
 

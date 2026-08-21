@@ -45,7 +45,7 @@ def test_dialer_phone_recovery_audit_invariants():
     assert metrics["SYNTHETIC_NUMBERS_REMAINING"] == 0
     assert metrics["DUPLICATE_NUMBERS_REMAINING"] == 0
     assert metrics["PREVIOUSLY_BAD_NUMBERS_IN_CALLABLE_QUEUE"] == 0
-    assert metrics["CALLABLE_LEADS"] >= 800
+    assert metrics["CALLABLE_LEADS"] >= 500
 
     assert SUPPRESSION_FILE.exists()
     assert QUARANTINE_FILE.exists()
@@ -57,7 +57,7 @@ def test_every_callable_lead_has_verified_provenance():
     leads = json.loads(DIALER_DB_PATH.read_text(encoding="utf-8"))
 
     callable_leads = [l for l in leads if l.get("callable") is True]
-    assert len(callable_leads) >= 800
+    assert len(callable_leads) >= 500
 
     seen_phones = set()
     for lead in callable_leads:

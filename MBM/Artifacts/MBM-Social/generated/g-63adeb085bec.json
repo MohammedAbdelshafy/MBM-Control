@@ -1,0 +1,103 @@
+{
+  "dna_id": "63adeb085bec",
+  "content_id": "campaign:Construction:youtube_shorts",
+  "variants": {
+    "hooks": [
+      "Construction's cutting edge in just 60 seconds!",
+      "What's new in heavy equipment? Get updated fast!",
+      "Mind-blowing engineering feats you won't believe are real!",
+      "From robotic builders to smart sites: See the future of construction!",
+      "Don't miss the biggest breakthroughs in building tech, quick!"
+    ],
+    "short_form_scripts": [
+      {
+        "hook": "Construction's cutting edge in just 60 seconds!",
+        "script": "Welcome to Construction Clips! Today, we're diving into the tech transforming our skylines. First up, meet the robotic bricklayers from Monumental Robotics – laying thousands of bricks a day, faster and safer! *[Visual: Robots in action]* Then, we've got AI-powered site management from BuildSmart AI, optimizing logistics and preventing delays across massive projects. *[Visual: AI dashboard/drone footage of optimized site]* And don't forget the latest in sustainable materials, like self-healing concrete, extending infrastructure lifespan. *[Visual: Animated self-healing concrete concept]* These innovations, regularly featured in Construction Dive, are reshaping how we build. Want more future-forward insights? Follow Construction Clips!",
+        "duration_sec": 50
+      },
+      {
+        "hook": "Mind-blowing engineering feats you won't believe are real!",
+        "script": "Get ready to be amazed on Construction Clips! We're exploring some of the most incredible engineering marvels happening right now. First, witness the incredible construction of the world's longest underwater tunnel in Norway – a feat of human ingenuity and precision. *[Visual: Underwater tunnel construction, cross-section animation]* Next, marvel at the revolutionary timber skyscrapers rising in Vancouver, proving sustainable building can reach new heights. *[Visual: Tall timber building, construction time-lapse]* These projects, highlighted by Engineering News-Record, push the boundaries of what's possible. From mega-structures to eco-friendly designs, the future is now! Hit subscribe for your daily dose of construction wonders!",
+        "duration_sec": 50
+      },
+      {
+        "hook": "What's new in heavy equipment? Get updated fast!",
+        "script": "Time for a heavy equipment upgrade on Construction Clips! Let's power through the latest innovations. Check out the new CAT 320 electric excavator – zero emissions, quiet operation, and powerful performance, revolutionizing urban job sites. *[Visual: Electric excavator in action, charging station]* Then, see autonomous dozers from Komatsu, enhancing safety and efficiency on large-scale earthmoving projects. *[Visual: Autonomous dozer working, operator monitoring remotely]* And finally, smart cranes with advanced AI vision systems, making complex lifts safer and more precise than ever. *[Visual: Smart crane lifting, AI overlay]* Heavy Equipment Guide showcases these giants of innovation! Stay ahead of the curve – tap the follow button for more!",
+        "duration_sec": 50
+      }
+    ],
+    "captions": [
+      "🏗️🚧 Dive into the future of construction with our latest 60-second update! From robotic builders to mind-blowing engineering feats, we've got the scoop. Sourced from top industry publications! #ConstructionTech #HeavyEquipment #EngineeringMarvels #BuildingInnovation #ConstructionClips",
+      "🚨 Don't miss out on the cutting edge! This short covers the newest heavy equipment and incredible building projects shaking up the industry. Fast facts, dynamic visuals. Follow @ConstructionClips for your daily dose! #ConstructionNews #TechInConstruction #FutureOfBuilding #Infrastructure",
+      "🤯 See the innovations transforming our world, one structure at a time! We're breaking down the latest in construction technology and engineering wonders. Quick, concise, and always up-to-date. #ConstructionUpdates #Innovation #EngineeringLife #HeavyMachinery #Shorts"
+    ],
+    "cta_variants": [
+      "Stay ahead of the curve! Follow Construction Clips for your daily dose of innovation.",
+      "Don't miss out on the future of building! Subscribe to Construction Clips for more.",
+      "Want to see more mind-blowing construction tech? Hit that follow button!"
+    ],
+    "titles": [
+      "Construction's Future: Robotic Builders & Smart Sites in 60 Secs! | Construction Clips",
+      "Unbelievable Engineering Feats: World's Longest Tunnels & Timber Towers! | Construction Clips",
+      "Heavy Equipment JUST Got Smarter: Electric Excavators & Autonomous Dozers! | Construction Clips"
+    ]
+  },
+  "repurposed": {
+    "dna_id": "63adeb085bec",
+    "content_id": "campaign:Construction:youtube_shorts",
+    "outputs": {
+      "reel": {
+        "hook": "Future of Construction in 60 Secs: Must-See Innovations!",
+        "script": "From AI-powered robotics on-site to sustainable material breakthroughs and mega-infrastructure projects, the construction world is evolving at warp speed. See intelligent exoskeletons boosting worker safety, 3D-printed buildings rising in days, and autonomous heavy machinery redefining efficiency. We're talking smart cities, green construction, and engineering feats that defy imagination. Stay ahead, stay informed. This is your rapid-fire update on the cutting edge of construction!",
+        "duration_sec": 58
+      },
+      "short": {
+        "hook": "Construction Tech REVOLUTION!",
+        "script": "Witness the future of building! Autonomous excavators, drone surveys, modular construction – the industry is transforming. See what's next in construction innovation!",
+        "duration_sec": 18
+      },
+      "short_variant": {
+        "hook": "Mind-Blowing Engineering Feats!",
+        "script": "From towering skyscrapers to record-breaking bridges, engineering marvels are pushing boundaries. Get a glimpse of the impossible made real in construction!",
+        "duration_sec": 19
+      },
+      "linkedin_post": "🏗️ Staying ahead in construction means staying informed! Our new 'Construction Clips' series delivers rapid-fire updates on the latest heavy equipment, innovative technologies, and groundbreaking engineering marvels, all in under 60 seconds. Perfect for busy professionals, students, and enthusiasts who want to keep their finger on the pulse of the industry. We source insights from leading publications like Construction Dive and ENR to bring you concise, impactful content. What's the most exciting innovation you've seen recently? Share your thoughts below!\n\n#ConstructionTech #HeavyEquipment #Engineering #Innovation #Infrastructure #BuildingIndustry #ConstructionNews",
+      "x_post": "⚡️ Future of Construction, FAST! Get your dose of heavy equipment breakthroughs, AI on site, & engineering marvels in 60-sec 'Construction Clips.' Stay sharp, stay informed. #Construction #Tech #Innovation #HeavyMachinery",
+      "carousel_caption": "Swipe to discover the future of construction! 🏗️\n\n1️⃣ **Autonomous Power:** See heavy machinery operating with unprecedented precision and safety.\n2️⃣ **Sustainable Builds:** New materials and methods making green construction the norm.\n3️⃣ **Digital Twins:** How virtual models are revolutionizing project planning and execution.\n4️⃣ **Robotics on Site:** From bricklaying bots to inspection drones, boosting efficiency and safety.\n5️⃣ **Mega-Projects Unveiled:** A glimpse into the world's most ambitious infrastructure marvels.\n\nWhich innovation excites you most? Let us know! 👇\n#ConstructionInnovation #FutureBuilding #EngineeringMarvels #TechInConstruction",
+      "email_idea": {
+        "subject": "Your 60-Second Edge: Construction Innovations Delivered!",
+        "body": "Hi [Name],\n\nIn the fast-paced world of construction, keeping up with the latest advancements can feel like a full-time job. What if you could get all the critical updates on heavy equipment, cutting-edge tech, and awe-inspiring engineering marvels in just 60 seconds?\n\nIntroducing **Construction Clips** – your new go-to source for concise, visually engaging insights into the construction industry's most exciting developments. We scour top-tier publications like Construction Dive, Engineering News-Record, and Heavy Equipment Guide to bring you the most relevant and impactful news, delivered straight to your screen.\n\n**Why Construction Clips?**\n*   **Stay Ahead:** Be the first to know about emerging technologies and trends.\n*   **Save Time:** Get vital updates without sifting through lengthy articles.\n*   **Inspire & Educate:** See incredible engineering feats and innovative solutions in action.\n\nWhether you're a seasoned professional, an aspiring engineer, or simply passionate about building, Construction Clips is designed to keep you informed and inspired.\n\n[Watch Our Latest Clip Now!] (Link to YouTube Shorts channel/playlist)\n\nDon't miss out on the future of construction – subscribe and turn on notifications to catch every clip!\n\nBest regards,\n\nThe MBM-Social Team (or 'Construction Clips Team')"
+      },
+      "sales_talking_point": "Our 'Construction Clips' strategy leverages short-form video to capture and engage the highly sought-after construction audience. We deliver visually dynamic, 60-second updates on heavy equipment, tech innovations, and engineering marvels, sourced from reputable industry publications. This isn't just content; it's a consistent, high-value information stream designed to build brand authority, drive audience loyalty, and position 'Construction Clips' as the essential, rapid-fire update for professionals and enthusiasts alike.",
+      "faq": [
+        {
+          "question": "What are 'Construction Clips'?",
+          "answer": "'Construction Clips' are short, fast-paced videos (typically under 60 seconds) that showcase the latest innovations in construction technology, heavy machinery, engineering marvels, and building techniques."
+        },
+        {
+          "question": "Who is 'Construction Clips' for?",
+          "answer": "Our content is designed for anyone interested in construction, including industry professionals, engineers, students, and enthusiasts who want to stay updated on new developments efficiently."
+        },
+        {
+          "question": "Where does the information for the clips come from?",
+          "answer": "We source our content from highly reputable industry publications such as Construction Dive, Engineering News-Record (ENR), and Heavy Equipment Guide, ensuring accuracy and relevance."
+        },
+        {
+          "question": "How often are new 'Construction Clips' released?",
+          "answer": "Our goal is to provide regular content refreshes, leveraging the short-form video format to deliver consistent, up-to-date information on industry trends, typically multiple times per week."
+        },
+        {
+          "question": "What kind of visuals can I expect?",
+          "answer": "Expect dynamic visuals of heavy equipment in action, construction sites, intricate engineering designs, and cutting-edge technological demonstrations, all with consistent branding."
+        }
+      ],
+      "gtm_talk_track": "The Go-to-Market strategy for 'Construction Clips' is centered on establishing a dominant presence in the construction content niche through hyper-relevant, concise, and visually compelling short-form video. We're targeting professionals and enthusiasts who desire quick, authoritative updates on industry innovations, heavy machinery, and engineering marvels. By consistently delivering high-quality, sourced content (from ENR, Construction Dive, etc.) on platforms like YouTube Shorts, we aim to build a highly engaged audience. This not only positions 'Construction Clips' as the premier rapid-update resource but also creates a valuable channel for MBM-Social or our clients to build brand authority, drive organic reach, and cultivate a loyal community around the future of construction."
+    },
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "call_status": "fallback",
+    "fallback_reason": "glm_not_configured"
+  },
+  "diversity_issues": [],
+  "created_at": "2026-08-16T23:07:35.148784+00:00"
+}

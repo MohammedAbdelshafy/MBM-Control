@@ -22,6 +22,15 @@
 !/CLAUDE.md
 !/IDENTITY.md
 !/REVENUE_CI_ENHANCEMENTS.md
+!/productized-service/
+!/productized-service/**
+!/public/
+!/public/**
+!/PRODUCT_PORTFOLIO.md
+!/PRODUCT_FACTORY_PLATFORM_MAP.md
+!/PRODUCT_REGISTRY.md
+!/PRODUCT_LANDING_PAGES.md
+!/PRODUCT_EXECUTION_PLAN.md
 !/.claude/
 !/.claude/**
 /.claude/**/*.local*
@@ -126,6 +135,7 @@ clipping-factory/backend/youtube_tokens.json
 clipping-factory/youtube_tokens.json
 clipping-factory/MBM-Social/youtube_tokens.json
 clipping-factory/MBM-Social/youtube_profile/
+clipping-factory/MBM-Social/youtube_profiles/
 clipping-factory/backend/youtube_profile/
 
 # Ops secrets / local LLM registry tokens (may embed API keys) — never commit
@@ -208,6 +218,7 @@ clipping-factory/MBM-Social/clipping_factory.db
 clipping-factory/MBM-Social/clipping_factory.db-*
 
 # Lead runtime queues + config state (regenerated; PII)
+productized-service/**/output/
 MBM/LeadEngine/multi_touch_queue.json
 MBM/LeadEngine/real_estate_calling_queue.json
 MBM/LeadEngine/ulio_voice_queue.json
@@ -266,3 +277,4 @@ MBM/Artifacts/GTM/quarantine/20260817_synthetic_factory_150/daily_offers_GEN-NEW
 MBM/Phound/campaigns/
 MBM/Recruitment/outreach_packs/
 MBM/Recruitment/reddit_recruitment_posts.json
+.vercel

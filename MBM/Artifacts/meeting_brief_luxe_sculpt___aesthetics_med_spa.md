@@ -5,7 +5,7 @@
 **Vertical:** Med Spas & Aesthetics Clinics  
 **Phone:** `+18179924401` | **Email:** `drvasquez@luxesculptaesthetics.com`  
 **Intent Score:** `100.0/100` (HOT)  
-**Generated At:** 2026-08-16 19:51:41 UTC  
+**Generated At:** 2026-08-16 22:58:43 UTC  
 
 ---
 

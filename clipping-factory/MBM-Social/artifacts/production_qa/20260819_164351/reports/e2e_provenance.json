@@ -1,0 +1,31 @@
+{
+  "source": "viral_voice_agency_01.mp4",
+  "pipeline_start": "2026-08-19T13:45:12.483086+00:00",
+  "stages": [
+    {
+      "name": "ingest",
+      "duration": 0.0007131099700927734,
+      "output": "viral_voice_agency_01.mp4"
+    },
+    {
+      "name": "clip",
+      "duration": 17.16748547554016,
+      "output": "e2e_winner.mp4"
+    },
+    {
+      "name": "caption",
+      "duration": 0.015511035919189453,
+      "output": "e2e_winner.srt"
+    },
+    {
+      "name": "qa",
+      "duration": 2.966770887374878
+    },
+    {
+      "name": "package",
+      "duration": 0.011790752410888672
+    }
+  ],
+  "total_duration": 20.16227126121521,
+  "pipeline_end": "2026-08-19T13:45:32.645357+00:00"
+}

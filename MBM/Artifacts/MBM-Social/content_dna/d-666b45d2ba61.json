@@ -1,0 +1,41 @@
+{
+  "content_id": "transcript:muslim_about_islam_4017f6d56394",
+  "dna_id": "666b45d2ba61",
+  "hook": "UNKNOWN",
+  "topic": "UNKNOWN",
+  "niche": "UNKNOWN",
+  "audience": "UNKNOWN",
+  "emotional_trigger": "UNKNOWN",
+  "pacing": "UNKNOWN",
+  "visual_pattern": "UNKNOWN",
+  "narrative_structure": "UNKNOWN",
+  "cta": "UNKNOWN",
+  "offer_signal": "UNKNOWN",
+  "retention_hypothesis": "UNKNOWN",
+  "content_format": "UNKNOWN",
+  "pain": "UNKNOWN",
+  "desire": "UNKNOWN",
+  "proof": "UNKNOWN",
+  "objection": "UNKNOWN",
+  "reuse_opportunities": [],
+  "business_intent": "UNKNOWN",
+  "confidence": 0.0,
+  "source_ref": {
+    "source_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\MBM-Social\\Media\\Transcripts\\muslim_about_islam_4017f6d56394.json",
+    "source_url": "",
+    "kind": "transcript",
+    "brand": "MBM-Social",
+    "platform": "youtube",
+    "provider": "rules",
+    "model": "rules-deterministic",
+    "fallback_reason": "glm_not_configured_no_model",
+    "call_status": "fallback"
+  },
+  "metadata": {
+    "title": "muslim_about_islam_4017f6d56394",
+    "niche_hint": "muslim_about_islam_4017f6d56394",
+    "tags": [],
+    "metrics": {}
+  },
+  "created_at": "2026-08-17T02:24:10.347062+00:00"
+}

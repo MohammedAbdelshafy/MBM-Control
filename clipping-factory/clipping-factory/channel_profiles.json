@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "updated": "2026-08-20",
+  "channels": {
+    "twistsrevealed": {
+      "display_name": "Twists Revealed",
+      "channel_type": "movie_recap",
+      "genres": ["thriller", "horror", "psychological", "survival", "mystery", "crime", "mind_bending"],
+      "format": "short_vertical",
+      "aspect_ratio": "9:16",
+      "resolution": "1080x1920",
+      "fps": 30,
+      "narration": "original_voiceover",
+      "tone": "dark_suspenseful",
+      "visual_style": "cinematic",
+      "target_duration_min": 35,
+      "target_duration_max": 75,
+      "daily_target": 2,
+      "quality_tier": "PUBLISH",
+      "min_creative_score": 7.0,
+      "premium_creative_score": 8.5,
+      "source_policy": ["licensed", "public_domain", "authorized", "owner_provided"],
+      "voice_config": {
+        "provider": "edge_tts",
+        "voice_id": "en-US-GuyNeural",
+        "rate": "-5%",
+        "pitch": "-2Hz",
+        "style": "narration",
+        "fallback_voices": ["en-US-ChristopherNeural", "en-US-AndrewNeural"]
+      },
+      "caption_config": {
+        "style": "cinematic",
+        "max_words_per_beat": 4,
+        "font": "Impact",
+        "font_size": 42,
+        "color": "#FFFFFF",
+        "outline_color": "#000000",
+        "outline_width": 3,
+        "position": "center",
+        "safe_area_margin": 0.12,
+        "emphasis_words": true
+      },
+      "sound_design": {
+        "tension_music": true,
+        "reveal_hits": true,
+        "ambience": true,
+        "ducking_db": -6,
+        "music_volume_db": -18,
+        "master_loudness_lufs": -14
+      },
+      "visual_requirements": {
+        "min_visual_changes_per_60s": 12,
+        "require_motion": true,
+        "require_title_cards": true,
+        "transition_style": "cinematic_cuts",
+        "crop_style": "dynamic",
+        "effect_style": "none"
+      },
+      "hook_requirements": {
+        "max_hook_duration_sec": 2,
+        "hook_types": ["mystery", "consequence", "question", "revelation"],
+        "avoid_repetition": true
+      },
+      "story_structure": [
+        "hook",
+        "who_where",
+        "strange_event",
+        "escalation",
+        "reveal",
+        "ending",
+        "final_sting"
+      ],
+      "content_safety": {
+        "min_transformative_ratio": 0.6,
+        "require_original_narration": true,
+        "record_source_provenance": true,
+        "disclaimer_not_substitute": true
+      },
+      "publishing": {
+        "platforms": ["youtube", "tiktok", "instagram"],
+        "youtube_privacy": "unlisted",
+        "test_before_live": true,
+        "require_video_id_verification": true,
+        "prefer_publish_time_utc": [14, 18, 22]
+      }
+    },
+    "cutedosage": {
+      "display_name": "Cute Dosage",
+      "channel_type": "cute_compilation",
+      "genres": ["cute", "wholesome", "family", "babies", "pets"],
+      "format": "short_vertical",
+      "aspect_ratio": "9:16",
+      "resolution": "1080x1920",
+      "fps": 30,
+      "narration": "none",
+      "tone": "warm_wholesome",
+      "visual_style": "bright_clean",
+      "target_duration_min": 15,
+      "target_duration_max": 45,
+      "daily_target": 2,
+      "quality_tier": "PUBLISH",
+      "min_creative_score": 6.5,
+      "source_policy": ["licensed", "public_domain", "authorized", "user_generated"],
+      "voice_config": {"provider": "none"},
+      "caption_config": {
+        "style": "playful",
+        "max_words_per_beat": 4,
+        "font": "rounded_bold",
+        "color": "#FF6B9D",
+        "position": "bottom_third"
+      },
+      "sound_design": {
+        "upbeat_music": true,
+        "sound_effects": true,
+        "music_volume_db": -12,
+        "master_loudness_lufs": -14
+      },
+      "publishing": {
+        "platforms": ["youtube", "tiktok", "instagram"],
+        "youtube_privacy": "unlisted",
+        "test_before_live": true
+      }
+    },
+    "dontwatchthis": {
+      "display_name": "Don't Watch This",
+      "channel_type": "horror_recap",
+      "genres": ["turkish_horror", "ocean", "waves", "mystery", "dark"],
+      "format": "short_vertical",
+      "aspect_ratio": "9:16",
+      "resolution": "1080x1920",
+      "fps": 30,
+      "narration": "original_voiceover",
+      "tone": "terrifying_ominous",
+      "visual_style": "dark_gritty",
+      "target_duration_min": 30,
+      "target_duration_max": 60,
+      "daily_target": 2,
+      "quality_tier": "PUBLISH",
+      "min_creative_score": 7.0,
+      "source_policy": ["licensed", "public_domain", "authorized"],
+      "voice_config": {
+        "provider": "edge_tts",
+        "voice_id": "en-US-ChristopherNeural",
+        "rate": "-8%",
+        "pitch": "-4Hz"
+      },
+      "publishing": {
+        "platforms": ["youtube", "tiktok", "instagram"],
+        "youtube_privacy": "unlisted",
+        "test_before_live": true
+      }
+    },
+    "goalmachinez": {
+      "display_name": "Goal Machinez",
+      "channel_type": "sports_highlights",
+      "genres": ["football", "soccer", "goals", "knuckleball", "highlights"],
+      "format": "short_vertical",
+      "aspect_ratio": "9:16",
+      "resolution": "1080x1920",
+      "fps": 30,
+      "narration": "text_overlay",
+      "tone": "high_energy",
+      "visual_style": "dynamic_slowmo",
+      "target_duration_min": 15,
+      "target_duration_max": 45,
+      "daily_target": 2,
+      "quality_tier": "PUBLISH",
+      "min_creative_score": 6.5,
+      "source_policy": ["licensed", "public_domain", "authorized"],
+      "publishing": {
+        "platforms": ["youtube", "tiktok", "instagram"],
+        "youtube_privacy": "unlisted",
+        "test_before_live": true
+      }
+    },
+    "clippingfactorymbm": {
+      "display_name": "Clipping Factory MBM",
+      "channel_type": "tech_build_in_public",
+      "genres": ["ai", "automation", "saas", "tech", "build_in_public"],
+      "format": "short_vertical",
+      "aspect_ratio": "9:16",
+      "resolution": "1080x1920",
+      "fps": 30,
+      "narration": "original_voiceover",
+      "tone": "professional_technical",
+      "visual_style": "screen_capture_clean",
+      "target_duration_min": 30,
+      "target_duration_max": 90,
+      "daily_target": 1,
+      "quality_tier": "PUBLISH",
+      "min_creative_score": 6.0,
+      "source_policy": ["owner_provided", "authorized"],
+      "publishing": {
+        "platforms": ["youtube", "tiktok", "instagram"],
+        "youtube_privacy": "unlisted",
+        "test_before_live": true
+      }
+    }
+  }
+}

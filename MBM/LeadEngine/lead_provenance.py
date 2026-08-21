@@ -141,6 +141,13 @@ SYNTHETIC_REF_HOSTS: tuple = (
     "license.nc.gov", "license.tn.gov", "license.co.gov", "license.oh.gov",
 )
 
+# Known-FAKE registry hosts: no such official registry exists. A source_reference
+# pointing at one is a hard fabrication fingerprint regardless of path shape.
+FAKE_REGISTRY_HOSTS: tuple = (
+    "registry.state.gov", "statebusinessregistry.gov", "nationalb2bregistry.gov",
+    "usb2bregistry.gov", "usdigitaldirectory.gov", "statecorporationregistry.gov",
+)
+
 _ALNUM_RE = re.compile(r"[^a-zA-Z0-9]")
 _ENTITY_SEQ_RE = re.compile(r"/entity/\d{5,}$")
 _PHONE_DIGITS_RE = re.compile(r"\D")
@@ -205,6 +212,17 @@ def is_sequential_registry_ref(source_reference: Any) -> bool:
     ref = str(source_reference)
     for host in SYNTHETIC_REF_HOSTS:
         if host in ref and _ENTITY_SEQ_RE.search(ref):
+            return True
+    return False
+
+
+def is_fake_registry_ref(source_reference: Any) -> bool:
+    """True when ref points at a known-fake registry host (hard fabrication)."""
+    if not source_reference:
+        return False
+    ref = str(source_reference)
+    for host in FAKE_REGISTRY_HOSTS:
+        if host in ref:
             return True
     return False
 
@@ -289,6 +307,8 @@ class SyntheticLeadDetector:
             signals.append("persona_contact")
         if is_sequential_registry_ref(ref):
             signals.append("sequential_registry_ref")
+        if is_fake_registry_ref(ref):
+            signals.append("fake_registry_ref")
         if is_placeholder_phone(phone):
             signals.append("placeholder_phone")
         elif is_low_entropy_phone(phone):

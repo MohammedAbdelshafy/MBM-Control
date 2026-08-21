@@ -23,16 +23,28 @@ def get_next_draft():
     return None, None
 
 def mark_published(filepath, data, video_id=None):
+    """Mark package as published with real platform video_id.
+
+    NEVER fabricates a video_id. Without a real ID, marks as publish_blocked.
+    """
+    if not video_id:
+        data["status"] = "publish_blocked"
+        data["publish_blocked_reason"] = "platform_identity_not_verified"
+        data["publish_blocked_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+        with open(filepath, 'w') as f:
+            json.dump(data, f, indent=2)
+        print(f"[PUBLISHER] Marked as PUBLISH_BLOCKED (no real video ID): {filepath}")
+        return
+
     data["status"] = "published"
     data["published_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
-    if video_id:
-        data["youtube_video_id"] = video_id
-        data["youtube_url"] = f"https://www.youtube.com/watch?v={video_id}"
+    data["youtube_video_id"] = video_id
+    data["youtube_url"] = f"https://www.youtube.com/watch?v={video_id}"
     with open(filepath, 'w') as f:
         json.dump(data, f, indent=2)
     print(f"[PUBLISHER] Marked as published: {filepath}")
 
-def upload_to_youtube(video_path, title, description, brand=None):
+def upload_to_youtube(video_path, title, description, brand=None, privacy_status="public"):
     print(f"[PUBLISHER] Preparing to upload '{title}' to YouTube (Brand: {brand or 'default'})...")
     
 
@@ -228,11 +240,20 @@ def upload_to_youtube(video_path, title, description, brand=None):
             time.sleep(2)
             
             try:
-                page.locator('tp-yt-paper-radio-button[name="PUBLIC"], #privacy-radio-public').first.click()
-                print("[PUBLISHER] Set visibility: Public")
+                # Set visibility based on privacy_status — never hard-code PUBLIC
+                privacy_map = {
+                    "public": "PUBLIC",
+                    "unlisted": "UNLISTED",
+                    "private": "PRIVATE",
+                }
+                visibility = privacy_map.get(privacy_status, "UNLISTED")
+                radio_name = f"VIDEO_PRIVACY_{visibility}"
+                page.locator(f'tp-yt-paper-radio-button[name="{radio_name}"]').first.click(timeout=5000)
+                print(f"[PUBLISHER] Set visibility: {visibility}")
             except Exception:
                 try:
-                    page.locator("input[value='public']").first.click()
+                    # Fallback: try common selectors
+                    page.locator(f"input[value='{privacy_status}']").first.click(timeout=5000)
                 except Exception:
                     pass
             

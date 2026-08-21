@@ -1,0 +1,51 @@
+row_num,created_at,business_name,business_country_name,business_number_of_employees_range,business_yearly_revenue_range,business_website,business_region,business_naics_description,business_id
+1,2026-08-17T18:46:07.286Z,Martins Investment Group (MIG),united states,[1-10],[500K-1M],martins-ig.com/701.html,,Employment Services,2886c21520a3459c3441f44d71b4f513
+2,2026-08-17T18:46:07.286Z,HSN Improvements LLC,united states,[11-50],[5M-10M],hsn.com,ohio,Household and Institutional Furniture Manufacturing,66276b19ba7ad3bb54e564df556f811d
+3,2026-08-17T18:46:07.286Z,Fastfortechnologies,united states,[1-10],[1M-5M],fastfortechnologies.com,new york,,3afe62125aa5d013682c91a283282751
+4,2026-08-17T18:46:07.286Z,"Bijoux International, Inc.",united states,[1-10],[1M-5M],bijoux-inc.com,new jersey,Sporting and Recreational Goods and Supplies Merchant Wholesalers,62cdb44edd43364309d2a1d97941fe5c
+5,2026-08-17T18:46:07.286Z,ICTX WaveMedia,united states,[1-10],[1M-5M],ictxwavemedia.net,texas,Wired Telecommunications Carriers,b37dafaa5cad78bc2fa78223aa39b949
+6,2026-08-17T18:46:07.286Z,360 Cloud Solutions (combined with Moss Adams in 2025),united states,[11-50],[1M-5M],mossadams.com,north carolina,Computer Systems Design and Related Services,6477f465aa927ff67dce3f9f22248c0f
+7,2026-08-17T18:46:07.286Z,Sacramento Jet Center,united states,[11-50],[10M-25M],sacjet.com,california,Aerospace Product and Parts Manufacturing,3cfc4cc317d4ed90abf8dfeb522c8999
+8,2026-08-17T18:46:07.286Z,First Weslyan Church Inc,united states,[1-10],[500K-1M],firstwesleyan.org,florida,Administration of Education Programs,91ee2532cae74bbca3bea0d156e13c7e
+9,2026-08-17T18:46:07.286Z,TRB Comms,united states,[1-10],[500K-1M],trbcomms.work.gd,california,Business Schools and Computer and Management Training,2761cb57fab8380cad8561998abd84db
+10,2026-08-17T18:46:07.286Z,"Parks, Erin",united states,[11-50],[5M-10M],erinparks.com,california,Legal Services,939edb8a79b449cc1c0ec4bd0a9758a0
+11,2026-08-17T18:46:07.286Z,Army National Guard Armory,united states,[1-10],[0-500K],tnmilitary.org,,National Security,785adaa8d251aba78b2e27fb21b77e70
+12,2026-08-17T18:46:07.286Z,Sanofi US,united states,[1-10],[1M-5M],sanofi.us,,Pharmaceutical Preparation Manufacturing,b57ba565e7f87a750eee44294220100b
+13,2026-08-17T18:46:07.286Z,"EGS Customer Care, Inc.",united states,[1-10],[1M-5M],egscorp.com,illinois,,f0ec0ebe7a0a51f4979ade2998a23a11
+14,2026-08-17T18:46:07.286Z,AI Sales,united states,[1-10],[500K-1M],example.com,california,Custom Computer Programming Services,96ed047499a3d10e7bd86a7903759221
+15,2026-08-17T18:46:07.286Z,Bally Total Fitness,united states,[11-50],[1M-5M],ballyfitness.com,illinois,Fitness and Recreational Sports Centers,04b001a2057812f735cbcab76fd44e11
+16,2026-08-17T18:46:07.286Z,ASTRSK,united states,[11-50],[5M-10M],astrskpr.com,new york,Public Relations Agencies,a679818851514d07d1ec2a46f471b7b0
+17,2026-08-17T18:46:07.286Z,CrossPeak Solutions,united states,[11-50],[1M-5M],crosspeaksolutions.com,illinois,Computer Systems Design and Related Services,85faf12b1e21ed6611f4abddfe8e2ce5
+18,2026-08-17T18:46:07.286Z,ROYBI,united states,[11-50],[1M-5M],lnk.bio,california,Educational Services,5a42675bce8dff8aa8c12653e732d374
+19,2026-08-17T18:46:07.286Z,GadflyZone,united states,[11-50],[1M-5M],gadflyzone.com,florida,Administrative Management and General Management Consulting Services,f3cab2854e348e9babdefc72ba08b9ab
+20,2026-08-17T18:46:07.286Z,Aerodine Composites,united states,[11-50],[5M-10M],aerodinecomposites.com,indiana,Other Aircraft Parts and Auxiliary Equipment Manufacturing,9b8bbd3ad51fd4e0ab0a57b1771e4324
+21,2026-08-17T18:46:07.286Z,3HCloud,united states,[11-50],[1M-5M],3hcloud.com,florida,Computer Systems Design and Related Services,983f1ba06f2c4b3788be09e386276330
+22,2026-08-17T18:46:07.286Z,United Way of Marathon County,united states,[11-50],[1M-5M],unitedwaymc.org,wisconsin,Other Social Advocacy Organizations,965bf98a72bc750152b6b4ef4044ca86
+23,2026-08-17T18:46:07.286Z,Connexly,united states,[11-50],[5M-10M],connexly.com,california,Telecommunications,c1b345bfff83d57f3e5b0305c2b6bc72
+24,2026-08-17T18:46:07.286Z,Server Room,united states,[11-50],[1M-5M],serverroom.net,new york,Custom Computer Programming Services,4648c6ea268ccc280611da681f2e008e
+25,2026-08-17T18:46:07.286Z,CFI Partners,united states,[11-50],[5M-10M],cfipartners.com,illinois,Other Financial Investment Activities,f7ddbf67f97c0ae13b635d0bc0a9d5d1
+26,2026-08-17T18:46:07.286Z,Siva Corrosion Services,united states,[11-50],[1M-5M],sivacorrosion.com,pennsylvania,Heavy and Civil Engineering Construction,d54fe88baecc00818f665a57248f9ac0
+27,2026-08-17T18:46:07.286Z,Continental Development Corporation,united states,[11-50],[5M-10M],continentaldevelopment.com,california,Real Estate,7815508560652715deb9a1e1ec1e7db5
+28,2026-08-17T18:46:07.286Z,Technology Management Corporation,united states,[11-50],[5M-10M],tmc-1.com,minnesota,Computer Systems Design and Related Services,3b50c78e8ef194d765998a41e68b07f6
+29,2026-08-17T18:46:07.286Z,GITA PR,united states,[11-50],[1M-5M],gitapr.com,new york,Public Relations Agencies,de4af891f6832f2ec35606c4784aa8e2
+30,2026-08-17T18:46:07.286Z,The Greater Merrimack-Souhegan Valley Chamber of Commerce,united states,[1-10],[500K-1M],gmsvcc.org,new hampshire,Civic and Social Organizations,7c36de7cb57124dc2465919eca30096e
+31,2026-08-17T18:46:07.286Z,Red Spot Design,united states,[1-10],[1M-5M],redspotdesign.com,texas,Marketing Consulting Services,5be928bdab07a1c8ae05e8013c11b455
+32,2026-08-17T18:46:07.286Z,Dedicated.com,united states,[11-50],[5M-10M],usdedicated.com,california,Custom Computer Programming Services,18231a80883ac5572eb0049fe87bd4c2
+33,2026-08-17T18:46:07.286Z,"Champion Roofing, Inc.",united states,[11-50],[1M-5M],championroofing.com,illinois,Construction,b86a6152ff0cba91ff93c784e47845d6
+34,2026-08-17T18:46:07.286Z,Frog,united states,[11-50],[10M-25M],frognow.com,florida,Telecommunications,df22f9855265e70ae203da6034632164
+35,2026-08-17T18:46:07.286Z,Maranda Enterprises LLC,united states,[1-10],[1M-5M],marandaenterprises.com,,Surgical Appliance and Supplies Manufacturing,9409c35afc559aa28a54230ef5713bf9
+36,2026-08-17T18:46:07.286Z,Los Angeles Mayor's Office of Public Engagement,united states,[11-50],[1M-5M],lacity.org,california,International Affairs,8a858bfdbccea5274d4bba19d9722ce9
+37,2026-08-17T18:46:07.286Z,mintED,united states,[1-10],[500K-1M],gotminted.xyz,new york,Information,1820f20ee5932f2f54e446f1a06ce10f
+38,2026-08-17T18:46:07.286Z,Ki,united states,[1-10],[500K-1M],kijournals.com,california,Manufacturing,380767a4be8df61e0e3cb0614c5bb7e9
+39,2026-08-17T18:46:07.286Z,Techadox,united states,[11-50],[1M-5M],techadox.com,delaware,Computer Systems Design and Related Services,b1cc78cb477e6d9e8fc11d5ceb6694a7
+40,2026-08-17T18:46:07.286Z,ODNR DMRM AML,united states,[11-50],[5M-10M],dnr.state.oh.us,ohio,Other Information Services,1a3adb43f84df7b3c95cdc64e3660ff1
+41,2026-08-17T18:46:07.286Z,F.M. Light and Sons,united states,[11-50],[1M-5M],fmlight.com,colorado,Retail Trade,a8003923be303a09376356c305a64832
+42,2026-08-17T18:46:07.286Z,"TALLGRASS ENERGY, L.L.C.",united states,[1-10],[1M-5M],tallgrassenergylp.com,oklahoma,Public Administration,462fcceffca34c65ac298cb54b5cda1e
+43,2026-08-17T18:46:07.286Z,"Organizational Advancement, Cedars-Sinai",united states,[1-10],[500K-1M],cedars-sinai.org,california,Health Care and Social Assistance,bb3ee63042223fede3c5476835f277d5
+44,2026-08-17T18:46:07.286Z,Medina County Spca,united states,[11-50],[1M-5M],medinacountyspca.com,ohio,Other Grantmaking and Giving Services,be6e14cf8c4fd129d2064fc1f544c118
+45,2026-08-17T18:46:07.286Z,Tiny Design Studio,united states,[1-10],[1M-5M],tinydesignstudio.com,georgia,Specialized Design Services,e1855715cda95442e6f43fdd48bc009c
+46,2026-08-17T18:46:07.286Z,Long Doggers,united states,[1-10],[500K-1M],longdoggers.com,florida,Public Administration,32407fec0de6e9e2c1c5ea4ed57cf4ab
+47,2026-08-17T18:46:07.286Z,Fairfield Inn & Suites Columbus OSU,united states,[11-50],[1M-5M],fairfieldinn.com/cmhsu,ohio,Traveler Accommodation,118324209ffc61f83e661b922ddd9a95
+48,2026-08-17T18:46:07.286Z,Marketing Booker,united states,[1-10],[1M-5M],marketingbooker.com,michigan,Marketing Consulting Services,398beef2bcbf2ca9c87aa205f01b0f1b
+49,2026-08-17T18:46:07.286Z,Erico Products,united states,[11-50],[5M-10M],erico.com/products.asp,texas,"Electrical Equipment, Appliance, and Component Manufacturing",9ad3bcd9bd4506398ecf01408ec22e84
+50,2026-08-17T18:46:07.286Z,Trinity Software Technologies,united states,[11-50],[5M-10M],trinitysoftwares.com,illinois,Software Publishers,b49b16b1009b015bc7f62bd5b90b00fd

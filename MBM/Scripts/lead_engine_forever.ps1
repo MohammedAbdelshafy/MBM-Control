@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
   MBM Lead Engine — Never-Stop Edition
   Runs the full lead pipeline, retries on failure, sends findings via Telegram.
@@ -74,15 +74,28 @@ function TelegramFile {
 }
 
 # ── Heartbeat ────────────────────────────────────────────────
+# Honest heartbeat semantics. Status MUST reflect a real completed stage:
+#   STARTING | RUNNING | WAITING_EXTERNAL | COMPLETED | FAILED
+# A cycle is only COMPLETED/healthy after all steps have actually run.
 function Write-Heartbeat {
-  param([string]$Status, [int]$LeadsFound = 0, [string]$Error = "")
+  param(
+    [string]$Status,
+    [int]$LeadsFound = 0,
+    [string]$Error = "",
+    [string]$Stage = "",
+    [int]$OutputCount = -1,
+    [string]$LastSuccessCycle = ""
+  )
   $hb = @{
-    timestamp    = (Get-Date -Format "o")
-    status       = $Status
-    leads_found  = $LeadsFound
-    last_log     = $logFile
-    error        = $Error
-    pid          = $PID
+    timestamp             = (Get-Date -Format "o")
+    status                = $Status
+    current_stage         = $Stage
+    leads_found           = $LeadsFound
+    last_output_count     = $OutputCount
+    last_successful_cycle = if ($LastSuccessCycle -ne "") { $LastSuccessCycle } else { $script:LastGoodCycle }
+    last_log              = $logFile
+    error                 = $Error
+    pid                   = $PID
   } | ConvertTo-Json
   Set-Content -Path $HeartbeatFile -Value $hb -Encoding utf8
 }
@@ -99,6 +112,8 @@ function RunStepWithRetry {
 
   for ($attempt = 1; $attempt -le $Retries; $attempt++) {
     Log ">>> [$Name] Attempt $attempt/$Retries starting..."
+    $script:CurrentStage = $Name
+    Write-Heartbeat -Status "running" -Stage $Name
     $stepStart = Get-Date
     try {
       if ($Type -eq "python") {
@@ -144,12 +159,15 @@ function RunStepWithRetry {
 # ══════════════════════════════════════════════════════════════
 #  MAIN PIPELINE
 # ══════════════════════════════════════════════════════════════
+$script:LastGoodCycle = ""
+$script:CurrentStage = "init"
+
 Log "============================================================"
 Log "  MBM LEAD ENGINE — RUN STARTED"
 Log "  Timestamp: $timestamp"
 Log "============================================================"
 
-Write-Heartbeat -Status "running"
+Write-Heartbeat -Status "STARTING" -Stage $script:CurrentStage
 Telegram -Args @("start")
 
 $errors = @()
@@ -334,8 +352,12 @@ if ($todayPack -and (Test-Path $todayPack.FullName)) {
 }
 
 # ── Write heartbeat ─────────────────────────────────────────
+# Honest completion semantics: "healthy" ONLY when every step passed.
 $hbStatus = if ($errors.Count -eq 0) { "healthy" } else { "degraded" }
-Write-Heartbeat -Status $hbStatus -LeadsFound $totalLeads -Error ($errors -join ", ")
+$script:CurrentStage = if ($errors.Count -eq 0) { "complete" } else { "failed_steps" }
+if ($errors.Count -eq 0) { $script:LastGoodCycle = $timestamp }
+Write-Heartbeat -Status $hbStatus -LeadsFound $totalLeads -Error ($errors -join ", ") `
+  -Stage $script:CurrentStage -OutputCount $totalLeads -LastSuccessCycle $script:LastGoodCycle
 
 # ── Clean old logs (keep 30 days) ───────────────────────────
 Get-ChildItem "$LogDir\engine_*.log" -ErrorAction SilentlyContinue |

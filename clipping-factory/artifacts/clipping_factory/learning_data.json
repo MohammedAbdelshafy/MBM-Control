@@ -1,0 +1,25 @@
+[
+  {
+    "campaign_id": "CAMP-TEST",
+    "movie_title": "Test Movie",
+    "genres": [
+      "thriller"
+    ],
+    "hook_text": "Test hook",
+    "duration_sec": 60,
+    "creative_score": 8.0,
+    "voice_id": "en-US-GuyNeural",
+    "visual_style": "cinematic",
+    "caption_style": "cinematic",
+    "publish_time_utc": "",
+    "published_platforms": [],
+    "video_id": "",
+    "views": null,
+    "retention_pct": null,
+    "likes": null,
+    "comments": null,
+    "subscriber_gain": null,
+    "watch_time_hours": null,
+    "recorded_at": "2026-08-20T14:18:34.070711+00:00"
+  }
+]

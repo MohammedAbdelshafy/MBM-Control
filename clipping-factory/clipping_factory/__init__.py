@@ -1,0 +1,1 @@
+"""Clipping Factory production pipeline."""

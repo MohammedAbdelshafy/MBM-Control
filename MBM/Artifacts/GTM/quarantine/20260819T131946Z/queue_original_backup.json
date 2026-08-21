@@ -1,0 +1,1902 @@
+[
+  {
+    "rank": 1,
+    "id": "ADVANTAGE MEDICAL GROUP LLC",
+    "company": "ADVANTAGE MEDICAL GROUP LLC",
+    "decision_maker": "ARCILIO ALVARADO",
+    "role": "CEO/PRESIDENT",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "ARCILIO ALVARADO (CEO/PRESIDENT) operates ADVANTAGE MEDICAL GROUP LLC in ORLANDO, FL with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+17873068356",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": true,
+      "approval_status": "APPROVED",
+      "approval_required": false
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+17873068356",
+        "opening": "Hi ARCILIO ALVARADO, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADVANTAGE MEDICAL GROUP LLC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ADVANTAGE MEDICAL GROUP LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi ARCILIO ALVARADO,",
+        "observed_signal": "Saw that ADVANTAGE MEDICAL GROUP LLC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi ARCILIO ALVARADO \u2014 saw your recent post regarding operational bottlenecks at ADVANTAGE MEDICAL GROUP LLC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436338+00:00"
+  },
+  {
+    "rank": 2,
+    "id": "2 FRIENDS HOME HEALTH AND HOSPICE",
+    "company": "2 FRIENDS HOME HEALTH AND HOSPICE",
+    "decision_maker": "HUMAIRA ZAKREA",
+    "role": "owner operator",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "HUMAIRA ZAKREA (owner operator) operates 2 FRIENDS HOME HEALTH AND HOSPICE in DALLAS, TX with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+12147626392",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": true,
+      "approval_status": "APPROVED",
+      "approval_required": false
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+12147626392",
+        "opening": "Hi HUMAIRA ZAKREA, Omar with TranchAI. Calling because I saw you guys were scaling operations at 2 FRIENDS HOME HEALTH AND HOSPICE\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating 2 FRIENDS HOME HEALTH AND HOSPICE's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi HUMAIRA ZAKREA,",
+        "observed_signal": "Saw that 2 FRIENDS HOME HEALTH AND HOSPICE is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi HUMAIRA ZAKREA \u2014 saw your recent post regarding operational bottlenecks at 2 FRIENDS HOME HEALTH AND HOSPICE. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436338+00:00"
+  },
+  {
+    "rank": 3,
+    "id": "A STEP AHEAD PEDIATRIC PT, PC",
+    "company": "A STEP AHEAD PEDIATRIC PT, PC",
+    "decision_maker": "BECKY WRIGHT",
+    "role": "President",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "BECKY WRIGHT (President) operates A STEP AHEAD PEDIATRIC PT, PC in DENVER, CO with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+13037502995",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": true,
+      "approval_status": "APPROVED",
+      "approval_required": false
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+13037502995",
+        "opening": "Hi BECKY WRIGHT, Omar with TranchAI. Calling because I saw you guys were scaling operations at A STEP AHEAD PEDIATRIC PT, PC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating A STEP AHEAD PEDIATRIC PT, PC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi BECKY WRIGHT,",
+        "observed_signal": "Saw that A STEP AHEAD PEDIATRIC PT, PC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi BECKY WRIGHT \u2014 saw your recent post regarding operational bottlenecks at A STEP AHEAD PEDIATRIC PT, PC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 4,
+    "id": "ABILITY PRO THERAPY, LLC",
+    "company": "ABILITY PRO THERAPY, LLC",
+    "decision_maker": "CHRISTOPHER BURDS",
+    "role": "Owner",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "CHRISTOPHER BURDS (Owner) operates ABILITY PRO THERAPY, LLC in ATLANTA, GA with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+14043079109",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": true,
+      "approval_status": "APPROVED",
+      "approval_required": false
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+14043079109",
+        "opening": "Hi CHRISTOPHER BURDS, Omar with TranchAI. Calling because I saw you guys were scaling operations at ABILITY PRO THERAPY, LLC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ABILITY PRO THERAPY, LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi CHRISTOPHER BURDS,",
+        "observed_signal": "Saw that ABILITY PRO THERAPY, LLC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi CHRISTOPHER BURDS \u2014 saw your recent post regarding operational bottlenecks at ABILITY PRO THERAPY, LLC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 5,
+    "id": "ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS",
+    "company": "ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS",
+    "decision_maker": "FREDA DESKIN",
+    "role": "CEO/Founder",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "FREDA DESKIN (CEO/Founder) operates ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS in OKLAHOMA CITY, OK with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+14059476273",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": true,
+      "approval_status": "APPROVED",
+      "approval_required": false
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+14059476273",
+        "opening": "Hi FREDA DESKIN, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi FREDA DESKIN,",
+        "observed_signal": "Saw that ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi FREDA DESKIN \u2014 saw your recent post regarding operational bottlenecks at ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 6,
+    "id": "ACHIEVE PEDIATRIC THERAPY",
+    "company": "ACHIEVE PEDIATRIC THERAPY",
+    "decision_maker": "HEATHER GRAY",
+    "role": "Owner/Occupational Therapist",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "HEATHER GRAY (Owner/Occupational Therapist) operates ACHIEVE PEDIATRIC THERAPY in ORLANDO, FL with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+14072775400",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": true,
+      "approval_status": "APPROVED",
+      "approval_required": false
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+14072775400",
+        "opening": "Hi HEATHER GRAY, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACHIEVE PEDIATRIC THERAPY\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ACHIEVE PEDIATRIC THERAPY's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi HEATHER GRAY,",
+        "observed_signal": "Saw that ACHIEVE PEDIATRIC THERAPY is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi HEATHER GRAY \u2014 saw your recent post regarding operational bottlenecks at ACHIEVE PEDIATRIC THERAPY. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 7,
+    "id": "ABILITY HEALTH SERVICES INC",
+    "company": "ABILITY HEALTH SERVICES INC",
+    "decision_maker": "JOHN GUERRINA",
+    "role": "vice-president",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "JOHN GUERRINA (vice-president) operates ABILITY HEALTH SERVICES INC in SANFORD, FL with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+14076880070",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": true,
+      "approval_status": "APPROVED",
+      "approval_required": false
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+14076880070",
+        "opening": "Hi JOHN GUERRINA, Omar with TranchAI. Calling because I saw you guys were scaling operations at ABILITY HEALTH SERVICES INC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ABILITY HEALTH SERVICES INC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi JOHN GUERRINA,",
+        "observed_signal": "Saw that ABILITY HEALTH SERVICES INC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi JOHN GUERRINA \u2014 saw your recent post regarding operational bottlenecks at ABILITY HEALTH SERVICES INC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 8,
+    "id": "AGING WITH POWER",
+    "company": "AGING WITH POWER",
+    "decision_maker": "JULIE DENDY",
+    "role": "Owner",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "JULIE DENDY (Owner) operates AGING WITH POWER in LAS VEGAS, NV with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+15413313518",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": true,
+      "approval_status": "APPROVED",
+      "approval_required": false
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+15413313518",
+        "opening": "Hi JULIE DENDY, Omar with TranchAI. Calling because I saw you guys were scaling operations at AGING WITH POWER\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating AGING WITH POWER's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi JULIE DENDY,",
+        "observed_signal": "Saw that AGING WITH POWER is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi JULIE DENDY \u2014 saw your recent post regarding operational bottlenecks at AGING WITH POWER. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 9,
+    "id": "ACCELERATED HEALTH SYSTEMS",
+    "company": "ACCELERATED HEALTH SYSTEMS",
+    "decision_maker": "GERI COOK",
+    "role": "Vice President of Billing Operation",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "GERI COOK (Vice President of Billing Operation) operates ACCELERATED HEALTH SYSTEMS in PHOENIX, AZ with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+16305751940",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": true,
+      "approval_status": "APPROVED",
+      "approval_required": false
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+16305751940",
+        "opening": "Hi GERI COOK, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACCELERATED HEALTH SYSTEMS\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ACCELERATED HEALTH SYSTEMS's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi GERI COOK,",
+        "observed_signal": "Saw that ACCELERATED HEALTH SYSTEMS is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi GERI COOK \u2014 saw your recent post regarding operational bottlenecks at ACCELERATED HEALTH SYSTEMS. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 10,
+    "id": "ABOVE & BEYOND THERAPY SERVICES LLC",
+    "company": "ABOVE & BEYOND THERAPY SERVICES LLC",
+    "decision_maker": "THOMAS LONG",
+    "role": "Owner/PT",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "THOMAS LONG (Owner/PT) operates ABOVE & BEYOND THERAPY SERVICES LLC in PHOENIX, AZ with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+16028662231",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": true,
+      "approval_status": "APPROVED",
+      "approval_required": false
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+16028662231",
+        "opening": "Hi THOMAS LONG, Omar with TranchAI. Calling because I saw you guys were scaling operations at ABOVE & BEYOND THERAPY SERVICES LLC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ABOVE & BEYOND THERAPY SERVICES LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi THOMAS LONG,",
+        "observed_signal": "Saw that ABOVE & BEYOND THERAPY SERVICES LLC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi THOMAS LONG \u2014 saw your recent post regarding operational bottlenecks at ABOVE & BEYOND THERAPY SERVICES LLC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 11,
+    "id": "ADDIE'S STUDIO ONE ON ONE, INC.",
+    "company": "ADDIE'S STUDIO ONE ON ONE, INC.",
+    "decision_maker": "ADDIE GODINHO",
+    "role": "Owner",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "ADDIE GODINHO (Owner) operates ADDIE'S STUDIO ONE ON ONE, INC. in SAN DIEGO, CA with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+16195782232",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+16195782232",
+        "opening": "Hi ADDIE GODINHO, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADDIE'S STUDIO ONE ON ONE, INC.\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ADDIE'S STUDIO ONE ON ONE, INC.'s intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi ADDIE GODINHO,",
+        "observed_signal": "Saw that ADDIE'S STUDIO ONE ON ONE, INC. is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi ADDIE GODINHO \u2014 saw your recent post regarding operational bottlenecks at ADDIE'S STUDIO ONE ON ONE, INC.. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 12,
+    "id": "A&K THERAPY AND WOUND CARE SPECIALISTS LLC",
+    "company": "A&K THERAPY AND WOUND CARE SPECIALISTS LLC",
+    "decision_maker": "ALISON GEYMER",
+    "role": "Owner/PT",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "ALISON GEYMER (Owner/PT) operates A&K THERAPY AND WOUND CARE SPECIALISTS LLC in FORT WORTH, TX with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+16823518368",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+16823518368",
+        "opening": "Hi ALISON GEYMER, Omar with TranchAI. Calling because I saw you guys were scaling operations at A&K THERAPY AND WOUND CARE SPECIALISTS LLC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating A&K THERAPY AND WOUND CARE SPECIALISTS LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi ALISON GEYMER,",
+        "observed_signal": "Saw that A&K THERAPY AND WOUND CARE SPECIALISTS LLC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi ALISON GEYMER \u2014 saw your recent post regarding operational bottlenecks at A&K THERAPY AND WOUND CARE SPECIALISTS LLC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 13,
+    "id": "\"SENSE\"ATIONAL KIDS",
+    "company": "\"SENSE\"ATIONAL KIDS",
+    "decision_maker": "ROBYN KAISER",
+    "role": "Owner President",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "ROBYN KAISER (Owner President) operates \"SENSE\"ATIONAL KIDS in LAS VEGAS, NV with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+17022365053",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+17022365053",
+        "opening": "Hi ROBYN KAISER, Omar with TranchAI. Calling because I saw you guys were scaling operations at \"SENSE\"ATIONAL KIDS\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating \"SENSE\"ATIONAL KIDS's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi ROBYN KAISER,",
+        "observed_signal": "Saw that \"SENSE\"ATIONAL KIDS is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi ROBYN KAISER \u2014 saw your recent post regarding operational bottlenecks at \"SENSE\"ATIONAL KIDS. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 14,
+    "id": "ACTION THERAPEUTICS LLC",
+    "company": "ACTION THERAPEUTICS LLC",
+    "decision_maker": "ASHLEY REAGOR",
+    "role": "Owner/ Physical Therapist",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "ASHLEY REAGOR (Owner/ Physical Therapist) operates ACTION THERAPEUTICS LLC in LAS VEGAS, NV with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+17025450555",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+17025450555",
+        "opening": "Hi ASHLEY REAGOR, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACTION THERAPEUTICS LLC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ACTION THERAPEUTICS LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi ASHLEY REAGOR,",
+        "observed_signal": "Saw that ACTION THERAPEUTICS LLC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi ASHLEY REAGOR \u2014 saw your recent post regarding operational bottlenecks at ACTION THERAPEUTICS LLC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 15,
+    "id": "ADVANCED MANUEL THERAPY INSTITUTE 1 LLC",
+    "company": "ADVANCED MANUEL THERAPY INSTITUTE 1 LLC",
+    "decision_maker": "MICHEL RANTISSI",
+    "role": "Owner",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "MICHEL RANTISSI (Owner) operates ADVANCED MANUEL THERAPY INSTITUTE 1 LLC in HENDERSON, NV with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+17028960383",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+17028960383",
+        "opening": "Hi MICHEL RANTISSI, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADVANCED MANUEL THERAPY INSTITUTE 1 LLC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ADVANCED MANUEL THERAPY INSTITUTE 1 LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi MICHEL RANTISSI,",
+        "observed_signal": "Saw that ADVANCED MANUEL THERAPY INSTITUTE 1 LLC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi MICHEL RANTISSI \u2014 saw your recent post regarding operational bottlenecks at ADVANCED MANUEL THERAPY INSTITUTE 1 LLC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 16,
+    "id": "ACCUCARETX INC",
+    "company": "ACCUCARETX INC",
+    "decision_maker": "DAVID REED",
+    "role": "President",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "DAVID REED (President) operates ACCUCARETX INC in SALINA, KS with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+13178630000",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+13178630000",
+        "opening": "Hi DAVID REED, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACCUCARETX INC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ACCUCARETX INC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi DAVID REED,",
+        "observed_signal": "Saw that ACCUCARETX INC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi DAVID REED \u2014 saw your recent post regarding operational bottlenecks at ACCUCARETX INC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 17,
+    "id": "ADVANCED WOUND & LYMPHATIC INSTITUTE LLC",
+    "company": "ADVANCED WOUND & LYMPHATIC INSTITUTE LLC",
+    "decision_maker": "JAMES FERRARA",
+    "role": "CO-OWNER",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "JAMES FERRARA (CO-OWNER) operates ADVANCED WOUND & LYMPHATIC INSTITUTE LLC in ROTONDA WEST, FL with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+19418289804",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+19418289804",
+        "opening": "Hi JAMES FERRARA, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADVANCED WOUND & LYMPHATIC INSTITUTE LLC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ADVANCED WOUND & LYMPHATIC INSTITUTE LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi JAMES FERRARA,",
+        "observed_signal": "Saw that ADVANCED WOUND & LYMPHATIC INSTITUTE LLC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi JAMES FERRARA \u2014 saw your recent post regarding operational bottlenecks at ADVANCED WOUND & LYMPHATIC INSTITUTE LLC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 18,
+    "id": "ALL ABOUT KIDS HOME THERAPY SERVICES, INC",
+    "company": "ALL ABOUT KIDS HOME THERAPY SERVICES, INC",
+    "decision_maker": "AMY BRUN",
+    "role": "OWNER",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "AMY BRUN (OWNER) operates ALL ABOUT KIDS HOME THERAPY SERVICES, INC in TAMPA, FL with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+18135046699",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+18135046699",
+        "opening": "Hi AMY BRUN, Omar with TranchAI. Calling because I saw you guys were scaling operations at ALL ABOUT KIDS HOME THERAPY SERVICES, INC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ALL ABOUT KIDS HOME THERAPY SERVICES, INC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi AMY BRUN,",
+        "observed_signal": "Saw that ALL ABOUT KIDS HOME THERAPY SERVICES, INC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi AMY BRUN \u2014 saw your recent post regarding operational bottlenecks at ALL ABOUT KIDS HOME THERAPY SERVICES, INC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 19,
+    "id": "ACHIEVE PEDIATRIC THERAPY GA LLC",
+    "company": "ACHIEVE PEDIATRIC THERAPY GA LLC",
+    "decision_maker": "BASYA GOLDFEDER",
+    "role": "Owner",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "BASYA GOLDFEDER (Owner) operates ACHIEVE PEDIATRIC THERAPY GA LLC in ATLANTA, GA with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+18478686531",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+18478686531",
+        "opening": "Hi BASYA GOLDFEDER, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACHIEVE PEDIATRIC THERAPY GA LLC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ACHIEVE PEDIATRIC THERAPY GA LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi BASYA GOLDFEDER,",
+        "observed_signal": "Saw that ACHIEVE PEDIATRIC THERAPY GA LLC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi BASYA GOLDFEDER \u2014 saw your recent post regarding operational bottlenecks at ACHIEVE PEDIATRIC THERAPY GA LLC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 20,
+    "id": "ABA CHILDREN SERVICES LLC",
+    "company": "ABA CHILDREN SERVICES LLC",
+    "decision_maker": "DANIEL LEVENSON",
+    "role": "Owner",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "DANIEL LEVENSON (Owner) operates ABA CHILDREN SERVICES LLC in BROOKLYN, NY with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+19174764694",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+19174764694",
+        "opening": "Hi DANIEL LEVENSON, Omar with TranchAI. Calling because I saw you guys were scaling operations at ABA CHILDREN SERVICES LLC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ABA CHILDREN SERVICES LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi DANIEL LEVENSON,",
+        "observed_signal": "Saw that ABA CHILDREN SERVICES LLC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi DANIEL LEVENSON \u2014 saw your recent post regarding operational bottlenecks at ABA CHILDREN SERVICES LLC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 21,
+    "id": "ACTIVE HEALTH CARE, PA",
+    "company": "ACTIVE HEALTH CARE, PA",
+    "decision_maker": "JEFFREY LIPP",
+    "role": "President",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "JEFFREY LIPP (President) operates ACTIVE HEALTH CARE, PA in JACKSONVILLE, FL with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+19042960202",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+19042960202",
+        "opening": "Hi JEFFREY LIPP, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACTIVE HEALTH CARE, PA\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ACTIVE HEALTH CARE, PA's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi JEFFREY LIPP,",
+        "observed_signal": "Saw that ACTIVE HEALTH CARE, PA is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi JEFFREY LIPP \u2014 saw your recent post regarding operational bottlenecks at ACTIVE HEALTH CARE, PA. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 22,
+    "id": "ADONAI VICTORY HEALTH SERVICES",
+    "company": "ADONAI VICTORY HEALTH SERVICES",
+    "decision_maker": "ANASTASIA EZEIGBO",
+    "role": "Owner",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "ANASTASIA EZEIGBO (Owner) operates ADONAI VICTORY HEALTH SERVICES in CHARLOTTE, NC with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+19802729046",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+19802729046",
+        "opening": "Hi ANASTASIA EZEIGBO, Omar with TranchAI. Calling because I saw you guys were scaling operations at ADONAI VICTORY HEALTH SERVICES\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ADONAI VICTORY HEALTH SERVICES's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi ANASTASIA EZEIGBO,",
+        "observed_signal": "Saw that ADONAI VICTORY HEALTH SERVICES is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi ANASTASIA EZEIGBO \u2014 saw your recent post regarding operational bottlenecks at ADONAI VICTORY HEALTH SERVICES. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 23,
+    "id": "369 GLOBAL WELLNESS CENTER",
+    "company": "369 GLOBAL WELLNESS CENTER",
+    "decision_maker": "CASI DE LA TORRE",
+    "role": "CEO",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "sku": "AI-ASSISTANT-MEDICAL-TRIAGE",
+    "monthly_retainer_usd": 2000.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 14.99,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "CASI DE LA TORRE (CEO) operates 369 GLOBAL WELLNESS CENTER in HOUSTON, TX with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+12819393576",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+12819393576",
+        "opening": "Hi CASI DE LA TORRE, Omar with TranchAI. Calling because I saw you guys were scaling operations at 369 GLOBAL WELLNESS CENTER\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-MEDICAL-TRIAGE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $2,000/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating 369 GLOBAL WELLNESS CENTER's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi CASI DE LA TORRE,",
+        "observed_signal": "Saw that 369 GLOBAL WELLNESS CENTER is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-MEDICAL-TRIAGE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi CASI DE LA TORRE \u2014 saw your recent post regarding operational bottlenecks at 369 GLOBAL WELLNESS CENTER. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.436809+00:00"
+  },
+  {
+    "rank": 24,
+    "id": "ACTIVE MOTION PHYSICAL THERAPY LLC",
+    "company": "ACTIVE MOTION PHYSICAL THERAPY LLC",
+    "decision_maker": "DERICK LEVY",
+    "role": "Owner/ Physical Therapist",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-CHIRO-CARE",
+    "sku": "AI-ASSISTANT-CHIRO-CARE",
+    "monthly_retainer_usd": 1750.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 13.12,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "DERICK LEVY (Owner/ Physical Therapist) operates ACTIVE MOTION PHYSICAL THERAPY LLC in DENVER, CO with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+13033943356",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+13033943356",
+        "opening": "Hi DERICK LEVY, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACTIVE MOTION PHYSICAL THERAPY LLC\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-CHIRO-CARE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $1,750/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ACTIVE MOTION PHYSICAL THERAPY LLC's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi DERICK LEVY,",
+        "observed_signal": "Saw that ACTIVE MOTION PHYSICAL THERAPY LLC is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-CHIRO-CARE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi DERICK LEVY \u2014 saw your recent post regarding operational bottlenecks at ACTIVE MOTION PHYSICAL THERAPY LLC. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.438946+00:00"
+  },
+  {
+    "rank": 25,
+    "id": "ACTIVE PT SVCS",
+    "company": "ACTIVE PT SVCS",
+    "decision_maker": "LISETTE PORTES",
+    "role": "President",
+    "industry": "Medical Practices & Specialty Clinics",
+    "intent_score": 75.0,
+    "intent_tier": "HIGH INTENT",
+    "pain": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+    "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+    "recommended_ai_assistant": "AI-ASSISTANT-CHIRO-CARE",
+    "sku": "AI-ASSISTANT-CHIRO-CARE",
+    "monthly_retainer_usd": 1750.0,
+    "ROI_hypothesis": "Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+    "recommended_channel": "PHONE",
+    "priority": 13.12,
+    "confidence": 0.98,
+    "evidence": {
+      "claim": "LISETTE PORTES (President) operates ACTIVE PT SVCS in MIAMI, FL with active high-volume workflow.",
+      "source": "CMS NPI Registry API v2.1",
+      "confidence": 0.98
+    },
+    "contactability": {
+      "phone": "+13053329821",
+      "email": "",
+      "is_callable": true,
+      "is_emailable": false
+    },
+    "identity_state": "IDENTITY_UNCONFIRMED",
+    "suppression_state": "CLEAR",
+    "previous_attempts": 0,
+    "next_action": "CALL_DISCOVERY",
+    "gate_status": {
+      "can_execute": false,
+      "approval_status": "PENDING_APPROVAL",
+      "approval_required": true
+    },
+    "action_packets": {
+      "phone": {
+        "channel": "PHONE",
+        "phone_number": "+13053329821",
+        "opening": "Hi LISETTE PORTES, Omar with TranchAI. Calling because I saw you guys were scaling operations at ACTIVE PT SVCS\u2014do you have 45 seconds?",
+        "pain_reference": "We noticed contractor & service operators in Texas losing high-ticket jobs due to Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists..",
+        "discovery_question": "When after-hours emergency calls or unworked lead inquiries come in, what is your team's current response workflow?",
+        "ai_fit_explanation": "We deployed an autonomous AI-ASSISTANT-CHIRO-CARE that answers on the 1st ring, qualifies customer requirements, and books directly into your scheduling software.",
+        "qualification_questions": [
+          "How many unworked calls or estimate leads are coming through per week?",
+          "Who currently handles the follow-up when dispatchers are busy or off-duty?",
+          "If an AI assistant handled 80%+ of repetitive intake calls for $1,750/mo, would that ROI justify a 10-minute demo?"
+        ],
+        "objection_handling": {
+          "We already have staff": "Understood! Most clients use this as an overflow safety net so their staff never has to answer after-hours emergencies or repetitive status calls.",
+          "Is it a robot/sounds robotic?": "It's built on low-latency neural voice synthesis\u2014most callers cannot distinguish it from an in-house receptionist.",
+          "Send me an email": "Happy to. I'll send over the 1-page architecture brief and benchmark metrics to . What's the best time to review it together for 5 minutes?"
+        },
+        "meeting_cta": "Let's do a 5-minute interactive voice simulation on Google Meet this Thursday at 10 AM so you can hear it handle a live scenario. Does that work?"
+      },
+      "email": {
+        "channel": "EMAIL",
+        "to_email": "",
+        "subject": "Automating ACTIVE PT SVCS's intake & Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
+        "opening": "Hi LISETTE PORTES,",
+        "observed_signal": "Saw that ACTIVE PT SVCS is actively handling high-volume operational demand in your area.",
+        "pain": "When front-office staff get tied up with manual call logging or dispatching, high-ticket inbound inquiries easily slip through the cracks.",
+        "specific_ai_solution": "We engineered a custom AI-ASSISTANT-CHIRO-CARE that automates 100% of intake qualification and calendar booking.",
+        "credible_value_hypothesis": "For similar groups, this resulted in Recovers $20,000\u2013$60,000/mo by eliminating Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.. within the first 30 days.",
+        "cta": "Open to a 3-minute video walkthrough or interactive voice simulation this week?"
+      },
+      "linkedin": {
+        "channel": "LINKEDIN",
+        "conversation_starter": "Hi LISETTE PORTES \u2014 saw your recent post regarding operational bottlenecks at ACTIVE PT SVCS. We've been helping service operators automate Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. using custom AI phone & intake concierges. Curious how your team is handling the volume currently?"
+      }
+    },
+    "created_at": "2026-08-17T04:12:36.438946+00:00"
+  }
+]

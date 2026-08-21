@@ -16,6 +16,13 @@ from MBM.GLM.revenue_and_gtm_agents import (
 )
 from MBM.GLM.delivery_report import DeliveryReportGenerator, get_delivery_reporter
 from MBM.GLM.orchestrator import GLMOrchestrator, get_orchestrator
+from MBM.GLM.glm_integration_worker import (
+    GLMWorker,
+    GLMRecommendation,
+    get_glm_worker,
+    glm_tracker,
+    GLMUsageTracker,
+)
 
 __all__ = [
     "GLMRole",
@@ -44,4 +51,9 @@ __all__ = [
     "get_delivery_reporter",
     "GLMOrchestrator",
     "get_orchestrator",
+    "GLMWorker",
+    "GLMRecommendation",
+    "get_glm_worker",
+    "glm_tracker",
+    "GLMUsageTracker",
 ]

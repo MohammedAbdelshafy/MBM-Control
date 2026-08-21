@@ -205,12 +205,9 @@ def main():
             if i % 10 == 0:
                 print(_tty(f"  ... {i}/{min(len(missing), 50)} done"))
         if "--update-json" in sys.argv:
-            try:
-                sys.path.insert(0, str(ROOT))
-                from MBM.GLM.single_writer_lock import DialerSingleWriter
-                DialerSingleWriter().full_replace(leads, author="CGPT_SCRIPT_GENERATOR")
-            except Exception:
-                DIALER_LEADS.write_text(json.dumps(leads, indent=2, ensure_ascii=False), encoding="utf-8")
+            sys.path.insert(0, str(ROOT))
+            from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+            commit_dialer_db(leads, reason="cgpt_script_generator", author="CGPT_SCRIPT_GENERATOR")
             print(_tty(f"[CGPT] Wrote {written} updated scripts back to leads_database.json"))
         else:
             print(_tty(f"[CGPT] Generated {written} scripts in memory (add --update-json to persist)."))

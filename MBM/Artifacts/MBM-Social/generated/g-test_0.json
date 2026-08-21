@@ -1,0 +1,87 @@
+{
+  "dna_id": "test_0",
+  "content_id": "test:0",
+  "variants": {
+    "hooks": [
+      "23 missed calls = one lost clinic's week",
+      "Your receptionist is losing you money",
+      "The 7-minute fix for missed calls",
+      "What 23 missed calls really cost you",
+      "Stop letting calls ring into revenue loss"
+    ],
+    "short_form_scripts": [
+      {
+        "hook": "23 missed calls in a week",
+        "script": "We counted 23 missed calls. That is thousands in revenue gone.",
+        "duration_sec": 45
+      },
+      {
+        "hook": "Your receptionist loses you money",
+        "script": "Every unanswered call is a patient who booked elsewhere.",
+        "duration_sec": 30
+      },
+      {
+        "hook": "The 7-minute fix",
+        "script": "Set up an AI that answers 24/7. This is the fix.",
+        "duration_sec": 60
+      }
+    ],
+    "captions": [
+      "AI answers your missed calls now.",
+      "23 missed calls. 1 fix. DM 'AUDIT'.",
+      "Never lose a call again."
+    ],
+    "cta_variants": [
+      "DM 'AUDIT'",
+      "Book a free audit",
+      "Comment 'AUDIT'"
+    ],
+    "titles": [
+      "23 missed calls",
+      "The missed-call fix",
+      "Why your phone is costing you"
+    ]
+  },
+  "repurposed": {
+    "dna_id": "test_0",
+    "content_id": "test:0",
+    "outputs": {
+      "reel": {
+        "hook": "23 missed calls",
+        "script": "...",
+        "duration_sec": 45
+      },
+      "short": {
+        "hook": "Missed calls",
+        "script": "...",
+        "duration_sec": 30
+      },
+      "short_variant": {
+        "hook": "Lost calls",
+        "script": "...",
+        "duration_sec": 30
+      },
+      "linkedin_post": "We tracked 23 missed calls in one week.",
+      "x_post": "23 missed calls = thousands lost.",
+      "carousel_caption": "1. Count calls. 2. Automate. 3. Never miss.",
+      "email_idea": {
+        "subject": "Your missed calls",
+        "body": "We found 23..."
+      },
+      "sales_talking_point": "Every unanswered call is a patient who booked elsewhere.",
+      "faq": [
+        {
+          "question": "How fast to set up?",
+          "answer": "Same week."
+        }
+      ],
+      "gtm_talk_track": "Start with one question: what does a missed call cost?"
+    },
+    "provider": "glm",
+    "model": "mock-model",
+    "call_status": "success",
+    "fallback_reason": ""
+  },
+  "diversity_issues": [],
+  "created_at": "2026-08-17T04:19:52.340173+00:00"
+}

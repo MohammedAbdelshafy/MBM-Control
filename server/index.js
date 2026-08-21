@@ -11,6 +11,8 @@ import { hunt } from './clientHunter.js';
 import { netellerLink, netellerWalletLabel, NETELLER_EMAIL, NETELLER_ACCOUNT_ID } from './neteller.js';
 import { patchLeads as gatewayPatchLeads } from './dialer/dialerDbGateway.js';
 import { compareDialerLeads } from './dialer/freshnessOrder.js';
+import aftercallRouter from './dialer/aftercallRouter.js';
+import emailApi from './dialer/emailApi.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -94,7 +96,8 @@ for (const prefix of PROTECTED_PREFIXES) {
 }
 
 app.use(express.json({ limit: '10mb' }));
-app.use(express.json({ limit: '10mb' }));
+app.use('/api', aftercallRouter);
+app.use('/api', emailApi);
 app.use('/videos', express.static(path.join(__dirname, '..', 'clipping-factory', 'MBM-Social', 'generated_videos')));
 app.use('/publish-queue', express.static(path.join(__dirname, '..', 'clipping-factory', 'MBM-Social', 'publish_queue', 'media')));
 

@@ -1,0 +1,7 @@
+node_modules
+dist
+.tanstack
+app/dist
+app/.tanstack
+app/public/*.bak
+app/public/leads_database.backup_*.json

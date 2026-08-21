@@ -74,7 +74,7 @@ try:
 except Exception:
     GoogleNewsAdapter = None
 
-ARTIFACTS_DIR = ROOT_DIR / "MBM" / "Artifacts"
+ARTIFACTS_DIR = Path(os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
 LOGS_DIR = ROOT_DIR / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)

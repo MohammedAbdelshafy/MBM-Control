@@ -7,12 +7,17 @@ BASE = Path(__file__).resolve().parent
 ARTIFACTS = BASE.parent / "Artifacts"
 OUTPUT = BASE.parent.parent / "mbm-dialer" / "app" / "public" / "leads_database.json"
 
+# Always commit through the canonical single-writer gateway. A fallback to a
+# raw write_text / open(..., "w") is forbidden (the audit caught it) — if the
+# gateway cannot be imported we fail loud rather than bypass the lock/atomicity.
 try:
     sys.path.insert(0, str(BASE.parent.parent))
-    from MBM.GLM.single_writer_lock import DialerSingleWriter
-    _SINGLE_WRITER = DialerSingleWriter()
-except Exception:
-    _SINGLE_WRITER = None
+    from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+    _COMMIT = commit_dialer_db
+except Exception as exc:  # pragma: no cover - import path should always resolve
+    def _commit_leads(records, reason, author, allow_shrink=False):
+        raise RuntimeError(f"single-writer gateway unavailable: {exc}")
+    _COMMIT = _commit_leads
 
 def load_csv(filename, vertical):
     path = ARTIFACTS / filename
@@ -90,12 +95,12 @@ def main():
     all_leads.extend(load_csv("all_leads_master.csv", "Master Catch-All"))
     all_leads.extend(load_csv("all_verified_numbers.csv", "Verified Numbers"))
     
-    if _SINGLE_WRITER is not None:
-        _SINGLE_WRITER.full_replace(all_leads, author="BUNDLE_DASHBOARD_DATA")
-    else:
-        with open(OUTPUT, "w", encoding="utf-8") as f:
-            json.dump(all_leads, f, indent=2)
-    print(f"Bundled {len(all_leads)} leads into {OUTPUT}")
-
+    _COMMIT(
+        all_leads,
+        reason="bundle_dashboard_data",
+        author="BUNDLE_DASHBOARD_DATA",
+        allow_shrink=False,
+    )
+    print(f"Committed {len(all_leads)} leads into {OUTPUT} via canonical gateway.")
 if __name__ == "__main__":
     main()

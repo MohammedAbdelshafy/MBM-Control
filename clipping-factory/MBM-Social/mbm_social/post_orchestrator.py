@@ -17,14 +17,17 @@ Packages that could not be posted (e.g. no logged-in session) remain `draft`
 so a human can complete the login and re-run -- nothing is silently dropped.
 
 Usage:
-  python -m mbm_social.post_orchestrator                # publish all pending
-  python -m mbm_social.post_orchestrator --brand cute   # only one brand
-  python -m mbm_social.post_orchestrator --dry-run      # inspect, do nothing
+  python -m mbm_social.post_orchestrator                    # publish all pending (live mode)
+  python -m mbm_social.post_orchestrator --brand cute       # only one brand
+  python -m mbm_social.post_orchestrator --mode dry_run     # validate only, no posting
+  python -m mbm_social.post_orchestrator --mode test        # publish as unlisted/private
+  python -m mbm_social.post_orchestrator --mode live        # full production publish
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -41,6 +44,17 @@ QUEUE_DIR = ROOT / "publish_queue"
 
 STATUS_DRAFT = "draft"
 STATUS_PUBLISHED = "published"
+STATUS_PUBLISH_BLOCKED = "publish_blocked"
+STATUS_PUBLISH_PENDING = "publish_pending_verification"
+
+# Publish mode control — enforced at orchestrator level
+PUBLISH_MODES = ("dry_run", "test", "live")
+PUBLISH_MODE = os.getenv("PUBLISH_MODE", "dry_run").strip().lower()
+if PUBLISH_MODE not in PUBLISH_MODES:
+    PUBLISH_MODE = "dry_run"
+
+# In test mode, videos are published as unlisted; in live mode, as public
+DEFAULT_PRIVACY = {"dry_run": "private", "test": "unlisted", "live": "public"}
 
 
 def _norm_brand(value) -> str:
@@ -96,6 +110,8 @@ def pending_packages(brand: str | None = None, dedupe: bool = True, limit: int |
         except (json.JSONDecodeError, OSError) as e:
             print(f"[ORCH] Skipping unreadable {filepath.name}: {e}")
             continue
+        if not isinstance(package, dict):
+            continue
         if package.get("status") != STATUS_DRAFT:
             continue
         pkg_brand = resolve_brand(package)
@@ -141,7 +157,7 @@ def resolve_video(package: dict) -> str:
     return ""
 
 
-def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool) -> tuple[bool, str | None, str | None]:
+def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool, privacy_status: str = "public", mode: str = "dry_run") -> tuple[bool, str | None, str | None]:
     title = (package.get("title") or "Untitled Short")[:100]
     description = (package.get("description") or title)[:5000]
     channel_id = package.get("youtube_channel_id") or resolve_registry_channel(brand)
@@ -156,7 +172,10 @@ def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool) -> tu
             else:
                 print(f"[dry-run] Would publish YouTube '{title}' via OAuth API (NO token -- needs reauth).")
         elif api.tokens_exist_for(brand):
-            ok, video_id = api.publish_via_api(video, title, description, brand=brand, channel_id=channel_id)
+            # allow_public only when explicitly in live mode
+            allow_pub = (mode == "live")
+            ok, video_id = api.publish_via_api(video, title, description, brand=brand, channel_id=channel_id,
+                                               privacy_status=privacy_status, allow_public=allow_pub)
             if ok and video_id:
                 return True, video_id, channel_id
             print(f"[ORCH] OAuth API publish failed for '{title}'; falling back to CDP.")
@@ -195,7 +214,7 @@ def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool) -> tu
     try:
         from mbm_social import publisher as pw
         if not dry_run:
-            ok = pw.upload_to_youtube(video, title, description, brand=brand)
+            ok = pw.upload_to_youtube(video, title, description, brand=brand, privacy_status=privacy_status)
             if isinstance(ok, tuple):
                 ok, real_id = ok
             else:
@@ -210,18 +229,28 @@ def _publish_youtube(package: dict, brand: str, video: str, dry_run: bool) -> tu
     return False, "", None
 
 
-def _publish_social(package: dict, brand: str, dry_run: bool) -> dict[str, bool]:
-    """Cross-post to Instagram Reels + TikTok. Returns platform -> success."""
+def _publish_social(package: dict, brand: str, dry_run: bool, mode: str = "dry_run") -> dict[str, bool]:
+    """Cross-post to Instagram Reels + TikTok. Returns platform -> success.
+
+    TEST mode: Instagram and TikTok have no unlisted/private sandbox endpoint.
+    All test-mode social publishes are SKIPPED (not silently faked).
+    """
     results: dict[str, bool] = {}
+    platforms = ["instagram", "tiktok"]
+    if dry_run:
+        for platform in platforms:
+            results[platform] = False
+        print(f"[dry-run] Would cross-post '{package.get('title')}' to {platforms}.")
+        return results
+    # TEST mode: IG/TikTok have no sandbox/test endpoint — skip entirely
+    if mode == "test":
+        for platform in platforms:
+            results[platform] = False
+        print(f"[ORCH] TEST mode: skipping IG/TikTok cross-post for '{package.get('title')}' "
+              "(no sandbox/test endpoint available).")
+        return results
     try:
         from mbm_social import shortform_publisher as sf
-
-        platforms = ["instagram", "tiktok"]
-        if dry_run:
-            for platform in platforms:
-                results[platform] = False
-            print(f"[dry-run] Would cross-post '{package.get('title')}' to {platforms}.")
-            return results
         results = sf.publish(package, platforms=platforms, _brand=brand)
     except Exception as e:
         print(f"[ORCH] Short-form publisher unavailable ({e}); skipping IG/TikTok.")
@@ -230,15 +259,34 @@ def _publish_social(package: dict, brand: str, dry_run: bool) -> dict[str, bool]
     return results
 
 
-def publish_package(filepath: Path, package: dict, dry_run: bool = False) -> dict:
+def publish_package(filepath: Path, package: dict, dry_run: bool = False, mode: str = "dry_run") -> dict:
     brand = resolve_brand(package)
     video = resolve_video(package)
     title = package.get("title") or "Untitled Short"
 
-    print(f"[ORCH] Processing [{brand}]: '{title}' ({filepath.name})")
+    # Mode enforcement
+    if mode == "dry_run":
+        dry_run = True
+        privacy_status = "private"
+    elif mode == "test":
+        dry_run = False
+        privacy_status = "unlisted"
+        package["publish_visibility"] = "unlisted"
+        package["publish_mode"] = "test"
+    elif mode == "live":
+        dry_run = False
+        privacy_status = "public"
+        package["publish_visibility"] = "public"
+        package["publish_mode"] = "live"
+    else:
+        print(f"[ORCH] Unknown mode '{mode}', defaulting to dry_run.")
+        dry_run = True
+        privacy_status = "private"
 
-    yt_ok, yt_id, yt_channel = _publish_youtube(package, brand, video, dry_run)
-    social = _publish_social(package, brand, dry_run)
+    print(f"[ORCH] Processing [{brand}] (mode={mode}): '{title}' ({filepath.name})")
+
+    yt_ok, yt_id, yt_channel = _publish_youtube(package, brand, video, dry_run, privacy_status=privacy_status, mode=mode)
+    social = _publish_social(package, brand, dry_run, mode=mode)
 
     published_platforms: dict[str, bool] = {}
     if yt_ok:
@@ -253,11 +301,21 @@ def publish_package(filepath: Path, package: dict, dry_run: bool = False) -> dic
         published_platforms[platform] = bool(ok)
 
     package["published_platforms"] = published_platforms
+    package["publish_mode"] = mode
 
     if any(published_platforms.values()):
-        package["status"] = STATUS_PUBLISHED
-        package["published_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
-        print(f"[ORCH] PUBLISHED {brand}: {published_platforms}")
+        # If YouTube succeeded but has no video ID, it submitted but cannot be verified
+        # → PUBLISH_PENDING_VERIFICATION (prevents auto-retry / duplicate upload)
+        if yt_ok and not yt_id:
+            package["status"] = STATUS_PUBLISH_PENDING
+            package["publish_pending_reason"] = "submitted_without_verified_id"
+            package["publish_pending_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+            print(f"[ORCH] PUBLISH_PENDING_VERIFICATION ({mode}) {brand}: "
+                  "upload submitted but video ID not extracted. Will verify before retry.")
+        else:
+            package["status"] = STATUS_PUBLISHED
+            package["published_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+            print(f"[ORCH] PUBLISHED ({mode}) {brand}: {published_platforms}")
     else:
         package["status"] = STATUS_DRAFT
         print(f"[ORCH] No real post succeeded for '{title}' -- kept as draft. "
@@ -268,20 +326,21 @@ def publish_package(filepath: Path, package: dict, dry_run: bool = False) -> dic
     return package
 
 
-def publish_all(brand: str | None = None, dry_run: bool = False, limit: int | None = None, dedupe: bool = True) -> dict:
+def publish_all(brand: str | None = None, dry_run: bool = False, limit: int | None = None, dedupe: bool = True, mode: str = "dry_run") -> dict:
     pending = pending_packages(brand, dedupe=dedupe, limit=limit)
-    print(f"[ORCH] Found {len(pending)} postable draft package(s) in publish_queue.")
+    print(f"[ORCH] Found {len(pending)} postable draft package(s) in publish_queue (mode={mode}).")
     summary = {
         "processed": 0,
         "published": 0,
         "skipped_drafts": 0,
+        "mode": mode,
         "by_platform": {"youtube": 0, "instagram": 0, "tiktok": 0},
         "next_action": "review package statuses for any that require human login",
         "owner": "system",
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
     for filepath, package in pending:
-        result = publish_package(filepath, package, dry_run=dry_run)
+        result = publish_package(filepath, package, dry_run=dry_run, mode=mode)
         summary["processed"] += 1
         if result.get("status") == STATUS_PUBLISHED:
             summary["published"] += 1
@@ -290,22 +349,34 @@ def publish_all(brand: str | None = None, dry_run: bool = False, limit: int | No
                     summary["by_platform"][platform] = summary["by_platform"].get(platform, 0) + 1
         else:
             summary["skipped_drafts"] += 1
-    print(f"[ORCH] Done: {summary['published']}/{summary['processed']} published "
+    print(f"[ORCH] Done ({mode}): {summary['published']}/{summary['processed']} published "
           f"(YouTube {summary['by_platform']['youtube']}, IG {summary['by_platform']['instagram']}, "
           f"TikTok {summary['by_platform']['tiktok']}).")
     return summary
 
 
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(description="MBP Social authoritative publisher.")
+    parser = argparse.ArgumentParser(description="MBM-Social authoritative publisher.")
     parser.add_argument("--brand", help="Only publish packages for this brand slug.")
-    parser.add_argument("--dry-run", action="store_true", help="Validate pending drafts without posting.")
+    parser.add_argument("--dry-run", action="store_true", help="Alias for --mode dry_run.")
+    parser.add_argument("--mode", choices=PUBLISH_MODES, default=PUBLISH_MODE,
+                        help=f"Publish mode: dry_run (validate only), test (unlisted), live (public). Default: $PUBLISH_MODE={PUBLISH_MODE}")
     parser.add_argument("--limit", type=int, default=None, help="Post at most N newest drafts.")
     parser.add_argument("--no-dedupe", action="store_true", help="Post every draft, even identical brand/title repeats.")
     args = parser.parse_args(argv)
 
-    summary = publish_all(brand=args.brand, dry_run=args.dry_run, limit=args.limit, dedupe=not args.no_dedupe)
-    return 0 if args.dry_run else (0 if not summary["skipped_drafts"] else 1)
+    mode = args.mode
+    if args.dry_run:
+        mode = "dry_run"
+
+    # Safety gate: never allow live mode unless explicitly set
+    if mode == "live" and os.getenv("PUBLISH_MODE") != "live":
+        print("[ORCH] BLOCKED: --mode live requires PUBLISH_MODE=live env var. Use --mode test for safe testing.")
+        return 2
+
+    dry_run = (mode == "dry_run")
+    summary = publish_all(brand=args.brand, dry_run=dry_run, limit=args.limit, dedupe=not args.no_dedupe, mode=mode)
+    return 0 if dry_run else (0 if not summary["skipped_drafts"] else 1)
 
 
 if __name__ == "__main__":

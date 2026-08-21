@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-ARTIFACTS_DIR = ROOT_DIR / "MBM" / "Artifacts"
+ARTIFACTS_DIR = Path(os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
 GTM_ARTIFACTS_DIR = ARTIFACTS_DIR / "GTM"
 GTM_ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -1,0 +1,63 @@
+{
+  "campaign_id": "TR-2001-C09D381E8E53",
+  "script_id": "SCR-F1E1630AFD",
+  "source_checksum": "40f69d7400aff58d5231902d52cd0be01d2b7809a6c39f1b01070729ab19499f",
+  "output_checksum": "d9b1ff34bb01b3eb39befc07e528a3b60c284f415a18edef237f0208824e2db5",
+  "render_manifest": {
+    "manifest_id": "RM-06996CCB82DC",
+    "source_id": "SRC-TR-2001-C09D381E8E53",
+    "source_uri": "artifacts\\clipping_factory\\tts_test\\test_source.mp4",
+    "source_checksum": "40f69d7400aff58d5231902d52cd0be01d2b7809a6c39f1b01070729ab19499f",
+    "campaign_id": "TR-2001-C09D381E8E53",
+    "script_id": "SCR-F1E1630AFD",
+    "voice_id": "en-US-GuyNeural",
+    "render_started_at": "2026-08-20T14:35:09.801721+00:00",
+    "render_completed_at": "2026-08-20T14:35:17.335369+00:00",
+    "editor_version": "clipping_factory_v1",
+    "qa_version": "creative_gate_v1",
+    "output_checksum": "d9b1ff34bb01b3eb39befc07e528a3b60c284f415a18edef237f0208824e2db5",
+    "output_path": "artifacts\\clipping_factory\\render_test\\TR-2001-C09D381E8E53_rendered.mp4",
+    "output_duration_sec": 5.015011,
+    "output_width": 1080,
+    "output_height": 1920,
+    "output_fps": 30.0,
+    "output_file_size_bytes": 19849,
+    "render_status": "rendered",
+    "pipeline_steps_completed": [
+      "source_verified",
+      "voiceover_generated",
+      "video_rendered",
+      "captions_generated",
+      "qa_checked"
+    ],
+    "qa_scores": {
+      "technical_score": 7.5
+    },
+    "creative_score": 7.5,
+    "publish_provenance": "",
+    "error_message": ""
+  },
+  "metadata": {
+    "title": "The Others (2001) \u2014 The Ending Explained",
+    "description": "What happened in The Others and why was the ending so disturbing?\n\nA complete movie recap of The Others (2001).\n\n#HorrorThrillerSupernatural #MovieRecap #TwistsRevealed #Shorts",
+    "tags": [
+      "movie recap",
+      "the others",
+      "2001",
+      "horror",
+      "thriller",
+      "supernatural",
+      "plot twist",
+      "ending explained",
+      "twists revealed",
+      "thriller recap",
+      "horror recap",
+      "shorts"
+    ],
+    "brand": "twistsrevealed",
+    "movie_title": "The Others",
+    "movie_year": 2001
+  },
+  "status": "QUEUED_FOR_PUBLISHING",
+  "packaged_at": "2026-08-20T14:35:17.352587+00:00"
+}

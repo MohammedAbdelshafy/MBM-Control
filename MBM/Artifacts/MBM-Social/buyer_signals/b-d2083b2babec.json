@@ -1,0 +1,20 @@
+{
+  "signal_id": "d2083b2babec",
+  "pain": "manual estimating",
+  "intent": "BUYING_SIGNAL",
+  "signal_kind": "BUYING_SIGNAL",
+  "confidence": 0.85,
+  "source_comment_id": "fixture:demo:04",
+  "source_content_id": "published:wholesaling-re-contract",
+  "source_text": "We are a construction company and our team spends 12 hours a week manually quoting. Do you handle estimating?",
+  "offer": "AI Estimating",
+  "secondary_offer": "AI Takeoff",
+  "consultancy_angle": "Manual estimating caps how many bids your team can run.",
+  "matched_offer": true,
+  "timestamp": "2026-08-11T09:20:00Z",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "person": "UNKNOWN",
+  "company": "UNKNOWN",
+  "kind": "real"
+}

@@ -4,7 +4,7 @@ import os
 import urllib.parse
 from bs4 import BeautifulSoup
 
-rapidapi_key = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
+rapidapi_key = os.getenv("RAPIDAPI_KEY", "").strip()
 
 def ninja_search_address(address):
     # e.g. 12602 TRENTON DR, DALLAS, TX

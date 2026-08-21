@@ -1,0 +1,20 @@
+{
+  "signal_id": "916a7c4725a9",
+  "pain": "scheduling bottleneck",
+  "intent": "PROBLEM_SIGNAL",
+  "signal_kind": "PROBLEM_SIGNAL",
+  "confidence": 0.8,
+  "source_comment_id": "fixture:demo:10",
+  "source_content_id": "campaign:RealEstate",
+  "source_text": "We schedule 40+ appointments a day and no-shows are killing us. Can AI handle the reminder calls?",
+  "offer": "AI Scheduling",
+  "secondary_offer": "AI Appointment Reminders",
+  "consultancy_angle": "Every no-show is lost revenue you already booked.",
+  "matched_offer": true,
+  "timestamp": "2026-08-14T09:00:00Z",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "person": "UNKNOWN",
+  "company": "UNKNOWN",
+  "kind": "real"
+}

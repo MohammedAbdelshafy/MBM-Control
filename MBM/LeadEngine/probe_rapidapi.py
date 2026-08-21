@@ -1,7 +1,7 @@
 import http.client
 import os
 
-rapidapi_key = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
+rapidapi_key = os.getenv("RAPIDAPI_KEY", "").strip()
 host = "skip-tracing-working-api.p.rapidapi.com"
 
 endpoints = [

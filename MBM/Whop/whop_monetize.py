@@ -61,6 +61,9 @@ try:
 except Exception:
     WHOP_API_KEY = WHOP_API_KEY or _load_env()
 
+# Re-read after load_dotenv() — ACCOUNT_ID was captured at line 37 before .env was loaded.
+ACCOUNT_ID = os.getenv("WHOP_ACCOUNT_ID", ACCOUNT_ID)
+
 # ─── Product + pricing config (from HUNTER sprint mission pricing) ───
 PRODUCTS = [
     {
@@ -139,6 +142,22 @@ PRODUCTS = [
         ),
         "plans": [
             {"title": "Digital Blueprint Download", "initial_price": 299, "plan_type": "one_time", "billing_period": None},
+        ],
+    },
+    # ─── AI Consultancy Sprint (Whop Money Mission) ───
+    {
+        "id": "prod_qoPikOSNXZBcI",  # Live Whop Product: AI Consultancy Sprint (biz_2VDyenKpD0KOyo)
+        "headline": "We build your AI assistant that finds, calls, qualifies, and follows up with your best customers — live in 14 days.",
+        "description": (
+            "AI Consultancy Sprint. Done-for-you AI growth system for local service businesses "
+            "using the stack we run on 1,222 verified businesses: AI Cold-Calling Assistant + "
+            "verified lead feed + tailored scripts + automated follow-up + analytics. "
+            "Sprint Audit $297 (72h), Build & Deploy $1,497 (14d), Managed AI Growth $497/mo."
+        ),
+        "plans": [
+            {"title": "AI Consultancy Sprint Audit", "initial_price": 297, "plan_type": "one_time", "billing_period": None},
+            {"title": "AI Consultancy Build & Deploy", "initial_price": 1497, "plan_type": "one_time", "billing_period": None},
+            {"title": "Managed AI Growth", "initial_price": 497, "plan_type": "renewal", "billing_period": 30},
         ],
     },
 ]

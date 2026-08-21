@@ -15,6 +15,7 @@ import exportRoutes from './routes/exports';
 import dashboardRoutes from './routes/dashboard';
 import adminRoutes from './routes/admin';
 import outreachRoutes from './routes/outreach';
+import qualifyRoutes from './routes/qualify';
 import { prisma } from './db';
 
 dotenv.config();
@@ -96,6 +97,7 @@ export async function buildServer() {
   await server.register(dashboardRoutes);
   await server.register(adminRoutes);
   await server.register(outreachRoutes);
+  await server.register(qualifyRoutes);
 
   // ── Health check ─────────────────────────────────────────────────────────────
   server.get('/health', {

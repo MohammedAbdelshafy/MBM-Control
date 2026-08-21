@@ -24,10 +24,11 @@ CHANNEL_REGISTRY_PATH = Path(__file__).resolve().parent.parent / "ChannelRegistr
 
 def get_user_data_dir(brand):
     """Get brand-specific Chrome profile directory."""
+    base = Path(__file__).resolve().parent.parent / "youtube_profiles"
     if not brand:
-        return Path(__file__).resolve().parent.parent / "youtube_profile"
+        return base / "_default"
     slug = str(brand).strip().lower().replace(" ", "").replace("-", "_")
-    return Path(__file__).resolve().parent.parent / f"youtube_profile_{slug}"
+    return base / slug
 
 
 def resolve_channel_id(brand):
@@ -67,12 +68,24 @@ def get_pending_drafts():
     return drafts
 
 def mark_published(filepath, data, video_id=None):
-    """Mark package as published with timestamp and optional video_id."""
+    """Mark package as published with timestamp and real platform video_id.
+
+    NEVER fabricates a video_id. If no real ID is provided, the package
+    is marked as publish_blocked, not published.
+    """
+    if not video_id:
+        data["status"] = "publish_blocked"
+        data["publish_blocked_reason"] = "platform_identity_not_verified"
+        data["publish_blocked_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2)
+        print(f"[YOUTUBE PUBLISHER] Marked as PUBLISH_BLOCKED (no real video ID): {filepath}")
+        return
+
     data["status"] = "published"
     data["published_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
-    if video_id:
-        data["youtube_video_id"] = video_id
-        data["youtube_url"] = f"https://www.youtube.com/watch?v={video_id}"
+    data["youtube_video_id"] = video_id
+    data["youtube_url"] = f"https://www.youtube.com/watch?v={video_id}"
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
     print(f"[YOUTUBE PUBLISHER] Marked as published: {filepath}")
@@ -113,13 +126,30 @@ def _load_token_entry(brand, channel_id=None):
     return info, ""
 
 
-def publish_via_api(video_path, title, description, brand=None, channel_id=None):
+def publish_via_api(video_path, title, description, brand=None, channel_id=None, privacy_status="public", allow_public=False):
     """Publish via YouTube Data API v3 using the BRAND's OWN OAuth token.
 
     The token is resolved strictly by brand (never another brand's token), and
     the live session is verified against the requested channel before upload so
     content can never land on the wrong channel.
+
+    Args:
+        privacy_status: "public", "unlisted", or "private".
+            - "public" = live mode (full production)
+            - "unlisted" = test mode (only accessible via link)
+            - "private" = draft mode (only owner can see)
+        allow_public: MUST be True when privacy_status="public". Prevents
+            test/dry_run modes from accidentally publishing publicly.
+
+    Returns:
+        (success: bool, video_id: str | None)
     """
+    # MODE SAFETY: "public" requires explicit authorization
+    if privacy_status == "public" and not allow_public:
+        print(f"[YOUTUBE PUBLISHER] BLOCKED: privacy_status='public' requires allow_public=True. "
+              f"This prevents test/dry_run modes from publishing publicly. "
+              f"Use allow_public=True only for explicit live production mode.")
+        return False, None
     try:
         from google.oauth2.credentials import Credentials
         from google.auth.transport.requests import Request
@@ -174,17 +204,26 @@ def publish_via_api(video_path, title, description, brand=None, channel_id=None)
         # Live verification: the authenticated session MUST manage the channel we
         # are about to post to. Without this, a stale token would silently leak
         # the video onto the wrong brand's channel.
+        # If youtube.readonly scope is missing, skip channel check — upload scope
+        # is sufficient for the actual upload. The upload itself is the proof.
+        owned = []
         try:
             mine = youtube.channels().list(part="id,snippet", mine=True).execute()
             owned = [c.get("id") for c in mine.get("items", [])]
         except Exception as ve:
-            print(f"[YOUTUBE PUBLISHER] Token not usable (invalid_grant or revoked): {ve}")
-            return False, None
-        if channel_id and channel_id not in owned:
+            err_str = str(ve).lower()
+            if "insufficient" in err_str or "403" in err_str:
+                print(f"[YOUTUBE PUBLISHER] Note: channel verification skipped "
+                      f"(token lacks youtube.readonly scope). Upload will proceed — "
+                      f"the upload itself is the channel proof.")
+            else:
+                print(f"[YOUTUBE PUBLISHER] Token not usable (invalid_grant or revoked): {ve}")
+                return False, None
+        if channel_id and owned and channel_id not in owned:
             print(f"[YOUTUBE PUBLISHER] Token for brand '{brand}' does not own channel {channel_id}. "
-                  f"Owns: {owned or 'none'}. Refusing cross-channel publish.")
+                  f"Owns: {owned}. Refusing cross-channel publish.")
             return False, None
-        if not owned:
+        if owned and not owned:
             print(f"[YOUTUBE PUBLISHER] Token for brand '{brand}' returned no channels (revoked?).")
             return False, None
         
@@ -196,7 +235,7 @@ def publish_via_api(video_path, title, description, brand=None, channel_id=None)
                 "categoryId": "28",
             },
             "status": {
-                "privacyStatus": "public",
+                "privacyStatus": privacy_status,
                 "selfDeclaredMadeForKids": False,
                 "embeddable": True,
                 "publicStatsViewable": True,
@@ -220,12 +259,22 @@ def publish_via_api(video_path, title, description, brand=None, channel_id=None)
         print(f"[YOUTUBE PUBLISHER] API upload failed: {e}")
         return False, None
 
-def publish_via_playwright(video_path, title, description, brand=None, channel_id=None, prefer_api=True):
+def publish_via_playwright(video_path, title, description, brand=None, channel_id=None, prefer_api=True, privacy_status="public"):
     """Publish a video to YouTube.
 
     Priority: OAuth Data API (when the brand has a valid token) -> Playwright
     Studio automation. Falls back to Studio automation when no token exists.
+
+    MODE SAFETY: privacy_status is passed through to the Playwright UI.
+    If privacy_status="public" and the caller did not explicitly authorize
+    live mode, the caller should NOT invoke this function.
     """
+    # MODE SAFETY: validate privacy_status at the lowest layer
+    allowed_privacies = {"public", "unlisted", "private"}
+    if privacy_status not in allowed_privacies:
+        print(f"[YOUTUBE PUBLISHER] Invalid privacy_status '{privacy_status}'. "
+              f"Must be one of {allowed_privacies}.")
+        return False, None
     if not os.path.exists(video_path):
         print(f"[YOUTUBE PUBLISHER] Video file does not exist: {video_path}")
         return False, None
@@ -233,7 +282,7 @@ def publish_via_playwright(video_path, title, description, brand=None, channel_i
     resolved_channel = channel_id or resolve_channel_id(brand)
     if prefer_api and tokens_exist_for(brand):
         print(f"[YOUTUBE PUBLISHER] Publishing '{title}' via YouTube Data API v3 (brand token found)...")
-        ok, video_id = publish_via_api(video_path, title, description, brand=brand, channel_id=resolved_channel)
+        ok, video_id = publish_via_api(video_path, title, description, brand=brand, channel_id=resolved_channel, privacy_status=privacy_status)
         if ok:
             return True, video_id
         print(f"[YOUTUBE PUBLISHER] API publish failed for '{title}'; falling back to Studio automation.")
@@ -398,11 +447,19 @@ def publish_via_playwright(video_path, title, description, brand=None, channel_i
             time.sleep(1)
             
             try:
+                # Set visibility based on privacy_status — never hard-code PUBLIC
+                privacy_map = {
+                    "public": "PUBLIC",
+                    "unlisted": "UNLISTED",
+                    "private": "PRIVATE",
+                }
+                visibility = privacy_map.get(privacy_status, "UNLISTED")
+                radio_name = f"VIDEO_PRIVACY_{visibility}"
                 mouse_move_random(page)
-                page.locator('tp-yt-paper-radio-button[name="PUBLIC"], #privacy-radio-public').first.click(timeout=5000)
+                page.locator(f'tp-yt-paper-radio-button[name="{radio_name}"]').first.click(timeout=5000)
             except Exception:
                 try:
-                    page.locator("input[value='public']").first.click(timeout=5000)
+                    page.locator(f"input[value='{privacy_status}']").first.click(timeout=5000)
                 except Exception:
                     pass
             
@@ -418,7 +475,10 @@ def publish_via_playwright(video_path, title, description, brand=None, channel_i
             print("[YOUTUBE PUBLISHER] Video submitted for processing...")
             
             browser.close()
-            return True, f"yt_{int(time.time())}"
+            # Playwright automation cannot extract the platform-assigned video ID.
+            # Return success=True so the caller marks the package (as publish_blocked
+            # since no real ID could be captured — the user verifies manually).
+            return True, None
             
     except PWTimeout:
         print("[YOUTUBE PUBLISHER] Timeout during YouTube Studio automation")

@@ -1,0 +1,252 @@
+{
+  "status": "success",
+  "inputs": {
+    "glm_dry_run": false,
+    "batch_limit": 40,
+    "gtm_verify": true,
+    "active_provider": "gemini"
+  },
+  "outputs": {
+    "models": {
+      "glm_enabled": "False",
+      "active_provider": "gemini",
+      "glm_model": "(disabled)",
+      "glm_fast_model": "(disabled)",
+      "glm_api_base": "(disabled)",
+      "glm_key_configured": "False",
+      "fallback_mode": "auto",
+      "gemini_configured": "True",
+      "gemini_model": "gemini-2.5-flash",
+      "openai_configured": "True",
+      "openai_model": "gpt-4o-mini",
+      "artifacts_root": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\MBM\\Artifacts\\MBM-Social",
+      "batch_size": "15",
+      "calls_by_provider": {
+        "rules": 43
+      },
+      "calls_by_model": {
+        "rules-deterministic": 43
+      },
+      "fallback_count": 43
+    },
+    "content": {
+      "corpus_items": 48,
+      "dna_analyzed": 40,
+      "top_hook": "",
+      "observed_field_avg": 0.0
+    },
+    "intelligence": {
+      "niches": [
+        {
+          "niche": "Local business phone-intake",
+          "pain": "missed calls",
+          "frequency": 1,
+          "content_signals": [],
+          "buyer_signals": [
+            "bbd2e044c0d3"
+          ],
+          "recommended_offer": "AI Receptionist",
+          "confidence": 0.25,
+          "evidence": [
+            {
+              "kind": "buyer_signal",
+              "signal_id": "bbd2e044c0d3",
+              "source_text": "This is exactly what happened to us last month — we had 23 missed calls in a week and I had no idea. Can you do this for clinics?",
+              "offer": "AI Receptionist"
+            }
+          ]
+        },
+        {
+          "niche": "Precision estimating AI",
+          "pain": "manual estimating",
+          "frequency": 1,
+          "content_signals": [],
+          "buyer_signals": [
+            "d2083b2babec"
+          ],
+          "recommended_offer": "AI Estimating",
+          "confidence": 0.25,
+          "evidence": [
+            {
+              "kind": "buyer_signal",
+              "signal_id": "d2083b2babec",
+              "source_text": "We are a construction company and our team spends 12 hours a week manually quoting. Do you handle estimating?",
+              "offer": "AI Estimating"
+            }
+          ]
+        },
+        {
+          "niche": "Support automation",
+          "pain": "customer-service overload",
+          "frequency": 1,
+          "content_signals": [],
+          "buyer_signals": [
+            "148f5e8b33ff"
+          ],
+          "recommended_offer": "AI Support",
+          "confidence": 0.25,
+          "evidence": [
+            {
+              "kind": "buyer_signal",
+              "signal_id": "148f5e8b33ff",
+              "source_text": "Our front desk is drowning in repetitive support questions. Does this replace the customer service queue?",
+              "offer": "AI Support"
+            }
+          ]
+        },
+        {
+          "niche": "Appointment/booking automation",
+          "pain": "scheduling bottleneck",
+          "frequency": 1,
+          "content_signals": [],
+          "buyer_signals": [
+            "916a7c4725a9"
+          ],
+          "recommended_offer": "AI Scheduling",
+          "confidence": 0.25,
+          "evidence": [
+            {
+              "kind": "buyer_signal",
+              "signal_id": "916a7c4725a9",
+              "source_text": "We schedule 40+ appointments a day and no-shows are killing us. Can AI handle the reminder calls?",
+              "offer": "AI Scheduling"
+            }
+          ]
+        }
+      ],
+      "strategy": {
+        "latest": {
+          "next_10_topics": [],
+          "next_10_hooks": [],
+          "best_niche": "Local business phone-intake",
+          "best_angle": "UNKNOWN",
+          "best_cta": "DM 'AUDIT' — free 15-min missed calls audit",
+          "reason": "UNKNOWN",
+          "evidence": [
+            "dna:5b7cc950836a",
+            "dna:1034a88a89e4",
+            "dna:aa1d5b0718df",
+            "dna:373ea48cc9be",
+            "dna:7ce9279dd739",
+            "dna:fc54656bdb75",
+            "dna:962ff37bda0e",
+            "dna:79189e23e7e2",
+            "dna:7c3781133bb3",
+            "dna:0c3871cac47c",
+            "dna:29174fe65715",
+            "dna:528c711d4326",
+            "dna:50813411899a",
+            "dna:378ef1833dbe",
+            "dna:1002e6550f3d",
+            "dna:6711907d8e4c",
+            "dna:9298a1d69e4a",
+            "dna:229be6e533c1",
+            "dna:a87bd1784428",
+            "dna:e3b9cb40c575",
+            "dna:e0c48e20fade",
+            "dna:2cb46a2372c0",
+            "dna:e0153baa10c0",
+            "dna:75ae992240da",
+            "dna:60dd1e4aca4c",
+            "dna:39d55418ccd4",
+            "dna:b572620a1745",
+            "dna:7d3a9229da0f",
+            "dna:ad712d2ffe26",
+            "dna:94b4bb4ee199",
+            "dna:6e8b8124c0e3",
+            "dna:62b3abb871e9",
+            "dna:7a4a6ed59792",
+            "dna:cb85a1a26f3e",
+            "dna:466ac15c9aa0",
+            "dna:83e889f411cb",
+            "dna:bf3f926ac457",
+            "dna:666b45d2ba61",
+            "dna:665908817f02",
+            "dna:cb22141e620e",
+            "signal:bbd2e044c0d3",
+            "signal:baad5b13462d",
+            "signal:d2083b2babec",
+            "signal:148f5e8b33ff",
+            "signal:0c2dbd582dbe",
+            "signal:916a7c4725a9"
+          ],
+          "expected_outcome": "UNKNOWN",
+          "provider": "rules",
+          "model": "rules-deterministic",
+          "foundation_batch": false
+        }
+      },
+      "model_calls": 43
+    },
+    "engagement": {
+      "classified": 10,
+      "hot": 4,
+      "high": 2,
+      "warm": 1,
+      "noise": 3,
+      "offer_mapping": [
+        {
+          "pain": "missed calls",
+          "offer": "AI Receptionist"
+        },
+        {
+          "pain": "scheduling bottleneck",
+          "offer": "AI Scheduling"
+        },
+        {
+          "pain": "manual estimating",
+          "offer": "AI Estimating"
+        },
+        {
+          "pain": "customer-service overload",
+          "offer": "AI Support"
+        }
+      ]
+    },
+    "gtm": {
+      "merge_report": {
+        "status": "success",
+        "timestamp": "2026-08-17T02:24:10.870401+00:00",
+        "mode": "apply",
+        "signals_input": 6,
+        "new_records_merged": 0,
+        "duplicates_skipped": 0,
+        "human_review_count": 6,
+        "rejected_gate_count": 0,
+        "buyer_file_before": 99,
+        "buyer_file_after": 99,
+        "shrinkage_prevented": true
+      },
+      "verify": {
+        "status": "success",
+        "checks": {
+          "buyer_file_exists": true,
+          "buyer_file_readable": true,
+          "buyer_record_count": 99,
+          "gtm_commander_script_exists": true,
+          "neteller_rail_configured": true,
+          "downstream_neteller_script": true,
+          "neteller_handoff_ok": true
+        }
+      }
+    },
+    "repurposing": {
+      "generated": 0,
+      "qa_passed": 0,
+      "qa_failed": 0
+    },
+    "tests": {
+      "existing": 23,
+      "status": "see run logs"
+    },
+    "dry_run": {
+      "mode": false,
+      "buyer_file_written": true,
+      "batch_size": 40
+    }
+  },
+  "errors": [],
+  "next_action": "Promote GLM dry-run to live by enabling GLM_ENABLED and, after human review of human_review.json, running with --apply to merge buyer signals into ai_assistant_buyers_all.json.",
+  "owner": "system",
+  "timestamp": "2026-08-17T02:24:11.039803+00:00"
+}

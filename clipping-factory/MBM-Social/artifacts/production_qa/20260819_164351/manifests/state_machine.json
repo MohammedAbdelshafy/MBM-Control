@@ -1,0 +1,89 @@
+{
+  "assets": {
+    "test_asset_20260819_164351": {
+      "current_state": "VERIFIED",
+      "history": [
+        {
+          "from": "DISCOVERED",
+          "to": "PROCESSING",
+          "timestamp": "2026-08-19T13:44:59.087410+00:00",
+          "reason": "Source ingested"
+        },
+        {
+          "from": "PROCESSING",
+          "to": "CLIPPED",
+          "timestamp": "2026-08-19T13:44:59.147140+00:00",
+          "reason": "Clips generated"
+        },
+        {
+          "from": "CLIPPED",
+          "to": "RENDERED",
+          "timestamp": "2026-08-19T13:44:59.272367+00:00",
+          "reason": "Video rendered"
+        },
+        {
+          "from": "RENDERED",
+          "to": "QA_APPROVED",
+          "timestamp": "2026-08-19T13:44:59.346225+00:00",
+          "reason": "Quality check passed"
+        },
+        {
+          "from": "QA_APPROVED",
+          "to": "READY_TO_PUBLISH",
+          "timestamp": "2026-08-19T13:44:59.426615+00:00",
+          "reason": "Package prepared"
+        },
+        {
+          "from": "READY_TO_PUBLISH",
+          "to": "PUBLISH_REQUESTED",
+          "timestamp": "2026-08-19T13:44:59.472425+00:00",
+          "reason": "Upload initiated"
+        },
+        {
+          "from": "PUBLISH_REQUESTED",
+          "to": "PUBLISHED",
+          "timestamp": "2026-08-19T13:44:59.572573+00:00",
+          "reason": "Upload complete"
+        },
+        {
+          "from": "PUBLISHED",
+          "to": "VERIFIED",
+          "timestamp": "2026-08-19T13:44:59.679079+00:00",
+          "reason": "Publication verified"
+        }
+      ],
+      "retry_count": 0
+    },
+    "test_fail_20260819_164351": {
+      "current_state": "CLIPPED",
+      "history": [
+        {
+          "from": "DISCOVERED",
+          "to": "PROCESSING",
+          "timestamp": "2026-08-19T13:44:59.795834+00:00",
+          "reason": ""
+        },
+        {
+          "from": "PROCESSING",
+          "to": "QA_REJECTED",
+          "timestamp": "2026-08-19T13:44:59.892279+00:00",
+          "reason": "Quality check failed"
+        },
+        {
+          "from": "QA_REJECTED",
+          "to": "PROCESSING",
+          "timestamp": "2026-08-19T13:44:59.932238+00:00",
+          "reason": "Retry"
+        },
+        {
+          "from": "PROCESSING",
+          "to": "CLIPPED",
+          "timestamp": "2026-08-19T13:45:00.009272+00:00",
+          "reason": ""
+        }
+      ],
+      "retry_count": 1
+    }
+  },
+  "updated_at": "2026-08-19T13:45:00.009272+00:00"
+}

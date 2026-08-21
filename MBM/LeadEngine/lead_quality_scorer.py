@@ -53,6 +53,10 @@ LOGS = BASE / "logs"
 LOGS.mkdir(parents=True, exist_ok=True)
 REPORT = LOGS / "lead_quality_report.json"
 
+# Canonical single-writer gateway for the live dialer DB (never raw-write it).
+sys.path.insert(0, str(ROOT))
+from MBM.LeadEngine.dialer_gateway import commit_dialer_db  # noqa: E402
+
 WEIGHTS = {
     "motivation": 0.30,
     "equity": 0.18,
@@ -391,8 +395,13 @@ def main():
                 src = by_id.get(str(lead.get("deal_id", "")).split("-")[-1]) or by_id.get(str(lead.get("id")))
                 if src:
                     annotate(src, score_lead(lead), src.get("details"))
-            save_json(DIALER_DB, db, backup=True)
-            log(f"Synced quality scores to {DIALER_DB.name}")
+            # Route the live dialer DB through the canonical single-writer gateway
+            # (atomic + locked + audited). save_json() is only used for queues.
+            commit_dialer_db(
+                db, reason="lead_quality_scorer", author="LEAD_QUALITY_SCORER",
+                allow_shrink=False,
+            )
+            log(f"Synced quality scores to {DIALER_DB.name} via canonical gateway")
 
     # Always sync quality annotations to the sibling dialer queues (dry-run keeps
     # them local only when --apply; the sort helps dialers rank by quality).

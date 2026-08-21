@@ -1,0 +1,88 @@
+{
+  "status": "success",
+  "dry_run": false,
+  "source": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\MBM\\Artifacts\\DigitalServices\\us_digital_service_leads_20260817184607.csv",
+  "source_rows": 50,
+  "imported": 50,
+  "duplicates_skipped": 0,
+  "added": 0,
+  "updated": 50,
+  "preserved": 0,
+  "contact_needed": 50,
+  "verified_callable": 0,
+  "website_leads": 38,
+  "app_leads": 12,
+  "maintenance_upsell": 50,
+  "by_offer": {
+    "$29 Quick Website": 3,
+    "$49 Business Website": 31,
+    "$99 Pro Website": 4,
+    "$149 Mini App": 12,
+    "$249 Business App": 0
+  },
+  "top_10": [
+    {
+      "id": "DS-96ed047499a3d10e7bd86a7903759221",
+      "company": "AI Sales",
+      "intent_score": 79,
+      "offer": "$29 Quick Website"
+    },
+    {
+      "id": "DS-2761cb57fab8380cad8561998abd84db",
+      "company": "TRB Comms",
+      "intent_score": 70,
+      "offer": "$29 Quick Website"
+    },
+    {
+      "id": "DS-5a42675bce8dff8aa8c12653e732d374",
+      "company": "ROYBI",
+      "intent_score": 69,
+      "offer": "$29 Quick Website"
+    },
+    {
+      "id": "DS-2886c21520a3459c3441f44d71b4f513",
+      "company": "Martins Investment Group (MIG)",
+      "intent_score": 60,
+      "offer": "$99 Pro Website"
+    },
+    {
+      "id": "DS-9ad3bcd9bd4506398ecf01408ec22e84",
+      "company": "Erico Products",
+      "intent_score": 58,
+      "offer": "$99 Pro Website"
+    },
+    {
+      "id": "DS-b37dafaa5cad78bc2fa78223aa39b949",
+      "company": "ICTX WaveMedia",
+      "intent_score": 52,
+      "offer": "$149 Mini App"
+    },
+    {
+      "id": "DS-6477f465aa927ff67dce3f9f22248c0f",
+      "company": "360 Cloud Solutions (combined with Moss Adams in 2025)",
+      "intent_score": 52,
+      "offer": "$149 Mini App"
+    },
+    {
+      "id": "DS-85faf12b1e21ed6611f4abddfe8e2ce5",
+      "company": "CrossPeak Solutions",
+      "intent_score": 52,
+      "offer": "$149 Mini App"
+    },
+    {
+      "id": "DS-983f1ba06f2c4b3788be09e386276330",
+      "company": "3HCloud",
+      "intent_score": 52,
+      "offer": "$149 Mini App"
+    },
+    {
+      "id": "DS-4648c6ea268ccc280611da681f2e008e",
+      "company": "Server Room",
+      "intent_score": 52,
+      "offer": "$149 Mini App"
+    }
+  ],
+  "owner": "system",
+  "timestamp": "2026-08-17T19:20:22.877073+00:00",
+  "next_action": "ENRICH_CONTACT_FOR_MISSING_PHONES"
+}

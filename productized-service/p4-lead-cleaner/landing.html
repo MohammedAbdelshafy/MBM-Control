@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lead List Cleaner — Find out how much of your lead list is actually dialable</title>
+<meta name="description" content="Upload your lead list. In 48 hours get every record classified: VERIFIED, CALLABLE, NOT CALLABLE, DUPLICATE, SUPPRESSED, NEEDS REVIEW — with reason codes." />
+<style>
+  :root{--ink:#0f172a;--muted:#475569;--brand:#0e7490;--brand-dark:#155e75;--bg:#f8fafc;--card:#ffffff;--ok:#16a34a;--warn:#d97706;--bad:#dc2626;--line:#e2e8f0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+  header{padding:56px 0 32px;}
+  h1{font-size:clamp(28px,5vw,44px);line-height:1.15;letter-spacing:-0.02em;}
+  h2{font-size:24px;letter-spacing:-0.01em;margin:0 0 16px;}
+  p{color:var(--muted);}
+  .sub{margin-top:16px;font-size:18px;max-width:640px;}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px;}
+  .btn{display:inline-block;padding:14px 26px;border-radius:10px;font-weight:700;font-size:16px;text-decoration:none;transition:background .15s;}
+  .btn-primary{background:var(--brand);color:#fff;}
+  .btn-primary:hover{background:var(--brand-dark);}
+  .btn-ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand);}
+  .btn-ghost:hover{background:#f0f9ff;}
+  .proof{margin-top:40px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;font-size:15px;}
+  .proof b{color:var(--ink);}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:18px 0;}
+  .stat{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center;}
+  .stat .n{font-size:26px;font-weight:800;}
+  .stat.ok .n{color:var(--ok);}.stat.warn .n{color:var(--warn);}.stat.bad .n{color:var(--bad);}
+  .stat small{color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:11px;}
+  section{padding:36px 0;border-top:1px solid var(--line);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:8px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;}
+  .card h3{font-size:17px;margin-bottom:8px;}
+  .card p{font-size:14.5px;}
+  .steps{counter-reset:step;list-style:none;margin-top:8px;}
+  .steps li{counter-increment:step;padding:10px 0 10px 44px;position:relative;font-size:15.5px;color:var(--ink);border-bottom:1px dashed var(--line);}
+  .steps li:last-child{border-bottom:0;}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:8px;width:30px;height:30px;background:var(--brand);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;}
+  .status-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:12px;}
+  .pill{padding:12px 14px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid var(--line);background:var(--card);}
+  .pill.ok{color:var(--ok);border-color:#bbf7d0;background:#f0fdf4;}
+  .pill.bad{color:var(--bad);border-color:#fecaca;background:#fef2f2;}
+  .pill.warn{color:var(--warn);border-color:#fde68a;background:#fffbeb;}
+  .pill.muted{color:var(--muted);}
+  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14.5px;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);}
+  th{background:#f1f5f9;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);}
+  .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700;}
+  .tag.ok{background:#dcfce7;color:#166534;}.tag.bad{background:#fee2e2;color:#991b1b;}.tag.warn{background:#fef3c7;color:#92400e;}
+  footer{padding:32px 0 56px;color:var(--muted);font-size:13.5px;border-top:1px solid var(--line);}
+  .small{font-size:13px;color:var(--muted);}
+  a{color:var(--brand);}
+  .note{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:10px;padding:12px 16px;font-size:14px;margin-top:18px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Find out how much of your lead list is actually dialable.</h1>
+  <p class="sub">You bought a list. It has dead numbers, duplicates, placeholders, and DNC numbers. We tell you exactly which rows are worth your rep's time — before you pay anyone to dial.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#send">SEND YOUR LIST</a>
+    <a class="btn btn-ghost" href="#free">GET FREE 1,000-LEAD SAMPLE</a>
+  </div>
+  <div class="proof">
+    <b>What you get back in 48 hours</b> — a cleaned CSV where every row carries one of these statuses, plus a summary report:
+    <div class="status-grid">
+      <div class="pill ok">VERIFIED — real, proven contact</div>
+      <div class="pill ok">CALLABLE — dial now</div>
+      <div class="pill bad">NOT CALLABLE — dead / no proof</div>
+      <div class="pill muted">DUPLICATE — already in your list</div>
+      <div class="pill bad">SUPPRESSED — DNC / bad history</div>
+      <div class="pill warn">NEEDS REVIEW — verify before calling</div>
+    </div>
+    <p class="small" style="margin-top:10px;">Every record also gets reason codes, phone status, verification source, and provenance. No vague ratings — exact reasons.</p>
+  </div>
+</header>
+
+<section>
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li><b>Send your list</b> — CSV or JSON, any size up to 10,000 records.</li>
+    <li><b>We run the verification gate</b> — phone normalization, real-name check, provenance, government-registry cross-check, dedupe, and DNC suppression.</li>
+    <li><b>48-hour turnaround</b> — you receive a cleaned CSV + summary report + before/after stats.</li>
+    <li><b>Dial only the rows that pay</b> — your reps stop wasting hours on dead records.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Real output example</h2>
+  <p>This is the actual pipeline output format (sample/test data shown):</p>
+  <table>
+    <thead><tr><th>Phone</th><th>Status</th><th>Phone status</th><th>Verification</th><th>Reason</th></tr></thead>
+    <tbody>
+      <tr><td>+1 (214) 222-3301</td><td><span class="tag ok">CALLABLE</span></td><td>ok</td><td>skip_trace_verified</td><td>—</td></tr>
+      <tr><td>+1 (303) 559-2201</td><td><span class="tag ok">CALLABLE</span></td><td>ok</td><td>npi_registry</td><td>—</td></tr>
+      <tr><td>+1 (214) 222-3301</td><td><span class="tag muted">DUPLICATE</span></td><td>ok</td><td>skip_trace_verified</td><td>duplicate_phone</td></tr>
+      <tr><td>+1 (555) 999-8888</td><td><span class="tag bad">NOT CALLABLE</span></td><td>fake_pattern_match</td><td>unverified</td><td>phone:fake_pattern_match</td></tr>
+      <tr><td>+1 (591) 203-0405</td><td><span class="tag bad">NOT CALLABLE</span></td><td>foreign_area_code</td><td>unverified</td><td>phone:foreign_area_code_591</td></tr>
+      <tr><td>+1 (208) 207-8500</td><td><span class="tag bad">SUPPRESSED</span></td><td>ok</td><td>—</td><td>suppressed_number (DNC)</td></tr>
+    </tbody>
+  </table>
+  <div class="note">Above is a labeled synthetic/test sample used to show the exact output shape. Customer results are produced by the same pipeline — never hand-edited.</div>
+</section>
+
+<section>
+  <h2>What it costs</h2>
+  <div class="grid">
+    <div class="card"><h3>One-time cleanup</h3><p><b>$499</b> setup — up to 10,000 records, 48-hour turnaround, cleaned CSV + report + reason codes.</p></div>
+    <div class="card"><h3>Free sample</h3><p><b>First 1,000 leads cleaned free.</b> See the dead/duplicate portion of your list before you pay anything.</p></div>
+    <div class="card"><h3>Monthly qualification</h3><p>From <b>$49/mo</b> (1,000 leads/mo) — keep every new list clean before your reps touch it. API available.</p></div>
+  </div>
+</section>
+
+<section id="send">
+  <h2>Send your list</h2>
+  <p>Pay the setup fee to lock your 48-hour slot, then email your CSV/JSON to the address below with subject <b>LEAD CLEAN</b>. You'll receive the cleaned CSV + report within 48 hours.</p>
+  <div class="cta-row" style="margin-top:16px;">
+    <a class="btn btn-primary" href="https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=499.00&currency=USD&item=P4_LEAD_CLEAN_10K">PAY $499 &amp; SEND MY LIST</a>
+    <a class="btn btn-ghost" href="mailto:abdelshafyclapps@gmail.com?subject=LEAD%20CLEAN">EMAIL LIST FIRST</a>
+    <a class="btn btn-ghost" href="#free">GET FREE 1,000-LEAD SAMPLE</a>
+  </div>
+</section>
+
+<section id="free">
+  <h2>Free 1,000-lead sample</h2>
+  <p>Send up to 1,000 of your leads. We clean them for free. You keep the results. If the dead portion of your list surprises you, you know exactly what the full cleanup is worth.</p>
+  <div class="cta-row" style="margin-top:16px;">
+    <a class="btn btn-primary" href="mailto:abdelshafyclapps@gmail.com?subject=FREE%20SAMPLE%20-%201000%20LEADS">GET FREE 1,000-LEAD SAMPLE</a>
+  </div>
+  <p class="small" style="margin-top:14px;">Want it kept clean every month? <a href="https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=49.00&currency=USD&item=P4_LEAD_CLEAN_MONTH">Start monthly qualification — $49/mo</a>.</p>
+</section>
+
+<footer>
+  <p>Lead List Cleaner — AI Enhancement Company. Results are produced by a reproducible verification pipeline (phone normalization, provenance, dedupe, DNC suppression, government-registry cross-check). No fabricated ratings.</p>
+</footer>
+
+</div>
+</body>
+</html>

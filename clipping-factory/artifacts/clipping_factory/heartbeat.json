@@ -1,0 +1,13 @@
+{
+  "last_started": "2026-08-20T14:18:33.952939+00:00",
+  "status": "test",
+  "duration_sec": 0.0,
+  "campaigns_found": 2,
+  "clips_produced": 0,
+  "clips_rejected": 0,
+  "clips_queued": 0,
+  "clips_published": 0,
+  "publish_failures": 0,
+  "next_run": "",
+  "updated_at": "2026-08-20T14:18:33.952939+00:00"
+}

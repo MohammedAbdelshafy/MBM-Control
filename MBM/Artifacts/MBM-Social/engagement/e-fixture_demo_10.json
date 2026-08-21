@@ -1,0 +1,13 @@
+{
+  "comment_id": "fixture:demo:10",
+  "signal": "PROBLEM_SIGNAL",
+  "confidence": 0.8,
+  "tier": "HIGH",
+  "source": "fixture:linkedin",
+  "content_id": "campaign:RealEstate",
+  "timestamp": "2026-08-14T09:00:00Z",
+  "reasoning": "rule-based keyword signal",
+  "provider": "rules",
+  "model": "rules-deterministic",
+  "text": "We schedule 40+ appointments a day and no-shows are killing us. Can AI handle the reminder calls?"
+}

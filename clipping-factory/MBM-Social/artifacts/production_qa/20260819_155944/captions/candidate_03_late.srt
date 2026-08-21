@@ -1,0 +1,39 @@
+1
+00:00:00,000 --> 00:00:00,450
+This is a production
+
+2
+00:00:00,500 --> 00:00:00,950
+quality test for the
+
+3
+00:00:01,000 --> 00:00:01,450
+MBM Social clipping pipeline
+
+4
+00:00:01,500 --> 00:00:01,950
+We are validating every
+
+5
+00:00:02,000 --> 00:00:02,450
+stage of the process
+
+6
+00:00:02,500 --> 00:00:02,950
+From source ingestion to
+
+7
+00:00:03,000 --> 00:00:03,450
+final publish Each step
+
+8
+00:00:03,500 --> 00:00:03,950
+must pass real quality
+
+9
+00:00:04,000 --> 00:00:04,450
+gates No mocks no
+
+10
+00:00:04,500 --> 00:00:04,950
+fabrications only real media

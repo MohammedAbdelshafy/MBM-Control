@@ -1,0 +1,17 @@
+{
+  "offer": "AI Consultancy Sprint",
+  "wallet_email": "abdelshafyclapps@gmail.com",
+  "wallet_account": "4599228811",
+  "currency": "USD",
+  "items": {
+    "AI_SPRINT_AUDIT": { "amount": 297.00, "label": "AI Sprint Audit (72h plan + 5 scripts + lead map)" },
+    "AI_SPRINT_BUILD": { "amount": 1497.00, "label": "AI Build & Deploy (live assistant + lead feed + follow-up)" },
+    "AI_SPRINT_MANAGED_MO": { "amount": 497.00, "label": "Managed AI Growth (monthly, recurring)" }
+  },
+  "links": {
+    "AI_SPRINT_AUDIT": "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=297.00&currency=USD&item=AI_SPRINT_AUDIT",
+    "AI_SPRINT_BUILD": "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=1497.00&currency=USD&item=AI_SPRINT_BUILD",
+    "AI_SPRINT_MANAGED_MO": "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=497.00&currency=USD&item=AI_SPRINT_MANAGED_MO"
+  },
+  "source_of_truth": "src/lib/neteller.js"
+}
