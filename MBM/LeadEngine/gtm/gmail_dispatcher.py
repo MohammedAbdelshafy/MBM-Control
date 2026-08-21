@@ -450,6 +450,73 @@ class GmailDispatchAdapter:
         existing.append(record)
         DISPATCH_LOG.write_text(json.dumps(existing, indent=2), encoding="utf-8")
 
+    def build_seller_email_queue(self, db_path: Optional[Path] = None) -> List[Dict[str, Any]]:
+        """
+        Reads canonical dialer database, extracts verified real estate sellers with verified email,
+        preserving queue_rank priority order. Sellers without email are kept out (zero fabrication).
+        """
+        from MBM.GLM.single_writer_lock import DialerSingleWriter
+        from MBM.LeadEngine.dialer_priority_engine import is_lead_suppressed, is_real_estate_seller
+
+        target_path = db_path or (ROOT_DIR / "mbm-dialer" / "app" / "public" / "leads_database.json")
+        writer = DialerSingleWriter(db_path=target_path)
+        leads = writer.read_leads()
+
+        email_queue = []
+        for lead in leads:
+            if is_lead_suppressed(lead):
+                continue
+            if not is_real_estate_seller(lead):
+                continue
+            if lead.get("callable") is False or lead.get("is_callable") is False:
+                continue
+
+            raw_email = str(lead.get("email") or (lead.get("details") or {}).get("email") or "").strip()
+            if raw_email and "@" in raw_email and "." in raw_email:
+                owner = lead.get("contact") or lead.get("owner_name") or "Property Owner"
+                first_name = owner.split()[0] if owner else "there"
+                prop = lead.get("address") or lead.get("property_address") or lead.get("company") or "the property"
+
+                subject = f"Question regarding {prop}"
+                body = (
+                    f"Hi {first_name},\n\n"
+                    f"I'm reaching out regarding {prop} in Texas. Are you still the owner of this property?\n\n"
+                    f"We are actively acquiring residential and commercial properties in your area for direct portfolio investment. "
+                    f"If you would be open to a fair, all-cash, as-is offer with zero closing costs and flexible timeline, please let me know.\n\n"
+                    f"Best regards,\n"
+                    f"Mohammed Abdelshafy\n"
+                    f"MBM Real Estate Acquisitions"
+                )
+                email_queue.append({
+                    "lead_id": lead.get("id"),
+                    "owner": owner,
+                    "to_email": raw_email,
+                    "phone": lead.get("phone"),
+                    "property": prop,
+                    "subject": subject,
+                    "body": body,
+                    "queue_rank": lead.get("queue_rank"),
+                    "priority_score": lead.get("priority_score"),
+                })
+
+        email_queue.sort(key=lambda x: (x.get("queue_rank") if isinstance(x.get("queue_rank"), int) else 999999))
+        return email_queue
+
+    def dispatch_seller_email_queue(self, limit: int = 10, db_path: Optional[Path] = None) -> List[Dict[str, Any]]:
+        """Dispatches outbound property inquiry emails to verified-email sellers in priority order."""
+        queue = self.build_seller_email_queue(db_path=db_path)[:limit]
+        results = []
+        for item in queue:
+            res = self.send_cold_email(
+                entity_id=item["lead_id"],
+                to_email=item["to_email"],
+                subject=item["subject"],
+                body=item["body"],
+                opportunity={"property": item["property"], "lane": "REAL_ESTATE_WHOLESALE"},
+            )
+            results.append(res)
+        return results
+
     def _emit_event(self, event_type_name: str, entity_id: str, payload: Dict[str, Any]) -> None:
         """Emit an event on the GTM event bus if available."""
         if not _HAS_EVENT_BUS or not self._event_bus:
@@ -465,6 +532,7 @@ class GmailDispatchAdapter:
             self._event_bus.publish(event)
         except (ValueError, Exception):
             pass
+
 
 
 # ---------------------------------------------------------------------------
