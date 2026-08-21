@@ -141,6 +141,24 @@ PRODUCTS = [
             {"title": "Digital Blueprint Download", "initial_price": 299, "plan_type": "one_time", "billing_period": None},
         ],
     },
+    # ─── AI Consultancy Sprint (Whop Money Mission) ───
+    # REPLACE id with the real prod_xxx after creating the hub on whop.com.
+    # Source of truth: MBM/Whop/ai-consultancy-agency/whop_product_spec.json
+    {
+        "id": "prod_ai_consultancy_sprint",  # PLACEHOLDER — replace after hub creation
+        "headline": "We build your AI assistant that finds, calls, qualifies, and follows up with your best customers — live in 14 days.",
+        "description": (
+            "AI Consultancy Sprint. Done-for-you AI growth system for local service businesses "
+            "using the stack we run on 1,222 verified businesses: AI Cold-Calling Assistant + "
+            "verified lead feed + tailored scripts + automated follow-up + analytics. "
+            "Sprint Audit $297 (72h), Build & Deploy $1,497 (14d), Managed AI Growth $497/mo."
+        ),
+        "plans": [
+            {"title": "AI Consultancy Sprint Audit", "initial_price": 297, "plan_type": "one_time", "billing_period": None},
+            {"title": "AI Consultancy Build & Deploy", "initial_price": 1497, "plan_type": "one_time", "billing_period": None},
+            {"title": "Managed AI Growth", "initial_price": 497, "plan_type": "renewal", "billing_period": 30},
+        ],
+    },
 ]
 
 ARCHIVED_PRODUCTS = [
