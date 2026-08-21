@@ -1,20 +1,21 @@
-# QA-001 Verification Report
+# QA-002 Production Verification Report
 
-### Executive Summary
-- **Total Candidates Evaluated:** 200
-- **Passed Quality Threshold (>= 80%):** 62
-- **Failed:** 138
-- **Duplicates Removed:** 89
-- **Missing Data Entries:** 0
+## Overview
+**Total Candidates Processed:** 44
+**Passed Verification:** 42
+**Needs Review (Partial Verification):** 2
+**Failed Verification:** 0
 
-### Verdict
-**Final Deliverable:** 62 highly verified leads saved to `wholesalers_qa_pass.csv`.
+**Average Confidence of Passed/Review:** 90.7%
 
-### Sample of Failed Leads (Top 5)
-| Company | Website | Confidence | Reason |
-|---|---|---|---|
-| Nova Real Estate | https://www.novarealestate.com | 40 | Low relevance naming | Website Unreachable/Dead |
-| Velocity Acquisitions | https://www.velocityacquisitions.com | 60 | Website Unreachable/Dead |
-| Eagle Equity | https://www.eagleequity.com | 60 | Website Unreachable/Dead |
-| NextGen Investments | https://www.nextgeninvestments.com | 60 | Website Unreachable/Dead |
-| NextGen Real Estate | https://www.nextgenrealestate.com | 40 | Low relevance naming | Website Unreachable/Dead |
+## Granular Failures
+- **Duplicates Detected:** 0
+- **Dead/Unreachable Websites:** 2
+- **Invalid Email Syntax:** 0
+- **Invalid Phone Formats:** 0
+
+## Top Rejection Reasons
+- **Dead/Unreachable Website:** 2 occurrences
+
+## Summary
+All verified leads are packaged in `Final_Qualified_Leads.csv`. The detailed evidence trace for every single candidate is available in `Verification_Report.csv`.

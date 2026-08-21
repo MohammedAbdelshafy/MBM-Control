@@ -24,3 +24,5 @@
 - **2026-08-21T05:24:39.506063**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-21.csv`
 
 - **2026-08-21T09:29:08.573769**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-21.csv`
+
+- **2026-08-21T12:53:22.776841**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-21.csv`
