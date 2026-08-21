@@ -106,6 +106,44 @@ class GtmSalesLedger:
     def get_events(self) -> List[Dict[str, Any]]:
         return list(self._events)
 
+    def record_transition(
+        self,
+        prospect_id: str,
+        agent: str,
+        channel: str,
+        previous_state: str,
+        new_state: str,
+        action: str,
+        evidence: Dict[str, Any],
+        next_action: str,
+        offer: str = "AUDIT",
+        checkout_url: Optional[str] = None,
+        notes: str = "",
+        lane: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Record a lifecycle transition (Terminal 1 disposition contract).
+
+        Thin wrapper over record_event so callers recording real operator
+        dispositions get one atomic, persisted ledger event.
+        """
+        event = self.record_event(
+            prospect_id=prospect_id,
+            agent=agent,
+            channel=channel,
+            previous_state=previous_state,
+            new_state=new_state,
+            action=action,
+            evidence=evidence,
+            next_action=next_action,
+            offer=offer,
+            checkout_url=checkout_url,
+            notes=notes,
+        )
+        if lane:
+            event["lane"] = str(lane).upper()
+            self.persist()
+        return event
+
     def persist(self) -> None:
         self.ledger_path.parent.mkdir(parents=True, exist_ok=True)
         self.ledger_path.write_text(json.dumps(self._events, indent=2), encoding="utf-8")
@@ -134,22 +172,68 @@ class GtmRevenueScoreboard:
         realized_revenue = 0.0
 
         # Real Estate specific tracking
+        seller_prospects: set = set()
         seller_outreach_attempts = 0
         seller_contacts = 0
         seller_qualified = 0
         seller_callbacks = 0
         seller_appointments = 0
+        seller_offers = 0
         seller_deals = 0
         seller_revenue = 0.0
+
+        # Best-performing source / segment aggregation (recorded evidence only)
+        source_stats: Dict[str, Dict[str, float]] = {}
+        segment_stats: Dict[str, Dict[str, float]] = {}
 
         for e in events:
             act = str(e.get("action", "")).upper()
             state = str(e.get("new_state", "")).upper()
             lane = str(e.get("lane") or e.get("vertical") or e.get("offer") or "").upper()
-            is_re = "SELLER" in lane or "WHOLESALE" in lane or "REAL_ESTATE" in lane or "PROPERTY" in lane
+            # SELLER_CASCADE_* / SELLER_<DISPOSITION> actions declare the lane
+            # in the action name itself.
+            is_re = (
+                "SELLER" in lane or "SELLER" in act or "WHOLESALE" in lane
+                or "REAL_ESTATE" in lane or "PROPERTY" in lane
+            )
             ev = e.get("evidence") or {}
+            if is_re:
+                pid = str(e.get("prospect_id") or "")
+                if pid:
+                    seller_prospects.add(pid)
 
-            if "ATTEMPT" in act or "OUTREACH" in act or "CALL" in act:
+            def _bump(stats: Dict[str, Dict[str, float]], key: str) -> None:
+                k = str(key or "").strip().upper()
+                if not k or k in {"UNKNOWN", "NONE", ""}:
+                    return
+                s = stats.setdefault(k, {"events": 0.0, "progressed": 0.0})
+                s["events"] += 1
+                progressed_states = {
+                    "CONTACTED", "ENGAGED", "QUALIFIED", "CALLBACK_REQUESTED",
+                    "INTERESTED", "APPOINTMENT", "APPOINTMENT_BOOKED",
+                    "MEETING_BOOKED", "OFFER_MADE", "OFFER_SENT",
+                    "CHECKOUT_SENT", "WON", "PURCHASED", "DEAL_WON",
+                    "REVENUE_RECEIVED",
+                }
+                if state in progressed_states:
+                    s["progressed"] += 1
+
+            _bump(source_stats, ev.get("source") or e.get("source"))
+            _bump(segment_stats, ev.get("segment") or e.get("seller_segment"))
+
+            # Attempt = a real outbound touch. A generated-but-unsent link
+            # (evidence status LINK_READY / QUEUED) is NOT an attempt;
+            # CALLBACK_* dispositions are outcomes, not attempts.
+            ev_status = str(ev.get("status") or "").upper()
+            is_attempt = (
+                "CALLBACK" not in act
+                and (
+                    "ATTEMPT" in act or "OUTREACH" in act or "CALL" in act
+                    or ("CASCADE" in act and ev_status == "SENT")
+                    or state in {"WHATSAPP_SENT", "EMAIL_SENT", "SMS_SENT"}
+                )
+            )
+            if is_attempt:
                 outreach_attempts += 1
                 if is_re:
                     seller_outreach_attempts += 1
@@ -172,7 +256,10 @@ class GtmRevenueScoreboard:
                     seller_appointments += 1
             if state in {"CHECKOUT_SENT", "PROPOSAL", "OFFER_SENT"} or "CHECKOUT" in act:
                 checkout_sent += 1
-            if state in {"WON", "PURCHASED", "REVENUE_RECEIVED"}:
+            if state in {"OFFER_MADE", "OFFER_SENT"}:
+                if is_re:
+                    seller_offers += 1
+            if state in {"WON", "PURCHASED", "REVENUE_RECEIVED", "DEAL_WON"}:
                 # Strict verification: must have transaction evidence
                 if ev.get("transaction_id") or ev.get("verified_payment"):
                     purchased += 1
@@ -208,6 +295,31 @@ class GtmRevenueScoreboard:
         else:
             bottleneck = "SCALE — Funnel closed and paying; expand verified prospect volume."
 
+        # One concrete next-best-action per bottleneck stage.
+        next_best_action_by_bottleneck = {
+            "NO_OUTREACH_ATTEMPTS": "DISPATCH_NEXT_SELLER_BATCH",
+            "CONNECT_RATE": "RUN_FOLLOW_UP_CASCADE_ON_NO_ANSWER",
+            "QUALIFICATION": "QUALIFY_ACTIVE_CONVERSATIONS",
+            "OFFER_PRESENTATION": "BOOK_APPOINTMENTS_WITH_QUALIFIED_SELLERS",
+            "CHECKOUT_COMPLETION": "FOLLOW_UP_PENDING_OFFERS",
+            "SCALE": "EXPAND_VERIFIED_PROSPECT_VOLUME",
+        }
+        bottleneck_key = bottleneck.split(" ")[0]
+        next_best_action = next_best_action_by_bottleneck.get(bottleneck_key, "HUMAN_REVIEW_PIPELINE")
+
+        def _best(stats: Dict[str, Dict[str, float]]) -> str:
+            if not stats:
+                return "UNKNOWN"
+            ranked = sorted(
+                stats.items(),
+                key=lambda kv: (kv[1]["progressed"] / kv[1]["events"], kv[1]["events"]),
+                reverse=True,
+            )
+            return ranked[0][0]
+
+        best_source = _best(source_stats)
+        best_segment = _best(segment_stats)
+
         metrics = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "funnel": {
@@ -222,11 +334,13 @@ class GtmRevenueScoreboard:
                 "revenue": realized_revenue,
             },
             "real_estate": {
+                "real_estate_seller_leads": len(seller_prospects),
                 "seller_outreach_attempts": seller_outreach_attempts,
                 "seller_contacts": seller_contacts,
                 "seller_qualified": seller_qualified,
                 "seller_callbacks": seller_callbacks,
                 "seller_appointments": seller_appointments,
+                "seller_offers": seller_offers,
                 "seller_deals": seller_deals,
                 "seller_revenue": seller_revenue,
             },
@@ -250,8 +364,14 @@ class GtmRevenueScoreboard:
             },
 
             "bottleneck": bottleneck,
+            "next_best_action": next_best_action,
+            "best_performing_source": best_source,
+            "best_performing_segment": best_segment,
             "analysis": {
                 "highest_value_bottleneck": bottleneck,
+                "next_best_action": next_best_action,
+                "best_performing_source": best_source,
+                "best_performing_segment": best_segment,
                 "canonical_landing_url": LANDING_URL,
                 "primary_offer": SPRINT_OFFERS["AUDIT"],
             },
@@ -304,9 +424,28 @@ class GtmRevenueScoreboard:
 
 > **{metrics["analysis"]["highest_value_bottleneck"]}**
 
+**Next-Best-Action:** `{metrics["analysis"]["next_best_action"]}`
+**Best-Performing Source:** {metrics["analysis"]["best_performing_source"]} · **Best Segment:** {metrics["analysis"]["best_performing_segment"]}
+
 ---
 
-## 4. CANONICAL OFFERS
+## 4. REAL ESTATE SELLER FUNNEL
+
+| Metric | Count |
+|---|---|
+| **Seller Leads (ledgered)** | {metrics["real_estate"]["real_estate_seller_leads"]} |
+| **Seller Outreach Attempts** | {metrics["real_estate"]["seller_outreach_attempts"]} |
+| **Seller Contacts** | {metrics["real_estate"]["seller_contacts"]} |
+| **Seller Callbacks** | {metrics["real_estate"]["seller_callbacks"]} |
+| **Seller Qualified** | {metrics["real_estate"]["seller_qualified"]} |
+| **Seller Appointments** | {metrics["real_estate"]["seller_appointments"]} |
+| **Seller Offers Made** | {metrics["real_estate"]["seller_offers"]} |
+| **Seller Deals Won** | {metrics["real_estate"]["seller_deals"]} |
+| **Seller Revenue** | **${metrics["real_estate"]["seller_revenue"]:.2f}** |
+
+---
+
+## 5. CANONICAL OFFERS
 
 1. **AI Sprint Audit:** $297 one-time → [`https://whop.com/checkout/plan_e3ibiYXeeAaZV`](https://whop.com/checkout/plan_e3ibiYXeeAaZV)
 2. **Build & Deploy:** $1,497 one-time → [`https://whop.com/checkout/plan_j5bQuNA8nRbWo`](https://whop.com/checkout/plan_j5bQuNA8nRbWo)
