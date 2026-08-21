@@ -1,0 +1,12 @@
+- **Design read:** A high-speed, command-center dashboard for a relentless sales team targeting real estate and medical verticals.
+- **Concept spine:** "The site is a calibration instrument" - clinical, precise, immediate action.
+- **Delivery tier:** `editorial` (calm/minimal/B2B: typography + imagery + bespoke chrome, micro-motion only).
+- **Locked palette:** Dark slate background (#0f172a), vibrant cyan accents (#06b6d4) for high tech feel. Defense: Dark mode reduces eye strain for long calling sessions; cyan provides sharp, immediate focus for action buttons.
+- **Locked type:** Inter (sans-serif) for tabular data, Playfair Display (serif) for the large script text. Defense: A premium serif for the script gives it weight and authority; sans-serif keeps the UI crisp.
+- **Tier-1 technique:** [T1-05] "Micro-motion only" (from editorial tier).
+- **Section plan:**
+  - Sidebar: Vertical navigation (Real Estate Buyers, Real Estate Sellers, Clinics, HVAC).
+  - Main Panel: Master Lead Table.
+  - Right Panel: Dynamic Script Injection and Click-to-Call button.
+- **Asset plan:** None needed for a private SaaS dashboard (except a favicon/cover for Higgsfield).
+- **CTA inventory:** Primary Call Action (vibrant cyan block), Secondary Skip Action (dimmed slate).
