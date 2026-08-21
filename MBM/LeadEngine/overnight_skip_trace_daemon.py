@@ -56,7 +56,7 @@ OTHER_QUEUES = [
     BASE_DIR / "distressed_wholesale_leads.json",
 ]
 
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
+RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "").strip()
 NPI_API = "https://npiregistry.cms.hhs.gov/api/"
 GMAPS_API = "https://local-business-data.p.rapidapi.com/search"
 SKIP_TRACE_API = "https://skip-tracing-working-api.p.rapidapi.com/search"

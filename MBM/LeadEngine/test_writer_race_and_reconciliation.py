@@ -58,7 +58,13 @@ def run_writer_race_test(db_path: Path = None) -> Dict[str, Any]:
                 "last_dialed_worker": f"WORKER_{worker_id}",
                 "last_dialed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             }]
-            res = writer.commit_update(update_payload, author=f"RACE_WORKER_{worker_id}")
+            # 8 writers serialize on one mutex over a ~10MB file; allow each
+            # worker a full queue-drain window instead of the 15s default.
+            res = writer.commit_update(
+                update_payload,
+                author=f"RACE_WORKER_{worker_id}",
+                lock_timeout=120.0,
+            )
             thread_results.append((worker_id, res))
         except Exception as e:
             errors.append((worker_id, str(e)))

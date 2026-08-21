@@ -103,6 +103,55 @@ type CallingLaneTab =
 
 type SortMode = "NEWEST_BEST" | "BEST_SCORE" | "CATEGORY" | "CALLABILITY";
 
+// ── CANONICAL FRESHNESS ORDERING (mirror of MBM/LeadEngine/dialer_queue_engine.py) ──
+// Ingestion precedence: first_seen_at -> discovered_at -> imported_at -> created_at.
+// Missing/invalid timestamps sort LAST deterministically. Never "now".
+const FRESHNESS_STAGE_RANK_TS: Record<string, number> = {
+  NEWLY_IMPORTED: 0,
+  NEWLY_VERIFIED: 1,
+  NEWLY_ENRICHED: 2,
+  OLD: 3,
+};
+
+function ingestionEpoch(lead: DialerLead): number {
+  const fields = ["first_seen_at", "discovered_at", "imported_at", "created_at"] as const;
+  for (const f of fields) {
+    const v = (lead as Record<string, unknown>)[f];
+    if (typeof v === "string" && v.trim()) {
+      const ms = Date.parse(v);
+      if (!Number.isNaN(ms)) return ms;
+    }
+  }
+  return 0; // missing/invalid -> deterministic bottom
+}
+
+function canonicalDialerCompare(a: DialerLead, b: DialerLead): number {
+  const stageA = FRESHNESS_STAGE_RANK_TS[a.freshness_stage || "OLD"] ?? 3;
+  const stageB = FRESHNESS_STAGE_RANK_TS[b.freshness_stage || "OLD"] ?? 3;
+  if (stageA !== stageB) return stageA - stageB;
+  const ingA = ingestionEpoch(a);
+  const ingB = ingestionEpoch(b);
+  if (ingA !== ingB) return ingB - ingA; // newest FIRST
+  const prioA = a.priority_score ?? 0;
+  const prioB = b.priority_score ?? 0;
+  if (prioA !== prioB) return prioB - prioA; // documented business tiebreaker
+  return String(a.id || "").localeCompare(String(b.id || ""));
+}
+
+// new_today is DERIVED from ingestion metadata (same precedence as the engine),
+// never trusted from the persisted boolean alone (legacy rows carry stale flags).
+function isNewTodayLead(lead: DialerLead): boolean {
+  if (lead.new_today === true) return true;
+  const stage = lead.freshness_stage;
+  if (stage === "NEWLY_IMPORTED" || stage === "NEWLY_VERIFIED") return true;
+  const today = new Date().toLocaleDateString("en-CA"); // local YYYY-MM-DD
+  const fields = ["first_seen_at", "discovered_at", "imported_at", "created_at"] as const;
+  return fields.some((f) => {
+    const v = (lead as Record<string, unknown>)[f];
+    return typeof v === "string" && v.startsWith(today);
+  });
+}
+
 function Dashboard() {
   const [leads, setLeads] = useState<DialerLead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -111,6 +160,7 @@ function Dashboard() {
   const [sortMode, setSortMode] = useState<SortMode>("NEWEST_BEST");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVertical, setSelectedVertical] = useState("ALL");
+  const [currentPage, setCurrentPage] = useState(1);
   const [decisions, setDecisions] = useState<Record<string, Decision>>({});
   const [showMeetingModal, setShowMeetingModal] = useState(false);
   const [meetingDate, setMeetingDate] = useState("");
@@ -125,7 +175,7 @@ function Dashboard() {
         setLeads(data);
         if (data.length > 0) {
           // Default selection to first New Today or Hot lead
-          const firstNew = data.find((l) => l.new_today || l.freshness_stage === "NEWLY_IMPORTED" || l.first_seen_at === "2026-08-16");
+          const firstNew = data.find((l) => isNewTodayLead(l));
           setSelectedLeadId(firstNew ? firstNew.id : data[0].id);
         }
         setLoading(false);
@@ -168,6 +218,9 @@ function Dashboard() {
     if (nextIndex < 0) nextIndex = 0;
     if (nextIndex >= filteredAndRankedLeads.length) nextIndex = filteredAndRankedLeads.length - 1;
     setSelectedLeadId(filteredAndRankedLeads[nextIndex].id);
+    // Follow the selection across pagination boundaries without resetting sort.
+    const targetPage = Math.floor(nextIndex / PAGE_SIZE) + 1;
+    if (targetPage !== safePage) setCurrentPage(targetPage);
   };
 
   const isSeller = (l: DialerLead) => {
@@ -223,7 +276,7 @@ function Dashboard() {
         if (lead.callable === false) return false;
 
         // Tab filtering
-        if (activeLane === "NEW_TODAY" && !lead.new_today && lead.freshness_stage !== "NEWLY_IMPORTED" && lead.first_seen_at !== "2026-08-16") return false;
+        if (activeLane === "NEW_TODAY" && !isNewTodayLead(lead)) return false;
         if (activeLane === "SELLERS" && !isSeller(lead)) return false;
         if (activeLane === "BUYERS" && !isBuyer(lead)) return false;
         if (activeLane === "CLINICS" && !isClinic(lead)) return false;
@@ -250,11 +303,11 @@ function Dashboard() {
       })
       .sort((a, b) => {
         if (sortMode === "NEWEST_BEST") {
-          // Pre-computed canonical global priority rank (1..N)
-          const rankA = a.priority_rank || 9999;
-          const rankB = b.priority_rank || 9999;
-          if (rankA !== rankB) return rankA - rankB;
-          return (b.priority_score || 0) - (a.priority_score || 0);
+          // Canonical newest-first invariant (stage -> ingestion ts -> prio -> id).
+          // Falls back to precomputed priority_rank ONLY as a final tiebreaker.
+          const canonical = canonicalDialerCompare(a, b);
+          if (canonical !== 0) return canonical;
+          return (a.priority_rank || 9999) - (b.priority_rank || 9999);
         } else if (sortMode === "BEST_SCORE") {
           const scoreA = a.priority_score || a.intent_score || (a.motivation_score ? a.motivation_score * 10 : 70);
           const scoreB = b.priority_score || b.intent_score || (b.motivation_score ? b.motivation_score * 10 : 70);
@@ -263,13 +316,35 @@ function Dashboard() {
           const catA = a.vertical || "";
           const catB = b.vertical || "";
           if (catA !== catB) return catA.localeCompare(catB);
-          return (a.category_rank || 9999) - (b.category_rank || 9999);
+          return canonicalDialerCompare(a, b); // newest-first within each category
         } else if (sortMode === "CALLABILITY") {
-          return (b.callability || 90) - (a.callability || 90);
+          return (b.callability_score || 90) - (a.callability_score || 90);
         }
         return 0;
       });
   }, [leads, activeLane, sortMode, selectedVertical, searchQuery, decisions]);
+
+  // ── PAGINATION: always FILTER → SORT → PAGINATE (never re-sort per page) ──
+  const PAGE_SIZE = 50;
+  const totalPages = Math.max(1, Math.ceil(filteredAndRankedLeads.length / PAGE_SIZE));
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+  const pagedLeads = useMemo(
+    () => filteredAndRankedLeads.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
+    [filteredAndRankedLeads, safePage]
+  );
+
+  // Reset to page 1 whenever the filtered set or ordering changes so page 1
+  // ALWAYS begins with the newest eligible lead.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeLane, sortMode, selectedVertical, searchQuery]);
+
+  // Keep selection inside the current page window when navigating pages.
+  useEffect(() => {
+    if (pagedLeads.length > 0 && !pagedLeads.some((l) => l.id === selectedLeadId)) {
+      setSelectedLeadId(pagedLeads[0].id);
+    }
+  }, [pagedLeads]);
 
   const selectedLead = useMemo(() => {
     return leads.find((l) => l.id === selectedLeadId) || filteredAndRankedLeads[0] || null;
@@ -368,7 +443,7 @@ function Dashboard() {
     const contechCount = leads.filter(isConTech).length;
     const digitalCount = leads.filter(isDigital).length;
     const aiBuyersCount = leads.filter((l) => !isSeller(l)).length;
-    const newTodayCount = leads.filter((l) => l.new_today || l.freshness_stage === "NEWLY_IMPORTED" || l.first_seen_at === "2026-08-16").length;
+    const newTodayCount = leads.filter(isNewTodayLead).length;
     const hotCount = leads.filter((l) => (l.intent_score && l.intent_score >= 80) || (l.priority_score && l.priority_score >= 85) || l.stage === "HOT_BUYER").length;
 
     const decList = Object.values(decisions);
@@ -554,7 +629,7 @@ function Dashboard() {
               )}
             </div>
 
-            {/* Sorting Mode Selector */}
+            {/* Sorting Mode Selector + Pagination */}
             <div className="flex items-center justify-between gap-2 text-[10px] font-mono text-slate-400">
               <span className="font-bold uppercase tracking-wider text-cyan-400 truncate">
                 🎯 QUEUE ({filteredAndRankedLeads.length})
@@ -573,19 +648,41 @@ function Dashboard() {
                 </select>
               </div>
             </div>
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 pt-1.5 text-[10px] font-mono text-slate-400">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={safePage <= 1}
+                  className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 disabled:opacity-30 hover:border-cyan-500"
+                >
+                  ◀ Prev
+                </button>
+                <span className="text-slate-300">
+                  Page {safePage} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={safePage >= totalPages}
+                  className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 disabled:opacity-30 hover:border-cyan-500"
+                >
+                  Next ▶
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Lead List */}
+          {/* Lead List — canonical order preserved: page 1 starts with the newest */}
           <div className="flex-1 overflow-y-auto divide-y divide-slate-800/40">
-            {filteredAndRankedLeads.length === 0 ? (
+            {pagedLeads.length === 0 ? (
               <div className="p-6 text-center text-xs text-slate-500">
                 No leads match the active filter. Switch tabs to view more.
               </div>
             ) : (
-              filteredAndRankedLeads.map((lead, idx) => {
+              pagedLeads.map((lead, idx) => {
+                const globalIdx = (safePage - 1) * PAGE_SIZE + idx;
                 const isSel = lead.id === selectedLead?.id;
                 const dec = decisions[lead.id];
-                const isNew = lead.new_today || lead.freshness_stage === "NEWLY_IMPORTED" || lead.freshness_stage === "NEWLY_VERIFIED" || lead.first_seen_at === "2026-08-16";
+                const isNew = isNewTodayLead(lead) || lead.freshness_stage === "NEWLY_VERIFIED";
                 const isCallNow = lead.queue_bucket === "FRESH_CALL_NOW" || (lead.priority_rank && lead.priority_rank <= 25);
 
                 return (
@@ -601,7 +698,7 @@ function Dashboard() {
                     <div className="flex items-center justify-between mb-1">
                       <div className="flex items-center gap-1.5">
                         <span className="text-[10px] font-mono text-cyan-400 font-bold">
-                          #{lead.priority_rank || idx + 1}
+                          #{lead.priority_rank || globalIdx + 1}
                         </span>
                         {lead.category_rank && (
                           <span className="text-[9px] font-mono text-slate-500">

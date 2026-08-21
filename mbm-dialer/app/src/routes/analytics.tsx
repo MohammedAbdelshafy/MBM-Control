@@ -77,7 +77,16 @@ function AnalyticsDashboard() {
     const total = leads.length;
     const callable = leads.filter((l) => l.callable !== false).length;
     const verifiedPhones = leads.filter((l) => l.phone_verified).length;
-    const newToday = leads.filter((l) => l.new_today || l.first_seen_at === "2026-08-16").length;
+    const newToday = leads.filter((l) => {
+      if (l.new_today === true) return true;
+      const stage = (l as Record<string, unknown>).freshness_stage;
+      if (stage === "NEWLY_IMPORTED" || stage === "NEWLY_VERIFIED") return true;
+      const today = new Date().toLocaleDateString("en-CA");
+      return ["first_seen_at", "discovered_at", "imported_at", "created_at"].some((f) => {
+        const v = (l as Record<string, unknown>)[f];
+        return typeof v === "string" && v.startsWith(today);
+      });
+    }).length;
     const hot = leads.filter(
       (l) => (l.intent_score && l.intent_score >= 80) || (l.priority_score && l.priority_score >= 85),
     ).length;

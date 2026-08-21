@@ -36,7 +36,7 @@ except Exception as e:
     _writer = None
 
 DB_PATH = Path(r"C:\Users\omare\OneDrive\Desktop\AI\mbm-dialer\app\public\leads_database.json")
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
+RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "").strip()
 SKIP_TRACE_URL = "https://skip-tracing-working-api.p.rapidapi.com/search"
 SKIP_TRACE_HEADERS = {
     "x-rapidapi-key": RAPIDAPI_KEY,
@@ -122,6 +122,8 @@ def main():
     print(f"  Total leads: {total}")
     print(f"  Batch size: {BATCH_SIZE}")
     print(f"  Sources: RapidAPI Skip Trace + FreeSkipTracer")
+    if not RAPIDAPI_KEY:
+        print("  [WARN] RAPIDAPI_KEY not set - paid skip-trace source DISABLED (free source only)")
     print("=" * 70)
 
     verified = 0
@@ -165,7 +167,7 @@ def main():
 
         # ------- Source 1: RapidAPI Skip Trace (address-based) -------
         skip_data = None
-        if address:
+        if address and RAPIDAPI_KEY:
             skip_data = skip_trace_rapidapi(address)
             time.sleep(DELAY)
 

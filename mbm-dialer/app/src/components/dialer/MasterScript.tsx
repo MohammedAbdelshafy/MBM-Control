@@ -21,6 +21,8 @@ export type DialerLead = {
   first_seen_at?: string;
   discovered_at?: string;
   imported_at?: string;
+  created_at?: string;
+  callability_score?: number;
   verified_at?: string;
   new_today?: boolean;
   freshness_label?: string;

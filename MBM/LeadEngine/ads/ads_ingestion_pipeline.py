@@ -70,7 +70,7 @@ from MBM.LeadEngine.dialer_gateway import (
     SUPPRESSION_FILE,
 )
 
-ARTIFACTS_DIR = ROOT_DIR / "MBM" / "Artifacts"
+ARTIFACTS_DIR = Path(os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
 ADS_RECONCILIATION_JSON = ARTIFACTS_DIR / "ads_reconciliation_report.json"
 ADS_RECONCILIATION_MD = ARTIFACTS_DIR / "ads_reconciliation_report.md"

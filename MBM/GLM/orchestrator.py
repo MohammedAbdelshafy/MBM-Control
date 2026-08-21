@@ -37,8 +37,10 @@ from MBM.GLM.revenue_and_gtm_agents import (
 from MBM.GLM.delivery_report import get_delivery_reporter
 from MBM.GLM.glm_integration_worker import get_glm_worker, GLMWorker, GLMRecommendation
 
-TOP25_JSON_PATH = ROOT_DIR / "MBM" / "Artifacts" / "GLM_TOP25_MISSIONS.json"
-TOP25_MD_PATH = ROOT_DIR / "MBM" / "Artifacts" / "GLM_TOP25_MISSIONS.md"
+import os as _os
+_TOP25_ROOT = Path(_os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
+TOP25_JSON_PATH = _TOP25_ROOT / "GLM_TOP25_MISSIONS.json"
+TOP25_MD_PATH = _TOP25_ROOT / "GLM_TOP25_MISSIONS.md"
 
 
 class GLMOrchestrator:

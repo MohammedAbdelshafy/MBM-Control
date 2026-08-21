@@ -232,12 +232,15 @@ class DialerSingleWriter:
         reason: str = "commit_update",
         operation_id: Optional[str] = None,
         expected_revision: Optional[int] = None,
+        lock_timeout: float = 15.0,
     ) -> Dict[str, Any]:
         """
         Atomically merges and writes leads to `leads_database.json`.
         Guarantees that total lead count NEVER decreases without explicit authorization.
+        ``lock_timeout`` bounds how long the caller waits for the writer mutex
+        (raise it for batch/race workloads where many writers serialize).
         """
-        if not self._acquire_lock():
+        if not self._acquire_lock(timeout_sec=lock_timeout):
             raise SingleWriterViolation("Could not acquire single-writer lock")
 
         try:
@@ -296,6 +299,7 @@ class DialerSingleWriter:
         reason: str = "full_replace",
         operation_id: Optional[str] = None,
         expected_revision: Optional[int] = None,
+        lock_timeout: float = 15.0,
     ) -> Dict[str, Any]:
         """
         Authorized whole-file replacement used by annotators that rewrite the
@@ -303,7 +307,7 @@ class DialerSingleWriter:
         bundler). Acquires the single-writer lock, snapshots a backup, and
         refuses to shrink the dataset unless ``allow_shrink`` is explicitly set.
         """
-        if not self._acquire_lock():
+        if not self._acquire_lock(timeout_sec=lock_timeout):
             raise SingleWriterViolation("Could not acquire single-writer lock")
 
         try:

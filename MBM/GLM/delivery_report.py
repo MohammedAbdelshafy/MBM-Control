@@ -12,7 +12,8 @@ from datetime import datetime, timezone
 from typing import Dict, List, Any
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-REPORT_DIR = ROOT_DIR / "MBM" / "Artifacts" / "GLM"
+import os as _os
+REPORT_DIR = Path(_os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts")) / "GLM"
 MD_PATH = REPORT_DIR / "DAILY_GLM_ENGINEERING_REPORT.md"
 JSON_PATH = REPORT_DIR / "DAILY_GLM_ENGINEERING_REPORT.json"
 

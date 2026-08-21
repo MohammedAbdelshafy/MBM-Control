@@ -18,3 +18,9 @@
 - **2026-07-19T15:30:00**: `hunter` (Infrastructure) Set up hourly HUNTER outreach cron. Cron schedule: `:30` every hour in server/index.js. Standalone daemon: `npm run hunter:daemon`.
 
 - **2026-07-19T15:45:00**: `hunter` (Altura Builders) Discovered email ryliew@alturahomes.com via alturahomes.com contact page. Queued personalized outreach email. Updated pipeline from phone_call_needed to outreach_sent. No phone-only contacts remaining. Cron schedule: `:30` every hour in server/index.js. Standalone daemon: `npm run hunter:daemon`. Commands: `npm run hunter:send` (one cycle), `npm run hunter:dry-run` (preview). The existing `:00` and `:05` crons also drain the email queue, so emails get sent within an hour regardless.
+
+- **2026-08-21T03:23:59.594758**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-21.csv`
+
+- **2026-08-21T05:24:39.506063**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-21.csv`
+
+- **2026-08-21T09:29:08.573769**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-21.csv`

@@ -278,6 +278,26 @@ def _newest_timestamp(lead: Dict[str, Any]) -> Optional[float]:
     return best
 
 
+# CANONICAL FRESHNESS PRECEDENCE (documented invariant):
+#   first_seen_at -> discovered_at -> imported_at -> created_at
+# The FIRST present & parseable ingestion timestamp wins. Deliberately EXCLUDES
+# verification/enrichment refresh fields (verified_at, last_verified_at,
+# updated_at, ...) so a re-verification sweep can never re-age an old lead
+# into "new". Missing/invalid => 0.0 => deterministically LAST (bottom), never
+# "now", never array position, never file mtime.
+_INGESTION_PRECEDENCE = ("first_seen_at", "discovered_at", "imported_at", "created_at")
+
+
+def ingestion_timestamp_of(lead: Dict[str, Any]) -> float:
+    """Canonical ingestion-freshness epoch for ordering (0.0 if none parseable)."""
+    for field in _INGESTION_PRECEDENCE:
+        value = lead.get(field) or (lead.get("details") or {}).get(field)
+        ts = _parse_ts(value)
+        if ts is not None:
+            return ts
+    return 0.0
+
+
 def freshness_stage_of(lead: Dict[str, Any]) -> Tuple[str, int, int]:
     """Return (stage, freshness_score, newest_epoch).
 
@@ -352,7 +372,7 @@ def priority_score_of(lead: Dict[str, Any]) -> int:
     return min(100, round(0.35 * intent + 0.25 * callability + 0.20 * strength + 0.20 * freshness))
 
 
-def _main_queue_sort_key(lead: Dict[str, Any]) -> Tuple[int, int, int, int, int, float, str]:
+def _main_queue_sort_key(lead: Dict[str, Any]) -> Tuple[int, float, int, int, int, int, str]:
     state = lead.get("_callable_state") or get_callable_state(lead)
     stage_rank = FRESHNESS_STAGE_RANK.get(state["freshness_stage"], 3)
 
@@ -363,17 +383,21 @@ def _main_queue_sort_key(lead: Dict[str, Any]) -> Tuple[int, int, int, int, int,
     if not callability:
         callability = 90
     strength = max(_as_int(lead.get("motivation_score")), _as_int(lead.get("deal_score")))
-    newest = state["newest_timestamp_epoch"] or 0.0
+    ingestion = ingestion_timestamp_of(lead)
     prio = state.get("priority_score") or priority_score_of(lead)
 
-    # 1. Freshness Stage (NEWLY_IMPORTED=0, NEWLY_VERIFIED=1, NEWLY_ENRICHED=2, OLD=3)
-    # 2. -Priority Score
-    # 3. -Intent
-    # 4. -Callability
-    # 5. -Strength (Motivation/Deal)
-    # 6. -Newest Timestamp Epoch
-    # 7. Stable ID
-    return (stage_rank, -prio, -intent, -callability, -strength, -newest, str(lead.get("id") or ""))
+    # CANONICAL DIALER ORDERING INVARIANT (newest-first):
+    #   1. Freshness Stage (NEWLY_IMPORTED=0, NEWLY_VERIFIED=1, NEWLY_ENRICHED=2, OLD=3)
+    #   2. -Ingestion timestamp (first_seen_at -> discovered_at -> imported_at
+    #      -> created_at; newest FIRST, missing/invalid LAST within the stage)
+    #   3. -Priority Score   (documented business tiebreaker ONLY — a static
+    #      score may never place an older lead above a significantly newer one
+    #      inside the same freshness stage)
+    #   4. -Intent
+    #   5. -Callability
+    #   6. -Strength (Motivation/Deal)
+    #   7. Stable ID (deterministic total order)
+    return (stage_rank, -ingestion, -prio, -intent, -callability, -strength, str(lead.get("id") or ""))
 
 
 def get_callable_state(lead: Dict[str, Any]) -> Dict[str, Any]:

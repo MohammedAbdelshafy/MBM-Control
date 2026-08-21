@@ -10,7 +10,7 @@ load_dotenv()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_FILE = os.path.join(BASE_DIR, 'facebook_cash_buyers.json')
 
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
+RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "").strip()
 
 BUYER_SEARCH_QUERIES = [
     {"query": "we buy houses cash in Dallas TX", "market": "Dallas-Fort Worth", "type": "Cash Buyer / Flipper"},

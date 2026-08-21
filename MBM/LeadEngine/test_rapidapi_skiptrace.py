@@ -2,7 +2,7 @@ import requests
 import json
 import os
 
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
+RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "").strip()
 
 # Test address: 12124 SCHROEDER RD, DALLAS, TX, 75243
 url = "https://skip-tracing-working-api.p.rapidapi.com/search"

@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTPUT_DIR = os.path.join(BASE_DIR, '..', 'clipping-factory', 'MBM-Social', 'Brands', 'cutedosage', 'outputs')
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
+RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "").strip()
 
 US_VIRAL_KEYWORDS = [
     "cute puppy doing funny things",

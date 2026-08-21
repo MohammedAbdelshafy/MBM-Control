@@ -79,8 +79,10 @@ CALL_DISPOSITIONS = ROOT_DIR / "MBM" / "LeadEngine" / "logs" / "call_disposition
 COMMENTS_FILE = ROOT_DIR / "MBM" / "LeadEngine" / "dialer_comments.json"
 SUPPRESSION_FILE = ROOT_DIR / "MBM" / "Artifacts" / "suppressed_bad_phones.json"
 QUARANTINE_FILE = ROOT_DIR / "MBM" / "Artifacts" / "quarantined_bad_leads.json"
-REPORT_JSON = ROOT_DIR / "MBM" / "Artifacts" / "daily_refresh_report.json"
-REPORT_MD = ROOT_DIR / "MBM" / "Artifacts" / "daily_refresh_report.md"
+import os as _os
+_REPORTS_ROOT = Path(_os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
+REPORT_JSON = _REPORTS_ROOT / "daily_refresh_report.json"
+REPORT_MD = _REPORTS_ROOT / "daily_refresh_report.md"
 
 # ── Feedback Signal Detection ──────────────────────────────────────────────
 

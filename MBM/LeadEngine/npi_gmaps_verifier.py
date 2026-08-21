@@ -15,7 +15,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='repla
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 DB_PATH = Path(r"C:\Users\omare\OneDrive\Desktop\AI\mbm-dialer\app\public\leads_database.json")
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "572a857767mshe9f183ef86f1060p15ee07jsn900c90701df8")
+RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "").strip()
 
 try:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))

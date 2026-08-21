@@ -1,12 +1,12 @@
 # Lead Qualification & Verification Report
 
 ### Executive Summary
-- **Input Candidates (Post-QA):** 59
-- **Fully Verified (Passed Cross-Reference):** 41
+- **Input Candidates (Post-QA):** 62
+- **Fully Verified (Passed Cross-Reference):** 44
 - **Rejected (Unverifiable Signal):** 18
 
 ### Verdict
-**Final Pack:** 41 leads added to `wholesalers_final_qualified.csv`.
+**Final Pack:** 44 leads added to `wholesalers_final_qualified.csv`.
 
 ### Rejection Log
 | Company | Email | Phone | Reason |

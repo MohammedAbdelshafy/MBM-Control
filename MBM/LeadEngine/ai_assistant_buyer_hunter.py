@@ -52,7 +52,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 LEADENGINE_DIR = ROOT_DIR / "MBM" / "LeadEngine"
-ARTIFACTS_DIR = ROOT_DIR / "MBM" / "Artifacts"
+ARTIFACTS_DIR = Path(os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
 LOGS_DIR = ROOT_DIR / "logs" / "ai_buyer_hunter"
 
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)

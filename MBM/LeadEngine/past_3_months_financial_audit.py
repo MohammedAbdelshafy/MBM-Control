@@ -17,7 +17,7 @@ ROOT_DIR = BASE_DIR.parent.parent.resolve()
 LOGS_DIR = BASE_DIR / 'logs'
 
 SUPABASE_URL = os.getenv("VITE_SUPABASE_URL", "https://prgmwljhbjtcjmwnjaao.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZ213bGpoYmp0Y2ptd25qYWFvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MzYxNTcyOSwiZXhwIjoyMDk5MTkxNzI5fQ.86LnXpzNHpC22s8dt5JgWnCqIturvK3eB_Rz2BwTY1g")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
 
 
 def _log(msg):
