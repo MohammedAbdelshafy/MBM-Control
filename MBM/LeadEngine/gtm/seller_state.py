@@ -27,6 +27,7 @@ Within a tier the OLDEST pending event is surfaced first (most overdue).
 """
 
 from typing import Any, Dict, List, Optional
+import re
 
 # The exact ONE next action per interpreted state.
 ACTION_CALLBACK = "CALLBACK"
@@ -95,6 +96,25 @@ _STATE_MAP: Dict[str, tuple] = {
 
 _TERMINAL_STATES = {"DNC", "INVALID", "WRONG_PERSON", "SUPPRESSED", "DO_NOT_CALL"}
 
+# PRODUCTION VS FIXTURE RULE: test/fixture/synthetic ledger entries never count
+# toward real seller production metrics or next-best-actions.
+# Matching is SEGMENT-based ("LEAD_IDEMPOTENT_01" -> {LEAD, IDEMPOTENT, 01}) so
+# ordinary IDs like "M-LATEST" (which merely contains the letters t-e-s-t) are
+# never misclassified.
+_FIXTURE_SEGMENTS = {"TEST", "E2E", "SIM", "MOCK", "FIXTURE", "DEMO", "SAMPLE", "IDEMPOTENT"}
+
+
+def is_fixture_event(event: Dict[str, Any]) -> bool:
+    """True when a ledger event is a test/fixture entry, not production evidence."""
+    pid = str(event.get("prospect_id") or "").upper()
+    segments = set(re.split(r"[^A-Z0-9]+", pid))
+    return bool(segments & _FIXTURE_SEGMENTS)
+
+
+def production_events(events: Optional[List[Dict[str, Any]]]) -> List[Dict[str, Any]]:
+    """Filter a ledger down to persisted PRODUCTION events only."""
+    return [e for e in (events or []) if not is_fixture_event(e)]
+
 
 def interpret_seller_events(events: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     """Interpret real ledger events into per-seller state.
@@ -103,7 +123,7 @@ def interpret_seller_events(events: List[Dict[str, Any]]) -> Dict[str, Dict[str,
     an empty ledger yields an empty dict (nothing is invented).
     """
     interpreted: Dict[str, Dict[str, Any]] = {}
-    for e in events or []:
+    for e in production_events(events):
         pid = str(e.get("prospect_id") or "").strip()
         if not pid:
             continue

@@ -160,7 +160,10 @@ class GtmRevenueScoreboard:
         prospects_count: int = 10,
         active_agent_hours: float = 1.0,
     ) -> Dict[str, Any]:
-        events = self.ledger.get_events()
+        # PRODUCTION VS FIXTURE RULE: test/fixture/synthetic ledger entries are
+        # excluded from real seller production metrics.
+        from MBM.LeadEngine.gtm.seller_state import production_events
+        events = production_events(self.ledger.get_events())
 
         outreach_attempts = 0
         contacts = 0

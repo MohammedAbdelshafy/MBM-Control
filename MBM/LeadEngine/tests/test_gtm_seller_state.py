@@ -211,6 +211,39 @@ def test_revenue_requires_transaction_evidence(tmp_path):
     assert metrics2["real_estate"]["seller_revenue"] == 297.0
 
 
+def test_fixture_events_excluded_from_production(tmp_path):
+    """Fixture/test ledger entries never count; ordinary IDs are never misclassified."""
+    from MBM.LeadEngine.gtm.seller_state import is_fixture_event, production_events
+
+    assert is_fixture_event({"prospect_id": "LEAD_IDEMPOTENT_01"}) is True
+    assert is_fixture_event({"prospect_id": "TEST_TENANT_ID:LEAD_E2E_789"}) is True
+    assert is_fixture_event({"prospect_id": "SIM-OPP-0001"}) is True
+    # 'LATEST' merely contains the letters t-e-s-t — it is NOT a fixture ID.
+    assert is_fixture_event({"prospect_id": "M-LATEST"}) is False
+    assert is_fixture_event({"prospect_id": "AI-BUYER-0AE85C32"}) is False
+
+    events = [
+        {"prospect_id": "LEAD_IDEMPOTENT_01", "new_state": "WHATSAPP_SENT"},
+        {"prospect_id": "AI-BUYER-0AE85C32", "new_state": "WHATSAPP_LINK_READY"},
+    ]
+    prod = production_events(events)
+    assert [e["prospect_id"] for e in prod] == ["AI-BUYER-0AE85C32"]
+
+    # Scoreboard honors the same rule: 1 real lead, 0 attempts (link != send).
+    ledger = _ledger(tmp_path)
+    for e in events:
+        ledger.record_event(
+            prospect_id=e["prospect_id"], agent="CASCADE", channel="WHATSAPP",
+            previous_state="CASCADE_QUEUED", new_state=e["new_state"],
+            action="SELLER_CASCADE_DAY_0_INITIAL",
+            evidence={"status": "SENT" if e["new_state"] == "WHATSAPP_SENT" else "LINK_READY"},
+            next_action="WAIT",
+        )
+    metrics = GtmRevenueScoreboard(ledger=ledger).compute_metrics()
+    assert metrics["real_estate"]["real_estate_seller_leads"] == 1
+    assert metrics["funnel"]["outreach_attempts"] == 0
+
+
 def test_latest_event_wins_no_duplicate_state(tmp_path):
     ledger = _ledger(tmp_path)
     ledger.record_event(
