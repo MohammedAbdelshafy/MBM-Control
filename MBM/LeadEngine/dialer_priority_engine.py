@@ -46,10 +46,24 @@ from MBM.GLM.single_writer_lock import DialerSingleWriter
 from MBM.LeadEngine.gtm.scoreboard import SPRINT_OFFERS, LANDING_URL
 
 DIALER_DB_PATH = ROOT_DIR / "mbm-dialer" / "app" / "public" / "leads_database.json"
-ARTIFACTS_DIR = ROOT_DIR / "MBM" / "Artifacts"
+# Honor the suite-wide isolation root (see tests/conftest.py) so test imports
+# never target production artifact paths. Unset in production -> unchanged.
+ARTIFACTS_DIR = Path(os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
 SALES_LEDGER_PATH = ROOT_DIR / "MBM" / "Whop" / "ai-consultancy-agency" / "sales_ledger_day1.json"
 AUDIT_LOG_PATH = ARTIFACTS_DIR / "dialer_priority_refresh_audit.json"
 CALLSHEET_MD_PATH = ARTIFACTS_DIR / "DIALER_TOP_PRIORITY_CALLSHEET.md"
+
+
+def _is_canonical_db(db_path: Path) -> bool:
+    """True only when operating on the canonical dialer database.
+
+    Contamination guard: fixture/test databases must never overwrite
+    production artifacts (callsheet, refresh audit).
+    """
+    try:
+        return os.path.abspath(str(db_path)) == os.path.abspath(str(DIALER_DB_PATH))
+    except Exception:
+        return False
 
 _TIMESTAMP_FIELDS = (
     "created_at", "createdAt", "found_at", "foundAt", "discovered_at", "discoveredAt",
@@ -459,9 +473,13 @@ def refresh_dialer_priority_queue(
             allow_shrink=False,
         )
 
-        ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
-        AUDIT_LOG_PATH.write_text(json.dumps(audit_entry, indent=2), encoding="utf-8")
-        _export_callsheet_markdown(ranked_leads, callable_count, original_count, re_seller_count)
+        # Contamination guard: only canonical-DB refreshes may write
+        # production artifacts (callsheet / refresh audit).
+        if _is_canonical_db(db_path):
+            ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
+            AUDIT_LOG_PATH.write_text(json.dumps(audit_entry, indent=2), encoding="utf-8")
+            _export_callsheet_markdown(ranked_leads, callable_count, original_count,
+                                       re_seller_count, out_path=CALLSHEET_MD_PATH)
 
     return {
         "status": "SUCCESS",
@@ -476,7 +494,7 @@ def refresh_dialer_priority_queue(
     }
 
 
-def _export_callsheet_markdown(ranked_leads: List[Dict[str, Any]], callable_count: int, total_count: int, re_count: int) -> Path:
+def _export_callsheet_markdown(ranked_leads: List[Dict[str, Any]], callable_count: int, total_count: int, re_count: int, out_path: Path = CALLSHEET_MD_PATH) -> Path:
     """Generates the revenue-first markdown call sheet prioritizing Real Estate Sellers."""
     re_sellers = [l for l in ranked_leads if l.get("is_real_estate") and l.get("is_callable")]
     other_top = [l for l in ranked_leads if not l.get("is_real_estate") and l.get("is_callable")][:15]
@@ -541,8 +559,8 @@ def _export_callsheet_markdown(ranked_leads: List[Dict[str, Any]], callable_coun
         f"- **Managed Growth:** {SPRINT_OFFERS['MANAGED']['name']} (${SPRINT_OFFERS['MANAGED']['price']:.2f}/mo) · [{SPRINT_OFFERS['MANAGED']['plan_id']}]({SPRINT_OFFERS['MANAGED']['checkout_url']})",
     ])
 
-    CALLSHEET_MD_PATH.write_text("\n".join(lines), encoding="utf-8")
-    return CALLSHEET_MD_PATH
+    out_path.write_text("\n".join(lines), encoding="utf-8")
+    return out_path
 
 
 def main():

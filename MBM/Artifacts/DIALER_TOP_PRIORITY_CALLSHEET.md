@@ -1,6 +1,6 @@
 # MBM DIALER — TOP REVENUE PRIORITY CALL SHEET
 
-**Generated:** 2026-08-21T13:07:04.643680+00:00
+**Generated:** 2026-08-21T13:35:42.466840+00:00
 **Total Verified Records:** 1222 (100% single-writer protected)
 **Active Callable Queue:** 1172 leads
 **🔥 Verified Real Estate Sellers:** 155 opportunities (#1 Dialer Priority)
