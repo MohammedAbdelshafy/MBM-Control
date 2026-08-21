@@ -30,7 +30,12 @@ export type DialerLead = {
   freshness_score?: number;
   priority_score?: number;
   priority_rank?: number;
+  queue_rank?: number;
+  call_priority?: number;
+  priority_reason?: string;
+  qualification_score?: number;
   category_rank?: number;
+
   queue_bucket?: string;
   partition?: string;
   callability_status?: string;
@@ -327,12 +332,22 @@ export function MasterScript({ lead }: { lead: DialerLead }) {
           <SectionHeader color="text-indigo-400">
             <span className="flex items-center gap-2">
               <span>🤖 AI BUSINESS BUYER CARD</span>
+              {lead.priority_reason && (
+                <span className="bg-emerald-500/20 text-emerald-300 font-mono text-[9px] px-2 py-0.5 rounded border border-emerald-500/40 font-bold">
+                  🎯 {lead.priority_reason}
+                </span>
+              )}
+              {typeof lead.queue_rank === "number" && (
+                <span className="bg-cyan-500/20 text-cyan-300 font-mono text-[9px] px-2 py-0.5 rounded border border-cyan-500/40 font-bold">
+                  Queue #{lead.queue_rank}
+                </span>
+              )}
               {lead.new_today && (
                 <span className="bg-emerald-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-full tracking-wider animate-pulse">
                   🟢 NEW TODAY
                 </span>
               )}
-              {lead.priority_rank && (
+              {lead.priority_rank && !lead.queue_rank && (
                 <span className="bg-slate-800 text-cyan-300 font-mono text-[9px] px-2 py-0.5 rounded border border-cyan-500/30">
                   Global #{lead.priority_rank}
                 </span>
@@ -344,13 +359,14 @@ export function MasterScript({ lead }: { lead: DialerLead }) {
               )}
             </span>
             <div className="flex items-center gap-1.5 font-mono">
-              <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/40">
-                Prio {lead.priority_score || 90}/100
+              <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/40 font-bold">
+                Prio {lead.priority_score || 90}
               </span>
               <span className="text-[9px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/40">
                 AI_MODE
               </span>
             </div>
+
           </SectionHeader>
 
           <div className="grid grid-cols-2 gap-2 text-xs mb-3">

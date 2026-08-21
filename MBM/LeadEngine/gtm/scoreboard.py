@@ -133,28 +133,54 @@ class GtmRevenueScoreboard:
         purchased = 0
         realized_revenue = 0.0
 
+        # Real Estate specific tracking
+        seller_outreach_attempts = 0
+        seller_contacts = 0
+        seller_qualified = 0
+        seller_callbacks = 0
+        seller_appointments = 0
+        seller_deals = 0
+        seller_revenue = 0.0
+
         for e in events:
             act = str(e.get("action", "")).upper()
             state = str(e.get("new_state", "")).upper()
+            lane = str(e.get("lane") or e.get("vertical") or e.get("offer") or "").upper()
+            is_re = "SELLER" in lane or "WHOLESALE" in lane or "REAL_ESTATE" in lane or "PROPERTY" in lane
             ev = e.get("evidence") or {}
 
             if "ATTEMPT" in act or "OUTREACH" in act or "CALL" in act:
                 outreach_attempts += 1
+                if is_re:
+                    seller_outreach_attempts += 1
             if "CONTACT" in act or state in {"CONTACTED", "ENGAGED", "CONVERSATION"}:
                 contacts += 1
+                if is_re:
+                    seller_contacts += 1
             if state in {"ENGAGED", "CONVERSATION", "QUALIFYING"}:
                 conversations += 1
             if state in {"QUALIFIED", "AUDIT_OFFERED"}:
                 qualified += 1
+                if is_re:
+                    seller_qualified += 1
+            if "CALLBACK" in state or "CALLBACK" in act:
+                if is_re:
+                    seller_callbacks += 1
             if state in {"MEETING_BOOKED", "MEETING_COMPLETED"}:
                 meetings += 1
+                if is_re:
+                    seller_appointments += 1
             if state in {"CHECKOUT_SENT", "PROPOSAL", "OFFER_SENT"} or "CHECKOUT" in act:
                 checkout_sent += 1
             if state in {"WON", "PURCHASED", "REVENUE_RECEIVED"}:
                 # Strict verification: must have transaction evidence
                 if ev.get("transaction_id") or ev.get("verified_payment"):
                     purchased += 1
-                    realized_revenue += float(e.get("offer_price", 297.00))
+                    amount = float(e.get("offer_price", 297.00))
+                    realized_revenue += amount
+                    if is_re:
+                        seller_deals += 1
+                        seller_revenue += amount
 
         # Rates (safeguarded against division by zero)
         contact_rate = round((contacts / outreach_attempts * 100.0) if outreach_attempts else 0.0, 2)
@@ -195,6 +221,15 @@ class GtmRevenueScoreboard:
                 "purchased": purchased,
                 "revenue": realized_revenue,
             },
+            "real_estate": {
+                "seller_outreach_attempts": seller_outreach_attempts,
+                "seller_contacts": seller_contacts,
+                "seller_qualified": seller_qualified,
+                "seller_callbacks": seller_callbacks,
+                "seller_appointments": seller_appointments,
+                "seller_deals": seller_deals,
+                "seller_revenue": seller_revenue,
+            },
             "rates": {
                 "contact_rate_pct": contact_rate,
                 "conversation_rate_pct": conversation_rate,
@@ -205,11 +240,16 @@ class GtmRevenueScoreboard:
             },
             "productivity": {
                 "revenue_per_100_prospects": rev_per_100_prospects,
+                "rev_per_100_prospects_usd": rev_per_100_prospects,
                 "revenue_per_100_attempts": rev_per_100_attempts,
+                "rev_per_100_attempts_usd": rev_per_100_attempts,
                 "revenue_per_agent_hour": rev_per_agent_hour,
+                "rev_per_agent_hour_usd": rev_per_agent_hour,
                 "time_to_checkout_mins": 0.0,
                 "time_to_purchase_mins": 0.0,
             },
+
+            "bottleneck": bottleneck,
             "analysis": {
                 "highest_value_bottleneck": bottleneck,
                 "canonical_landing_url": LANDING_URL,

@@ -126,17 +126,23 @@ function ingestionEpoch(lead: DialerLead): number {
 }
 
 function canonicalDialerCompare(a: DialerLead, b: DialerLead): number {
+  const rankA = typeof (a as any).queue_rank === "number" ? (a as any).queue_rank : 999999;
+  const rankB = typeof (b as any).queue_rank === "number" ? (b as any).queue_rank : 999999;
+  if (rankA !== rankB) return rankA - rankB;
+
+  const prioA = a.priority_score ?? 0;
+  const prioB = b.priority_score ?? 0;
+  if (prioA !== prioB) return prioB - prioA; // higher score first
+
   const stageA = FRESHNESS_STAGE_RANK_TS[a.freshness_stage || "OLD"] ?? 3;
   const stageB = FRESHNESS_STAGE_RANK_TS[b.freshness_stage || "OLD"] ?? 3;
   if (stageA !== stageB) return stageA - stageB;
   const ingA = ingestionEpoch(a);
   const ingB = ingestionEpoch(b);
   if (ingA !== ingB) return ingB - ingA; // newest FIRST
-  const prioA = a.priority_score ?? 0;
-  const prioB = b.priority_score ?? 0;
-  if (prioA !== prioB) return prioB - prioA; // documented business tiebreaker
   return String(a.id || "").localeCompare(String(b.id || ""));
 }
+
 
 // new_today is DERIVED from ingestion metadata (same precedence as the engine),
 // never trusted from the persisted boolean alone (legacy rows carry stale flags).

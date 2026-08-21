@@ -341,16 +341,23 @@ def main():
     parser.add_argument("--dry-run", action="store_true", default=True, help="Execute in deterministic dry-run mode (default)")
     parser.add_argument("--simulate", action="store_true", help="Run the artificial lifecycle simulation (read-only)")
     parser.add_argument("--scoreboard", action="store_true", help="Generate and export the GTM Revenue Scoreboard")
+    parser.add_argument("--refresh-queue", action="store_true", help="Recalculate dynamic priority and refresh the dialer call sheet")
+    parser.add_argument("--apply", action="store_true", help="Commit priority queue changes to dialer DB")
     parser.add_argument("--limit", type=int, default=10, help="Number of next actions to output")
     args = parser.parse_args()
 
     commander = GtmCommander(dry_run=True)
 
+    if args.refresh_queue:
+        from MBM.LeadEngine.dialer_priority_engine import refresh_dialer_priority_queue
+        res = refresh_dialer_priority_queue(dry_run=not args.apply)
+        print(f"[OK] Priority queue refreshed (dry_run={not args.apply}): {res['total_records']} total records, {res['callable_count']} callable.")
+        return
+
     if args.scoreboard:
         path = commander.export_scoreboard()
         print(f"[OK] GTM Revenue Scoreboard exported to: {path}")
         return
-
 
     if args.simulate:
         print(commander.execute_simulation())
