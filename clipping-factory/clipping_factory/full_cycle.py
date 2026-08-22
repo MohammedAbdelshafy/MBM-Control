@@ -307,7 +307,14 @@ def run_full_cycle(channel_slug: str = "twistsrevealed",
         clips_rejected=rejected,
         duration_sec=time.time() - started,
     )
-    write_heartbeat(status="idle", extra={"higgsfield_status": "not_required_local_pipeline"})
+    update_ledger({
+        "run_id": run_id, "at": _now(),
+        "status": "success" if produced else "failed",
+        "produced": produced, "rejected": rejected, "failed": failed,
+        "campaigns": [{"id": r.get("campaign_id"), "movie": r.get("movie"),
+                       "status": r.get("status"),
+                       "qa": r.get("qa", {}).get("score")} for r in results],
+    })
     return {
         "status": "success" if produced else "failed",
         "run_id": run_id,
