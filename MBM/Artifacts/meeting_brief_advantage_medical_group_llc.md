@@ -5,7 +5,7 @@
 **Vertical:** Medical Practices & Specialty Clinics  
 **Phone:** `+17873068356` | **Email:** ``  
 **Intent Score:** `75.0/100` (HIGH INTENT)  
-**Generated At:** 2026-08-21 00:55:48 UTC  
+**Generated At:** 2026-08-22 13:52:12 UTC  
 
 ---
 

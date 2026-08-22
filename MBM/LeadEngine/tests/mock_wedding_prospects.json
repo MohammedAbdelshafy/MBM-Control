@@ -1,0 +1,30 @@
+[
+    {
+        "company": "The Grand Estate",
+        "decision_maker": "Sarah Jenkins",
+        "role": "Venue Director",
+        "phone": "5551234567",
+        "email": "sarah@thegrandestate.com",
+        "city": "Austin",
+        "state": "TX",
+        "source": "Manual Import",
+        "wedding_subvertical": "wedding venue",
+        "tags": ["wedding", "wedding_venue", "slow_response", "active_lead_gen"],
+        "website": "true",
+        "booking_process": "true"
+    },
+    {
+        "company": "Perfect Day Planners",
+        "decision_maker": "David Lee",
+        "role": "Owner",
+        "phone": "5559876543",
+        "email": "david@perfectday.com",
+        "city": "Dallas",
+        "state": "TX",
+        "source": "Manual Import",
+        "wedding_subvertical": "wedding planner",
+        "tags": ["wedding", "wedding_planner", "weak_ai_visibility"],
+        "website": "true",
+        "booking_process": "false"
+    }
+]

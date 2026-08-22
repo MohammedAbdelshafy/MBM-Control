@@ -40,6 +40,7 @@ from datetime import datetime, timezone
 
 BASE = Path(__file__).resolve().parent
 MBM = BASE.parent.parent / "MBM"
+ROOT = BASE.parent.parent  # repo root (for MBM.* package imports)
 ARTIFACTS = MBM / "Artifacts"
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
 
@@ -274,9 +275,35 @@ def run(market_cap=8, verify=False, offline=False, out_dir=None):
 
     log(f"DONE — {len(clean)} real NPI leads -> "
         f"{out_dir / 'npi_verified_callsheet.csv'}")
+
+    # Auto-persist verified leads into the canonical dialer DB through the shared
+    # single-writer gateway. A persistence failure must surface as PARTIAL_FAILURE
+    # and NEVER be reported as a clean SUCCESS. Gated by MBM_DIALER_AUTO_PERSIST so
+    # artifact-only runs / hermetic tests never touch the live canonical DB.
+    persistence_status = "SKIPPED_DISABLED"
+    try:
+        if os.getenv("MBM_DIALER_AUTO_PERSIST") == "1" and clean:
+            import sys as _s
+            _s.path.insert(0, str(ROOT))
+            from MBM.LeadEngine.lead_persistence import persist_verified_leads
+            pres = persist_verified_leads(
+                clean, source="CMS NPI Registry API v2.1",
+                id_prefix="NPI", rerank=False,
+            )
+            persistence_status = pres.get("status", "PERSISTENCE_FAILURE")
+    except Exception as _e:
+        persistence_status = "PARTIAL_FAILURE"
+        log(f"Canonical persistence failed: {_e}")
+
+    if persistence_status == "SUCCESS":
+        log("Canonical dialer persistence OK")
+    elif persistence_status not in ("SKIPPED_DISABLED", "EMPTY"):
+        log(f"Canonical dialer persistence: {persistence_status}")
+
     print(json.dumps({"total": len(clean),
                       "callsheet": str(out_dir / "npi_verified_callsheet.csv"),
-                      "json": str(out_dir / "npi_verified_callsheet.json")}, indent=2))
+                      "json": str(out_dir / "npi_verified_callsheet.json"),
+                      "dialer_persistence": persistence_status}, indent=2))
 
 
 def main():

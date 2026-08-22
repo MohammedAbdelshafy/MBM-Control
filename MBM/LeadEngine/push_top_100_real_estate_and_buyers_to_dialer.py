@@ -7,6 +7,7 @@ freshness promotion inside every dialer category.
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -17,6 +18,20 @@ sys.path.insert(0, str(LEADENGINE_DIR))
 
 from reconcile_dialer_partitions import run_reconciliation
 from promote_new_verified_leads_to_top import main as promote_new_verified_leads
+
+
+def normalize_dialer_phone(phone: str) -> str:
+    digits = re.sub(r"\D", "", str(phone or ""))
+    if len(digits) == 11 and digits.startswith("1"):
+        digits = digits[1:]
+    return digits
+
+
+def format_e164(phone: str) -> str:
+    norm = normalize_dialer_phone(phone)
+    if len(norm) == 10:
+        return f"+1{norm}"
+    return str(phone).strip()
 
 
 def main():

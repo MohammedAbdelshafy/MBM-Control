@@ -358,5 +358,53 @@
     "follow_up": "",
     "sales_lane": "AI_CONSULTANCY",
     "recorded_at": "2026-08-21T00:47:44.743180+00:00"
+  },
+  {
+    "lead_id": "SELLER-001",
+    "status": "Seller Warmed",
+    "company": "123 Main St, Dallas, TX",
+    "contact": "Bruce McLeod",
+    "phone": "214-555-0101",
+    "amount": "",
+    "note": "Open to cash offer if closed in 14 days",
+    "follow_up": "",
+    "sales_lane": "REAL_ESTATE",
+    "recorded_at": "2026-08-22T13:04:10.076630+00:00"
+  },
+  {
+    "lead_id": "BUYER-001",
+    "status": "AI Buyer Warmed",
+    "company": "Apex Mechanical",
+    "contact": "Marcus Vance",
+    "phone": "214-555-0102",
+    "amount": "",
+    "note": "Wants to see automated scheduling demo",
+    "follow_up": "",
+    "sales_lane": "AI_CONSULTANCY",
+    "recorded_at": "2026-08-22T13:04:11.183639+00:00"
+  },
+  {
+    "lead_id": "SELLER-001",
+    "status": "Seller Warmed",
+    "company": "123 Main St, Dallas, TX",
+    "contact": "Bruce McLeod",
+    "phone": "214-555-0101",
+    "amount": "",
+    "note": "Open to cash offer if closed in 14 days",
+    "follow_up": "",
+    "sales_lane": "REAL_ESTATE",
+    "recorded_at": "2026-08-22T13:51:18.685208+00:00"
+  },
+  {
+    "lead_id": "BUYER-001",
+    "status": "AI Buyer Warmed",
+    "company": "Apex Mechanical",
+    "contact": "Marcus Vance",
+    "phone": "214-555-0102",
+    "amount": "",
+    "note": "Wants to see automated scheduling demo",
+    "follow_up": "",
+    "sales_lane": "AI_CONSULTANCY",
+    "recorded_at": "2026-08-22T13:51:20.575332+00:00"
   }
 ]

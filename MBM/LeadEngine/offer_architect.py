@@ -235,6 +235,35 @@ VERTICAL_OFFER_CATALOG: Dict[str, Dict[str, Any]] = {
             "DO_IT_INTERNALLY": "Automates the 3 AM wake-up dispatch triage so technicians only get called for true billable emergencies.",
         },
     },
+    "Weddings & Event Professionals": {
+        "sku": "AI-ASSISTANT-WEDDINGS",
+        "offer_name": "AI Wedding Revenue System",
+        "problem_solved": "Missed/slow inquiry response, after-hours lead handling, and ghosted lead recovery",
+        "core_workflow": "Instant inquiry response, lead qualification, tour/consultation booking, automated follow-up",
+        "implementation_scope": "Direct CRM/calendar integration, multi-channel SMS/Email/Voice outreach, automated quote/proposal workflows",
+        "setup_fee": 1500.0,
+        "monthly_fee": 2500.0,
+        "performance_fee": "$100 per booked and completed consultation/tour",
+        "entry_diagnostic": "15-Minute Inquiry Response & Missed Revenue Audit",
+        "expansion_paths": ["AI Receptionist / Voice Agent", "Review/Reputation Automation", "Vendor/Event Operations Coordination"],
+        "roi_model": {
+            "observed": "Average wedding vendor/venue booking value is $5,000 - $25,000+",
+            "estimated": "Losing 3-5 inquiries a week to slow response or voicemail costs tens of thousands in lost pipeline",
+            "assumed": "Recovering just 1 missed wedding per month pays for the entire retainer multiple times over"
+        },
+        "discovery_questions": [
+            "When someone submits a wedding inquiry after hours, who responds?",
+            "How much time does your team spend manually following up with ghosted leads?",
+            "When a couple asks ChatGPT for the best wedding vendors in your city, does your business appear?"
+        ],
+        "quantification_question": "If you lose even one $15,000 wedding booking a month to a venue that replied faster, what is that costing you annually?",
+        "objection_answers": {
+            "PRICE": "Our $2,500 retainer pays for itself with a single recovered wedding booking.",
+            "AI_SKEPTICISM": "The AI is trained on your exact pricing, venue details, and availability—it handles the qualification smoothly before handing off to you.",
+            "ALREADY_HAVE_SOLUTION": "If your current system isn't responding in seconds and actively booking tours 24/7, you're still losing deals to competitors.",
+            "DO_IT_INTERNALLY": "Your next client shouldn't have to wait until you're done coordinating today's wedding. The AI handles the instant speed-to-lead.",
+        },
+    },
 }
 
 DEFAULT_OFFER_CONFIG = {

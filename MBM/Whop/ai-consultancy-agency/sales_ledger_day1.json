@@ -1,0 +1,74 @@
+[
+  {
+    "timestamp": "2026-08-21T13:15:56.632392+00:00",
+    "prospect_id": "LEAD_IDEMPOTENT_01",
+    "agent": "SELLER_CASCADE_ENGINE",
+    "channel": "WHATSAPP",
+    "previous_state": "CASCADE_QUEUED",
+    "new_state": "WHATSAPP_SENT",
+    "action": "SELLER_CASCADE_DAY_0_INITIAL",
+    "offer": "AI Consultancy Sprint Audit",
+    "offer_price": 297.0,
+    "checkout_url": "https://whop.com/checkout/plan_e3ibiYXeeAaZV",
+    "evidence": {
+      "lead_id": "LEAD_IDEMPOTENT_01",
+      "channel": "WHATSAPP",
+      "stage": "DAY_0_INITIAL",
+      "status": "SENT",
+      "timestamp": "2026-08-21T13:15:56.629063+00:00",
+      "notes": "First send",
+      "provider_result": {}
+    },
+    "next_action": "WAIT_FOR_RESPONSE",
+    "notes": "First send"
+  },
+  {
+    "timestamp": "2026-08-21T13:21:44.769962+00:00",
+    "prospect_id": "AI-BUYER-0AE85C32",
+    "agent": "SELLER_CASCADE_ENGINE",
+    "channel": "WHATSAPP",
+    "previous_state": "CASCADE_QUEUED",
+    "new_state": "WHATSAPP_LINK_READY",
+    "action": "SELLER_CASCADE_DAY_0_INITIAL",
+    "offer": "AI Consultancy Sprint Audit",
+    "offer_price": 297.0,
+    "checkout_url": "https://whop.com/checkout/plan_e3ibiYXeeAaZV",
+    "evidence": {
+      "lead_id": "AI-BUYER-0AE85C32",
+      "channel": "WHATSAPP",
+      "stage": "DAY_0_INITIAL",
+      "status": "LINK_READY",
+      "timestamp": "2026-08-21T13:21:44.767963+00:00",
+      "notes": "Generated 1-click WhatsApp bridge for Travis Colvin (DAY_0_INITIAL)",
+      "provider_result": {
+        "wa_link": "https://wa.me/2109945512?text=Hi%20Travis%20--%20reaching%20out%20regarding%20LoneStar%20Capital%20Asset%20Acquisitions%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F",
+        "phone": "+12109945512"
+      }
+    },
+    "next_action": "FOLLOW_UP",
+    "notes": "Generated 1-click WhatsApp bridge for Travis Colvin (DAY_0_INITIAL)"
+  },
+  {
+    "timestamp": "2026-08-22T13:53:01.648249+00:00",
+    "prospect_id": "LEAD_IDEMPOTENT_01",
+    "agent": "SELLER_CASCADE_ENGINE",
+    "channel": "WHATSAPP",
+    "previous_state": "CASCADE_QUEUED",
+    "new_state": "WHATSAPP_SENT",
+    "action": "SELLER_CASCADE_DAY_0_INITIAL",
+    "offer": "AI Consultancy Sprint Audit",
+    "offer_price": 297.0,
+    "checkout_url": "https://whop.com/checkout/plan_e3ibiYXeeAaZV",
+    "evidence": {
+      "lead_id": "LEAD_IDEMPOTENT_01",
+      "channel": "WHATSAPP",
+      "stage": "DAY_0_INITIAL",
+      "status": "SENT",
+      "timestamp": "2026-08-22T13:53:01.640462+00:00",
+      "notes": "First send",
+      "provider_result": {}
+    },
+    "next_action": "WAIT_FOR_RESPONSE",
+    "notes": "First send"
+  }
+]

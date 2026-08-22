@@ -135,6 +135,7 @@ ICP_VERTICALS = [
     "Digital Marketing & SEO Agencies",
     "Freight & Logistics Dispatch",
     "Home Services & Pest Control",
+    "Weddings & Event Professionals",
 ]
 
 GEOGRAPHIC_REGIONS = [

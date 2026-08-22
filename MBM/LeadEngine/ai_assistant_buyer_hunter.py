@@ -1795,6 +1795,26 @@ class AIAssistantBuyerHunter:
         print(f"  ✓ Exported CSV Feed:             {csv_path}")
         print(f"  ✓ Exported Relevance Graph:      {ARTIFACTS_DIR / 'prospect_relevance_graph.json'}")
 
+        # ── Canonical dialer auto-persistence (auto-persistence contract) ──
+        # Persist verified HOT/HIGH-INTENT buyers into the canonical dialer DB via
+        # the shared single-writer gateway. Guarded by MBM_DIALER_AUTO_PERSIST so
+        # hermetic test runs never write to the live canonical DB. A persistence
+        # failure is stamped on the summary and surfaces as PARTIAL_FAILURE.
+        dialer_persistence = {"status": "SKIPPED_DISABLED"}
+        if os.getenv("MBM_DIALER_AUTO_PERSIST") == "1":
+            try:
+                from MBM.LeadEngine.lead_persistence import persist_verified_leads
+                buyer_leads = [c.to_dict() for c in cards if c.intent_tier in ("HOT", "HIGH INTENT")]
+                dialer_persistence = persist_verified_leads(
+                    buyer_leads,
+                    source="AI Assistant Buyer Hunter",
+                    id_prefix="BUYER",
+                    rerank=False,
+                ) or dialer_persistence
+            except Exception as _pe:
+                dialer_persistence = {"status": "PERSISTENCE_FAILURE", "errors": [str(_pe)]}
+        summary["dialer_persistence"] = dialer_persistence
+
 
 def run_ai_assistant_buyer_hunter() -> Dict[str, Any]:
     """Programmatic entry point for the GTM Agent Supervisor and schedulers.
@@ -1804,8 +1824,10 @@ def run_ai_assistant_buyer_hunter() -> Dict[str, Any]:
     hunter = AIAssistantBuyerHunter()
     result = hunter.run_discovery_pipeline()
     summary = result["summary"]
+    persistence_status = (summary.get("dialer_persistence") or {}).get("status", "SKIPPED_EMPTY")
+    status = "SUCCESS" if persistence_status in ("SUCCESS", "SKIPPED_DISABLED", "SKIPPED_EMPTY") else "PARTIAL_FAILURE"
     return {
-        "status": "SUCCESS",
+        "status": status,
         "timestamp": summary["timestamp"],
         "discovered_count": summary["companies_discovered"],
         "validated_count": summary["companies_validated"],
@@ -1816,6 +1838,7 @@ def run_ai_assistant_buyer_hunter() -> Dict[str, Any]:
         "nurture_count": summary["nurture_buyers"],
         "niches_count": summary["new_niches_discovered"],
         "duplicates_filtered": summary["duplicate_records_filtered"],
+        "dialer_persistence_status": persistence_status,
     }
 
 

@@ -27,6 +27,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DIALER_DB_PATH = ROOT / "mbm-dialer" / "app" / "public" / "leads_database.json"
 
+# Single-writer gateway: every canonical DB mutation MUST go through this lock.
+from MBM.GLM.single_writer_lock import DialerSingleWriter
+
 _TIMESTAMP_FIELDS = (
     "created_at", "createdAt", "found_at", "foundAt", "discovered_at", "discoveredAt",
     "ingested_at", "ingestedAt", "updated_at", "updatedAt", "first_seen_at", "firstSeenAt",
@@ -161,7 +164,13 @@ def main():
     assert len(final) == original_count
     assert len({id(x) for x in final}) == original_count
 
-    DIALER_DB_PATH.write_text(json.dumps(final, indent=2, ensure_ascii=False), encoding="utf-8")
+    # Commit atomically through the single-writer gateway (locked + zero-shrink).
+    DialerSingleWriter(db_path=DIALER_DB_PATH).full_replace(
+        final,
+        author="promote_new_verified_leads_to_top",
+        reason="freshness_promotion",
+        allow_shrink=False,
+    )
 
     fresh_count = sum(1 for lead in eligible if freshness_epoch(lead) > 0)
     print("MBM DIALER FRESHNESS PROMOTION")
