@@ -1,12 +1,14 @@
-<#
+﻿<#
 .SYNOPSIS
     Registers the Clipping Factory production task in Windows Task Scheduler.
 
 .DESCRIPTION
-    Creates a scheduled task that runs the factory production cycle.
-    - Morning: 8:00 AM — Discovery + research
-    - Midday: 1:00 PM — Production batch
-    - Evening: 7:00 PM — Production + publishing
+    Creates ONE scheduled task that runs the authoritative Twists Revealed
+    flagship launcher (run_twists_revealed.ps1) in two production windows:
+      - Morning: 9:00 AM
+      - Evening: 7:00 PM
+    Overlap protection is enforced by MultipleInstances=IgnoreNew plus the
+    factory file lock inside the pipeline itself.
 
 .PARAMETER Uninstall
     Remove the scheduled task instead of creating it.
@@ -22,7 +24,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $TaskName = "ClippingFactory_Production"
-$ScriptPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Definition) "run_clipping_factory.ps1"
+$ScriptPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Definition) "run_twists_revealed.ps1"
 
 # Verify the launcher script exists
 if (-not (Test-Path $ScriptPath)) {
@@ -56,7 +58,7 @@ $Action = New-ScheduledTaskAction `
     -WorkingDirectory (Split-Path -Parent $ScriptPath)
 
 # Create three triggers: Morning 8AM, Midday 1PM, Evening 7PM
-$TriggerMorning = New-ScheduledTaskTrigger -Daily -At "08:00"
+$TriggerMorning = New-ScheduledTaskTrigger -Daily -At "09:00"
 $TriggerMidday = New-ScheduledTaskTrigger -Daily -At "13:00"
 $TriggerEvening = New-ScheduledTaskTrigger -Daily -At "19:00"
 
@@ -75,10 +77,10 @@ $Principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType S4U -Ru
 Register-ScheduledTask `
     -TaskName $TaskName `
     -Action $Action `
-    -Trigger @($TriggerMorning, $TriggerMidday, $TriggerEvening) `
+    -Trigger @($TriggerMorning, $TriggerEvening) `
     -Settings $Settings `
     -Principal $Principal `
-    -Description "Clipping Factory production cycle: discovery, script, render, QA, publish. Runs 3x daily." `
+    -Description "Twists Revealed flagship production cycle (2/day): discovery, source, script, TTS, render, captions, QA. Overlap-protected." `
     -Force
 
 # Verify
@@ -86,9 +88,8 @@ $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
 if ($task) {
     Write-Host ""
     Write-Host "SUCCESS: Task '$TaskName' registered." -ForegroundColor Green
-    Write-Host "  Triggers: Daily at 8:00 AM, 1:00 PM, 7:00 PM"
+    Write-Host "  Triggers: Daily at 9:00 AM and 7:00 PM"
     Write-Host "  Script: $ScriptPath"
-    Write-Host "  Run level: Highest"
     Write-Host "  Multiple instances: IgnoreNew (overlap protection)"
     Write-Host ""
     Write-Host "To test manually: Start-ScheduledTask -TaskName '$TaskName'" -ForegroundColor Cyan
