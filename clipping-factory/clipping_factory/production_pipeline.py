@@ -385,7 +385,7 @@ def package_for_publish(
     publish_queue_dir.mkdir(parents=True, exist_ok=True)
 
     source_video = Path(manifest.output_path)
-    if not source_video.exists():
+    if not manifest.output_path or not source_video.exists() or source_video.is_dir():
         raise FileNotFoundError(f"Rendered video not found: {source_video}")
 
     dest_video = publish_queue_dir / f"{manifest.campaign_id}_final.mp4"

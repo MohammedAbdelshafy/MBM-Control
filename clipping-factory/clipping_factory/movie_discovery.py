@@ -128,6 +128,15 @@ CURATED_MOVIES: List[Dict[str, Any]] = [
     {"title": "Last Night in Soho", "year": 2021, "genres": ["horror", "thriller", "mystery"], "director": "Edgar Wright", "country": "UK", "rating": 7.0, "synopsis": "A young woman with a passion for fashion design mysteriously enters the 1960s where she meets her idol.", "ending_description": "The 1960s idol was a murderer. The ghosts were victims. Eloise defeats the past and survives, but forever changed.", "key_characters": ["Eloise Turner", "Sandie", "John", "Jack"]},
     {"title": "Last Night in Soho", "year": 2021, "genres": ["horror", "thriller", "mystery"], "director": "Edgar Wright", "country": "UK", "rating": 7.0, "synopsis": "A young fashion student is transported to 1960s London where she encounters a singing waitress.", "ending_description": "The idolized singer was actually a victim of sex trafficking who became a murderer. The ghosts are her victims.", "key_characters": ["Eloise", "Sandie", "John"]},
     {"title": "It Follows", "year": 2014, "genres": ["horror", "supernatural", "thriller"], "director": "David Robert Mitchell", "country": "USA", "rating": 6.8, "synopsis": "A young woman is pursued by a supernatural entity after a sexual encounter.", "ending_description": "The entity still follows. The ending is ambiguous — they've passed it on, but the threat remains.", "key_characters": ["Jay Height", "Paul", "Hugh", "Yara"]},
+    # ── Public Domain thrillers (verifiable twist endings + legally clear footage) ──
+    # source_uri values VERIFIED against archive.org metadata API.
+    # Empty source_uri = honest SOURCE_BLOCKED at acquisition time; never demo-substituted.
+    {"title": "House on Haunted Hill", "year": 1959, "genres": ["horror", "mystery", "thriller"], "director": "William Castle", "country": "USA", "rating": 6.8, "synopsis": "An eccentric millionaire offers five strangers $10,000 each to survive one night in a haunted mansion he rented for his wife's party.", "ending_description": "Annabeth and her lover Trent staged every 'ghost' event to scare Nora into killing Frederick. Their plan collapses when the genuinely undead housekeeper rises from the acid vat and drags Trent down with her.", "key_characters": ["Frederick Loren", "Annabelle Loren", "Nora Manning", "Lance Schroeder"], "source_class": "public_domain", "source_uri": ""},
+    {"title": "Night of the Living Dead", "year": 1968, "genres": ["horror", "survival", "thriller"], "director": "George A. Romero", "country": "USA", "rating": 7.8, "synopsis": "Strangers barricade themselves inside a rural Pennsylvania farmhouse while reanimated corpses attack outside.", "ending_description": "Ben survives the night and the zombies, only to be shot by a posse that mistakes him for one of them. His body is burned on a bonfire with the rest.", "key_characters": ["Ben", "Barbra", "Harry Cooper", "Tom"], "source_class": "public_domain", "source_uri": "https://archive.org/download/night-of-the-living-dead-1968_202508/Night%20of%20the%20Living%20Dead%201968.mp4"},
+    {"title": "Carnival of Souls", "year": 1962, "genres": ["horror", "psychological", "mystery"], "director": "Herk Harvey", "country": "USA", "rating": 7.0, "synopsis": "After surviving a car crash that killed her friends, a young church organist takes a job in Utah and is drawn to an abandoned lakeside pavilion while a pale figure stalks her.", "ending_description": "Mary is pulled under by the dead at the pavilion. Police find the wreck from the opening: everyone died at the bridge, including her. She was dead the entire film.", "key_characters": ["Mary Henry", "The Man", "Mrs Thomas", "John Linden"], "source_class": "public_domain", "source_uri": ""},
+    {"title": "Dementia 13", "year": 1963, "genres": ["horror", "mystery", "thriller"], "director": "Francis Ford Coppola", "country": "USA", "rating": 6.1, "synopsis": "A scheming secretary hides her husband's death to stay in his family's will and joins them at their Irish castle, where an axe killer stalks the grounds.", "ending_description": "The axe murders are committed by Louise's grieving mother-in-law, who keeps her daughter Kathleen's body in the pond and kills any woman she blames for her sons' deaths. Louise is beheaded.", "key_characters": ["Louise Halloran", "Lady Haloran", "Richard Haloran", "Billy"], "source_class": "public_domain", "source_uri": ""},
+    {"title": "The Cabinet of Dr. Caligari", "year": 1920, "genres": ["psychological", "mystery", "horror"], "director": "Robert Wiene", "country": "Germany", "rating": 8.0, "synopsis": "A hypnotist and his sleepwalking captive arrive at a German fairground town, and murders begin soon after.", "ending_description": "The entire story is revealed to be the delusion of Francis, an asylum inmate. His doctor — the real Caligari — believes understanding his fixation will cure him.", "key_characters": ["Francis", "Cesare", "Dr. Caligari", "Jane"], "source_class": "public_domain", "source_uri": ""},
+    {"title": "Nosferatu", "year": 1922, "genres": ["horror", "supernatural", "thriller"], "director": "F. W. Murnau", "country": "Germany", "rating": 7.9, "synopsis": "An estate agent travels to the Carpathians to close a property deal with the reclusive Count Orlok, who fixes on the man's wife and sails for her city.", "ending_description": "Ellen reads the vampire lore: a sinless woman must willingly give her blood for a night. She sacrifices herself, and Orlok, caught by sunrise, vanishes into smoke and dust.", "key_characters": ["Thomas Hutter", "Count Orlok", "Ellen Hutter", "Knock"], "source_class": "public_domain", "source_uri": ""},
 ]
 
 # Deduplicate by title+year
@@ -180,14 +189,22 @@ def discover_movies(
             synopsis=m.get("synopsis", ""),
             ending_description=m.get("ending_description", ""),
             key_characters=m.get("key_characters", []),
+            source_class=m.get("source_class", SourceClass.UNVERIFIED.value),
+            source_uri=m.get("source_uri", ""),
         )
         if candidate.campaign_id not in exclude_ids:
             available.append(candidate)
 
-    random.shuffle(available)
-    selected = available[:count]
+    # Public-domain candidates first (real, legally clear sources), then the rest.
+    # Shuffle WITHIN each group so random variety can never evict verifiable sources.
+    pd_pool = [c for c in available if c.source_class == SourceClass.PUBLIC_DOMAIN.value]
+    rest_pool = [c for c in available if c.source_class != SourceClass.PUBLIC_DOMAIN.value]
+    random.shuffle(pd_pool)
+    random.shuffle(rest_pool)
+    ordered = pd_pool + rest_pool
 
     now = datetime.now(timezone.utc).isoformat()
+    selected = ordered[:count]
     for s in selected:
         s.discovered_at = now
 

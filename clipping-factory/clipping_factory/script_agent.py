@@ -194,6 +194,7 @@ def generate_recap_script(
     target_duration_min: int = 35,
     target_duration_max: int = 75,
     hook_type: str = "mystery",
+    director: str = "",
 ) -> RecapScript:
     """
     Generate a movie recap script from research data.
@@ -210,10 +211,11 @@ def generate_recap_script(
     character_list = ", ".join(key_characters[:3]) if key_characters else "the protagonist"
     genre_desc = " and ".join(genres[:2]) if genres else "thriller"
 
+    directed_by = f", directed by {director}," if director else ","
     narration_parts = [
         hook,
         "",
-        f"In {year}'s {genre_desc} '{title}', directed by {synopsis.split('.')[0].strip().lower() if synopsis else 'a master storyteller'}, we follow {character_list}.",
+        f"{title} is a {year} {genre_desc}{directed_by} and it follows {character_list}.",
         "",
     ]
 
