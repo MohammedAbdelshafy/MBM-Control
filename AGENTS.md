@@ -52,6 +52,8 @@ npm run leads:dial:live       # Place real calls -> your phone, bridged to real 
 npm run leads:sellers         # Dry-run hybrid seller skip-trace (DCAD->RapidAPI->GMaps->free). --apply writes (backup .bak)
 npm run leads:gate:audit      # Audit every dialer queue against the verification gate
 npm run leads:all             # hygiene + fresh callsheet in one shot
+npm run leads:ingest          # P0 daily ingestion: verify -> dedupe -> classify -> script -> canonical write -> LIVE VERIFY (dry-run)
+npm run leads:ingest:apply    # P0 daily ingestion COMMIT (--apply; fails unless canonical write + live dialer check pass)
 npm run leads:pack            # Build monthly lead pack (dry-run; gate blocks unverified)
 npm run leads:pack:apply      # Write lead pack CSV + brief + manifest + Whop spec
 ```

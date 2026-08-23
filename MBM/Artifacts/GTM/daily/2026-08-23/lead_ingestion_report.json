@@ -1,0 +1,236 @@
+{
+  "run_id": "daily-ingest-20260823T125955-100",
+  "run_date": "2026-08-23",
+  "mode": "apply",
+  "source": "npi_verified_callsheet.json@2026-08-23T11:55:59.239638+00:00",
+  "started_at": "2026-08-23T12:59:55.899340+00:00",
+  "completed_at": "2026-08-23T13:00:16.266038+00:00",
+  "raw_count": 2388,
+  "accepted_count": 0,
+  "new_count": 0,
+  "duplicate_count": 2306,
+  "suppressed_count": 21,
+  "rejected_count": 61,
+  "needs_review_count": 0,
+  "canonical_revision": 35,
+  "canonical_revision_before": 34,
+  "canonical_count": 4484,
+  "canonical_count_before": 4484,
+  "dataset_hash": "03fffea9af850bb9801bdd844501535c150c291c8c524697f5f453e327e87de1",
+  "dataset_hash_before": "22197019206024e75e9a12f4bbff083995ac7842b4cb43cddaa4139827aac2ea",
+  "script_coverage": 100.0,
+  "segment_coverage": 100.0,
+  "live_verified": true,
+  "live_skipped": false,
+  "status": "SUCCESS",
+  "write_performed": true,
+  "zero_yield_reason": "",
+  "errors": [],
+  "needs_review_ids": [],
+  "sample_traces": [
+    {
+      "lead_id": "NPI-1649914912",
+      "in_source_batch": false,
+      "in_canonical": true,
+      "in_live_api": true,
+      "live_api_position": 0,
+      "ui_served": true
+    },
+    {
+      "lead_id": "NPI-1982803490",
+      "in_source_batch": false,
+      "in_canonical": true,
+      "in_live_api": true,
+      "live_api_position": 1,
+      "ui_served": true
+    },
+    {
+      "lead_id": "NPI-1063879427",
+      "in_source_batch": false,
+      "in_canonical": true,
+      "in_live_api": true,
+      "live_api_position": 2,
+      "ui_served": true
+    },
+    {
+      "lead_id": "NPI-1962769174",
+      "in_source_batch": false,
+      "in_canonical": true,
+      "in_live_api": true,
+      "live_api_position": 3,
+      "ui_served": true
+    },
+    {
+      "lead_id": "NPI-1033501804",
+      "in_source_batch": false,
+      "in_canonical": true,
+      "in_live_api": true,
+      "live_api_position": 4,
+      "ui_served": true
+    }
+  ],
+  "stages": {
+    "source_fetch": {
+      "completed": true,
+      "detail": "2388 rows from npi_verified_callsheet.json@2026-08-23T11:55:59.239638+00:00"
+    },
+    "raw_ingest": {
+      "completed": true,
+      "detail": "2385 structured candidates (3 malformed dropped)"
+    },
+    "phone_identity_validation": {
+      "completed": true,
+      "detail": "US phone + identity gate applied to every candidate"
+    },
+    "provenance_validation": {
+      "completed": true,
+      "detail": "LeadProvenanceGate applied to every candidate"
+    },
+    "synthetic_check": {
+      "completed": true,
+      "detail": "strong synthetic fingerprint veto applied"
+    },
+    "dedupe": {
+      "completed": true,
+      "detail": "2306 duplicates (115 enriched via history-preserving merge)"
+    },
+    "suppression_dnc_check": {
+      "completed": true,
+      "detail": "21 suppressed/DNC (suppression index size 102)"
+    },
+    "classification": {
+      "completed": true,
+      "detail": "0 NEEDS_REVIEW; segments=[]"
+    },
+    "script_assignment": {
+      "completed": true,
+      "detail": "coverage 100.0% (canonical script engine)"
+    },
+    "canonical_write": {
+      "completed": true,
+      "detail": "0 new + 115 merged committed (total 4484)"
+    },
+    "revision_audit": {
+      "completed": true,
+      "detail": "revision 34 -> 35; audit=ok"
+    },
+    "queue_prioritization": {
+      "completed": true,
+      "detail": "0 new leads promoted newest-first; call_now page=25"
+    },
+    "live_verification": {
+      "completed": true,
+      "detail": "counts match + samples traced + UI serving"
+    }
+  },
+  "projected_count": 4484,
+  "live": {
+    "performed": true,
+    "ok": true,
+    "api_count": 4484,
+    "canonical_count": 4484,
+    "ui_reachable": true,
+    "count_match": true,
+    "samples_traced": 5,
+    "samples_ok": true,
+    "traces": [
+      {
+        "lead_id": "NPI-1649914912",
+        "in_source_batch": false,
+        "in_canonical": true,
+        "in_live_api": true,
+        "live_api_position": 0,
+        "ui_served": true
+      },
+      {
+        "lead_id": "NPI-1982803490",
+        "in_source_batch": false,
+        "in_canonical": true,
+        "in_live_api": true,
+        "live_api_position": 1,
+        "ui_served": true
+      },
+      {
+        "lead_id": "NPI-1063879427",
+        "in_source_batch": false,
+        "in_canonical": true,
+        "in_live_api": true,
+        "live_api_position": 2,
+        "ui_served": true
+      },
+      {
+        "lead_id": "NPI-1962769174",
+        "in_source_batch": false,
+        "in_canonical": true,
+        "in_live_api": true,
+        "live_api_position": 3,
+        "ui_served": true
+      },
+      {
+        "lead_id": "NPI-1033501804",
+        "in_source_batch": false,
+        "in_canonical": true,
+        "in_live_api": true,
+        "live_api_position": 4,
+        "ui_served": true
+      }
+    ],
+    "base_url": "http://localhost:5173"
+  },
+  "acceptance_gate": {
+    "source_fetch_succeeded": true,
+    "raw_count_recorded": true,
+    "verification_completed": true,
+    "synthetic_rejection_completed": true,
+    "dedupe_completed": true,
+    "suppression_dnc_completed": true,
+    "classification_completed": true,
+    "script_enrichment_completed": true,
+    "canonical_db_write_succeeded": true,
+    "revision_incremented": true,
+    "audit_entry_recorded": true,
+    "accepted_gt_zero_or_documented": false,
+    "queue_refreshed": true,
+    "newest_first_verified": true,
+    "live_dialer_updated": true
+  },
+  "runs": [
+    {
+      "run_id": "daily-ingest-20260823T115637-2000",
+      "status": "SUCCESS",
+      "mode": "apply",
+      "raw": 2388,
+      "new": 1339,
+      "duplicates": 975,
+      "suppressed": 13,
+      "rejected": 61,
+      "needs_review": 0,
+      "write_performed": true,
+      "canonical_revision": 30,
+      "live_verified": true
+    },
+    {
+      "run_id": "daily-ingest-20260823T125955-100",
+      "status": "SUCCESS",
+      "mode": "apply",
+      "raw": 2388,
+      "new": 0,
+      "duplicates": 2306,
+      "suppressed": 21,
+      "rejected": 61,
+      "needs_review": 0,
+      "write_performed": true,
+      "canonical_revision": 35,
+      "live_verified": true
+    }
+  ],
+  "day_totals": {
+    "raw": 4776,
+    "accepted": 1339,
+    "new": 1339,
+    "duplicates": 3281,
+    "suppressed": 34,
+    "rejected": 122,
+    "needs_review": 0
+  }
+}

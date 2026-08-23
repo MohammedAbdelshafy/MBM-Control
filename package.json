@@ -119,6 +119,8 @@
     "leads:biz": "cd MBM/LeadEngine && python -m property_intel.business_prospector",
     "leads:biz:file": "cd MBM/LeadEngine && python -m property_intel.business_prospector --source property_intel/samples/sample_business_rows.json --apply",
     "leads:sms": "python MBM/LeadEngine/phound_wave_campaign.py --dry-run",
+    "leads:ingest": "python MBM/LeadEngine/daily_lead_ingest.py",
+    "leads:ingest:apply": "python MBM/LeadEngine/daily_lead_ingest.py --apply",
     "leads:sms:list": "python MBM/LeadEngine/phound_wave_campaign.py --list",
     "leads:sms:apply": "python MBM/LeadEngine/phound_wave_campaign.py --apply --mode native_app",
     "nvidia:models": "python MBM/LeadEngine/nvidia_model_registry.py --list",

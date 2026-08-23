@@ -1,0 +1,69 @@
+{
+  "id": "NPI-1528061066",
+  "company": "ADKINS MARY",
+  "contact": "ADKINS MARY",
+  "decision_maker": "ADKINS MARY",
+  "title": "Practice Administrator",
+  "vertical": "Medical Clinics & Urgent Care",
+  "industry": "Medical Clinics & Urgent Care",
+  "phone": "+12109306937",
+  "email": "",
+  "city": "San Antonio",
+  "state": "TX",
+  "segment": "HEALTHCARE_CLINIC",
+  "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1528061066",
+  "Call_Script": "Hi ADKINS, this is Mohammed calling. I know you're focused on patient care at ADKINS MARY, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in San Antonio. Do you have 30 seconds?\n\n1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!",
+  "sales_strategy": {
+    "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1528061066",
+    "segment": "HEALTHCARE_CLINIC",
+    "opening": "Hi ADKINS, this is Mohammed calling. I know you're focused on patient care at ADKINS MARY, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in San Antonio. Do you have 30 seconds?",
+    "price_expectation": "$1,997/mo retainer with zero contract lock-in.",
+    "next_step": "Coordinate 5-minute audio demo with Office Manager.",
+    "objection_handlers": {
+      "NOT_INTERESTED": "Understood! Would you like me to email a 1-page summary of how other {city} clinics use this after-hours?",
+      "HIPAA_CONCERN": "All our voice pipelines use enterprise HIPAA-compliant BAA encryption with zero patient data storage.",
+      "ALREADY_HAVE_ANSWERING_SERVICE": "Human services often put patients on hold or take vague messages. Our AI books appointments directly into your schedule in under 60 seconds."
+    },
+    "polite_exit": "Thank you ADKINS, have a great day caring for your patients!",
+    "offer": {
+      "name": "HIPAA 24/7 AI Voice Receptionist & Recall Engine",
+      "tier": "CLINICAL_AI",
+      "estimated_deal_value_usd": 1997.0,
+      "neteller_checkout_link": "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=1997.00&currency=USD&item=Healthcare+Clinic+AI+Voice+Retainer+-+ADKINS+MARY"
+    }
+  },
+  "expected_value_usd": 1997.0,
+  "priority_score": 79.97,
+  "status": "NEW",
+  "callable": true,
+  "queue_bucket": "NEW_VERIFIED",
+  "attempts": 0,
+  "disposition": "",
+  "notes": "",
+  "last_touch": "2026-08-23T11:42:20.946376+00:00",
+  "stage": "QUALIFIED",
+  "history": [
+    {
+      "event": "daily_ingest_accept",
+      "date": "2026-08-23",
+      "at": "2026-08-23T11:42:20.946376+00:00",
+      "source": "CMS NPI Registry API v2.1"
+    }
+  ],
+  "verification_status": "VERIFIED",
+  "verified_at": "2026-08-23T11:42:20.946376+00:00",
+  "created_at": "2026-08-23T11:42:20.946376+00:00",
+  "freshness_ts": "2026-08-23T11:42:20.946376+00:00",
+  "first_seen_date": "2026-08-23",
+  "new_today": true,
+  "badge": "NEW TODAY",
+  "freshness": "NEW_TODAY",
+  "source": "CMS NPI Registry API v2.1",
+  "source_reference": "NPI-1528061066",
+  "source_type": "government_registry",
+  "source_observed_at": "2026-08-23T11:37:34.584275+00:00",
+  "verification_method": "npi_registry_api",
+  "first_seen_at": "2026-08-23",
+  "phone_verified": true,
+  "phone_verification_source": "CMS NPI Registry API v2.1"
+}

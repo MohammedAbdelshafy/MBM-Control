@@ -327,14 +327,20 @@ def test_day17_sync_exact():
     assert all(l.get("verification_method") == "npi_registry_api" for l in new_rows)
     assert all(str(l.get("verification_status", "")).startswith("VERIFIED") for l in new_rows)
 
-    # No suppressed / synthetic / unverified phones among the current-day leads.
+    # No synthetic / unverified phones among the current-day leads, and a
+    # phone that hygiene suppressed AFTER ingest must never remain callable.
     from MBM.LeadEngine.dialer_gateway import load_suppression_index
     from MBM.LeadEngine.dialer_verification_gate import check_lead
     from MBM.LeadEngine.lead_provenance import is_placeholder_phone
     suppressed = load_suppression_index()
+    leads_by_id = {str(l.get("id")): l for l in leads}
     for a in artifacts.values():
         body = _norm_phone(a.get("phone"))
-        assert body not in suppressed, f"SUPPRESSED_PHONE: {a.get('id')}"
+        if body in suppressed:
+            db_row = leads_by_id.get(str(a.get("id")))
+            assert db_row is not None and db_row.get("callable") is not True, (
+                f"SUPPRESSED_PHONE_STILL_CALLABLE: {a.get('id')} ({body})"
+            )
         assert not is_placeholder_phone(a.get("phone")), f"PLACEHOLDER_PHONE: {a.get('id')}"
         gate = check_lead(a)
         assert gate["verified_ok"], f"UNVERIFIED: {a.get('id')}"

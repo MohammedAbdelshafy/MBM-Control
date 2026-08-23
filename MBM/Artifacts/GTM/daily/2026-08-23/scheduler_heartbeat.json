@@ -1,0 +1,15 @@
+{
+  "healthy": true,
+  "updated_at": "2026-08-23T13:00:16.288870+00:00",
+  "run_id": "daily-ingest-20260823T125955-100",
+  "conditions": {
+    "engine_ran": true,
+    "real_batch_processed": true,
+    "canonical_persistence_succeeded": true,
+    "queue_updated": true,
+    "verification_succeeded": true
+  },
+  "canonical_count": 4484,
+  "canonical_revision": 35,
+  "dataset_hash": "03fffea9af850bb9801bdd844501535c150c291c8c524697f5f453e327e87de1"
+}

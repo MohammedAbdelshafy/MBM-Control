@@ -1,0 +1,1016 @@
+{
+  "generated_at": "2026-08-23T13:00:13.369333+00:00",
+  "filter": "callable=True AND not suppressed/DNC",
+  "sort": "SCORE then NEWEST-FIRST",
+  "total_callable": 4340,
+  "pages": [
+    [
+      {
+        "rank": 1,
+        "id": "NPI-1649914912",
+        "company": "AUSTIN ATHLETIC PERFORMANCE AND RECOVERY LLC",
+        "phone": "+12013419119",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1649914912",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 2,
+        "id": "NPI-1982803490",
+        "company": "BARROS SANDRA",
+        "phone": "+12017052261",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1982803490",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 3,
+        "id": "NPI-1063879427",
+        "company": "ATHLETIX REHAB AND RECOVERY, LLC",
+        "phone": "+12035500799",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1063879427",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 4,
+        "id": "NPI-1962769174",
+        "company": "ALEGATA MARY LESLIE JOY",
+        "phone": "+12064191828",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1962769174",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 5,
+        "id": "NPI-1033501804",
+        "company": "BLAIR AMY",
+        "phone": "+12084404162",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1033501804",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 6,
+        "id": "NPI-1336697937",
+        "company": "BARRON HENRY",
+        "phone": "+12103796081",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1336697937",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 7,
+        "id": "NPI-1982370078",
+        "company": "BELT NICOLE",
+        "phone": "+12105904000",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1982370078",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 8,
+        "id": "NPI-1952403610",
+        "company": "BENNIS KRISTY",
+        "phone": "+12142390990",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1952403610",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 9,
+        "id": "NPI-1366870826",
+        "company": "BERBERICH COURTNEY",
+        "phone": "+12142390993",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1366870826",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 10,
+        "id": "NPI-1053091066",
+        "company": "ARNESON PEYTON",
+        "phone": "+12142657200",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1053091066",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 11,
+        "id": "NPI-1588825871",
+        "company": "BAGGETT MELINDA",
+        "phone": "+12143284309",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1588825871",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 12,
+        "id": "NPI-1801950472",
+        "company": "BENAVIDES MELISSA",
+        "phone": "+12143337016",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1801950472",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 13,
+        "id": "NPI-1033690029",
+        "company": "ARSHAD JAZIB",
+        "phone": "+12143457500",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1033690029",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 14,
+        "id": "NPI-1376835785",
+        "company": "BURROUGHS JERRY",
+        "phone": "+12143661989",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1376835785",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 15,
+        "id": "NPI-1285649848",
+        "company": "BIYI IBIENEBO",
+        "phone": "+12144172664",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1285649848",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 16,
+        "id": "NPI-1548604994",
+        "company": "APPLE TREE SERVICES, LLC",
+        "phone": "+12144378098",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1548604994",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 17,
+        "id": "NPI-1700837408",
+        "company": "ANESTHESIOLOGISTS FOR CHILDREN",
+        "phone": "+12144566393",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1700837408",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 18,
+        "id": "NPI-1043636913",
+        "company": "ANDERSON ALICE",
+        "phone": "+12144679787",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1043636913",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 19,
+        "id": "NPI-1457005803",
+        "company": "BISTA SHRADDHA",
+        "phone": "+12145595000",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1457005803",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 20,
+        "id": "NPI-1821350208",
+        "company": "BERNHARDT REBECCA",
+        "phone": "+12145597790",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1821350208",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 21,
+        "id": "NPI-1538409248",
+        "company": "BARDWELL CHELSEA",
+        "phone": "+12145799781",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1538409248",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 22,
+        "id": "NPI-1912543638",
+        "company": "AQRABAWI ODAI",
+        "phone": "+12146302331",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1912543638",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 23,
+        "id": "NPI-1518412162",
+        "company": "BETTS TRACI",
+        "phone": "+12146481551",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1518412162",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 24,
+        "id": "NPI-1548220106",
+        "company": "BLAU PATRICIA",
+        "phone": "+12146486562",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1548220106",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 25,
+        "id": "NPI-1477561082",
+        "company": "ARMSTRONG KARLAN",
+        "phone": "+12146880078",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1477561082",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      }
+    ],
+    [
+      {
+        "rank": 26,
+        "id": "NPI-1154750487",
+        "company": "AREVALO ANIKA",
+        "phone": "+12147281854",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1154750487",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 27,
+        "id": "NPI-1366087033",
+        "company": "ANDREWS DANIEL",
+        "phone": "+12147298180",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1366087033",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 28,
+        "id": "NPI-1962958348",
+        "company": "BENOY-ZUTTRE LAURA",
+        "phone": "+12147500042",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1962958348",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 29,
+        "id": "NPI-1407577158",
+        "company": "ASBERY KELSEY",
+        "phone": "+12147781797",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1407577158",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 30,
+        "id": "NPI-1811881006",
+        "company": "BARKUS SARAH",
+        "phone": "+12148200111",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1811881006",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 31,
+        "id": "NPI-1265722748",
+        "company": "BERTSCH BRYAN",
+        "phone": "+12148206770",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1265722748",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 32,
+        "id": "NPI-1194137802",
+        "company": "BLUTE LAURA",
+        "phone": "+12148207457",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1194137802",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 33,
+        "id": "NPI-1922753870",
+        "company": "ARNOLD DANNAE",
+        "phone": "+12148209663",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1922753870",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 34,
+        "id": "NPI-1457818247",
+        "company": "AUGUSTINE RON",
+        "phone": "+12148571285",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1457818247",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 35,
+        "id": "NPI-1205662079",
+        "company": "BAGWELL RANDAL",
+        "phone": "+12148876580",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1205662079",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 36,
+        "id": "NPI-1790667525",
+        "company": "BEAR PT & PILATES",
+        "phone": "+12149144204",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1790667525",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 37,
+        "id": "NPI-1962659086",
+        "company": "BACUD EDGAR",
+        "phone": "+12149265319",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1962659086",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 38,
+        "id": "NPI-1770034811",
+        "company": "BAJAJ DEEPTI",
+        "phone": "+12154701480",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1770034811",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 39,
+        "id": "NPI-1811841208",
+        "company": "AJ MICHAEL THERAPY",
+        "phone": "+12252183421",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1811841208",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 40,
+        "id": "NPI-1356992101",
+        "company": "BEYOND THE PHYSICAL, PLLC",
+        "phone": "+12259378126",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1356992101",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 41,
+        "id": "NPI-1154305811",
+        "company": "BRENNAN KINDYLE",
+        "phone": "+12547242663",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1154305811",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 42,
+        "id": "NPI-1154258275",
+        "company": "BLAKE STEIN HOMECARE PHYSICAL THERAPY LLC",
+        "phone": "+12672598227",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1154258275",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 43,
+        "id": "NPI-1851030134",
+        "company": "BOONE ANTHONY",
+        "phone": "+12702279778",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1851030134",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 44,
+        "id": "NPI-1811412471",
+        "company": "ANTIA OKON",
+        "phone": "+12812417312",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1811412471",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 45,
+        "id": "NPI-1427395342",
+        "company": "APEX PHYSICAL REHABILITATION & WELLNESS, PLLC",
+        "phone": "+12812425252",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1427395342",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 46,
+        "id": "NPI-1558372607",
+        "company": "BEASLEY SCOTT",
+        "phone": "+12813792345",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1558372607",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 47,
+        "id": "NPI-1811015431",
+        "company": "BAIRD CYNTHIA",
+        "phone": "+12813974024",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1811015431",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 48,
+        "id": "NPI-1144285230",
+        "company": "ALCERA RICHARD",
+        "phone": "+12814406960",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1144285230",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 49,
+        "id": "NPI-1780730929",
+        "company": "ALIGNO JOSEPHINE",
+        "phone": "+12814776578",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1780730929",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 50,
+        "id": "NPI-1295194702",
+        "company": "ATLETA PHYSICAL THERAPY LLC",
+        "phone": "+12815307539",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1295194702",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      }
+    ],
+    [
+      {
+        "rank": 51,
+        "id": "NPI-1417525098",
+        "company": "ATOYEBI ROSELYN",
+        "phone": "+12816931063",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1417525098",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 52,
+        "id": "NPI-1013770346",
+        "company": "ARRA FY TX LLC",
+        "phone": "+12817251025",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1013770346",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 53,
+        "id": "NPI-1508138215",
+        "company": "BACCHUS SHEIK",
+        "phone": "+12817489088",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1508138215",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 54,
+        "id": "NPI-1114151289",
+        "company": "ANASTOS MICHAEL",
+        "phone": "+12818074380",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1114151289",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 55,
+        "id": "NPI-1619351228",
+        "company": "AMPT, LLC",
+        "phone": "+12818167891",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1619351228",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 56,
+        "id": "NPI-1881319853",
+        "company": "ASPIRE THERAPEUTICS",
+        "phone": "+12818186797",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1881319853",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 57,
+        "id": "NPI-1578281994",
+        "company": "ARP TAYLOR",
+        "phone": "+12819488119",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1578281994",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 58,
+        "id": "NPI-1871953752",
+        "company": "ANIT LINDA",
+        "phone": "+12819552650",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1871953752",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 59,
+        "id": "NPI-1013131143",
+        "company": "ALFORD VIRGINIA",
+        "phone": "+12819559696",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1013131143",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 60,
+        "id": "NPI-1023771896",
+        "company": "BALCH SARA",
+        "phone": "+12819978509",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1023771896",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 61,
+        "id": "NPI-1760551188",
+        "company": "AROCHA JIM",
+        "phone": "+13052233417",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1760551188",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 62,
+        "id": "NPI-1376603316",
+        "company": "BLOYER MARTHA",
+        "phone": "+13052436831",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1376603316",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 63,
+        "id": "NPI-1588681563",
+        "company": "BANSEE-DEPASS GISELLE",
+        "phone": "+13052521611",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1588681563",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 64,
+        "id": "NPI-1184895914",
+        "company": "BLANCA MINSU",
+        "phone": "+13052531572",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1184895914",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 65,
+        "id": "NPI-1912207663",
+        "company": "BABITZ ANNE",
+        "phone": "+13052598214",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1912207663",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 66,
+        "id": "NPI-1558659748",
+        "company": "BADILLA CARLOS",
+        "phone": "+13052676060",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1558659748",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 67,
+        "id": "NPI-1033318027",
+        "company": "BARDITCH GLENN",
+        "phone": "+13052719186",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1033318027",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 68,
+        "id": "NPI-1871137927",
+        "company": "BAILEY HEATH",
+        "phone": "+13052797677",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1871137927",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 69,
+        "id": "NPI-1891429171",
+        "company": "ARENCIBIA DANIELA",
+        "phone": "+13053181953",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1891429171",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 70,
+        "id": "NPI-1740444124",
+        "company": "BERMUDEZ BRISEIDA",
+        "phone": "+13053244455",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1740444124",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 71,
+        "id": "NPI-1780118760",
+        "company": "BODY BY ABBATE, LLC",
+        "phone": "+13053353978",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1780118760",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 72,
+        "id": "NPI-1558450213",
+        "company": "BENTOLILA BERNARD",
+        "phone": "+13053785247",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1558450213",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 73,
+        "id": "NPI-1407048051",
+        "company": "APANOVITCH ERYN",
+        "phone": "+13053816224",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1407048051",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 74,
+        "id": "NPI-1124334974",
+        "company": "AURICCHIO CYNTHIA",
+        "phone": "+13053822993",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1124334974",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 75,
+        "id": "NPI-1477635456",
+        "company": "B & V THERA PRO ASSOCIATES CORP",
+        "phone": "+13053850168",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1477635456",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      }
+    ],
+    [
+      {
+        "rank": 76,
+        "id": "NPI-1699780189",
+        "company": "BARRERA FULVIA",
+        "phone": "+13054129099",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1699780189",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 77,
+        "id": "NPI-1134059280",
+        "company": "BOLT PERFORMANCE THERAPY LLC",
+        "phone": "+13054208265",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1134059280",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 78,
+        "id": "NPI-1073633830",
+        "company": "BOUCUGNANI ARTURO",
+        "phone": "+13054482442",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1073633830",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 79,
+        "id": "NPI-1477066157",
+        "company": "ASHCRAFT ISAAC",
+        "phone": "+13055010231",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1477066157",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 80,
+        "id": "NPI-1265822431",
+        "company": "BAY HEALTH DC INC.",
+        "phone": "+13055061411",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1265822431",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 81,
+        "id": "NPI-1457569469",
+        "company": "BIO NETWORKS INCORPORATED",
+        "phone": "+13055413400",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1457569469",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 82,
+        "id": "NPI-1871508713",
+        "company": "ARTURO CORCES MD PA DBA MIAMI INSTITUTE FOR JOINT RECONSTRUCTION",
+        "phone": "+13053354135",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1871508713",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 83,
+        "id": "NPI-1851648083",
+        "company": "BLOOM JASON",
+        "phone": "+13055959425",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1851648083",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 84,
+        "id": "NPI-1942833082",
+        "company": "BLANDON KLAUS",
+        "phone": "+13056162789",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1942833082",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 85,
+        "id": "NPI-1285851295",
+        "company": "BENDER JEFFREY",
+        "phone": "+13056650088",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1285851295",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 86,
+        "id": "NPI-1942381744",
+        "company": "ARIAS-CLARK LOURDES",
+        "phone": "+13056660996",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1942381744",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 87,
+        "id": "NPI-1922899301",
+        "company": "BEACH KAYLEIGH",
+        "phone": "+13056742121",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1922899301",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 88,
+        "id": "NPI-1295194736",
+        "company": "BORRAS LAURA",
+        "phone": "+13057987440",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1295194736",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 89,
+        "id": "NPI-1184591372",
+        "company": "BARBER STEPHEN",
+        "phone": "+13058544400",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1184591372",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 90,
+        "id": "NPI-1609188408",
+        "company": "BLAS JUAN",
+        "phone": "+13058985057",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1609188408",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 91,
+        "id": "NPI-1780820969",
+        "company": "BENTLEY MEGAN",
+        "phone": "+13059607500",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1780820969",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 92,
+        "id": "NPI-1740396985",
+        "company": "BEDOYA JUAN",
+        "phone": "+13059691167",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1740396985",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 93,
+        "id": "NPI-1417966532",
+        "company": "ARENCIBIA GEORGIANA",
+        "phone": "+13059790396",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1417966532",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 94,
+        "id": "NPI-1407278815",
+        "company": "BLANCO CRISTINA",
+        "phone": "+13059798166",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1407278815",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 95,
+        "id": "NPI-1548933153",
+        "company": "BAKER JOSEPH",
+        "phone": "+13178336326",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1548933153",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 96,
+        "id": "NPI-1518359462",
+        "company": "BEATS HOLLY",
+        "phone": "+13253888246",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1518359462",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 97,
+        "id": "NPI-1548995095",
+        "company": "ALIANA PHYSICAL THERAPY",
+        "phone": "+13258992588",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1548995095",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 98,
+        "id": "NPI-1508383522",
+        "company": "ARDOIN SARAH",
+        "phone": "+13377895750",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1508383522",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 99,
+        "id": "NPI-1407719701",
+        "company": "AMENITY HEALTH SERVICES PLLC",
+        "phone": "+13463332794",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1407719701",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      },
+      {
+        "rank": 100,
+        "id": "NPI-1578161790",
+        "company": "BAER ZOIE",
+        "phone": "+13606034031",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1578161790",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-23"
+      }
+    ]
+  ]
+}

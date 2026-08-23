@@ -31,7 +31,10 @@ def test_dialer_top_positions_are_real_estate_sellers():
     """Verify the top 155 queue positions in canonical dialer are real estate sellers."""
     writer = DialerSingleWriter()
     leads = writer.read_leads()
-    assert len(leads) == 1222, "1,222 canonical leads must be preserved"
+    # The canonical DB GROWS daily (P0 ingestion adds verified leads). The
+    # invariant is preservation: the original 1,222-lead cohort must never
+    # shrink, so assert a floor, not a frozen snapshot.
+    assert len(leads) >= 1222, f"Canonical cohort shrunk below 1,222 (found {len(leads)})"
 
     sellers = get_callable_sellers()
     assert len(sellers) == 155, f"Expected 155 callable sellers, found {len(sellers)}"
