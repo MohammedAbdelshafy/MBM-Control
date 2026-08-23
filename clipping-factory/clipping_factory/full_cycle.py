@@ -484,21 +484,25 @@ def run_full_cycle(channel_slug: str = "twistsrevealed",
     }
 
 
-def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool) -> Dict[str, Any]:
+def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool,
+                 force: bool = False) -> Dict[str, Any]:
     campaign_id = movie.campaign_id
     print(f"\n[cycle] === {movie.title} ({movie.year}) [{campaign_id}] ===")
 
-    # DUPLICATE GUARD: second authoritative barrier — skip if campaign already terminal
-    state = _load_state()
-    existing = state.get(campaign_id, {})
-    if isinstance(existing, dict) and existing.get("status") in ("ready_to_publish", "published", "verified"):
-        print(f"[{campaign_id}] SKIP_DUPLICATE: already {existing['status']}")
-        record: Dict[str, Any] = {
-            "campaign_id": campaign_id, "movie": f"{movie.title} ({movie.year})",
-            "run_id": run_id, "started_at": _now(), "stages": {},
-            "status": "skipped_duplicate",
-        }
-        return record
+    # DUPLICATE GUARD: second authoritative barrier — skip if campaign already
+    # terminal. `force=True` is ONLY for explicit regeneration runs; the
+    # scheduled discovery path never passes it.
+    if not force:
+        state = _load_state()
+        existing = state.get(campaign_id, {})
+        if isinstance(existing, dict) and existing.get("status") in ("ready_to_publish", "published", "verified"):
+            print(f"[{campaign_id}] SKIP_DUPLICATE: already {existing['status']}")
+            record: Dict[str, Any] = {
+                "campaign_id": campaign_id, "movie": f"{movie.title} ({movie.year})",
+                "run_id": run_id, "started_at": _now(), "stages": {},
+                "status": "skipped_duplicate",
+            }
+            return record
 
     # artifact dirs
     adir = ARTIFACTS_ROOT / f"{run_id}_{campaign_id}"
@@ -566,6 +570,7 @@ def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool) -> 
             target_duration_min=profile.target_duration_min,
             target_duration_max=profile.target_duration_max,
             director=movie.director,
+            hook_strategy=getattr(movie, "hook_strategy", "") or "",
         )
         (adir / "script.txt").write_text(script.narration, encoding="utf-8")
         (adir / "script.json").write_text(json.dumps(script.to_dict(), indent=2), encoding="utf-8")

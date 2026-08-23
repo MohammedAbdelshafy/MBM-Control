@@ -195,6 +195,8 @@ def generate_recap_script(
     target_duration_max: int = 75,
     hook_type: str = "mystery",
     director: str = "",
+    hook_strategy: str = "",
+    closing_question: bool = True,
 ) -> RecapScript:
     """
     Generate a movie recap script from research data.
@@ -215,17 +217,17 @@ def generate_recap_script(
     ending_lower = ending_description.lower() if ending_description else ""
     synopsis_lower = synopsis.lower() if synopsis else ""
 
-    # Determine hook strategy from content
+    # Determine hook strategy from content (derived; explicit param wins)
     if any(w in ending_lower for w in ["killer", "murder", "death", "dies", "kills"]):
-        hook_strategy = "consequence"
+        derived_strategy = "consequence"
     elif any(w in ending_lower for w in ["wasn't", "turns out", "actually", "revealed", "secret"]):
-        hook_strategy = "revelation"
+        derived_strategy = "revelation"
     elif any(w in ending_lower for w in ["impossible", "trapped", "no way out", "can't escape"]):
-        hook_strategy = "situation"
+        derived_strategy = "situation"
     elif any(w in ending_lower for w in ["sacrifice", "choice", "decision", "chose"]):
-        hook_strategy = "consequence"
+        derived_strategy = "consequence"
     else:
-        hook_strategy = "mystery"
+        derived_strategy = "mystery"
 
     # Build hook from actual movie details
     protagonist = key_characters[0] if key_characters else "someone"
@@ -242,6 +244,11 @@ def generate_recap_script(
             f"What {protagonist} found in that room changed the meaning of everything.",
             f"The truth about {protagonist}'s situation was worse than anyone imagined.",
         ],
+        "danger": [
+            f"By the end of this night, {antagonist or protagonist} would be dead.",
+            f"Everyone who crossed {antagonist or protagonist} paid the same price.",
+            f"The body count was never supposed to include {protagonist}.",
+        ],
         "situation": [
             f"{protagonist} had no idea what was waiting inside.",
             f"There was no escape from what {protagonist} was about to face.",
@@ -254,7 +261,12 @@ def generate_recap_script(
         ],
     }
 
-    hook = random.choice(hooks.get(hook_strategy, hooks["mystery"]))
+    strategy_key = (hook_strategy or derived_strategy).lower()
+    if strategy_key == "revelation":
+        # normalize legacy alias
+        strategy_key = "revelation"
+    pool = hooks.get(strategy_key, hooks["mystery"])
+    hook = random.choice(pool)
 
     # ── BUILD NARRATION ──────────────────────────────────────────
     narration_parts = [
@@ -288,6 +300,14 @@ def generate_recap_script(
             if s:
                 narration_parts.append(s + ".")
         narration_parts.append("")
+
+    # CLOSING QUESTION — natural discussion opener grounded in the plot.
+    # Never "comment below" bait; references the actual character's dilemma.
+    if closing_question and ending_description:
+        q = _build_closing_question(protagonist, key_characters, ending_description)
+        if q:
+            narration_parts.append(q)
+            narration_parts.append("")
 
     # ── FINAL STING — derived from the actual ending, not generic ──
     # Extract the key event from ending to build a specific sting
@@ -369,6 +389,22 @@ def generate_recap_script(
     return script
 
 
+def _build_closing_question(protagonist: str, key_characters: List[str],
+                            ending_description: str) -> str:
+    """One short question grounded in the actual plot. Empty if no safe angle."""
+    end_low = (ending_description or "").lower()
+    other = key_characters[1] if len(key_characters) > 1 else ""
+    if "delusion" in end_low or "imagination" in end_low or "dream" in end_low:
+        return f"Would you have believed {protagonist}?"
+    if "sacrifice" in end_low and other:
+        return f"Would you have done what {other} did?"
+    if "trust" in end_low or "betray" in end_low:
+        return f"Could you have trusted {protagonist}?"
+    if "drown" in end_low or "dead" in end_low or "dies" in end_low:
+        return f"Did {protagonist} ever stand a chance?"
+    return ""
+
+
 def _build_movie_specific_sting(title: str, ending_description: str,
                                  key_characters: List[str], genres: List[str]) -> str:
     """Build a final sting that references the actual movie ending."""
@@ -388,8 +424,10 @@ def _build_movie_specific_sting(title: str, ending_description: str,
         return f"Surviving came at a cost no one in {title} could have imagined."
     elif "wasn't" in ending_lower or "turns out" in ending_lower:
         return f"That final twist in {title} is the kind of ending that makes you want to watch it all over again."
-    elif "revealed" in ending_lower or "truth" in ending_lower:
-        return f"The truth about {title} is something audiences never forget."
+    elif "revealed" in ending_lower or "truth" in ending_lower or "delusion" in ending_lower:
+        # Use the concrete reveal, never the boilerplate phrase
+        first_event = ending_description.split(". ")[0].rstrip(".")
+        return f"{first_event} — and once you know, you can never watch {title} the same way again."
     else:
         # Generic but not boilerplate — reference the specific outcome
         first_event = ending_description.split(". ")[0].rstrip(".")
