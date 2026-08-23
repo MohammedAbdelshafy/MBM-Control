@@ -177,8 +177,23 @@ def discover_movies(
         genre_set = {g.lower() for g in genres}
         pool = [m for m in pool if any(g.lower() in genre_set for g in m["genres"])]
 
+    # Resolved public-domain URLs (offline cache, populated by
+    # `_resolve_pd_sources.resolve_all --materialize`). Never fabricates a URL.
+    try:
+        from ._resolve_pd_sources import url_for as _resolved_url_for
+    except Exception:
+        _resolved_url_for = lambda title, year: ""
+
     available = []
     for m in pool:
+        source_class = m.get("source_class", SourceClass.UNVERIFIED.value)
+        source_uri = m.get("source_uri", "")
+        # Discovery -> Resolved Source handoff: public-domain candidates get a
+        # real, verified URL from the resolver cache when available; otherwise
+        # they keep source_uri="" and acquisition will honestly SOURCE_BLOCK.
+        if not source_uri and source_class == SourceClass.PUBLIC_DOMAIN.value:
+            source_uri = _resolved_url_for(m["title"], m["year"])
+
         candidate = MovieCandidate(
             title=m["title"],
             year=m["year"],
@@ -189,8 +204,8 @@ def discover_movies(
             synopsis=m.get("synopsis", ""),
             ending_description=m.get("ending_description", ""),
             key_characters=m.get("key_characters", []),
-            source_class=m.get("source_class", SourceClass.UNVERIFIED.value),
-            source_uri=m.get("source_uri", ""),
+            source_class=source_class,
+            source_uri=source_uri,
         )
         if candidate.campaign_id not in exclude_ids:
             available.append(candidate)

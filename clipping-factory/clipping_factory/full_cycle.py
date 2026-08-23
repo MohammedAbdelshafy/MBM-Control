@@ -107,13 +107,32 @@ def set_campaign_state(campaign_id: str, status: str, extra: Optional[Dict] = No
 def update_ledger(run_record: Dict[str, Any]) -> None:
     ARTIFACTS_ROOT.mkdir(parents=True, exist_ok=True)
     ledger_path = ARTIFACTS_ROOT / "ledger.json"
-    ledger = {"runs": [], "counts": {}}
+    ledger = {"runs": [], "counts": {}, "lifetime": {}}
     if ledger_path.exists():
         try:
             ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+            ledger.setdefault("runs", [])
+            ledger.setdefault("counts", {})
+            ledger.setdefault("lifetime", {})
         except Exception:
             pass
     ledger["runs"] = ([run_record] + ledger.get("runs", []))[:100]
+
+    # Cumulative LIFETIME counters — only ever increase. Idle heartbeats and
+    # failed runs can never zero these.
+    lt = ledger["lifetime"]
+    for k in ("runs_total", "campaigns_discovered", "campaigns_source_blocked",
+              "campaigns_produced", "clips_rendered", "clips_rejected",
+              "clips_ready", "clips_published", "clips_verified"):
+        lt.setdefault(k, 0)
+    lt["runs_total"] += 1
+    lt["campaigns_discovered"] += run_record.get("discovered", 0)
+    lt["campaigns_source_blocked"] += run_record.get("source_blocked", 0)
+    lt["campaigns_produced"] += run_record.get("produced", 0)
+    lt["clips_rendered"] += run_record.get("produced", 0) + run_record.get("rejected", 0)
+    lt["clips_rejected"] += run_record.get("rejected", 0)
+    lt["clips_ready"] += run_record.get("produced", 0)
+
     counts = {}
     if STATUS_FILE.exists():
         try:
@@ -122,7 +141,12 @@ def update_ledger(run_record: Dict[str, Any]) -> None:
                 counts[s] = counts.get(s, 0) + 1
         except Exception:
             pass
+    counts["published"] = counts.get("published", 0)
+    counts["verified"] = counts.get("verified", 0)
+    lt["clips_published"] = max(lt["clips_published"], counts.get("published", 0))
+    lt["clips_verified"] = max(lt["clips_verified"], counts.get("verified", 0))
     ledger["counts"] = counts
+
     ledger["updated_at"] = _now()
     ledger_path.write_text(json.dumps(ledger, indent=2), encoding="utf-8")
 
@@ -248,7 +272,7 @@ def _qa_and_score(final_path: Path, vo_duration: float, narration_words: int,
     else:
         notes.append("FAIL no captions")
 
-    passed = score >= profile.min_creative_score and dur_ok and probe["audio_codec"]
+    passed = bool(score >= profile.min_creative_score and dur_ok and probe["audio_codec"])
     return {
         "probe": probe, "score": round(score, 2),
         "threshold": profile.min_creative_score, "passed": passed,
@@ -275,7 +299,8 @@ def run_full_cycle(channel_slug: str = "twistsrevealed",
         # 1. DISCOVERY — draw a wide pool first, then prioritize candidates whose
         #    real source is verifiably available (public domain provenance)
         exclude = [cid for cid, v in _load_state().items()
-                   if isinstance(v, dict) and v.get("status") in ("published", "verified")]
+                   if isinstance(v, dict) and v.get("status") in
+                   ("ready_to_publish", "published", "verified")]
         pool = discover_movies(genres=profile.genres, count=max(count * 6, 24),
                                exclude_ids=exclude, status_file=None)
         pd_first = sorted(
@@ -286,9 +311,23 @@ def run_full_cycle(channel_slug: str = "twistsrevealed",
               + ", ".join(f"{m.title} ({m.year})[{m.source_class}]" for m in pd_first))
 
         produced_so_far = 0
+        source_blocked = 0
         for movie in pd_first:
             if produced_so_far >= count:
                 break
+            # HARD PRE-PRODUCTION GATE: a candidate without a resolved,
+            # usable source never enters production.
+            if not movie.source_uri:
+                source_blocked += 1
+                set_campaign_state(movie.campaign_id, "blocked",
+                                   {"reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"})
+                results.append({
+                    "campaign_id": movie.campaign_id,
+                    "movie": f"{movie.title} ({movie.year})",
+                    "status": "source_blocked",
+                })
+                print(f"[gate] SOURCE_BLOCKED {movie.title} ({movie.year}) — no usable source_uri, skipping")
+                continue
             res = _produce_one(movie, profile, run_id, publish)
             results.append(res)
             if res.get("status") in ("ready", "verified", "published"):
@@ -299,7 +338,8 @@ def run_full_cycle(channel_slug: str = "twistsrevealed",
 
     produced = sum(1 for r in results if r.get("status") in ("ready", "verified", "published"))
     rejected = sum(1 for r in results if r.get("status") == "rejected")
-    failed = sum(1 for r in results if r.get("status") in ("failed", "source_blocked"))
+    failed = sum(1 for r in results if r.get("status") in ("failed",))
+    gated_blocked = sum(1 for r in results if r.get("status") == "source_blocked")
     complete_heartbeat(
         status="success" if produced else "failed",
         campaigns_found=len(pd_first),
@@ -311,9 +351,10 @@ def run_full_cycle(channel_slug: str = "twistsrevealed",
         "run_id": run_id, "at": _now(),
         "status": "success" if produced else "failed",
         "produced": produced, "rejected": rejected, "failed": failed,
+        "discovered": len(pd_first), "source_blocked": gated_blocked + failed,
         "campaigns": [{"id": r.get("campaign_id"), "movie": r.get("movie"),
                        "status": r.get("status"),
-                       "qa": r.get("qa", {}).get("score")} for r in results],
+                       "qa": (r.get("qa") or {}).get("score")} for r in results],
     })
     return {
         "status": "success" if produced else "failed",
@@ -329,6 +370,18 @@ def run_full_cycle(channel_slug: str = "twistsrevealed",
 def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool) -> Dict[str, Any]:
     campaign_id = movie.campaign_id
     print(f"\n[cycle] === {movie.title} ({movie.year}) [{campaign_id}] ===")
+
+    # DUPLICATE GUARD: second authoritative barrier — skip if campaign already terminal
+    state = _load_state()
+    existing = state.get(campaign_id, {})
+    if isinstance(existing, dict) and existing.get("status") in ("ready_to_publish", "published", "verified"):
+        print(f"[{campaign_id}] SKIP_DUPLICATE: already {existing['status']}")
+        record: Dict[str, Any] = {
+            "campaign_id": campaign_id, "movie": f"{movie.title} ({movie.year})",
+            "run_id": run_id, "started_at": _now(), "stages": {},
+            "status": "skipped_duplicate",
+        }
+        return record
 
     # artifact dirs
     adir = ARTIFACTS_ROOT / f"{run_id}_{campaign_id}"
@@ -366,6 +419,14 @@ def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool) -> 
                              movie.source_class, movie.source_uri,
                              allowed_provenance=profile.source_policy)
         record["source"] = src.to_dict()
+        # Prove WHICH film file was used: resolved archive.org identifier.
+        try:
+            from ._resolve_pd_sources import CACHE_FILE as _PD_CACHE
+            _pd = json.loads(Path(_PD_CACHE).read_text(encoding="utf-8"))
+            record["source"]["source_identifier"] = \
+                _pd.get(f"{movie.title} ({movie.year})", {}).get("identifier", "")
+        except Exception:
+            record["source"]["source_identifier"] = ""
         if src.status not in ("acquired", "cached"):
             set_campaign_state(campaign_id, "blocked",
                                {"reason": src.error})
@@ -420,6 +481,15 @@ def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool) -> 
         # copy real assets into work dir (ffmpeg runs with cwd=work for safe relative filters)
 
         # 6. VISUAL SEGMENTS from the real film, aligned to story structure
+        # Provider routing: Higgsfield is OPTIONAL. UNAVAILABLE/PLAN_REQUIRED
+        # NEVER blocks the campaign — local ffmpeg visual pipeline continues.
+        try:
+            from .providers.higgsfield_provider import get_router
+            vp = get_router().route()
+        except Exception:
+            vp = {"provider": "local_ffmpeg", "state": "UNAVAILABLE"}
+        record["visual_provider"] = vp
+
         structure = profile.story_structure or ["hook", "setup", "escalation", "reveal", "ending", "sting"]
         n_seg = max(len(structure), 6)
         seg_len = vo_duration / n_seg
@@ -440,7 +510,8 @@ def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool) -> 
             (adir / "campaign.json").write_text(json.dumps(record, indent=2), encoding="utf-8")
             return record
         concat_ok = _concat_segments(work, seg_files, "concat.mp4")
-        stage("visuals", segments=len(seg_files), concat=concat_ok)
+        stage("visuals", segments=len(seg_files), concat=concat_ok,
+              provider=vp.get("provider"), provider_state=vp.get("state"))
 
         # 7. CAPTIONS timed to ACTUAL voiceover duration
         beats = _build_caption_beats(script.narration, vo_duration)

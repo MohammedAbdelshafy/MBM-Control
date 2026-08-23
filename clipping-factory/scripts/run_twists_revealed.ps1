@@ -1,6 +1,6 @@
-<#
+﻿<#
 .SYNOPSIS
-    Twists Revealed flagship production cycle — ONE real movie recap end-to-end.
+    Twists Revealed flagship production cycle - ONE real movie recap end-to-end.
 
 .DESCRIPTION
     discovery -> research -> REAL source acquisition (public-domain provenance)
@@ -65,10 +65,10 @@ if (Test-Path $LockFile) {
         $lock = Get-Content $LockFile -Raw | ConvertFrom-Json
         $age = ((Get-Date) - [datetime]::Parse($lock.acquired_at)).TotalSeconds
         if ($age -lt 7200) {
-            Write-Log "SKIPPED_ALREADY_RUNNING — lock held by PID $($lock.pid) ($([math]::Round($age))s)" "WARN"
+            Write-Log "SKIPPED_ALREADY_RUNNING - lock held by PID $($lock.pid) ($([math]::Round($age))s)" "WARN"
             exit 0
         }
-        Write-Log "Stale lock detected (${age}s) — proceeding" "WARN"
+        Write-Log "Stale lock detected (${age}s) - proceeding" "WARN"
     } catch { Write-Log "Corrupt lock file ignored" "WARN" }
 }
 
@@ -91,25 +91,35 @@ if (-not $PythonExe) {
 }
 Write-Log "Python: $PythonExe"
 
+# Dependency check: edge-tts must be importable by the chosen interpreter
+$depCheck = & $PythonExe -c "import edge_tts, requests; print('deps-ok')" 2>&1
+if (-not ("$depCheck" -match "deps-ok")) {
+    Write-Log "FATAL: missing python deps (edge_tts/requests) for $PythonExe" "ERROR"
+    exit 5
+}
+
 # ffmpeg must be on PATH or beside the repo tooling
 $ff = Get-Command ffmpeg.exe -ErrorAction SilentlyContinue
 if (-not $ff) { Write-Log "FATAL: ffmpeg not on PATH" "ERROR"; exit 4 }
 
 # 4. Run one production cycle
 Write-Log "=== TWISTS REVEALED PRODUCTION CYCLE $Timestamp (publish=$Publish) ==="
-$args = @("-m", "clipping_factory.full_cycle", "--movies", "$Movies")
-if ($Publish) { $args += "--publish" }
+$PyArgs = @("-m", "clipping_factory.full_cycle", "--movies", "$Movies")
+if ($Publish) { $PyArgs += "--publish" }
 
 $exitCode = 0
+Push-Location $RepoRoot
 try {
-    $output = & $PythonExe @args 2>&1
+    $output = & $PythonExe @PyArgs 2>&1
     $output | ForEach-Object { Write-Log "$_" }
     $exitCode = $LASTEXITCODE
 } catch {
     Write-Log "RUNNER ERROR: $_" "ERROR"
     $_ | Out-File (Join-Path $LogsDir "twists_error_$Timestamp.log") -Encoding UTF8
     $exitCode = 1
+} finally {
+    Pop-Location
 }
 
-Write-Log "=== CYCLE COMPLETE — ExitCode $exitCode ==="
+Write-Log "=== CYCLE COMPLETE - ExitCode $exitCode ==="
 exit $exitCode

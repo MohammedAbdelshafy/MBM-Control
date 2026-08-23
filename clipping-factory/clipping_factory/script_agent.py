@@ -223,7 +223,7 @@ def generate_recap_script(
     if synopsis:
         sentences = synopsis.split(". ")
         for s in sentences[:3]:
-            s = s.strip()
+            s = s.strip().rstrip(".")
             if s:
                 narration_parts.append(s + ".")
         narration_parts.append("")
@@ -239,24 +239,41 @@ def generate_recap_script(
         narration_parts.append("")
         ending_sentences = ending_description.split(". ")
         for s in ending_sentences[:4]:
-            s = s.strip()
+            s = s.strip().rstrip(".")
             if s:
                 narration_parts.append(s + ".")
         narration_parts.append("")
 
-    narration_parts.append("This ending will stay with you long after the credits roll.")
+    # FINAL STING — part of the spoken narration, never dropped
+    sting = f"The truth about {title} is something audiences never forget."
+    narration_parts.append(sting)
 
     narration = "\n".join(narration_parts)
+
+    # Fit the 35–75s band by TRIMMING filler — never by injecting production
+    # notes into the narration (TTS would read them aloud).
+    def _fit(text: str) -> str:
+        est = _estimate_duration(text)
+        if est > target_duration_max:
+            lines = [l for l in text.split("\n") if l.strip()]
+            # drop the character-dynamics filler line first, then trailing synopsis
+            for i, l in enumerate(lines):
+                if l.startswith("The tension between"):
+                    lines.pop(i)
+                    break
+            while len(lines) > 3 and _estimate_duration("\n".join(lines)) > target_duration_max:
+                # remove last non-sting body line before the sting
+                lines.pop(-2 if lines[-1] == sting else -1)
+            text = "\n".join(lines)
+        elif _estimate_duration(text) < target_duration_min:
+            extra = (f"The way this story unfolds, with every revelation building "
+                     f"on the last, makes {title} one of the most gripping "
+                     f"{genre_desc}s ever made.")
+            text = text.replace(sting, extra + "\n\n" + sting)
+        return text
+
+    narration = _fit(narration)
     word_count = len(narration.split())
-    estimated_duration = _estimate_duration(narration)
-
-    # Adjust if too long or short
-    target_mid = (target_duration_min + target_duration_max) / 2
-    if estimated_duration > target_duration_max:
-        narration += "\n\n[Note: Narration may need trimming for target duration]"
-    elif estimated_duration < target_duration_min:
-        narration += f"\n\nThe way this story unfolds, with every revelation building on the last, makes {title} one of the most gripping {genre_desc}s ever made."
-
     estimated_duration = _estimate_duration(narration)
 
     # Build caption beats
@@ -288,7 +305,7 @@ def generate_recap_script(
         "shorts",
     ]
 
-    ending_sting = f"The truth about {title} is something audiences never forget."
+    ending_sting = sting
 
     script = RecapScript(
         script_id="",

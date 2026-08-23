@@ -149,7 +149,7 @@ def acquire_source(
 
     size = dest.stat().st_size
     dur = _ffprobe_duration(dest)
-    if dur < 600:  # feature-length sanity floor (>=10 min)
+    if dur < 1800:  # feature-length sanity floor (>=30 min) blocks recuts/clips
         result.error = f"SOURCE_BLOCKED: probed duration {dur:.0f}s too short for a feature source"
         return result
 
