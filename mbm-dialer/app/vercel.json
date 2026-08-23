@@ -1,0 +1,25 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "bun install",
+  "buildCommand": "bun run build",
+  "outputDirectory": "dist/client",
+  "functions": {
+    "api/ssr.js": {
+      "includeFiles": "dist/server/**"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/((?!assets/|leads_database\\.json).*)",
+      "destination": "/api/ssr"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/leads_database.json",
+      "headers": [
+        { "key": "cache-control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ]
+}
