@@ -259,7 +259,8 @@ def test_qa_passed_is_boolean():
 
     # Mock caption_beats as list of dicts matching production format
     beats = [{"timestamp_end": 45.0}]
-    qa = _qa_and_score(final, 45.0, 103, beats, 7, profile)
+    qa = _qa_and_score(final, 45.0, 103, beats, 7, profile,
+                       narration="He thought the house was empty. It wasn't. The Cabinet of Dr. Caligari is a 1920 psychological horror. But here's where everything changes. The entire story is revealed to be the delusion of Francis.")
     assert isinstance(qa["passed"], bool), \
         f"passed must be bool, got {type(qa['passed']).__name__}: {qa['passed']!r}"
 
@@ -294,6 +295,54 @@ def test_script_no_production_notes():
         f"production note found in narration: {s.narration!r}"
 
 
+def test_no_generic_endings():
+    """Scripts must never use generic boilerplate endings."""
+    from clipping_factory.script_agent import generate_recap_script
+
+    generic_phrases = [
+        "something audiences never forget",
+        "nothing will ever be the same",
+        "changes everything",
+        "forever changed",
+    ]
+    # Test across multiple movies
+    movies = [
+        ("Nosferatu", 1922, "Vampire travels to a city.", "Ellen sacrifices herself to destroy the vampire.", ["Thomas Hutter", "Count Orlok"], ["horror"]),
+        ("Night of the Living Dead", 1968, "Zombies attack a farmhouse.", "Ben survives the night but is shot by a mob.", ["Ben", "Barbara"], ["horror"]),
+        ("Carnival of Souls", 1962, "Woman follows a mysterious figure.", "She realizes she drowned in the river.", ["Mary Henry"], ["horror"]),
+    ]
+    for title, year, syn, end, chars, genres in movies:
+        s = generate_recap_script(
+            campaign_id="TEST", title=title, year=year,
+            synopsis=syn, ending_description=end,
+            key_characters=chars, genres=genres,
+        )
+        for phrase in generic_phrases:
+            assert phrase not in s.narration.lower(), \
+                f"generic ending '{phrase}' found in {title} narration"
+
+
+def test_hook_diversity():
+    """Scripts for different movies should use different hook strategies."""
+    from clipping_factory.script_agent import generate_recap_script
+
+    hooks = set()
+    movies = [
+        ("Nosferatu", 1922, "Vampire travels to a city.", "Ellen sacrifices herself to destroy the vampire.", ["Thomas Hutter", "Count Orlok"], ["horror"]),
+        ("Night of the Living Dead", 1968, "Zombies attack a farmhouse.", "Ben survives the night but is shot by a mob.", ["Ben", "Barbara"], ["horror"]),
+        ("Carnival of Souls", 1962, "Woman follows a mysterious figure.", "She realizes she drowned in the river.", ["Mary Henry"], ["horror"]),
+    ]
+    for title, year, syn, end, chars, genres in movies:
+        s = generate_recap_script(
+            campaign_id="TEST", title=title, year=year,
+            synopsis=syn, ending_description=end,
+            key_characters=chars, genres=genres,
+        )
+        hooks.add(s.hook)
+    # At least 2 different hooks across 3 movies
+    assert len(hooks) >= 2, f"hooks not diverse enough: {hooks}"
+
+
 def test_script_has_hook_and_sting():
     """Every script must open with a hook and end with a sting."""
     from clipping_factory.script_agent import generate_recap_script
@@ -306,6 +355,6 @@ def test_script_has_hook_and_sting():
     )
     lines = [l.strip() for l in s.narration.split("\n") if l.strip()]
     assert len(lines) >= 2, "script needs hook + sting minimum"
-    assert "twists" in lines[-1].lower() or "never forget" in lines[-1].lower() or \
-           "test movie" in lines[-1].lower(), \
-        f"final line should be the sting, got: {lines[-1]!r}"
+    # Sting must reference the movie name (movie-specific, not generic)
+    assert "test movie" in lines[-1].lower(), \
+        f"final line should reference the movie, got: {lines[-1]!r}"

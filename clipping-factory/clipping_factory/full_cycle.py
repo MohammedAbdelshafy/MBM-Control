@@ -215,68 +215,185 @@ def _extract_frames(final_path: Path, work: Path, count: int = 5) -> List[str]:
 
 def _qa_and_score(final_path: Path, vo_duration: float, narration_words: int,
                   caption_beats: List[Dict], segment_count: int,
-                  profile) -> Dict[str, Any]:
+                  profile, narration: str = "") -> Dict[str, Any]:
+    """Weighted quality scoring: technical + creative + publishability.
+
+    Scoring bands (out of 10.0):
+      0-3.9  : REJECT (technical failures)
+      4.0-6.9: WEAK (technically valid, creative gaps)
+      7.0-8.4: ACCEPTABLE (meets publish bar)
+      8.5-9.4: STRONG (high quality)
+      9.5-10.0: EXCELLENT (rare, near-perfect)
+    """
     probe = _probe(final_path)
     notes = []
-    score = 0.0
+    breakdown = {}
 
-    # Technical (6 pts)
+    # ── TECHNICAL (max 3.0) ──────────────────────────────────────
+    tech = 0.0
+
     if probe["duration"] > 0:
-        score += 1.0
+        tech += 0.5
         notes.append(f"duration {probe['duration']:.1f}s")
     else:
         notes.append("FAIL: zero duration")
+
     if probe["width"] == 1080 and probe["height"] == 1920:
-        score += 2.0
+        tech += 1.0
         notes.append("resolution 1080x1920")
     else:
         notes.append(f"FAIL resolution {probe['width']}x{probe['height']}")
+
     if probe["fps"] >= 24:
-        score += 1.0
+        tech += 0.5
         notes.append(f"fps {probe['fps']}")
     else:
         notes.append(f"FAIL fps {probe['fps']}")
+
     if probe["audio_codec"]:
-        score += 1.0
+        tech += 0.5
         notes.append(f"audio {probe['audio_codec']}")
     else:
         notes.append("FAIL no audio stream")
+
     if probe["size"] > 200_000:
-        score += 1.0
+        tech += 0.5
         notes.append(f"size {probe['size'] // 1024}KB")
     else:
         notes.append("FAIL file too small")
 
-    # Creative (4 pts)
+    breakdown["technical"] = round(tech, 2)
+
+    # ── CREATIVE (max 7.0) ──────────────────────────────────────
+    creative = 0.0
+    narr_lower = narration.lower()
+
+    # 1. Duration band (max 1.0)
     dur_ok = (profile.target_duration_min - 2) <= probe["duration"] <= (profile.target_duration_max + 15)
     if dur_ok:
-        score += 1.5
+        # Partial credit for being close to center of band
+        center = (profile.target_duration_min + profile.target_duration_max) / 2
+        dist = abs(probe["duration"] - center) / (profile.target_duration_max - profile.target_duration_min)
+        creative += max(0.5, 1.0 - dist * 0.5)
         notes.append(f"duration fits {profile.target_duration_min}-{profile.target_duration_max}s band")
     else:
         notes.append(f"duration outside band ({probe['duration']:.1f}s)")
 
+    # 2. Narration pace (max 1.0)
     wpm = (narration_words / probe["duration"] * 60.0) if probe["duration"] else 0
     if 120 <= wpm <= 185:
-        score += 1.25
+        # Sweet spot 130-165 gets full credit
+        if 130 <= wpm <= 165:
+            creative += 1.0
+        else:
+            creative += 0.7
         notes.append(f"narration pace {wpm:.0f} wpm")
     else:
+        creative += 0.0
         notes.append(f"pace off-band {wpm:.0f} wpm")
 
+    # 3. Caption coverage (max 1.0)
     if caption_beats:
         coverage = caption_beats[-1]["timestamp_end"] / max(vo_duration, 0.01)
-        if coverage >= 0.85:
-            score += 1.25
-            notes.append(f"caption coverage {coverage * 100:.0f}%")
-        else:
-            notes.append(f"caption coverage low {coverage * 100:.0f}%")
+        if coverage >= 0.95:
+            creative += 1.0
+        elif coverage >= 0.85:
+            creative += 0.7
+        elif coverage >= 0.70:
+            creative += 0.4
+        notes.append(f"caption coverage {coverage * 100:.0f}%")
     else:
         notes.append("FAIL no captions")
 
+    # 4. Hook quality (max 1.0) — first 1-2 sentences
+    hook_patterns = [
+        (r"^(he|she|they|it)\s+\w+\s+.{5,30}\.\s+(it wasn't|but it|and then)", 0.3),
+        (r"^\w+\s+.{5,40}\?\s", 0.8),   # question hook
+        (r"^(imagine|picture|think about)", 0.6),
+        (r"^(the|a)\s+\w+\s+.{5,30}\s+(was|is|had been)\s+.{5,30}", 0.5),
+    ]
+    sentences = [s.strip() for s in narration.replace("\n", " ").split(".") if s.strip()]
+    hook_text = ". ".join(sentences[:2]).lower() if sentences else ""
+    hook_score = 0.3  # base for any hook
+    for pat, pts in hook_patterns:
+        if __import__("re").search(pat, hook_text):
+            hook_score = max(hook_score, pts)
+    # Reward hooks that don't start with "He thought" / "She thought" (repetitive)
+    if hook_text.startswith(("he thought", "she thought", "they thought")):
+        hook_score = min(hook_score, 0.4)
+    creative += hook_score
+    notes.append(f"hook score {hook_score:.1f}")
+
+    # 5. Ending quality (max 1.0) — last 1-2 sentences
+    ending_text = ". ".join(sentences[-2:]).lower() if sentences else ""
+    ending_score = 0.3  # base
+    generic_endings = [
+        "something audiences never forget",
+        "nothing will ever be the same",
+        "changes everything",
+        "forever changed",
+        "would never be the same",
+    ]
+    is_generic = any(g in ending_text for g in generic_endings)
+    if is_generic:
+        ending_score = 0.2
+        notes.append("ending: GENERIC (penalized)")
+    elif len(ending_text) > 20:
+        # Movie-specific ending gets credit
+        ending_score = 0.8
+        # Bonus if it references a character or specific event
+        if any(w in ending_text for w in ["dies", "dead", "kills", "sacrifice", "revealed", "truth", "escape", "survive"]):
+            ending_score = 1.0
+        notes.append("ending: movie-specific")
+    else:
+        notes.append("ending: too short")
+    creative += ending_score
+
+    # 6. Story structure (max 1.0) — presence of setup/tension/reveal
+    structure_markers = {
+        "setup": any(w in narr_lower for w in ["arrive", "arrives", "travel", "moves", "begins", "finds", "discovers"]),
+        "tension": any(w in narr_lower for w in ["but", "however", "secret", "dark", "danger", "fear", "tension", "threat"]),
+        "reveal": any(w in narr_lower for w in ["but here", "everything changes", "twist", "revealed", "truth", "actually", "turns out"]),
+    }
+    structure_score = sum(1.0 for v in structure_markers.values() if v) / 3.0
+    creative += structure_score
+    notes.append(f"structure {'/'.join(k for k,v in structure_markers.items() if v)}")
+
+    # 7. Movie specificity (max 1.0) — proper nouns, character names, specific events
+    # Count capitalized words (excluding sentence starts) as proxy for proper nouns
+    words = narration.split()
+    proper_nouns = sum(1 for i, w in enumerate(words)
+                       if w[0].isupper() and i > 0 and words[i-1][-1:] in ("", ".", "!", "?", '"'))
+    specificity = min(1.0, proper_nouns / 8.0)
+    creative += specificity
+    notes.append(f"specificity {specificity:.1f} ({proper_nouns} proper nouns)")
+
+    breakdown["creative"] = round(creative, 2)
+
+    # ── TOTAL ──────────────────────────────────────────────────
+    score = round(tech + creative, 2)
     passed = bool(score >= profile.min_creative_score and dur_ok and probe["audio_codec"])
+
+    # Quality band label
+    if score < 4.0:
+        band = "REJECT"
+    elif score < 7.0:
+        band = "WEAK"
+    elif score < 8.5:
+        band = "ACCEPTABLE"
+    elif score < 9.5:
+        band = "STRONG"
+    else:
+        band = "EXCELLENT"
+
+    breakdown["total"] = score
+    breakdown["band"] = band
+
     return {
-        "probe": probe, "score": round(score, 2),
+        "probe": probe, "score": score,
         "threshold": profile.min_creative_score, "passed": passed,
         "notes": notes, "wpm": round(wpm), "segment_count": segment_count,
+        "breakdown": breakdown,
     }
 
 
@@ -546,7 +663,8 @@ def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool) -> 
 
         # 9. VIDEO QA + CREATIVE SCORE
         qa = _qa_and_score(final_dst, vo_duration, script.narration_words,
-                           beats, len(seg_files), profile)
+                           beats, len(seg_files), profile,
+                           narration=script.narration)
         frames = _extract_frames(final_dst, work)
         for f in frames:
             shutil.copyfile(work / f, adir / f)

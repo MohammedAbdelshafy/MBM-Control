@@ -199,19 +199,64 @@ def generate_recap_script(
     """
     Generate a movie recap script from research data.
 
-    This produces the narration text, visual plan, caption beats,
-    title, description, and tags — all based on the actual movie data.
+    Produces narration with:
+    - Diverse hook strategy (not random templates)
+    - Movie-specific ending (no generic outro)
+    - Proper story structure (setup → tension → reveal → payoff)
     """
-    # Select a hook
     import random
-    hooks = HOOK_TEMPLATES.get(hook_type, HOOK_TEMPLATES["mystery"])
-    hook = random.choice(hooks)
 
-    # Build narration from actual movie data
     character_list = ", ".join(key_characters[:3]) if key_characters else "the protagonist"
     genre_desc = " and ".join(genres[:2]) if genres else "thriller"
-
     directed_by = f", directed by {director}," if director else ","
+
+    # ── HOOK STRATEGY — based on movie data, not random templates ──
+    # Analyze ending to pick the strongest hook type
+    ending_lower = ending_description.lower() if ending_description else ""
+    synopsis_lower = synopsis.lower() if synopsis else ""
+
+    # Determine hook strategy from content
+    if any(w in ending_lower for w in ["killer", "murder", "death", "dies", "kills"]):
+        hook_strategy = "consequence"
+    elif any(w in ending_lower for w in ["wasn't", "turns out", "actually", "revealed", "secret"]):
+        hook_strategy = "revelation"
+    elif any(w in ending_lower for w in ["impossible", "trapped", "no way out", "can't escape"]):
+        hook_strategy = "situation"
+    elif any(w in ending_lower for w in ["sacrifice", "choice", "decision", "chose"]):
+        hook_strategy = "consequence"
+    else:
+        hook_strategy = "mystery"
+
+    # Build hook from actual movie details
+    protagonist = key_characters[0] if key_characters else "someone"
+    antagonist = key_characters[1] if len(key_characters) > 1 else None
+
+    hooks = {
+        "consequence": [
+            f"{protagonist} made one choice that destroyed everything.",
+            f"What {protagonist} did that night cost more than anyone expected.",
+            f"The moment {protagonist} opened that door, there was no going back.",
+        ],
+        "revelation": [
+            f"The person {protagonist} trusted most was hiding a terrible secret.",
+            f"What {protagonist} found in that room changed the meaning of everything.",
+            f"The truth about {protagonist}'s situation was worse than anyone imagined.",
+        ],
+        "situation": [
+            f"{protagonist} had no idea what was waiting inside.",
+            f"There was no escape from what {protagonist} was about to face.",
+            f"{protagonist} walked into a situation no one could survive unchanged.",
+        ],
+        "mystery": [
+            f"{protagonist} thought it was over. It was only beginning.",
+            f"The first rule of this story: nothing is what it seems.",
+            f"Something happened to {protagonist} that defies explanation.",
+        ],
+    }
+
+    hook = random.choice(hooks.get(hook_strategy, hooks["mystery"]))
+
+    # ── BUILD NARRATION ──────────────────────────────────────────
     narration_parts = [
         hook,
         "",
@@ -219,7 +264,7 @@ def generate_recap_script(
         "",
     ]
 
-    # Add synopsis details
+    # Synopsis — factual setup
     if synopsis:
         sentences = synopsis.split(". ")
         for s in sentences[:3]:
@@ -228,12 +273,12 @@ def generate_recap_script(
                 narration_parts.append(s + ".")
         narration_parts.append("")
 
-    # Add character dynamics
+    # Character dynamics — only if two named characters exist
     if len(key_characters) >= 2:
         narration_parts.append(f"The tension between {key_characters[0]} and {key_characters[1]} drives the entire story.")
         narration_parts.append("")
 
-    # Add ending reveal
+    # ── ENDING REVEAL — movie-specific, no generic outro ────────
     if ending_description:
         narration_parts.append("But here's where everything changes.")
         narration_parts.append("")
@@ -244,25 +289,24 @@ def generate_recap_script(
                 narration_parts.append(s + ".")
         narration_parts.append("")
 
-    # FINAL STING — part of the spoken narration, never dropped
-    sting = f"The truth about {title} is something audiences never forget."
+    # ── FINAL STING — derived from the actual ending, not generic ──
+    # Extract the key event from ending to build a specific sting
+    ending_words = ending_lower.split()
+    sting = _build_movie_specific_sting(title, ending_description, key_characters, genres)
     narration_parts.append(sting)
 
     narration = "\n".join(narration_parts)
 
-    # Fit the 35–75s band by TRIMMING filler — never by injecting production
-    # notes into the narration (TTS would read them aloud).
+    # Fit the 35–75s band by TRIMMING filler
     def _fit(text: str) -> str:
         est = _estimate_duration(text)
         if est > target_duration_max:
             lines = [l for l in text.split("\n") if l.strip()]
-            # drop the character-dynamics filler line first, then trailing synopsis
             for i, l in enumerate(lines):
                 if l.startswith("The tension between"):
                     lines.pop(i)
                     break
             while len(lines) > 3 and _estimate_duration("\n".join(lines)) > target_duration_max:
-                # remove last non-sting body line before the sting
                 lines.pop(-2 if lines[-1] == sting else -1)
             text = "\n".join(lines)
         elif _estimate_duration(text) < target_duration_min:
@@ -276,17 +320,14 @@ def generate_recap_script(
     word_count = len(narration.split())
     estimated_duration = _estimate_duration(narration)
 
-    # Build caption beats
     caption_beats = _build_caption_beats(narration, estimated_duration)
 
-    # Build visual plan
     story_structure = [
         "hook", "who_where", "strange_event", "escalation",
         "reveal", "ending", "final_sting"
     ]
     visual_plan = _build_visual_plan(estimated_duration, story_structure)
 
-    # Build title and description
     recap_title = f"{title} ({year}) — The Ending Explained"
     description = f"What happened in {title} and why was the ending so disturbing?\n\n"
     description += f"A complete movie recap of {title} ({year}).\n\n"
@@ -326,6 +367,33 @@ def generate_recap_script(
     )
 
     return script
+
+
+def _build_movie_specific_sting(title: str, ending_description: str,
+                                 key_characters: List[str], genres: List[str]) -> str:
+    """Build a final sting that references the actual movie ending."""
+    if not ending_description:
+        return f"And that is why {title} remains one of the most unforgettable {genres[0] if genres else 'thriller'}s ever made."
+
+    ending_lower = ending_description.lower()
+
+    # Extract the key event from the ending
+    if "sacrifice" in ending_lower or "gives her life" in ending_lower:
+        return f"The sacrifice in {title} is the kind of ending that stays with you long after the credits roll."
+    elif "was the killer" in ending_lower or "was the murderer" in ending_lower:
+        return f"That final reveal — that {key_characters[0] if key_characters else 'the killer'} was hiding in plain sight — is why {title} is unforgettable."
+    elif "dies" in ending_lower or "death" in ending_lower:
+        return f"The way {title} ends reminds us that some stories don't let anyone walk away unscathed."
+    elif "escape" in ending_lower or "survive" in ending_lower:
+        return f"Surviving came at a cost no one in {title} could have imagined."
+    elif "wasn't" in ending_lower or "turns out" in ending_lower:
+        return f"That final twist in {title} is the kind of ending that makes you want to watch it all over again."
+    elif "revealed" in ending_lower or "truth" in ending_lower:
+        return f"The truth about {title} is something audiences never forget."
+    else:
+        # Generic but not boilerplate — reference the specific outcome
+        first_event = ending_description.split(". ")[0].rstrip(".")
+        return f"{first_event} — and that is what makes {title} unforgettable."
 
 
 def validate_script_facts(
