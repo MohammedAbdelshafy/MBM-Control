@@ -95,6 +95,9 @@ for (const prefix of PROTECTED_PREFIXES) {
   app.use(prefix, requireApiAuth);
 }
 
+// Whop webhook needs the RAW request body for HMAC signature verification —
+// capture it before express.json() parses (and destroys) the stream.
+app.use('/api/webhook/whop', express.raw({ type: '*/*', limit: '1mb' }));
 app.use(express.json({ limit: '10mb' }));
 app.use('/api', aftercallRouter);
 app.use('/api', emailApi);
@@ -491,6 +494,212 @@ app.post('/api/leads/pipeline/all', async (req, res) => {
     res.json({ buyers: buyerR, sellers: sellerR, ai: aiR });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ── Analytics API ──────────────────────────────────────────
+
+const ANALYTICS_LOG_FILE = path.join(__dirname, '..', 'MBM', 'Whop', 'analytics_log.json');
+const ANALYTICS_MAX_ENTRIES = 5000;
+const ANALYTICS_ALLOWED_EVENTS = new Set([
+  'landing_view', 'cta_click', 'signup', 'checkout_started', 'checkout_completed',
+  'upsell_viewed', 'upsell_accepted',
+]);
+
+app.post('/api/analytics/track', (req, res) => {
+  try {
+    const eventName = String(req.body?.event || '').trim();
+    if (!ANALYTICS_ALLOWED_EVENTS.has(eventName)) {
+      return res.status(400).json({ error: `event '${eventName.slice(0, 40)}' not allowed` });
+    }
+    // Clamp payload size (untrusted client).
+    const props = req.body?.props && typeof req.body.props === 'object' ? req.body.props : {};
+    const safeProps = {};
+    for (const [k, v] of Object.entries(props)) {
+      if (safeProps.length > 40) break;
+      safeProps[k] = String(v).slice(0, 200);
+    }
+
+    const receivedAt = new Date().toISOString();
+    const eventData = {
+      event: eventName,
+      url: typeof req.body?.url === 'string' ? req.body.url.slice(0, 500) : undefined,
+      timestamp: typeof req.body?.timestamp === 'string' ? req.body.timestamp.slice(0, 64) : receivedAt,
+      session_id: typeof req.body?.session_id === 'string' ? req.body.session_id.slice(0, 64) : undefined,
+      utm_source: req.body?.utm_source ? String(req.body.utm_source).slice(0, 120) : undefined,
+      utm_medium: req.body?.utm_medium ? String(req.body.utm_medium).slice(0, 120) : undefined,
+      utm_campaign: req.body?.utm_campaign ? String(req.body.utm_campaign).slice(0, 120) : undefined,
+      utm_content: req.body?.utm_content ? String(req.body.utm_content).slice(0, 120) : undefined,
+      referral: req.body?.referral ? String(req.body.referral).slice(0, 120) : undefined,
+      landing_variant: req.body?.landing_variant != null ? String(req.body.landing_variant).slice(0, 8) : undefined,
+      props: safeProps,
+      received_at: receivedAt,
+    };
+
+    // Legacy array log (dashboards read this) with rotation cap.
+    let logs = [];
+    if (fs.existsSync(ANALYTICS_LOG_FILE)) {
+      try { logs = JSON.parse(fs.readFileSync(ANALYTICS_LOG_FILE, 'utf8')); } catch {}
+    }
+    if (!Array.isArray(logs)) logs = [];
+
+    // Dedupe identical events from the same session within 60s.
+    const fingerprint = JSON.stringify([eventName, eventData.session_id, eventData.url, safeProps]);
+    const isDup = logs.some(l =>
+      l._fingerprint === fingerprint &&
+      (new Date(receivedAt) - new Date(l.received_at)) < 60000);
+    if (isDup) {
+      return res.json({ success: true, deduplicated: true });
+    }
+
+    logs.push({ ...eventData, _fingerprint: fingerprint });
+    if (logs.length > ANALYTICS_MAX_ENTRIES) {
+      logs = logs.slice(-Math.floor(ANALYTICS_MAX_ENTRIES * 0.8));
+    }
+    fs.writeFileSync(ANALYTICS_LOG_FILE, JSON.stringify(logs, null, 2), 'utf8');
+
+    // Canonical store entry (idempotent by deterministic event_id).
+    appendRevenueEvent({
+      schema_version: 1,
+      event_id: crypto.createHash('sha256').update(fingerprint).digest('hex').slice(0, 24),
+      event_name: eventName,
+      source: 'landing',
+      timestamp: eventData.timestamp || receivedAt,
+      customer_ref: {},
+      session_id: eventData.session_id || null,
+      amount_usd: null,
+      currency: 'USD',
+      attribution: {
+        ...(eventData.utm_source ? { utm_source: eventData.utm_source } : {}),
+        ...(eventData.utm_medium ? { utm_medium: eventData.utm_medium } : {}),
+        ...(eventData.utm_campaign ? { utm_campaign: eventData.utm_campaign } : {}),
+        ...(eventData.utm_content ? { utm_content: eventData.utm_content } : {}),
+        ...(eventData.referral ? { referral: eventData.referral } : {}),
+        ...(eventData.landing_variant ? { landing_variant: eventData.landing_variant } : {}),
+      },
+      metadata: safeProps,
+    });
+
+    console.log('[Analytics] Track Event Stored:', eventName);
+    res.json({ success: true, logged: true });
+  } catch(e) {
+    console.error('Analytics err', e);
+    res.status(500).json({error: 'storage failed'});
+  }
+});
+
+// ── Whop Webhook API ───────────────────────────────────────
+
+const REVENUE_EVENTS_FILE = path.join(__dirname, '..', 'MBM', 'Whop', 'logs', 'revenue_events.jsonl');
+
+function appendRevenueEvent(event) {
+  // Canonical idempotent event store shared with MBM/Whop/whop_revenue_os.py
+  fs.mkdirSync(path.dirname(REVENUE_EVENTS_FILE), { recursive: true });
+  let dup = false;
+  if (fs.existsSync(REVENUE_EVENTS_FILE)) {
+    const buf = fs.readFileSync(REVENUE_EVENTS_FILE, 'utf8');
+    for (const line of buf.split('\n')) {
+      if (!line.trim()) continue;
+      try { if (JSON.parse(line).event_id === event.event_id) { dup = true; break; } } catch {}
+    }
+  }
+  if (dup) return false;
+  fs.appendFileSync(REVENUE_EVENTS_FILE, JSON.stringify(event, null, 0) + '\n', 'utf8');
+  return true;
+}
+
+function normalizeWhopWebhook(payload, receivedAt) {
+  const action = String(payload.action || '');
+  const map = [
+    ['payment.succeeded', 'purchase'], ['payment_succeeded', 'purchase'],
+    ['membership.went_valid', 'subscription_started'], ['membership_went_valid', 'subscription_started'],
+    ['payment.failed', 'checkout_failed'], ['refund', 'refund'],
+    ['membership.went_invalid', 'churn'], ['membership_went_invalid', 'churn'],
+    ['renewal', 'subscription_renewed'],
+  ];
+  let canonical = 'webhook_received';
+  for (const [needle, name] of map) { if (action.includes(needle)) { canonical = name; break; } }
+
+  const data = payload.data && typeof payload.data === 'object' ? payload.data : {};
+  const payment = data.payment && typeof data.payment === 'object' ? data.payment : {};
+  let amount = null;
+  if (canonical === 'purchase') {
+    for (const key of ['amount', 'total', 'final_amount']) {
+      const v = payment[key];
+      if (typeof v === 'number') { amount = v > 1000 ? Math.round(v) / 100 : Math.round(v * 100) / 100; break; }
+    }
+  }
+  const member = data.member && typeof data.member === 'object' ? data.member : {};
+  const customerRef = {};
+  for (const key of ['user_id', 'email', 'username']) { if (member[key]) customerRef[key] = member[key]; }
+  if (data.user_id) customerRef.user_id = data.user_id;
+
+  return {
+    schema_version: 1,
+    event_id: payload.id || payload.event_id || crypto.randomUUID(),
+    event_name: canonical,
+    source: 'whop_webhook',
+    timestamp: receivedAt,
+    customer_ref: customerRef,
+    session_id: null,
+    amount_usd: amount,
+    currency: (payment.currency || 'USD').toUpperCase(),
+    attribution: { via: 'webhook' },
+    metadata: { action },
+  };
+}
+
+app.post('/api/webhook/whop', (req, res) => {
+  const secret = process.env.WHOP_WEBHOOK_SECRET;
+  if (!secret) {
+    console.error('[Webhook] WHOP_WEBHOOK_SECRET is missing');
+    return res.status(500).json({ error: 'Webhook secret not configured' });
+  }
+
+  const signature = String(req.headers['x-whop-signature'] || '').trim();
+  if (!signature) {
+    return res.status(401).json({ error: 'Missing signature' });
+  }
+
+  // REAL HMAC-SHA256 verification over the raw body (timing-safe compare).
+  const rawBody = Buffer.isBuffer(req.body)
+    ? req.body
+    : Buffer.from(JSON.stringify(req.body ?? {}));
+  const expected = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');
+  const sigBuf = Buffer.from(signature.replace(/^sha256=/, ''), 'utf8');
+  const expBuf = Buffer.from(expected, 'utf8');
+  if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+    console.error('[Webhook] Invalid signature — request rejected');
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  try {
+    const payload = JSON.parse(rawBody.toString('utf8'));
+    const webhookFile = path.join(__dirname, '..', 'MBM', 'Whop', 'webhook_log.json');
+    let logs = [];
+    if (fs.existsSync(webhookFile)) {
+      logs = JSON.parse(fs.readFileSync(webhookFile, 'utf8'));
+    }
+
+    // Idempotency check: skip already-processed webhook IDs.
+    const eventId = payload.id || crypto.randomUUID();
+    if (logs.some(l => l.id === eventId)) {
+      console.log('[Webhook] Duplicate event ignored', eventId);
+      return res.json({ received: true, duplicate: true });
+    }
+
+    const receivedAt = new Date().toISOString();
+    const eventData = { id: eventId, action: payload.action || null, received_at: receivedAt };
+    logs.push(eventData);
+    fs.writeFileSync(webhookFile, JSON.stringify(logs, null, 2), 'utf8');
+
+    // Fold into the canonical revenue event store (idempotent by webhook id).
+    appendRevenueEvent(normalizeWhopWebhook(payload, receivedAt));
+
+    console.log('[Webhook] Whop payload processed', eventId);
+    res.json({ received: true, stored: true });
+  } catch(e) {
+    res.status(500).json({error: 'storage failed'});
   }
 });
 

@@ -171,22 +171,30 @@ def run_lifecycle_engage() -> dict:
         return _contract("failure", {"error": f"Failed reading ledger: {e}"})
 
     already_processed = set()
+    last_emailed = {}
     if ENGAGE_LOG_FILE.exists():
         try:
             history = json.loads(ENGAGE_LOG_FILE.read_text(encoding="utf-8"))
             already_processed = set(history.get("processed_ids", []))
+            last_emailed = history.get("last_emailed", {})
         except Exception:
             pass
 
     processed = []
     actions_taken = {"welcome": 0, "retention_discount": 0, "reactivation": 0, "reengage": 0}
+    
+    now_ts = datetime.now(timezone.utc).timestamp()
 
     for rec in records:
         mid = rec.get("membership_id") or rec.get("user_id") or f"m_{rec.get('scanned_at')}"
         stage = rec.get("stage", "stable")
         user_email = rec.get("email") or "customer@contecai.com"
 
-        if mid in already_processed:
+        # Cooldown: 14 days between emails for the same user
+        last_time = last_emailed.get(user_email, 0)
+        in_cooldown = (now_ts - last_time) < (14 * 86400)
+
+        if mid in already_processed or in_cooldown:
             continue
 
         if stage == "new":
@@ -234,6 +242,7 @@ def run_lifecycle_engage() -> dict:
             actions_taken["reactivation"] += 1
 
         already_processed.add(mid)
+        last_emailed[user_email] = now_ts
         processed.append(rec)
 
     # Save engagement history
@@ -241,6 +250,7 @@ def run_lifecycle_engage() -> dict:
         json.dumps({
             "updated_at": datetime.now(timezone.utc).isoformat(),
             "processed_ids": list(already_processed)[-2000:],
+            "last_emailed": last_emailed,
             "actions_summary": actions_taken
         }, indent=2),
         encoding="utf-8"

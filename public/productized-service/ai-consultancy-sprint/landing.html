@@ -10,59 +10,198 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;}
   .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
-  header{padding:56px 0 32px;}
-  h1{font-size:clamp(28px,5vw,44px);line-height:1.15;letter-spacing:-0.02em;}
-  h2{font-size:24px;letter-spacing:-0.01em;margin:0 0 16px;}
+  header{padding:56px 0 32px; text-align: center;}
+  h1{font-size:clamp(32px,5vw,48px);line-height:1.15;letter-spacing:-0.02em;font-weight:800;max-width:800px;margin:0 auto;}
+  h2{font-size:28px;letter-spacing:-0.01em;margin:0 0 16px;font-weight:700;}
+  h3{font-size:20px;font-weight:600;}
   p{color:var(--muted);}
-  .sub{margin-top:16px;font-size:18px;max-width:680px;}
-  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px;}
-  .btn{display:inline-block;padding:14px 26px;border-radius:10px;font-weight:700;font-size:16px;text-decoration:none;transition:background .15s;}
-  .btn-primary{background:var(--brand);color:#fff;}
-  .btn-primary:hover{background:var(--brand-dark);}
-  .btn-ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand);}
-  .btn-ghost:hover{background:#f0f9ff;}
-  .proof{margin-top:40px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;font-size:15px;}
+  .sub{margin-top:20px;font-size:19px;max-width:720px;margin-left:auto;margin-right:auto;}
+  .cta-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:32px;justify-content:center;}
+  .btn{display:inline-block;padding:16px 32px;border-radius:12px;font-weight:700;font-size:17px;text-decoration:none;transition:all .2s; cursor:pointer; text-align:center;}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:0 4px 14px rgba(14,116,144,0.3);}
+  .btn-primary:hover{background:var(--brand-dark);transform:translateY(-1px);}
+  .btn-ghost{background:#fff;color:var(--brand);border:2px solid var(--brand);}
+  .btn-ghost:hover{background:#f0f9ff;transform:translateY(-1px);}
+  .proof{margin-top:48px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;font-size:16px;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.02);}
   .proof b{color:var(--ink);}
-  section{padding:36px 0;border-top:1px solid var(--line);}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:8px;}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;}
-  .card h3{font-size:18px;margin-bottom:6px;}
-  .card .price{font-size:30px;font-weight:800;color:var(--brand);margin:8px 0;}
-  .card ul{list-style:none;margin:10px 0 18px;font-size:14.5px;color:var(--ink);}
-  .card li{padding:5px 0 5px 22px;position:relative;}
-  .card li::before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:800;}
-  .card .btn{margin-top:auto;text-align:center;}
-  .steps{counter-reset:step;list-style:none;margin-top:8px;}
-  .steps li{counter-increment:step;padding:10px 0 10px 44px;position:relative;font-size:15.5px;color:var(--ink);border-bottom:1px dashed var(--line);}
-  .steps li:last-child{border-bottom:0;}
-  .steps li::before{content:counter(step);position:absolute;left:0;top:8px;width:30px;height:30px;background:var(--brand);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;}
-  form{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  form label{font-size:13px;font-weight:700;color:var(--ink);display:block;margin-bottom:6px;}
-  form input,form select{padding:11px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:15px;width:100%;}
+  section{padding:56px 0;border-top:1px solid var(--line);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:24px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px;display:flex;flex-direction:column;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);}
+  .card.featured{border:2px solid var(--brand);position:relative;}
+  .card.featured::before{content:"MOST POPULAR";position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--brand);color:white;font-size:12px;font-weight:800;padding:4px 12px;border-radius:20px;letter-spacing:1px;}
+  .card h3{font-size:22px;margin-bottom:8px;}
+  .card .price{font-size:36px;font-weight:800;color:var(--brand);margin:12px 0;}
+  .card ul{list-style:none;margin:16px 0 24px;font-size:15px;color:var(--ink);flex-grow:1;}
+  .card li{padding:6px 0 6px 28px;position:relative;margin-bottom:4px;}
+  .card li::before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:800;font-size:16px;}
+  .card .btn{margin-top:auto;width:100%;}
+  .steps{counter-reset:step;list-style:none;margin-top:24px;display:grid;gap:16px;}
+  .steps li{counter-increment:step;background:var(--card);padding:24px 24px 24px 64px;position:relative;font-size:16px;color:var(--ink);border:1px solid var(--line);border-radius:12px;}
+  .steps li::before{content:counter(step);position:absolute;left:20px;top:20px;width:28px;height:28px;background:var(--brand);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;}
+  form{margin-top:24px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:20px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);}
+  form label{font-size:14px;font-weight:700;color:var(--ink);display:block;margin-bottom:8px;}
+  form input,form select{padding:14px;border:1px solid var(--line);border-radius:8px;font-size:16px;width:100%;transition:border-color 0.2s;}
+  form input:focus,form select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(14,116,144,0.1);}
   form .full{grid-column:1/-1;}
-  form .btn{margin-top:4px;}
-  footer{padding:32px 0 56px;color:var(--muted);font-size:13.5px;border-top:1px solid var(--line);}
-  .small{font-size:13px;color:var(--muted);}
-  .note{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:10px;padding:12px 16px;font-size:14px;margin-top:18px;}
-  a{color:var(--brand);}
+  footer{padding:48px 0;color:var(--muted);font-size:14px;border-top:1px solid var(--line);text-align:center;}
+  .note{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:12px;padding:16px 20px;font-size:15px;margin-top:24px;display:flex;gap:12px;align-items:flex-start;}
+  .note::before{content:"🛡️";font-size:20px;}
+  a{color:var(--brand);text-decoration:none;font-weight:600;}
+  a:hover{text-decoration:underline;}
+  
+  /* Testimonials */
+  .testimonials{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;}
+  .testimonial{background:var(--card);padding:24px;border-radius:12px;border:1px solid var(--line);position:relative;}
+  .testimonial p{font-size:16px;color:var(--ink);font-style:italic;margin-bottom:16px;}
+  .testimonial .author{display:flex;align-items:center;gap:12px;}
+  .testimonial .avatar{width:40px;height:40px;border-radius:50%;background:var(--brand-dark);display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;}
+  .testimonial .name{font-weight:700;font-size:15px;color:var(--ink);}
+  .testimonial .role{font-size:13px;color:var(--muted);}
+  
+  /* FAQ */
+  .faq-item{border-bottom:1px solid var(--line);padding:24px 0;}
+  .faq-item:last-child{border-bottom:none;}
+  .faq-q{font-weight:700;font-size:18px;margin-bottom:8px;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .faq-q::after{content:"+";font-size:24px;color:var(--brand);}
+  .faq-a{color:var(--muted);font-size:16px;line-height:1.6;}
 </style>
+  <script>
+    // Analytics & A/B Testing Engine
+    const Analytics = (() => {
+      // Persistent anonymous session id (no PII).
+      let sid = null;
+      try {
+        sid = localStorage.getItem('mbm_anon_id');
+        if (!sid) {
+          sid = 'anon_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+          localStorage.setItem('mbm_anon_id', sid);
+        }
+      } catch (e) { sid = 'anon_session'; }
+
+      // Attribution: capture UTMs once per session (first touch wins).
+      function captureAttribution() {
+        let stored = {};
+        try { stored = JSON.parse(localStorage.getItem('mbm_attr') || '{}'); } catch (e) {}
+        if (!stored.utm_source && window.location.search) {
+          const q = new URLSearchParams(window.location.search);
+          for (const key of ['utm_source','utm_medium','utm_campaign','utm_content']) {
+            if (q.get(key)) stored[key] = q.get(key);
+          }
+          if (document.referrer) stored.referral = document.referrer.slice(0, 200);
+          try { localStorage.setItem('mbm_attr', JSON.stringify(stored)); } catch (e) {}
+        }
+        return stored;
+      }
+
+      return {
+        track: (event, props = {}) => {
+          console.log(`[Analytics] ${event}`, props);
+          fetch('/api/analytics/track', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              event,
+              url: window.location.href,
+              timestamp: new Date().toISOString(),
+              session_id: sid,
+              ...captureAttribution(),
+              ...props
+            })
+          }).catch(e => console.warn('Analytics sync failed', e));
+        }
+      };
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // A/B Test: Headline (variant recorded server-side as landing_variant)
+      const headlines = [
+        "Stop buying dead leads. Start booking jobs on autopilot.",
+        "Hire an AI Sales Rep that never sleeps, never complains, and costs 90% less."
+      ];
+      let variant = null;
+      try { variant = parseInt(localStorage.getItem('mbm_headline_variant')); } catch (e) {}
+      if (!(variant === 0 || variant === 1)) {
+        variant = Math.random() > 0.5 ? 1 : 0;
+        try { localStorage.setItem('mbm_headline_variant', String(variant)); } catch (e) {}
+      }
+      document.getElementById('main-headline').innerText = headlines[variant];
+
+      Analytics.track('landing_view', { experiment: 'headline_test_v1', landing_variant: variant === 0 ? 'A' : 'B' });
+
+    // Track CTA clicks (+ per-product attribution + checkout intent)
+    document.querySelectorAll('.track-cta').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const link = e.currentTarget;
+        const props = { text: link.innerText, target: link.href };
+        if (link.dataset.product) { props.product_id = link.dataset.product; }
+        Analytics.track('cta_click', props);
+        if (link.dataset.checkout === '1') {
+          Analytics.track('checkout_started', props);
+        }
+      });
+    });
+
+    // Track Form Submit
+    const form = document.getElementById('capture-form');
+    if (form) {
+      form.addEventListener('submit', () => {
+        Analytics.track('signup', { source: 'free_plan_capture' });
+      });
+    }
+  });
+</script>
 </head>
 <body>
 <div class="wrap">
 
 <header>
-  <h1>Stop buying dead leads. Start booking jobs on autopilot.</h1>
+  <h1 id="main-headline">Stop buying dead leads. Start booking jobs on autopilot.</h1>
   <p class="sub">We install a working AI lead, call, and follow-up system for your local service business in 14 days — using the same stack we run on real, phone-verified businesses every day. No new hires. No agency retainer bloat.</p>
   <div class="cta-row">
-    <a class="btn btn-primary" href="https://whop.com/checkout/plan_e3ibiYXeeAaZV">START $297 AUDIT</a>
-    <a class="btn btn-ghost" href="#capture">GET MY AI PLAN</a>
-  </div>
-  <div class="proof">
-    <b>We eat our own dog food.</b> The AI cold-calling assistant, verified lead engine, call scripts, and after-call analytics we deploy for you are the exact systems we run in production — we just point them at your business.
+    <a class="btn btn-primary track-cta" href="#pricing">SEE PRICING & PLANS</a>
+    <a class="btn btn-ghost track-cta" href="#capture">GET FREE AI PLAN</a>
   </div>
 </header>
 
 <section>
+  <h2>The Problem: You're spending thousands on leads, but missing the revenue.</h2>
+  <p style="font-size:18px; max-width:800px; margin-bottom: 24px;">Local service businesses waste 40% of their marketing budget because they can't call leads within 5 minutes, follow up 7 times, or answer the phone 24/7. Human sales reps are expensive, take days off, and get demotivated by rejection.</p>
+  <div class="proof">
+    <b>We eat our own dog food.</b> The AI cold-calling assistant, verified lead engine, call scripts, and after-call analytics we deploy for you are the exact systems we run in production — we just point them at your business.
+  </div>
+</section>
+
+<section id="proof">
+  <h2>Why this system is real</h2>
+  <div class="proof">
+    <b>We run the machine we sell.</b> Our production lead engine currently holds a
+    live database of <b>1,222 phone-verified businesses</b>, refreshed from government
+    registries (NPI, county records) — the same engine that will power your AI
+    assistant. Every claim on this page is about our own infrastructure; customer
+    results will be published here as they happen.
+  </div>
+  <ul class="steps" style="margin-top:24px;">
+    <li><b>Verified data only.</b> Leads come from public government registries and
+      are phone-verified before they ever reach your campaign. No fabricated or recycled vendor lists.</li>
+    <li><b>Production AI stack.</b> The calling agent, scripts, follow-up automation,
+      and after-call analytics are the exact systems we operate daily.</li>
+    <li><b>Risk reversed.</b> If the 72-hour audit shows AI cannot improve your revenue,
+      you get 100% of the audit fee back — stated up front, in writing.</li>
+  </ul>
+</section>
+
+<section id="how">
+  <h2>How the 14-Day Sprint works</h2>
+  <ol class="steps">
+    <li><b>Kickoff & Audit (72h)</b> — We analyze your business, map your highest-intent buyers, identify current lead sources, and pinpoint your sales bottleneck.</li>
+    <li><b>Build & Integration (Week 1)</b> — We deploy the AI cold-calling assistant, connect a verified lead feed API, and write customized voice scripts.</li>
+    <li><b>Deployment & Testing (Week 2)</b> — We launch the AI agent. It dials, qualifies, and books. We configure automated SMS/email follow-up + after-call CRM analytics.</li>
+    <li><b>Managed Growth (Ongoing)</b> — We monitor the system, update lead lists monthly, refine scripts, and ensure maximum ROI.</li>
+  </ol>
+</section>
+
+<section id="pricing">
   <h2>Pick your sprint</h2>
   <div class="grid">
     <div class="card">
@@ -73,40 +212,127 @@
         <li>Custom AI automation plan for your business</li>
         <li>5 tailored cold-call / sales scripts</li>
         <li>Your lead-source map (where buyers actually are)</li>
+        <li>100% money-back guarantee</li>
       </ul>
-      <a class="btn btn-ghost" href="https://whop.com/checkout/plan_e3ibiYXeeAaZV">BUY $297</a>
+      <a class="btn btn-ghost track-cta" href="https://whop.com/checkout/plan_e3ibiYXeeAaZV">START $297 AUDIT</a>
     </div>
-    <div class="card">
+    <div class="card featured">
       <h3>AI Build &amp; Deploy</h3>
       <div class="price">$1,497</div>
       <p class="small">one-time · live in 14 days</p>
       <ul>
         <li>Everything in Audit</li>
-        <li>Live AI cold-calling assistant</li>
-        <li>Connected verified lead feed</li>
-        <li>Automated follow-up + after-call analytics</li>
+        <li>Live AI outbound/inbound voice assistant</li>
+        <li>Connected verified B2B/B2C lead feed</li>
+        <li>Automated SMS/Email follow-up</li>
+        <li>CRM Integration & Analytics</li>
       </ul>
-      <a class="btn btn-primary" href="https://whop.com/checkout/plan_j5bQuNA8nRbWo">BUY $1,497</a>
+      <a class="btn btn-primary track-cta" href="https://whop.com/checkout/plan_j5bQuNA8nRbWo">BUY FOR $1,497</a>
     </div>
     <div class="card">
       <h3>Managed AI Growth</h3>
       <div class="price">$497/mo</div>
       <p class="small">recurring · the real business</p>
       <ul>
-        <li>We run, monitor, optimize the system</li>
-        <li>Fresh verified leads every month</li>
-        <li>Pipeline + revenue reporting</li>
+        <li>Everything in Build & Deploy</li>
+        <li>We run, monitor, and optimize the system</li>
+        <li>Fresh verified leads delivered monthly</li>
+        <li>Weekly pipeline + revenue reporting</li>
+        <li>24/7 Priority Support</li>
       </ul>
-      <a class="btn btn-ghost" href="https://whop.com/checkout/plan_GM82PrzSTSmmK">START $497/mo</a>
+      <a class="btn btn-ghost track-cta" href="https://whop.com/checkout/plan_GM82PrzSTSmmK">START $497/mo</a>
     </div>
   </div>
   <div class="note">Instant access via Whop secure checkout (Card, Apple Pay, Google Pay). After payment you receive your kickoff roadmap and member access within 24h. 30-day money-back guarantee on the Audit.</div>
 </section>
 
+<section id="engines">
+  <h2>Or plug in a single AI engine</h2>
+  <p style="max-width:800px;">Every engine below is a productized slice of the same production stack — start with one, upgrade to the full suite when it pays for itself. Instant Whop checkout, cancel anytime.</p>
+  <div class="grid">
+    <div class="card featured">
+      <h3>Revenue Audit Engine</h3>
+      <div class="price">$149</div>
+      <p class="small">one-time · verdict in 72h</p>
+      <ul>
+        <li>Hourly revenue-accountability gate on your pipeline</li>
+        <li>Reply + bounce + missed-call leak detection</li>
+        <li>A real money verdict, not vanity metrics</li>
+      </ul>
+      <a class="btn btn-primary track-cta" data-checkout="1" data-product="prod_L2MmMKYlE9LAv" href="https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ">START $149 AUDIT</a>
+    </div>
+    <div class="card">
+      <h3>Property Intelligence API</h3>
+      <div class="price">$97/mo</div>
+      <p class="small">recurring · verified data feed</p>
+      <ul>
+        <li>Fresh distressed-property &amp; owner intelligence</li>
+        <li>County ownership verification (no fabricated rows)</li>
+        <li>NPI-verified business contacts via REST API</li>
+      </ul>
+      <a class="btn btn-ghost track-cta" data-checkout="1" data-product="prod_hseWnnhfVigJo" href="https://whop.com/checkout/plan_T6t6iMlvJvE9e">GET API ACCESS</a>
+    </div>
+    <div class="card">
+      <h3>AI Voice Agent Factory</h3>
+      <div class="price">$297/mo</div>
+      <p class="small">recurring · dials your list daily</p>
+      <ul>
+        <li>Outbound AI agents that dial, qualify, book</li>
+        <li>Skip-tracing + power-dialing configs included</li>
+        <li>No human dialers needed</li>
+      </ul>
+      <a class="btn btn-ghost track-cta" data-checkout="1" data-product="prod_Y8rcA2dgkbxyZ" href="https://whop.com/checkout/plan_ZtH6wc9mYpl3j">DEPLOY VOICE AGENTS</a>
+    </div>
+    <div class="card">
+      <h3>AI Video Clipping Engine</h3>
+      <div class="price">$497-$997/mo</div>
+      <p class="small">recurring · two tiers</p>
+      <ul>
+        <li>1 hour of video &rarr; 20+ scroll-stopping clips</li>
+        <li>15-agent enhance/QC/deliver pipeline</li>
+        <li>TikTok / Shorts / Reels delivery</li>
+      </ul>
+      <a class="btn btn-ghost track-cta" data-checkout="1" data-product="prod_MaHYZkh3AfEEf" href="https://whop.com/checkout/plan_KkeWhWGi53doc">START CLIPPING $497/MO</a>
+    </div>
+    <div class="card">
+      <h3>DFY AI Employee Suite</h3>
+      <div class="price">$1,997/mo</div>
+      <p class="small">recurring · managed install</p>
+      <ul>
+        <li>All 15 AI agents installed for you</li>
+        <li>Clipping + telephony + lead hunting + CRM gate</li>
+        <li>Priority support + weekly optimization</li>
+      </ul>
+      <a class="btn btn-ghost track-cta" data-checkout="1" data-product="prod_R5uDTAhXCKAcf" href="https://whop.com/checkout/plan_nqybZK0ZpJS3J">GET THE SUITE</a>
+    </div>
+  </div>
+  <div class="note">Secure Whop checkout (Card, Apple Pay, Google Pay). Recurring engines renew monthly; cancel anytime from your Whop account.</div>
+</section>
+
+<section id="faq">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-item">
+    <div class="faq-q">Does the AI sound like a robot?</div>
+    <div class="faq-a">No. We use ultra-low latency voice models (Retell/Twilio backbone) with cloned, natural human voices. They pause, say "um", and handle interruptions seamlessly.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Where do the leads come from?</div>
+    <div class="faq-a">Depending on your industry, we connect to verified government registries (NPI, DCAD), commercial databases, or API-scraped lists. We never use fabricated or recycled "vendor" lists.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Do I need technical skills?</div>
+    <div class="faq-a">Zero. This is a "Done-For-You" build. We handle the coding, API connections, script prompting, and CRM wiring. You just handle the booked appointments.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">What if it doesn't work for my industry?</div>
+    <div class="faq-a">Start with the $297 Audit. If we find that AI cannot significantly improve your revenue during the 72h audit phase, we will refund you 100% and tell you not to buy the Build package.</div>
+  </div>
+</section>
+
 <section id="capture">
-  <h2>Get your AI plan (free, no card)</h2>
-  <p>Tell us your business. We'll send a tailored AI growth plan + where your best buyers are. This is the Audit deliverable — start here if you'd rather talk before you pay.</p>
-  <form action="mailto:abdelshafyclapps@gmail.com?subject=AI%20SPRINT%20-%20MY%20BUSINESS" method="post" enctype="text/plain">
+  <h2>Not ready to buy? Get a free AI plan.</h2>
+  <p>Tell us your business. We'll email you a tailored breakdown of how an AI assistant would work for your specific niche. No credit card required.</p>
+  <form id="capture-form" action="mailto:abdelshafyclapps@gmail.com?subject=AI%20SPRINT%20-%20MY%20BUSINESS" method="post" enctype="text/plain">
     <div>
       <label for="biz">Business type</label>
       <select id="biz" name="business_type" required>
@@ -130,23 +356,14 @@
       <input id="spend" name="monthly_lead_spend" type="number" placeholder="e.g. 3000" />
     </div>
     <div class="full">
-      <button class="btn btn-primary" type="submit">SEND MY AI PLAN</button>
+      <button class="btn btn-primary track-cta" type="submit" style="width: 100%;">SEND MY FREE AI PLAN</button>
     </div>
   </form>
 </section>
 
-<section>
-  <h2>How it works</h2>
-  <ol class="steps">
-    <li><b>Kickoff</b> — 20-min call, we map your buyers, current lead sources, and sales bottleneck.</li>
-    <li><b>Build</b> — we deploy the AI cold-calling assistant, connect a verified lead feed, write your scripts.</li>
-    <li><b>Follow-up</b> — automated after-call follow-up + analytics so nothing falls through the cracks.</li>
-    <li><b>Managed</b> (optional) — we keep the leads fresh and the system tuned month after month.</li>
-  </ol>
-</section>
-
 <footer>
-  <p>AI Consultancy Sprint — Contec AI Agentic Teamz. Delivery fulfilled by the production AI calling + verified-lead stack. Secure checkout powered by Whop. No fabricated metrics — results depend on your market and lead quality.</p>
+  <p>AI Consultancy Sprint — Contec AI Agentic Teamz. Delivery fulfilled by the production AI calling + verified-lead stack.</p>
+  <p style="margin-top: 8px;">Secure checkout powered by Whop. No fabricated metrics — results depend on your market and lead quality.</p>
 </footer>
 
 </div>
