@@ -1,0 +1,147 @@
+{
+ "generated_at": "2026-08-24T19:16:11Z",
+ "offers": [
+  {
+   "company_id": "DENTAL-GOLD-001-STARSLEEP",
+   "company": "Star Sleep & Wellness (legacy: Sleep Dallas)",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "fit_reason": "Centralized intake line + published callback promise make unanswered-call recovery the narrowest testable wedge.",
+   "expected_value": null,
+   "recommended_channel": "phone",
+   "recommended_CTA": "10-minute look at ONE location's overflow"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-FAME",
+   "company": "Fame Dental (A2Z Family Dental, PLLC)",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "fit_reason": "Longest published coverage window in batch (7 days incl Sunday) with call-first CTAs.",
+   "expected_value": null,
+   "recommended_channel": "phone",
+   "recommended_CTA": "10-minute look at one location"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-BENHAM",
+   "company": "Benham Orthodontics & Associates, PA",
+   "offer_id": "FOLLOWUP-001",
+   "offer_name": "Patient Follow-Up",
+   "fit_reason": "Free-consult acquisition + 96-hour weekly closure window; follow-up sequence is the natural wedge.",
+   "expected_value": null,
+   "recommended_channel": "email",
+   "recommended_CTA": "10-minute consult follow-up pilot talk"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-LONESTAR",
+   "company": "Lone Star Dental Care (Aesthetic Dentistry, PA)",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "fit_reason": "Extended bilingual coverage windows with call-to-schedule primary CTA.",
+   "expected_value": null,
+   "recommended_channel": "phone",
+   "recommended_CTA": "10-minute look"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-CROSSTIMBERS",
+   "company": "Cross Timbers Dental, PC",
+   "offer_id": "AI-RECEPTIONIST",
+   "offer_name": "AI Receptionist / Front Desk Support",
+   "fit_reason": "Published workflow sends insurance questions and same-day bookings through phone/text staff; CareStack portal shows integration path.",
+   "expected_value": null,
+   "recommended_channel": "email_first_then_phone",
+   "recommended_CTA": "10-minute front-desk pilot discussion"
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-APIE",
+   "company": "Associates in Periodontics, Implantology & Endodontics ('Associates in PIE')",
+   "offer_id": "FOLLOWUP-001",
+   "offer_name": "Patient Follow-Up",
+   "fit_reason": "Specialty groups live on GP referrals; referral-form infrastructure is PROVEN, acknowledgment speed is the plausible gap.",
+   "expected_value": null,
+   "recommended_channel": "email",
+   "recommended_CTA": "10-minute referral follow-up pilot talk"
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-CANYONCREEK",
+   "company": "Canyon Creek Family Dentistry of Richardson (Canyon Creek Family Dentistry, P.A.)",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "fit_reason": "Same-day/emergency explicitly routed to calling during business hours only.",
+   "expected_value": null,
+   "recommended_channel": "phone",
+   "recommended_CTA": "10-minute look"
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-ALEXANDER",
+   "company": "Alexander Cosmetic, Family & Implant Dentistry PLLC (co-branded 'Alexander & Song Dentistry' at same suite)",
+   "offer_id": "FOLLOWUP-001",
+   "offer_name": "Patient Follow-Up",
+   "fit_reason": "Always-on intake form against a Mon-Thursday staffed window; weekend lead follow-up wedge.",
+   "expected_value": null,
+   "recommended_channel": "phone",
+   "recommended_CTA": "10-minute look"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-SMILESFAM",
+   "company": "Smiles Family Dental (Angelie V. Zamora DDS)",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "fit_reason": "Four published entry points across two markets without visible unified intake.",
+   "expected_value": null,
+   "recommended_channel": "phone",
+   "recommended_CTA": "10-minute look"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-BEARPED",
+   "company": "Bear Pediatric Dentistry & Orthodontics (Bear Dental Corp)",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "fit_reason": "Call/TEXT single line serving parents and referrals across two specialties; SMS-fallback callback fits published posture.",
+   "expected_value": null,
+   "recommended_channel": "phone",
+   "recommended_CTA": "10-minute look"
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-AOS",
+   "company": "Advanced Orthodontic Studio",
+   "offer_id": "FOLLOWUP-001",
+   "offer_name": "Patient Follow-Up",
+   "fit_reason": "Remote-consult button creates inbound consults needing structured follow-up across two cities.",
+   "expected_value": null,
+   "recommended_channel": "phone",
+   "recommended_CTA": "10-minute look"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-ARNICA",
+   "company": "Arnica Dental Care",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "fit_reason": "Solo operator; one line carries both roles; callbacks deferred during chairside time.",
+   "expected_value": null,
+   "recommended_channel": "email",
+   "recommended_CTA": "10-minute look"
+  },
+  {
+   "company_id": "DENTAL-GOLD-003-THRIVE",
+   "company": "Thrive Dental & Orthodontics",
+   "offer_id": "AI-PATIENT-INTAKE",
+   "offer_name": "AI Patient Intake Pilot",
+   "fit_reason": "Institutionalized pre-visit insurance verification + site-wide booking convergence make intake/verification automation the narrowest PROVEN-workflow wedge.",
+   "expected_value": null,
+   "recommended_channel": "phone_after_contact_capture",
+   "recommended_CTA": "10-minute intake-pilot discussion (one location)",
+   "second_best_offer": {
+    "offer_id": "AI-RECEPTIONIST",
+    "why": "Staffed-hours overflow across sites; chosen as secondary because MCR is weakened by their explicit no-after-hours boundary and active same-day answering culture."
+   },
+   "rejected_for_this_prospect": {
+    "offer_id": "DENTAL-MCR-001",
+    "why": "Published FAQ excludes after-hours; same-day promise implies engaged daytime answering - weakest published wedge."
+   }
+  }
+ ],
+ "campaign_id": "CAMP-DENTAL-DFW-MCR-001",
+ "vertical": "dental_dfw",
+ "version": "FROZEN-v1.0",
+ "frozen_at": "2026-08-24T19:22:36Z"
+}

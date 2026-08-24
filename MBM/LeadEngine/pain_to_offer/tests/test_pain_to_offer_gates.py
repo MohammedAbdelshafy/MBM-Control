@@ -236,24 +236,123 @@ class TestScoringDeterminism:
 
 
 class TestStateTransitions:
-    def test_happy_path_legal(self):
+    def test_full_happy_path_legal(self):
         path = [
             PipelineState.DISCOVERED, PipelineState.RESEARCHING, PipelineState.RESEARCHED,
-            PipelineState.SCORED, PipelineState.OFFER_READY, PipelineState.EMAIL_READY,
-            PipelineState.CONTACTED, PipelineState.RESPONDED, PipelineState.MEETING_BOOKED,
+            PipelineState.SCORED, PipelineState.OFFER_READY, PipelineState.CONTACT_PENDING,
+            PipelineState.PHONE_PENDING, PipelineState.CALL_READY, PipelineState.CONTACTED,
+            PipelineState.RESPONDED, PipelineState.DEMO_REQUESTED, PipelineState.DEMO_BOOKED,
             PipelineState.PILOT, PipelineState.WON,
         ]
         for i in range(1, len(path)):
             cur, nxt = path[i - 1], path[i]
             assert validate_transition(cur, nxt).passed, f"{cur} -> {nxt}"
 
+    def test_email_branch_legal(self):
+        for step in [
+            (PipelineState.CONTACT_PENDING, PipelineState.EMAIL_PENDING),
+            (PipelineState.EMAIL_PENDING, PipelineState.EMAIL_READY),
+            (PipelineState.EMAIL_READY, PipelineState.CONTACTED),
+            (PipelineState.PHONE_PENDING, PipelineState.EMAIL_PENDING),
+        ]:
+            assert validate_transition(*step).passed, step
+
     def test_skip_states_illegal(self):
         assert not validate_transition(PipelineState.DISCOVERED, PipelineState.CALL_READY).passed
         assert not validate_transition(PipelineState.SCORED, PipelineState.CONTACTED).passed
+        assert not validate_transition(PipelineState.OFFER_READY, PipelineState.EMAIL_PENDING).passed
 
-    def test_suppress_and_invalid_reachable_until_terminal(self):
+    def test_suppress_invalid_reachable_until_terminal(self):
         for s in (PipelineState.DISCOVERED, PipelineState.OFFER_READY, PipelineState.PILOT):
             assert validate_transition(s, PipelineState.SUPPRESSED).passed
             assert validate_transition(s, PipelineState.INVALID).passed
-        assert not validate_transition(PipelineState.WON, PipelineState.SUPPRESSED).passed
-        assert not validate_transition(PipelineState.LOST, PipelineState.PILOT).passed
+        for t in (PipelineState.WON, PipelineState.LOST, PipelineState.SUPPRESSED, PipelineState.INVALID):
+            assert not validate_transition(t, PipelineState.SUPPRESSED).passed
+            assert not validate_transition(t, PipelineState.PILOT).passed
+
+    def test_nurture_loop_legal(self):
+        assert validate_transition(PipelineState.RESPONDED, PipelineState.NURTURE).passed
+        assert validate_transition(PipelineState.NURTURE, PipelineState.CONTACTED).passed
+        assert not validate_transition(PipelineState.NURTURE, PipelineState.CALL_READY).passed
+
+
+class TestBlockedStateLaw:
+    def test_blockable_states_can_enter_blocked(self):
+        for s in (
+            PipelineState.RESEARCHED, PipelineState.SCORED, PipelineState.OFFER_READY,
+            PipelineState.CONTACT_PENDING, PipelineState.EMAIL_PENDING, PipelineState.PHONE_PENDING,
+        ):
+            assert validate_transition(s, PipelineState.BLOCKED).passed, s
+
+    def test_non_blockable_cannot_enter_blocked(self):
+        assert not validate_transition(PipelineState.DISCOVERED, PipelineState.BLOCKED).passed
+        assert not validate_transition(PipelineState.CONTACTED, PipelineState.BLOCKED).passed
+
+    def test_blocked_reentry_requires_researching(self):
+        assert validate_transition(PipelineState.BLOCKED, PipelineState.RESEARCHING).passed
+        assert not validate_transition(PipelineState.BLOCKED, PipelineState.CALL_READY).passed
+        assert not validate_transition(PipelineState.BLOCKED, PipelineState.OFFER_READY).passed
+
+
+class TestTransitionAuditTrail:
+    def _log(self):
+        from pain_to_offer.state_machine import StateTransitionLog
+        return StateTransitionLog(entity_id="DENTAL-GOLD-002-APIE")
+
+    def test_valid_transition_recorded_with_all_fields(self):
+        log = self._log()
+        rec = log.apply(
+            PipelineState.SCORED, PipelineState.OFFER_READY,
+            actor="OX ALPHA 3", reason="binding gate passed",
+            evidence_ref="https://piedental.com",
+        )
+        assert rec.from_state == PipelineState.SCORED
+        assert rec.to_state == PipelineState.OFFER_READY
+        assert rec.actor and rec.timestamp and rec.reason and rec.evidence_ref
+        assert log.current_state() == PipelineState.OFFER_READY
+
+    def test_missing_evidence_rejected(self):
+        from pain_to_offer.state_machine import MissingEvidenceError
+        log = self._log()
+        try:
+            log.apply(PipelineState.SCORED, PipelineState.OFFER_READY, actor="OX ALPHA 3")
+            raised = False
+        except MissingEvidenceError:
+            raised = True
+        assert raised
+        assert log.current_state() is None
+
+    def test_illegal_transition_rejected(self):
+        log = self._log()
+        try:
+            log.apply(PipelineState.DISCOVERED, PipelineState.CALL_READY,
+                      actor="OX ALPHA 3", evidence_ref="x")
+            raised = False
+        except ValueError:
+            raised = True
+        assert raised
+
+    def test_duplicate_transition_rejected(self):
+        from pain_to_offer.state_machine import DuplicateTransitionError
+        log = self._log()
+        log.apply(PipelineState.SCORED, PipelineState.BLOCKED,
+                  actor="OX ALPHA 3", evidence_ref="gate-fail-report-v1")
+        try:
+            log.apply(PipelineState.SCORED, PipelineState.BLOCKED,
+                      actor="OX ALPHA 3", evidence_ref="gate-fail-report-v1")
+            raised = False
+        except DuplicateTransitionError:
+            raised = True
+        assert raised
+
+    def test_same_transition_new_evidence_allowed(self):
+        log = self._log()
+        log.apply(PipelineState.SCORED, PipelineState.BLOCKED,
+                  actor="OX ALPHA 3", evidence_ref="gate-fail-report-v1")
+        log.apply(PipelineState.BLOCKED, PipelineState.RESEARCHING,
+                  actor="OX ALPHA 2", evidence_ref="NEW_EVIDENCE-2026-08-25")
+        log.apply(PipelineState.RESEARCHING, PipelineState.RESEARCHED,
+                  actor="OX ALPHA 2", evidence_ref="refreshed-evidence-pack")
+        log.apply(PipelineState.RESEARCHED, PipelineState.SCORED,
+                  actor="OX ALPHA 3", evidence_ref="rescored-v2")
+        assert log.current_state() == PipelineState.SCORED

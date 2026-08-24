@@ -32,8 +32,16 @@ from pain_to_offer.schema import (
     PipelineState,
     SourceRef,
 )
-from pain_to_offer.scoring import pain_score, rank_packs
-from pain_to_offer.state_machine import ALLOWED_TRANSITIONS, validate_transition
+from pain_to_offer.scoring import pain_score, rank_packs, weighted_pain_score
+from pain_to_offer.state_machine import (
+    ALLOWED_TRANSITIONS_EFFECTIVE,
+    TERMINAL_STATES,
+    DuplicateTransitionError,
+    MissingEvidenceError,
+    StateTransitionLog,
+    TransitionRecord,
+    validate_transition,
+)
 from pain_to_offer.validation import (
     contact_dedupe_key,
     is_plausible_email,
@@ -43,17 +51,22 @@ from pain_to_offer.validation import (
 )
 
 __all__ = [
-    "ALLOWED_TRANSITIONS",
+    "ALLOWED_TRANSITIONS_EFFECTIVE",
     "Claim",
     "CompanyEvidencePack",
     "ContactClass",
     "ContactRecord",
+    "DuplicateTransitionError",
     "EvidenceStatus",
     "GateResult",
+    "MissingEvidenceError",
     "OfferBinding",
     "PipelineState",
     "SourceRef",
+    "StateTransitionLog",
     "SuppressionList",
+    "TERMINAL_STATES",
+    "TransitionRecord",
     "call_gate",
     "contact_dedupe_key",
     "copy_safety",
@@ -68,6 +81,7 @@ __all__ = [
     "rank_packs",
     "suppression_check",
     "validate_transition",
+    "weighted_pain_score",
 ]
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"

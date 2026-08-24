@@ -1,0 +1,740 @@
+{
+ "generated_at": "2026-08-24T19:16:11Z",
+ "terminal": "OX_ALPHA_3",
+ "rubric": "ev20/econ20/freq15/labor15/auto10/dm10/exp10",
+ "records": [
+  {
+   "company_id": "DENTAL-GOLD-001-STARSLEEP",
+   "company": "Star Sleep & Wellness (legacy: Sleep Dallas)",
+   "website": "https://sleepdallas.com",
+   "city_state": "Multi-city DFW + Pearland, TX",
+   "npi": [
+    "1790101020",
+    "1376400721",
+    "1679267702",
+    "1821844721",
+    "1205520343",
+    "1740974880",
+    "1366136491",
+    "1588419972",
+    "1689534778"
+   ],
+   "business_phone": "+18444094657",
+   "additional_business_phones": [
+    {
+     "phone": "+12146144277",
+     "status": "REJECTED_FAX_ONLY"
+    }
+   ],
+   "decision_maker": "Dr. Brady Kent Smith, DDS",
+   "decision_maker_role": "Owner / Founding Practitioner & Chief Medical Officer",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 7,
+   "proven_facts": [
+    "Single mainline across 9 registry rows and 7 site locations (PROVEN centralized intake architecture)",
+    "'our patient success team will contact you shortly' callback promise (PROVEN)",
+    "Refer a Patient / Physician Referrals nav sections (PROVEN referral workflow)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Intake triage and referral coordination concentrate at headquarters while demand scales across seven sites; plausible response-latency bottleneck",
+   "pain_confidence": 0.7,
+   "score_breakdown": {
+    "evidence_strength": 15,
+    "economic_potential": 13,
+    "frequency": 11,
+    "labor_intensity": 9,
+    "automation_fit": 8,
+    "dm_confidence": 9,
+    "expansion_potential": 9
+   },
+   "pain_score": 74,
+   "priority_tier": "B1",
+   "justification": [
+    "PROVEN: one mainline serves 9 registry rows/7 sites; callback promise; physician-referral desk.",
+    "HYPOTHESIS: response-latency bottleneck at HQ (0.70) - burden unmeasured."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Centralized multi-site intake/referral triage latency",
+   "secondary_pain": "After-hours coverage across 7 markets",
+   "pain_evidence_summary": "PROVEN architecture (one mainline/callback promise/referral desk); burden UNMEASURED",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Referral volume; provider roster; per-location emails"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-FAME",
+   "company": "Fame Dental (A2Z Family Dental, PLLC)",
+   "website": "https://fame-dental.com",
+   "city_state": "Frisco, TX",
+   "npi": [
+    "1659138956"
+   ],
+   "business_phone": "+14692751054",
+   "additional_business_phones": [
+    {
+     "phone": "+14697778977",
+     "status": "SECONDARY_OFFICIAL_DIRECTORY_PUBLISHED",
+     "note": "Yelp/FB/CareCredit/Birdeye; absent from current site"
+    },
+    {
+     "phone": "+14695964998",
+     "status": "REGISTRY_ONLY"
+    }
+   ],
+   "decision_maker": "Dr. Amit Merchant, DMD, FAGD, FICD",
+   "decision_maker_role": "Founder / Managing Member / Dentist",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 1,
+   "proven_facts": [
+    "'Open 7 days a week... same day availability' banner (PROVEN)",
+    "$49 Emergency Exam same-day offer (PROVEN)",
+    "'help patients maximize their benefits' insurance-help commitment (PROVEN)",
+    "'Over 500 5-Star Reviews Across Multiple Platforms' + review-us flow (PROVEN)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "After-hours and peak-overlap inbound call volume plausibly exceeds single-front-desk capacity despite online booking options",
+   "pain_confidence": 0.65,
+   "score_breakdown": {
+    "evidence_strength": 13,
+    "economic_potential": 11,
+    "frequency": 10,
+    "labor_intensity": 8,
+    "automation_fit": 8,
+    "dm_confidence": 9,
+    "expansion_potential": 7
+   },
+   "pain_score": 66,
+   "priority_tier": "B1",
+   "justification": [
+    "PROVEN: 63hrs/wk incl Sunday; $49 same-day emergency; call-first CTAs; Pearl AI; 500+ reviews claim.",
+    "HYPOTHESIS: peak/after-hours call overflow (0.65) - incidence unmeasured."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Peak/extended-hours inbound overflow",
+   "secondary_pain": "Insurance benefits help; review generation",
+   "pain_evidence_summary": "63hrs/wk + $49 same-day emergency + CTAs PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Unanswered-call incidence; front-desk headcount"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-BENHAM",
+   "company": "Benham Orthodontics & Associates, PA",
+   "website": "https://benhamorthodontics.com",
+   "city_state": "Frisco + McKinney, TX",
+   "npi": [
+    "1437908969",
+    "1881451342",
+    "1811165715"
+   ],
+   "business_phone": "+12146188182",
+   "additional_business_phones": [
+    {
+     "phone": "+14692316672",
+     "status": "REGISTRY_ONLY"
+    }
+   ],
+   "decision_maker": "Dr. Adam W. Benham, DDS, MS",
+   "decision_maker_role": "Owner / Orthodontist",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 2,
+   "proven_facts": [
+    "Complimentary consultation acquisition model (PROVEN)",
+    "Offices closed Fri-Sun while leads arrive continuously (PROVEN hours)",
+    "Co-located second registry entity (Lustig) flagged; relationship UNVERIFIED"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Weekend-generated consult requests wait up to 3 days for human response; follow-up sequence completion plausible gap",
+   "pain_confidence": 0.55,
+   "score_breakdown": {
+    "evidence_strength": 11,
+    "economic_potential": 9,
+    "frequency": 8,
+    "labor_intensity": 6,
+    "automation_fit": 8,
+    "dm_confidence": 9,
+    "expansion_potential": 6
+   },
+   "pain_score": 57,
+   "priority_tier": "NURTURE",
+   "justification": [
+    "PROVEN: complimentary consultations; Fri-Sun closures; two offices.",
+    "HYPOTHESIS: weekend consult-request latency (0.55) - latency unmeasured."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Weekend consult-request response gap",
+   "secondary_pain": "Two-office coordination",
+   "pain_evidence_summary": "Consult model + Fri-Sun closure PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Consult volume; Lustig entity role"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-LONESTAR",
+   "company": "Lone Star Dental Care (Aesthetic Dentistry, PA)",
+   "website": "https://www.lonestardentalcare.com",
+   "city_state": "Frisco, TX",
+   "npi": [
+    "1619123536"
+   ],
+   "business_phone": "+19723357100",
+   "additional_business_phones": [],
+   "decision_maker": "Dr. Afshin Vahadi, DDS",
+   "decision_maker_role": "Owner / President / Lead Dentist",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 1,
+   "proven_facts": [
+    "'Our Office Speaks English and Spanish' banner (PROVEN)",
+    "'accepts all dental PPO insurance plans' (PROVEN)",
+    "'Call us Now to Schedule' primary CTA with Tue/Wed hours to 7PM + Sat mornings (PROVEN)",
+    "Emergency Dentist card (PROVEN)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Spanish-language after-hours intake and PPO verification workload concentrate on whichever bilingual staff member is present",
+   "pain_confidence": 0.6,
+   "score_breakdown": {
+    "evidence_strength": 12,
+    "economic_potential": 10,
+    "frequency": 8,
+    "labor_intensity": 7,
+    "automation_fit": 8,
+    "dm_confidence": 9,
+    "expansion_potential": 6
+   },
+   "pain_score": 60,
+   "priority_tier": "NURTURE",
+   "justification": [
+    "PROVEN: bilingual banner; Tue/Wed-to-7PM + Sat AM hours; all-PPO; call-to-schedule CTA. FLAG: NPPES address stale.",
+    "HYPOTHESIS: bilingual after-hours intake load (0.60) - constraint unmeasured."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Bilingual extended-hours intake load",
+   "secondary_pain": "All-PPO eligibility administration",
+   "pain_evidence_summary": "Banner/hours/PPO/call-CTA PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Staffing constraint; NPPES address refresh"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-CROSSTIMBERS",
+   "company": "Cross Timbers Dental, PC",
+   "website": "https://www.crosstimbersdental.com",
+   "city_state": "Flower Mound, TX",
+   "npi": [
+    "1285868166"
+   ],
+   "business_phone": "+19723558500",
+   "additional_business_phones": [
+    {
+     "phone": "+18668205724",
+     "status": "SITE_PUBLISHED_SMS_TEXT_LINE"
+    },
+    {
+     "phone": "+19726919549",
+     "status": "SITE_PUBLISHED_FAX"
+    }
+   ],
+   "decision_maker": "Dr. Brad Revering, DDS",
+   "decision_maker_role": "Owner / President / Dentist",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 1,
+   "proven_facts": [
+    "'Same-Day Appointments Available' emergency block (PROVEN)",
+    "'Over 1,500 Google Reviews' claim (PROVEN claim)",
+    "13 payer logos + 'Call to see if we take your insurance' instruction (PROVEN - routes benefits Qs to phone staff)",
+    "In-house $349/yr membership plan marketed to uninsured (PROVEN)",
+    "Related registry row '6 DAY DENTAL & ORTHODONTICS' resolves to same web presence (entity linkage UNVERIFIED - flagged)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Published workflow explicitly sends benefits questions and urgent bookings through phone staff; plausible front-desk load concentration",
+   "pain_confidence": 0.68,
+   "score_breakdown": {
+    "evidence_strength": 16,
+    "economic_potential": 12,
+    "frequency": 10,
+    "labor_intensity": 9,
+    "automation_fit": 9,
+    "dm_confidence": 9,
+    "expansion_potential": 8
+   },
+   "pain_score": 73,
+   "priority_tier": "B1",
+   "justification": [
+    "PROVEN: site verbatim routes insurance questions to phone; same-day promise; dedicated SMS line; CareStack portal.",
+    "HYPOTHESIS: front-desk load concentration (0.68) - load unmeasured."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Front-desk concentration of insurance Qs + same-day scheduling + SMS line",
+   "secondary_pain": "Hygiene recall cadence; membership-plan admin",
+   "pain_evidence_summary": "Verbatim site workflow instructions",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Membership scale; doctor roles"
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-APIE",
+   "company": "Associates in Periodontics, Implantology & Endodontics ('Associates in PIE')",
+   "website": "https://piedental.com",
+   "city_state": "Flower Mound + Denton + McKinney, TX",
+   "npi": [
+    "1699288068",
+    "1033692967"
+   ],
+   "business_phone": "+19725383700",
+   "additional_business_phones": [
+    {
+     "phone": "+19405667070",
+     "status": "CURRENT_OFFICIAL_DENTON"
+    },
+    {
+     "phone": "+19725474141",
+     "status": "CURRENT_OFFICIAL_MCKINNEY"
+    },
+    {
+     "phone": "+19725471701",
+     "status": "SITE_PUBLISHED_FAX_MCKINNEY"
+    }
+   ],
+   "decision_maker": "Dr. Michael Goodwin, DDS, MS",
+   "decision_maker_role": "Co-owner / Periodontist",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 3,
+   "proven_facts": [
+    "Dedicated Referring Doctors nav + Referral Form (PROVEN referral workflow infrastructure)",
+    "Published testimonial from referring general dentist routing complex cases (PROVEN dependency signal)",
+    "Three locations sharing one brand/registration funnel (PROVEN centralized intake surface)",
+    "Birdeye aggregate 256 reviews @4.7 (third-party corroboration)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Specialty groups live on referral flow; referral acknowledgment speed and multi-site scheduling coordination are plausible friction points",
+   "pain_confidence": 0.62,
+   "score_breakdown": {
+    "evidence_strength": 14,
+    "economic_potential": 12,
+    "frequency": 9,
+    "labor_intensity": 8,
+    "automation_fit": 8,
+    "dm_confidence": 9,
+    "expansion_potential": 8
+   },
+   "pain_score": 68,
+   "priority_tier": "B1",
+   "justification": [
+    "PROVEN: referral form infra; GD-referral testimonial; 3 locations digit-verified; staggered hours.",
+    "HYPOTHESIS: referral acknowledgment friction (0.62) - throughput unmeasured."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Referral acknowledgment speed + multi-site specialty scheduling",
+   "secondary_pain": "Post-operative communication",
+   "pain_evidence_summary": "Referral infra + GD testimonial PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Referral throughput"
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-CANYONCREEK",
+   "company": "Canyon Creek Family Dentistry of Richardson (Canyon Creek Family Dentistry, P.A.)",
+   "website": "https://canyoncreekfamilydentistry.com",
+   "city_state": "Richardson, TX",
+   "npi": [
+    "1659502730"
+   ],
+   "business_phone": "+19726443800",
+   "additional_business_phones": [
+    {
+     "phone": "+19726443888",
+     "status": "REGISTRY_FAX"
+    }
+   ],
+   "decision_maker": "Dr. Afshin Azmoodeh, DDS",
+   "decision_maker_role": "Founder / President / Dentist",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 1,
+   "proven_facts": [
+    "'The fastest and easiest way to make a same-day appointment is to call the practice directly' (PROVEN call-first same-day CTA)",
+    "Emergency care instruction to call directly (PROVEN)",
+    "Children's dentistry line alongside adult care (PROVEN dual demographic intake)",
+    "Competitive-density claim: '2,040 dentists within a 10-mile radius' (PROVEN published market-awareness)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Call-dependent same-day/emergency booking concentrates on reception during open hours with zero published after-hours capture",
+   "pain_confidence": 0.58,
+   "score_breakdown": {
+    "evidence_strength": 12,
+    "economic_potential": 9,
+    "frequency": 9,
+    "labor_intensity": 7,
+    "automation_fit": 8,
+    "dm_confidence": 9,
+    "expansion_potential": 6
+   },
+   "pain_score": 60,
+   "priority_tier": "NURTURE",
+   "justification": [
+    "PROVEN: verbatim call-first same-day routing; emergency-by-phone; 4 dentists; competitive-density self-claim.",
+    "HYPOTHESIS: reception concentration in open hours (0.58) - volumes unmeasured."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Same-day/emergency routed exclusively through reception",
+   "secondary_pain": "Pediatric+adult mixed scheduling",
+   "pain_evidence_summary": "Verbatim call-first instructions PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Call volumes; booking platform"
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-ALEXANDER",
+   "company": "Alexander Cosmetic, Family & Implant Dentistry PLLC (co-branded 'Alexander & Song Dentistry' at same suite)",
+   "website": "https://calexanderdds.com",
+   "city_state": "Carrollton, TX",
+   "npi": [
+    "1902416365"
+   ],
+   "business_phone": "+19729392888",
+   "additional_business_phones": [
+    {
+     "phone": "+12106343927",
+     "status": "DIRECTORY_PUBLISHED_FAX"
+    }
+   ],
+   "decision_maker": "Dr. Christabelle Alexander, DDS, MAGD",
+   "decision_maker_role": "Owner / Dentist (registry 'Dentist/Owner'; TX license 32069)",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 1,
+   "proven_facts": [
+    "URGENT CARE 'Call Now' immediate-support block (PROVEN)",
+    "First-visit promise includes 'Verification of insurance and financing consultations' (PROVEN insurance-admin workflow)",
+    "Mon-Thu only hours (Thu ends 2PM); Fri-Sun closure with always-on web form (PROVEN)",
+    "2020 acquisition of prior practice (Hank Campbell) per LewisHealth announcement (PROVEN transition history)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Form-generated leads accumulate over the 3.5-day weekly closure; urgent-care callers outside hours have no published capture path",
+   "pain_confidence": 0.55,
+   "score_breakdown": {
+    "evidence_strength": 11,
+    "economic_potential": 9,
+    "frequency": 7,
+    "labor_intensity": 6,
+    "automation_fit": 8,
+    "dm_confidence": 8,
+    "expansion_potential": 5
+   },
+   "pain_score": 54,
+   "priority_tier": "NURTURE",
+   "justification": [
+    "PROVEN: Mon-Thu hours; always-on web form; urgent-care call-now; insurance-verification step.",
+    "HYPOTHESIS: weekend lead accumulation (0.55); co-brand ownership UNVERIFIED."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Closed-window (Fri-Sun) lead accumulation",
+   "secondary_pain": "Dual-brand identity management",
+   "pain_evidence_summary": "Mon-Thu hours + always-on form + urgent CTA PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Song ownership stake; PM system"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-SMILESFAM",
+   "company": "Smiles Family Dental (Angelie V. Zamora DDS)",
+   "website": "https://smilesfamilydental.com",
+   "city_state": "Flower Mound + Arlington, TX",
+   "npi": [
+    "1881095131"
+   ],
+   "business_phone": "+19723461100",
+   "additional_business_phones": [
+    {
+     "phone": "+18172771971",
+     "status": "CURRENT_OFFICIAL_ARLINGTON (site tel: + NPPES mailing-row match)"
+    },
+    {
+     "phone": "+19724449337",
+     "status": "SITE_PUBLISHED (matches NPPES authorized-official phone)"
+    },
+    {
+     "phone": "+19726461718",
+     "status": "SITE_PUBLISHED"
+    },
+    {
+     "phone": "+19728960313",
+     "status": "SITE_PUBLISHED"
+    }
+   ],
+   "decision_maker": "Dr. Angelie V. Zamora, DDS",
+   "decision_maker_role": "Owner / President / Dentist",
+   "decision_maker_confidence": "MEDIUM-HIGH",
+   "location_count": 2,
+   "proven_facts": [
+    "Both location phones published on one site and matched to two distinct NPPES rows (PROVEN two-market operation under one brand)",
+    "Medicaid identifier on registry (PROVEN public-program participation)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS (low depth)",
+   "pain_hypothesis": "Split-location call routing without unified triage creates plausible consistency gaps; evidence depth still shallow",
+   "pain_confidence": 0.42,
+   "score_breakdown": {
+    "evidence_strength": 8,
+    "economic_potential": 8,
+    "frequency": 7,
+    "labor_intensity": 6,
+    "automation_fit": 6,
+    "dm_confidence": 7,
+    "expansion_potential": 6
+   },
+   "pain_score": 48,
+   "priority_tier": "LOW",
+   "justification": [
+    "PROVEN: two markets, four published lines matched to two NPPES rows; Medicaid ID.",
+    "HYPOTHESIS: split-site routing gaps (0.42) - evidence depth shallow."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Split-market routing consistency across four lines",
+   "secondary_pain": "Public-program administration",
+   "pain_evidence_summary": "Multi-line/multi-NPI match PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Full site depth; roster"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-BEARPED",
+   "company": "Bear Pediatric Dentistry & Orthodontics (Bear Dental Corp)",
+   "website": "https://bearpd.com",
+   "city_state": "McKinney, TX",
+   "npi": [
+    "1285256636"
+   ],
+   "business_phone": "+14695982327",
+   "additional_business_phones": [
+    {
+     "phone": "+14695451545",
+     "status": "SITE_PUBLISHED_FAX"
+    }
+   ],
+   "decision_maker": "Dr. Dennis Bear, DMD (with Dr. Maggie Wang, orthodontist - husband/wife team)",
+   "decision_maker_role": "CEO / Owner",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 1,
+   "proven_facts": [
+    "'DENTIST REFERRALS' nav item (PROVEN referral channel)",
+    "Call/TEXT number advertised twice on every page header (PROVEN text-first comms posture)",
+    "Site managed by external dental-marketing agency 'Magnify Dental Marketing' (PROVEN outsourced marketing ops)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Single-line parent/referral traffic across two specialties creates plausible queueing at peak times; not measured",
+   "pain_confidence": 0.55,
+   "score_breakdown": {
+    "evidence_strength": 10,
+    "economic_potential": 8,
+    "frequency": 7,
+    "labor_intensity": 6,
+    "automation_fit": 8,
+    "dm_confidence": 9,
+    "expansion_potential": 6
+   },
+   "pain_score": 54,
+   "priority_tier": "NURTURE",
+   "justification": [
+    "PROVEN: call/text line advertised twice per page; dentist-referral nav; external marketing agency; Sat appts.",
+    "HYPOTHESIS: single-line parent/referral queueing (0.55) - volume unmeasured."
+   ],
+   "previous_rank": null,
+   "contact_upgrade_gold_004": "business_email FOUND on official site; EMAIL_READY gated by OX3 this cycle",
+   "previous_pain_score": 54,
+   "primary_pain": "Single-line parent/referral queueing across two specialties",
+   "secondary_pain": "Recall cadence; agency-managed lead flow",
+   "pain_evidence_summary": "Text-first posture + referral nav PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Message volume; team size"
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-DAZZLE",
+   "company": "Dazzle Dental Care, PA",
+   "website": "https://dazzledentalcare.com",
+   "city_state": "Flower Mound, TX",
+   "npi": [
+    "1043479066"
+   ],
+   "business_phone": "+19723558568",
+   "additional_business_phones": [],
+   "decision_maker": "Dr. Johnie M. Nguyen, DDS",
+   "decision_maker_role": "Owner / President / Dentist",
+   "decision_maker_confidence": "MEDIUM-HIGH",
+   "location_count": 1,
+   "proven_facts": [
+    "Medicaid identifier on registry (PROVEN program participation)",
+    "Registry metadata stale since 2011 (PROVEN staleness - identity still held via site match)"
+   ],
+   "pain_hypothesis_label": "UNVERIFIED",
+   "pain_hypothesis": "Deferred - no defensible hypothesis yet",
+   "pain_confidence": 0.25,
+   "score_breakdown": {
+    "evidence_strength": 5,
+    "economic_potential": 6,
+    "frequency": 5,
+    "labor_intensity": 5,
+    "automation_fit": 6,
+    "dm_confidence": 7,
+    "expansion_potential": 4
+   },
+   "pain_score": 38,
+   "priority_tier": "REJECT_BAND",
+   "justification": [
+    "UNVERIFIED: identity-only record; no operational evidence collected (OX2 0.25)."
+   ],
+   "previous_rank": null,
+   "primary_pain": "None defensible yet",
+   "secondary_pain": "-",
+   "pain_evidence_summary": "Identity-only record",
+   "pain_status": "UNVERIFIED",
+   "unknowns": "Everything operational"
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-AOS",
+   "company": "Advanced Orthodontic Studio",
+   "website": "https://advancedorthodonticstudio.com",
+   "city_state": "Irving + Houston, TX",
+   "npi": [
+    "1750821666"
+   ],
+   "business_phone": "+12142727626",
+   "additional_business_phones": [
+    {
+     "phone": "+17135880280",
+     "status": "SITE_PUBLISHED_HOUSTON"
+    },
+    {
+     "phone": "+12146460870",
+     "status": "CONFLICT",
+     "note": "Registry Carrollton-location phone absent from current site"
+    }
+   ],
+   "decision_maker": "Dr. Marco A. Navarro-Flores",
+   "decision_maker_role": "Owner / Founder / CEO / Lead Orthodontist",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 2,
+   "proven_facts": [
+    "Two-city advertising footprint vs registry rows naming Carrollton/Irving (PROVEN discrepancy - human review needed)",
+    "20-year Texas/Mexico tenure claim (PROVEN claim)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Multi-market founder-led ortho group has plausible coordination/follow-up seams; evidence depth moderate-low",
+   "pain_confidence": 0.42,
+   "score_breakdown": {
+    "evidence_strength": 8,
+    "economic_potential": 8,
+    "frequency": 6,
+    "labor_intensity": 6,
+    "automation_fit": 7,
+    "dm_confidence": 9,
+    "expansion_potential": 5
+   },
+   "pain_score": 49,
+   "priority_tier": "LOW",
+   "justification": [
+    "PROVEN: two-city footprint; remote-consult button; founder-led.",
+    "FLAG: registry-vs-site location mismatch needs human review. HYPOTHESIS: coordination seams (0.42)."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Founder-dependent two-market coordination",
+   "secondary_pain": "Location-history cleanup (registry mismatch)",
+   "pain_evidence_summary": "Footprint + remote-consult button PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Active location list; roster"
+  },
+  {
+   "company_id": "DENTAL-GOLD-001-ARNICA",
+   "company": "Arnica Dental Care",
+   "website": "https://arnicadentalclinic.com",
+   "city_state": "Frisco, TX",
+   "npi": [
+    "1013674704"
+   ],
+   "business_phone": "+14694688269",
+   "additional_business_phones": [
+    {
+     "phone": "+12678445555",
+     "status": "STALE_REGISTRY",
+     "note": "Out-of-region; absent from live site"
+    }
+   ],
+   "decision_maker": "Dr. Anna Vasilev, DMD",
+   "decision_maker_role": "Owner / Solo Practitioner",
+   "decision_maker_confidence": "HIGH",
+   "location_count": 1,
+   "proven_facts": [
+    "One published line serves BOTH appointments and inquiries (PROVEN)",
+    "Long accepted-insurance grid rendered (PROVEN presence)",
+    "Weekday-only hours, closed weekends (PROVEN)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Solo operators commonly defer non-clinical callbacks; systematic follow-up cadence plausible gap",
+   "pain_confidence": 0.48,
+   "score_breakdown": {
+    "evidence_strength": 10,
+    "economic_potential": 8,
+    "frequency": 6,
+    "labor_intensity": 5,
+    "automation_fit": 8,
+    "dm_confidence": 9,
+    "expansion_potential": 4
+   },
+   "pain_score": 50,
+   "priority_tier": "NURTURE",
+   "justification": [
+    "PROVEN: one dual-role line (appointments+inquiries); weekday-only; solo provider; insurance grid.",
+    "HYPOTHESIS: solo callback deferral (0.48) - backlog unobserved."
+   ],
+   "previous_rank": null,
+   "primary_pain": "Solo callback deferral on dual-role line",
+   "secondary_pain": "Insurance-grid administration",
+   "pain_evidence_summary": "Single line + weekday-only hours PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Backlog existence"
+  },
+  {
+   "company_id": "DENTAL-GOLD-003-THRIVE",
+   "company": "Thrive Dental & Orthodontics",
+   "website": "(official site verified by OX2; per-location subpages are JS shells)",
+   "city_state": "DFW multi-site (Richardson + others)",
+   "npi": [],
+   "business_phone": null,
+   "additional_business_phones": [
+    {
+     "status": "REGISTRY_ONLY",
+     "note": "number not delivered in handoff; NOT website-verified"
+    }
+   ],
+   "decision_maker": "Named C-suite (per OX2; names not delivered to OX3 this cycle)",
+   "decision_maker_role": "Executive leadership",
+   "decision_maker_confidence": "MEDIUM",
+   "location_count": "6-vs-7 CONFLICT OPEN",
+   "proven_facts": [
+    "Same-day emergency promise at ALL locations (FAQ verbatim, PROVEN)",
+    "After-hours coverage explicitly EXCLUDED in FAQ (verbatim boundary, PROVEN)",
+    "Pre-visit insurance verification institutionalized in first-visit workflow (PROVEN)",
+    "$129/mo ortho membership funnel (PROVEN)",
+    "Site-wide Book Now widget convergence (PROVEN)"
+   ],
+   "pain_hypothesis_label": "LEADING_HYPOTHESIS",
+   "pain_hypothesis": "Staffed-hours intake bottleneck at multi-site scale plus institutionalized verification workload; after-hours demand has no published capture path.",
+   "pain_confidence": 0.65,
+   "score_breakdown": {
+    "evidence_strength": 17,
+    "economic_potential": 14,
+    "frequency": 10,
+    "labor_intensity": 9,
+    "automation_fit": 8,
+    "dm_confidence": 7,
+    "expansion_potential": 9
+   },
+   "pain_score": 74,
+   "priority_tier": "B1",
+   "justification": [
+    "PROVEN: FAQ boundaries, verification workflow, membership funnel, multi-site convergence.",
+    "HYPOTHESIS: staffed-hours bottleneck (0.65). Conflicts OPEN: 6-vs-7 sites; Breckinridge succession UNVERIFIED.",
+    "CALL_BLOCKED until a website-verified business phone exists."
+   ],
+   "gold_004_delta": true,
+   "primary_pain": "Staffed-hours intake bottleneck at multi-site scale",
+   "secondary_pain": "Pre-visit insurance verification workload",
+   "pain_evidence_summary": "FAQ boundaries + verification workflow + funnel PROVEN",
+   "pain_status": "LEADING_HYPOTHESIS",
+   "unknowns": "Per-location NAP; volumes; Garland status; succession link"
+  }
+ ],
+ "delta": "GOLD-004",
+ "campaign_id": "CAMP-DENTAL-DFW-MCR-001",
+ "vertical": "dental_dfw",
+ "version": "FROZEN-v1.0",
+ "frozen_at": "2026-08-24T19:22:36Z"
+}

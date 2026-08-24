@@ -1,0 +1,38 @@
+{
+  "campaign_id": "CAMP-DENTAL-DFW-MCR-001",
+  "vertical_id": "dental",
+  "market": "DFW (Frisco, Plano, McKinney, Carrollton, Flower Mound, Richardson, Irving, Lewisville, Grapevine, Southlake, Wylie, Rockwall)",
+  "offer_id": "DENTAL-MCR-001",
+  "offer_version": "canonical-locked-2026-08-24",
+  "ICP": "Owner-operated independent dental/ortho practices, 1+ locations, verified NPI identity, published business phone; decision-maker identified with source",
+  "version": 1,
+  "status": "READY",
+  "owner": "OX ALPHA 1 (control plane); execution: OX ALPHA 3 -> ANTIGRAVITY",
+  "start_time": null,
+  "start_time_policy": "start_time set at first approved send only",
+  "objective": "Validate missed-call-recovery commercial fit using real owner conversations and measured pilot baselines.",
+  "success_metric": "Recovered-booking rate vs. each practice's own Week-0 baseline; secondary: qualified-conversation rate per micro-batch",
+  "micro_batch_size": {"min": 10, "max": 25},
+  "source_batches": ["DENTAL-GOLD-001", "DENTAL-GOLD-002"],
+  "gates_enforced": [
+    "pain_to_offer.offer_binding_gate",
+    "pain_to_offer.email_gate",
+    "pain_to_offer.call_gate",
+    "pain_to_offer.copy_safety"
+  ],
+  "prohibitions": [
+    "no synthetic outcomes",
+    "no fabricated ROI or case studies",
+    "LEADING_HYPOTHESIS copy must remain hedged opportunity framing",
+    "UNVERIFIED claims never enter outbound copy",
+    "no sending until Antigravity receives EMAIL_READY records from an OX3-approved queue"
+  ],
+  "learning_loops": {
+    "pain_predicted_vs_confirmed": "record on first real conversation per record",
+    "objection_taxonomy": "v6 §OBJECTION INTELLIGENCE list",
+    "outcome_vocabularies": "CALL and EMAIL outcome lists per v6 OUTCOME LOOP"
+  },
+  "registered_at": "2026-08-24T22:40:00Z",
+  "registered_by": "OX ALPHA 1",
+  "authorization": "JARVIS MASTER OPERATING PROMPT v6 - CURRENT P0 MISSION"
+}

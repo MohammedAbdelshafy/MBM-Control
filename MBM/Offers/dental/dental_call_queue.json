@@ -1,0 +1,403 @@
+{
+ "generated_at": "2026-08-24T19:16:11Z",
+ "queue_version": "DENTAL-CALL-Q2",
+ "priority_formula": "pain_evidence+dm_confidence+phone_verification+offer_fit+evidence_strength",
+ "call_ready_count": 12,
+ "call_blocked": [
+  {
+   "company_id": "DENTAL-GOLD-002-DAZZLE",
+   "reason_code": "INSUFFICIENT_OPERATIONAL_EVIDENCE",
+   "detail": "Identity/phone verified, but OX2 collected zero operational evidence (pain UNVERIFIED 0.25). Outreach would be unsupported. Deferred to OX2 deep-dive."
+  },
+  {
+   "company_id": "DENTAL-GOLD-003-THRIVE",
+   "reason_code": "PHONE_REGISTRY_ONLY_NOT_WEBSITE_VERIFIED",
+   "detail": "Phone remains REGISTRY_ONLY and the actual number was not delivered in the handoff. Per phone gate, registry-only != current official-site verification. Scored 74/OFFER_READY; unblocks instantly once OX2 captures a site-published business line."
+  }
+ ],
+ "queue": [
+  {
+   "rank": 1,
+   "company_id": "DENTAL-GOLD-001-STARSLEEP",
+   "company": "Star Sleep & Wellness (legacy: Sleep Dallas)",
+   "decision_maker": "Dr. Brady Kent Smith, DDS",
+   "role": "Owner / Founding Practitioner & Chief Medical Officer",
+   "verified_phone": "+18444094657",
+   "verification_source": "Site header/footer/location pages == all NPPES rows (multi-source identical)",
+   "verification_timestamp": "2026-08-24T17:40Z; 2026-08-24T16:05-17:05Z",
+   "pain_score": 74,
+   "priority_tier": "B1",
+   "pain_category": "MISSED_CALL_RECOVERY",
+   "proven_evidence": [
+    "Single mainline across 9 registry rows and 7 site locations (PROVEN centralized intake architecture)",
+    "'our patient success team will contact you shortly' callback promise (PROVEN)",
+    "Refer a Patient / Physician Referrals nav sections (PROVEN referral workflow)"
+   ],
+   "pain_hypothesis": "Intake triage and referral coordination concentrate at headquarters while demand scales across seven sites; plausible response-latency bottleneck",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "why_this_prospect": "Centralized intake line + published callback promise make unanswered-call recovery the narrowest testable wedge.",
+   "opening": "Hi Smith, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that seven locations, one main line, and a patient-success team that promises to call people back shortly.",
+   "likely_objection": "We already have front desk staff.",
+   "recommended_response": "This works beside them - it only touches calls that already rang unanswered; your team stays the front line.",
+   "cta": "10-minute look at ONE location's overflow",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 1,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 2,
+   "company_id": "DENTAL-GOLD-001-CROSSTIMBERS",
+   "company": "Cross Timbers Dental, PC",
+   "decision_maker": "Dr. Brad Revering, DDS",
+   "role": "Owner / President / Dentist",
+   "verified_phone": "+19723558500",
+   "verification_source": "Site tel: links AND NPPES row identical",
+   "verification_timestamp": "2026-08-24T19:00Z; 2026-08-24T18:40Z",
+   "pain_score": 73,
+   "priority_tier": "B1",
+   "pain_category": "STAFF_OPERATIONS",
+   "proven_evidence": [
+    "'Same-Day Appointments Available' emergency block (PROVEN)",
+    "'Over 1,500 Google Reviews' claim (PROVEN claim)",
+    "13 payer logos + 'Call to see if we take your insurance' instruction (PROVEN - routes benefits Qs to phone staff)",
+    "In-house $349/yr membership plan marketed to uninsured (PROVEN)",
+    "Related registry row '6 DAY DENTAL & ORTHODONTICS' resolves to same web presence (entity linkage UNVERIFIED - flagged)"
+   ],
+   "pain_hypothesis": "Published workflow explicitly sends benefits questions and urgent bookings through phone staff; plausible front-desk load concentration",
+   "offer_id": "AI-RECEPTIONIST",
+   "offer_name": "AI Receptionist / Front Desk Support",
+   "why_this_prospect": "Published workflow sends insurance questions and same-day bookings through phone/text staff; CareStack portal shows integration path.",
+   "opening": "Hi Revering, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that your site sends same-day bookings, insurance questions, and even texts through one front desk.",
+   "likely_objection": "The front desk handles it.",
+   "recommended_response": "It absorbs the routine scheduling and benefit questions so your team handles the ones that need a human.",
+   "cta": "10-minute front-desk pilot discussion",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 2,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 3,
+   "company_id": "DENTAL-GOLD-002-APIE",
+   "company": "Associates in Periodontics, Implantology & Endodontics ('Associates in PIE')",
+   "decision_maker": "Dr. Michael Goodwin, DDS, MS",
+   "role": "Co-owner / Periodontist",
+   "verified_phone": "+19725383700",
+   "verification_source": "piedental.com locations page == NPPES rows digit-for-digit (three-location three-source match)",
+   "verification_timestamp": "2026-08-24T20:40Z; 2026-08-24T18:40Z; 2026-08-24T20:30Z",
+   "pain_score": 68,
+   "priority_tier": "B1",
+   "pain_category": "PATIENT_FOLLOWUP",
+   "proven_evidence": [
+    "Dedicated Referring Doctors nav + Referral Form (PROVEN referral workflow infrastructure)",
+    "Published testimonial from referring general dentist routing complex cases (PROVEN dependency signal)",
+    "Three locations sharing one brand/registration funnel (PROVEN centralized intake surface)",
+    "Birdeye aggregate 256 reviews @4.7 (third-party corroboration)"
+   ],
+   "pain_hypothesis": "Specialty groups live on referral flow; referral acknowledgment speed and multi-site scheduling coordination are plausible friction points",
+   "offer_id": "FOLLOWUP-001",
+   "offer_name": "Patient Follow-Up",
+   "why_this_prospect": "Specialty groups live on GP referrals; referral-form infrastructure is PROVEN, acknowledgment speed is the plausible gap.",
+   "opening": "Hi Goodwin, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that GPs send complex cases through your referring-doctor portal across three offices.",
+   "likely_objection": "We call people back ourselves.",
+   "recommended_response": "It covers the gap moments - nights, weekends, mid-appointment - then hands warm patients to your team.",
+   "cta": "10-minute referral follow-up pilot talk",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 3,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 4,
+   "company_id": "DENTAL-GOLD-001-FAME",
+   "company": "Fame Dental (A2Z Family Dental, PLLC)",
+   "decision_maker": "Dr. Amit Merchant, DMD, FAGD, FICD",
+   "role": "Founder / Managing Member / Dentist",
+   "verified_phone": "+14692751054",
+   "verification_source": "fame-dental.com header/footer/CTAs (CURRENT_OFFICIAL)",
+   "verification_timestamp": "2026-08-24T17:30Z; 2026-08-24T16:50Z; 2026-08-24T19:45Z",
+   "pain_score": 66,
+   "priority_tier": "B1",
+   "pain_category": "MISSED_CALL_RECOVERY",
+   "proven_evidence": [
+    "'Open 7 days a week... same day availability' banner (PROVEN)",
+    "$49 Emergency Exam same-day offer (PROVEN)",
+    "'help patients maximize their benefits' insurance-help commitment (PROVEN)",
+    "'Over 500 5-Star Reviews Across Multiple Platforms' + review-us flow (PROVEN)"
+   ],
+   "pain_hypothesis": "After-hours and peak-overlap inbound call volume plausibly exceeds single-front-desk capacity despite online booking options",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "why_this_prospect": "Longest published coverage window in batch (7 days incl Sunday) with call-first CTAs.",
+   "opening": "Hi Merchant, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that you're open seven days a week including Sundays with same-day emergency exams.",
+   "likely_objection": "We already have front desk staff.",
+   "recommended_response": "This works beside them - it only touches calls that already rang unanswered; your team stays the front line.",
+   "cta": "10-minute look at one location",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 4,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 5,
+   "company_id": "DENTAL-GOLD-002-CANYONCREEK",
+   "company": "Canyon Creek Family Dentistry of Richardson (Canyon Creek Family Dentistry, P.A.)",
+   "decision_maker": "Dr. Afshin Azmoodeh, DDS",
+   "role": "Founder / President / Dentist",
+   "verified_phone": "+19726443800",
+   "verification_source": "Site tel: links AND embedded JSON-LD telephone == NPPES row (digit-for-digit)",
+   "verification_timestamp": "2026-08-24T20:55Z; 2026-08-24T20:20Z",
+   "pain_score": 60,
+   "priority_tier": "NURTURE",
+   "pain_category": "MISSED_CALL_RECOVERY",
+   "proven_evidence": [
+    "'The fastest and easiest way to make a same-day appointment is to call the practice directly' (PROVEN call-first same-day CTA)",
+    "Emergency care instruction to call directly (PROVEN)",
+    "Children's dentistry line alongside adult care (PROVEN dual demographic intake)",
+    "Competitive-density claim: '2,040 dentists within a 10-mile radius' (PROVEN published market-awareness)"
+   ],
+   "pain_hypothesis": "Call-dependent same-day/emergency booking concentrates on reception during open hours with zero published after-hours capture",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "why_this_prospect": "Same-day/emergency explicitly routed to calling during business hours only.",
+   "opening": "Hi Azmoodeh, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that your site tells same-day and emergency patients to call directly.",
+   "likely_objection": "We already have front desk staff.",
+   "recommended_response": "This works beside them - it only touches calls that already rang unanswered; your team stays the front line.",
+   "cta": "10-minute look",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 5,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 6,
+   "company_id": "DENTAL-GOLD-001-LONESTAR",
+   "company": "Lone Star Dental Care (Aesthetic Dentistry, PA)",
+   "decision_maker": "Dr. Afshin Vahadi, DDS",
+   "role": "Owner / President / Lead Dentist",
+   "verified_phone": "+19723357100",
+   "verification_source": "Website footer AND NPPES row identical (two-source match)",
+   "verification_timestamp": "2026-08-24T17:20Z; 2026-08-24T16:50Z",
+   "pain_score": 60,
+   "priority_tier": "NURTURE",
+   "pain_category": "MISSED_CALL_RECOVERY",
+   "proven_evidence": [
+    "'Our Office Speaks English and Spanish' banner (PROVEN)",
+    "'accepts all dental PPO insurance plans' (PROVEN)",
+    "'Call us Now to Schedule' primary CTA with Tue/Wed hours to 7PM + Sat mornings (PROVEN)",
+    "Emergency Dentist card (PROVEN)"
+   ],
+   "pain_hypothesis": "Spanish-language after-hours intake and PPO verification workload concentrate on whichever bilingual staff member is present",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "why_this_prospect": "Extended bilingual coverage windows with call-to-schedule primary CTA.",
+   "opening": "Hi Vahadi, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that you run bilingual care with evening and Saturday hours and invite patients to call.",
+   "likely_objection": "We already have front desk staff.",
+   "recommended_response": "This works beside them - it only touches calls that already rang unanswered; your team stays the front line.",
+   "cta": "10-minute look",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 6,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 7,
+   "company_id": "DENTAL-GOLD-001-BENHAM",
+   "company": "Benham Orthodontics & Associates, PA",
+   "decision_maker": "Dr. Adam W. Benham, DDS, MS",
+   "role": "Owner / Orthodontist",
+   "verified_phone": "+12146188182",
+   "verification_source": "Official site + Yelp + Nextdoor + BubbleLife (4-source agreement)",
+   "verification_timestamp": "2026-08-24T18:05Z; 2026-08-24T16:20Z; 2026-08-24T19:45Z",
+   "pain_score": 57,
+   "priority_tier": "NURTURE",
+   "pain_category": "PATIENT_FOLLOWUP",
+   "proven_evidence": [
+    "Complimentary consultation acquisition model (PROVEN)",
+    "Offices closed Fri-Sun while leads arrive continuously (PROVEN hours)",
+    "Co-located second registry entity (Lustig) flagged; relationship UNVERIFIED"
+   ],
+   "pain_hypothesis": "Weekend-generated consult requests wait up to 3 days for human response; follow-up sequence completion plausible gap",
+   "offer_id": "FOLLOWUP-001",
+   "offer_name": "Patient Follow-Up",
+   "why_this_prospect": "Free-consult acquisition + 96-hour weekly closure window; follow-up sequence is the natural wedge.",
+   "opening": "Hi Benham, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that you offer complimentary consultations at two offices while closing Fridays through Sundays.",
+   "likely_objection": "We call people back ourselves.",
+   "recommended_response": "It covers the gap moments - nights, weekends, mid-appointment - then hands warm patients to your team.",
+   "cta": "10-minute consult follow-up pilot talk",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 7,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 8,
+   "company_id": "DENTAL-GOLD-002-ALEXANDER",
+   "company": "Alexander Cosmetic, Family & Implant Dentistry PLLC (co-branded 'Alexander & Song Dentistry' at same suite)",
+   "decision_maker": "Dr. Christabelle Alexander, DDS, MAGD",
+   "role": "Owner / Dentist (registry 'Dentist/Owner'; TX license 32069)",
+   "verified_phone": "+19729392888",
+   "verification_source": "calexanderdds.com header/footer == NPPES row telephone (digit-for-digit)",
+   "verification_timestamp": "2026-08-24T21:05Z; 2026-08-24T18:20Z; 2026-08-24T21:00Z",
+   "pain_score": 54,
+   "priority_tier": "NURTURE",
+   "pain_category": "PATIENT_FOLLOWUP",
+   "proven_evidence": [
+    "URGENT CARE 'Call Now' immediate-support block (PROVEN)",
+    "First-visit promise includes 'Verification of insurance and financing consultations' (PROVEN insurance-admin workflow)",
+    "Mon-Thu only hours (Thu ends 2PM); Fri-Sun closure with always-on web form (PROVEN)",
+    "2020 acquisition of prior practice (Hank Campbell) per LewisHealth announcement (PROVEN transition history)"
+   ],
+   "pain_hypothesis": "Form-generated leads accumulate over the 3.5-day weekly closure; urgent-care callers outside hours have no published capture path",
+   "offer_id": "FOLLOWUP-001",
+   "offer_name": "Patient Follow-Up",
+   "why_this_prospect": "Always-on intake form against a Mon-Thursday staffed window; weekend lead follow-up wedge.",
+   "opening": "Hi Alexander, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that your urgent-care line and intake form run against a Monday-Thursday schedule.",
+   "likely_objection": "We call people back ourselves.",
+   "recommended_response": "It covers the gap moments - nights, weekends, mid-appointment - then hands warm patients to your team.",
+   "cta": "10-minute look",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 8,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 9,
+   "company_id": "DENTAL-GOLD-001-BEARPED",
+   "company": "Bear Pediatric Dentistry & Orthodontics (Bear Dental Corp)",
+   "decision_maker": "Dr. Dennis Bear, DMD (with Dr. Maggie Wang, orthodontist - husband/wife team)",
+   "role": "CEO / Owner",
+   "verified_phone": "+14695982327",
+   "verification_source": "Site Call/Text blocks AND NPPES row identical (digit-for-digit)",
+   "verification_timestamp": "2026-08-24T20:50Z; 2026-08-24T21:10Z; 2026-08-24T16:20Z",
+   "pain_score": 54,
+   "priority_tier": "NURTURE",
+   "pain_category": "MISSED_CALL_RECOVERY",
+   "proven_evidence": [
+    "'DENTIST REFERRALS' nav item (PROVEN referral channel)",
+    "Call/TEXT number advertised twice on every page header (PROVEN text-first comms posture)",
+    "Site managed by external dental-marketing agency 'Magnify Dental Marketing' (PROVEN outsourced marketing ops)"
+   ],
+   "pain_hypothesis": "Single-line parent/referral traffic across two specialties creates plausible queueing at peak times; not measured",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "why_this_prospect": "Call/TEXT single line serving parents and referrals across two specialties; SMS-fallback callback fits published posture.",
+   "opening": "Hi Bear, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that parents and referring dentists reach you through one call-and-text line.",
+   "likely_objection": "We already have front desk staff.",
+   "recommended_response": "This works beside them - it only touches calls that already rang unanswered; your team stays the front line.",
+   "cta": "10-minute look",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 9,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 10,
+   "company_id": "DENTAL-GOLD-001-ARNICA",
+   "company": "Arnica Dental Care",
+   "decision_maker": "Dr. Anna Vasilev, DMD",
+   "role": "Owner / Solo Practitioner",
+   "verified_phone": "+14694688269",
+   "verification_source": "arnicadentalclinic.com 'Book by Phone' + footer (both appointment and inquiry roles)",
+   "verification_timestamp": "2026-08-24T17:10Z; 2026-08-24T16:50Z",
+   "pain_score": 50,
+   "priority_tier": "NURTURE",
+   "pain_category": "MISSED_CALL_RECOVERY",
+   "proven_evidence": [
+    "One published line serves BOTH appointments and inquiries (PROVEN)",
+    "Long accepted-insurance grid rendered (PROVEN presence)",
+    "Weekday-only hours, closed weekends (PROVEN)"
+   ],
+   "pain_hypothesis": "Solo operators commonly defer non-clinical callbacks; systematic follow-up cadence plausible gap",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "why_this_prospect": "Solo operator; one line carries both roles; callbacks deferred during chairside time.",
+   "opening": "Hi Vasilev, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that one line covers both appointments and inquiries while you're chairside.",
+   "likely_objection": "We already have front desk staff.",
+   "recommended_response": "This works beside them - it only touches calls that already rang unanswered; your team stays the front line.",
+   "cta": "10-minute look",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 10,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 11,
+   "company_id": "DENTAL-GOLD-002-AOS",
+   "company": "Advanced Orthodontic Studio",
+   "decision_maker": "Dr. Marco A. Navarro-Flores",
+   "role": "Owner / Founder / CEO / Lead Orthodontist",
+   "verified_phone": "+12142727626",
+   "verification_source": "Site tel: (Irving) == NPPES mailing-row telephone (digit-for-digit)",
+   "verification_timestamp": "2026-08-24T18:50Z; 2026-08-24T18:20Z",
+   "pain_score": 49,
+   "priority_tier": "LOW",
+   "pain_category": "PATIENT_FOLLOWUP",
+   "proven_evidence": [
+    "Two-city advertising footprint vs registry rows naming Carrollton/Irving (PROVEN discrepancy - human review needed)",
+    "20-year Texas/Mexico tenure claim (PROVEN claim)"
+   ],
+   "pain_hypothesis": "Multi-market founder-led ortho group has plausible coordination/follow-up seams; evidence depth moderate-low",
+   "offer_id": "FOLLOWUP-001",
+   "offer_name": "Patient Follow-Up",
+   "why_this_prospect": "Remote-consult button creates inbound consults needing structured follow-up across two cities.",
+   "opening": "Hi Navarro-Flores, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that you offer remote consults across two cities as a founder-led practice.",
+   "likely_objection": "We call people back ourselves.",
+   "recommended_response": "It covers the gap moments - nights, weekends, mid-appointment - then hands warm patients to your team.",
+   "cta": "10-minute look",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 11,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 12,
+   "company_id": "DENTAL-GOLD-001-SMILESFAM",
+   "company": "Smiles Family Dental (Angelie V. Zamora DDS)",
+   "decision_maker": "Dr. Angelie V. Zamora, DDS",
+   "role": "Owner / President / Dentist",
+   "verified_phone": "+19723461100",
+   "verification_source": "smilesfamilydental.com tel: links cross-matched against two separate NPPES rows",
+   "verification_timestamp": "2026-08-24T21:15Z; 2026-08-24T18:40Z",
+   "pain_score": 48,
+   "priority_tier": "LOW",
+   "pain_category": "MISSED_CALL_RECOVERY",
+   "proven_evidence": [
+    "Both location phones published on one site and matched to two distinct NPPES rows (PROVEN two-market operation under one brand)",
+    "Medicaid identifier on registry (PROVEN public-program participation)"
+   ],
+   "pain_hypothesis": "Split-location call routing without unified triage creates plausible consistency gaps; evidence depth still shallow",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "why_this_prospect": "Four published entry points across two markets without visible unified intake.",
+   "opening": "Hi Zamora, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that you publish four phone numbers across Flower Mound and Arlington.",
+   "likely_objection": "We already have front desk staff.",
+   "recommended_response": "This works beside them - it only touches calls that already rang unanswered; your team stays the front line.",
+   "cta": "10-minute look",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 12,
+    "status_unchanged": true
+   }
+  }
+ ],
+ "campaign_id": "CAMP-DENTAL-DFW-MCR-001",
+ "vertical": "dental_dfw",
+ "version": "FROZEN-v1.0",
+ "frozen_at": "2026-08-24T19:22:36Z",
+ "status": "COMMERCIAL_FREEZE_READY",
+ "final": true
+}

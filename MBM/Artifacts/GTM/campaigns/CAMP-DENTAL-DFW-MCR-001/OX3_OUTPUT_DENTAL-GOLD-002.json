@@ -1,0 +1,1214 @@
+{
+  "schema_version": "2.0.0",
+  "actor": "OX ALPHA 3 (deterministic contract execution)",
+  "dispatched_by": "OX ALPHA 1",
+  "authorization": "JARVIS MASTER OPERATING PROMPT v6 CURRENT P0 MISSION",
+  "generated_at": "2026-08-24T19:06:44+00:00",
+  "campaign_id": "CAMP-DENTAL-DFW-MCR-001",
+  "offer_id": "DENTAL-MCR-001",
+  "source_artifact": "../Artifacts/GTM/dental_gold_batch_001/DENTAL-GOLD-002.json",
+  "input_count": 13,
+  "qualified_count": 12,
+  "blocked_count": 1,
+  "excluded_count": 0,
+  "email_ready_count": 0,
+  "call_ready_count": 12,
+  "ranked_call_queue": [
+    {
+      "rank": 1,
+      "company_id": "DENTAL-GOLD-001-STARSLEEP",
+      "practice_name": "Star Sleep & Wellness (legacy: Sleep Dallas)",
+      "score": 52,
+      "phone": "+18444094657",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 2,
+      "company_id": "DENTAL-GOLD-001-CROSSTIMBERS",
+      "practice_name": "Cross Timbers Dental, PC",
+      "score": 51,
+      "phone": "+19723558500",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 3,
+      "company_id": "DENTAL-GOLD-001-FAME",
+      "practice_name": "Fame Dental (A2Z Family Dental, PLLC)",
+      "score": 49,
+      "phone": "+14692751054",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 4,
+      "company_id": "DENTAL-GOLD-002-APIE",
+      "practice_name": "Associates in Periodontics, Implantology & Endodontics ('Associates in PIE')",
+      "score": 46,
+      "phone": "+19725383700",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 5,
+      "company_id": "DENTAL-GOLD-001-LONESTAR",
+      "practice_name": "Lone Star Dental Care (Aesthetic Dentistry, PA)",
+      "score": 45,
+      "phone": "+19723357100",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 6,
+      "company_id": "DENTAL-GOLD-002-CANYONCREEK",
+      "practice_name": "Canyon Creek Family Dentistry of Richardson (Canyon Creek Family Dentistry, P.A.)",
+      "score": 43,
+      "phone": "+19726443800",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 7,
+      "company_id": "DENTAL-GOLD-001-BEARPED",
+      "practice_name": "Bear Pediatric Dentistry & Orthodontics (Bear Dental Corp)",
+      "score": 41,
+      "phone": "+14695982327",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 8,
+      "company_id": "DENTAL-GOLD-001-BENHAM",
+      "practice_name": "Benham Orthodontics & Associates, PA",
+      "score": 41,
+      "phone": "+12146188182",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 9,
+      "company_id": "DENTAL-GOLD-002-ALEXANDER",
+      "practice_name": "Alexander Cosmetic, Family & Implant Dentistry PLLC (co-branded 'Alexander & Song Dentistry' at same suite)",
+      "score": 41,
+      "phone": "+19729392888",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 10,
+      "company_id": "DENTAL-GOLD-001-ARNICA",
+      "practice_name": "Arnica Dental Care",
+      "score": 36,
+      "phone": "+14694688269",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 11,
+      "company_id": "DENTAL-GOLD-001-SMILESFAM",
+      "practice_name": "Smiles Family Dental (Angelie V. Zamora DDS)",
+      "score": 32,
+      "phone": "+19723461100",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    },
+    {
+      "rank": 12,
+      "company_id": "DENTAL-GOLD-002-AOS",
+      "practice_name": "Advanced Orthodontic Studio",
+      "score": 32,
+      "phone": "+12142727626",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true
+    }
+  ],
+  "email_pending_worklist": [
+    {
+      "company_id": "DENTAL-GOLD-001-CROSSTIMBERS",
+      "state": "EMAIL_PENDING",
+      "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+      "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+      "candidate_email": "info@crosstimbersdental.com",
+      "candidate_source": "Website footer mailto"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-FAME",
+      "state": "EMAIL_PENDING",
+      "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+      "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+      "candidate_email": "info@fame-dental.com",
+      "candidate_source": "Practice's official Facebook page listing (public business email)"
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-APIE",
+      "state": "EMAIL_PENDING",
+      "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+      "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+      "candidate_email": "office@piedental.com",
+      "candidate_source": "Practice's official Facebook page listing (public business email)"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-LONESTAR",
+      "state": "EMAIL_PENDING",
+      "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+      "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+      "candidate_email": "info@lonestardentalcare.com",
+      "candidate_source": "Website footer mailto/link block"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-BENHAM",
+      "state": "EMAIL_PENDING",
+      "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+      "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+      "candidate_email": "info@benhamorthodontics.com",
+      "candidate_source": "Official Instagram bio + site team page (public business email)"
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-ALEXANDER",
+      "state": "EMAIL_PENDING",
+      "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+      "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+      "candidate_email": "office@asdentistrytx.com",
+      "candidate_source": "Practice's official Facebook page (Alexander & Song Dentistry) - FOUND_CANDIDATE, not EMAIL_READY"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-ARNICA",
+      "state": "EMAIL_PENDING",
+      "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+      "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+      "candidate_email": "contact@arnicadentalclinic.com",
+      "candidate_source": "Website 'Email Us' block"
+    }
+  ],
+  "blocked_records": [
+    {
+      "company_id": "DENTAL-GOLD-002-DAZZLE",
+      "reason_code": "INSUFFICIENT_PAIN_EVIDENCE",
+      "detail": "pain_evidence_label=UNVERIFIED"
+    }
+  ],
+  "records": [
+    {
+      "company_id": "DENTAL-GOLD-001-STARSLEEP",
+      "practice_name": "Star Sleep & Wellness (legacy: Sleep Dallas)",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 52,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Intake triage and referral coordination concentrate at headquarters while demand scales across seven sites; plausible response-latency bottleneck",
+      "contact": {
+        "phone": "+18444094657",
+        "phone_status": "VERIFIED",
+        "booking_route": "Schedule Online + Take Our Assessment flows on sleepdallas.com (deep-link URL not captured)"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://sleepdallas.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://sleepdallas.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=52",
+          "evidence_ref": "https://sleepdallas.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://sleepdallas.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://sleepdallas.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://sleepdallas.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://sleepdallas.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "NONE",
+        "reason_code": "NO_BUSINESS_EMAIL_FOUND"
+      },
+      "rank": 1
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-FAME",
+      "practice_name": "Fame Dental (A2Z Family Dental, PLLC)",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 49,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "After-hours and peak-overlap inbound call volume plausibly exceeds single-front-desk capacity despite online booking options",
+      "contact": {
+        "phone": "+14692751054",
+        "phone_status": "VERIFIED",
+        "booking_route": "FlexBook scheduling widget embedded (flexbook.me/famedental observed in search index); on-site Book buttons throughout"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://fame-dental.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://fame-dental.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=49",
+          "evidence_ref": "https://fame-dental.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://fame-dental.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://fame-dental.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://fame-dental.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://fame-dental.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "EMAIL_PENDING",
+        "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+        "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+        "candidate_email": "info@fame-dental.com",
+        "candidate_source": "Practice's official Facebook page listing (public business email)"
+      },
+      "rank": 3
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-BENHAM",
+      "practice_name": "Benham Orthodontics & Associates, PA",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 41,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Weekend-generated consult requests wait up to 3 days for human response; follow-up sequence completion plausible gap",
+      "contact": {
+        "phone": "+12146188182",
+        "phone_status": "VERIFIED",
+        "booking_route": "Request/appointment pages on site"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://benhamorthodontics.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://benhamorthodontics.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=41",
+          "evidence_ref": "https://benhamorthodontics.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://benhamorthodontics.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://benhamorthodontics.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://benhamorthodontics.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://benhamorthodontics.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "EMAIL_PENDING",
+        "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+        "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+        "candidate_email": "info@benhamorthodontics.com",
+        "candidate_source": "Official Instagram bio + site team page (public business email)"
+      },
+      "rank": 8
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-LONESTAR",
+      "practice_name": "Lone Star Dental Care (Aesthetic Dentistry, PA)",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 45,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Spanish-language after-hours intake and PPO verification workload concentrate on whichever bilingual staff member is present",
+      "contact": {
+        "phone": "+19723357100",
+        "phone_status": "VERIFIED",
+        "booking_route": "On-site Book Online button"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://www.lonestardentalcare.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://www.lonestardentalcare.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=45",
+          "evidence_ref": "https://www.lonestardentalcare.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://www.lonestardentalcare.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://www.lonestardentalcare.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://www.lonestardentalcare.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://www.lonestardentalcare.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "EMAIL_PENDING",
+        "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+        "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+        "candidate_email": "info@lonestardentalcare.com",
+        "candidate_source": "Website footer mailto/link block"
+      },
+      "rank": 5
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-CROSSTIMBERS",
+      "practice_name": "Cross Timbers Dental, PC",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 51,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Published workflow explicitly sends benefits questions and urgent bookings through phone staff; plausible front-desk load concentration",
+      "contact": {
+        "phone": "+19723558500",
+        "phone_status": "VERIFIED",
+        "booking_route": "https://patientportal.carestack.com/?dn=ctd/#/online-appointments/select-reason"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://www.crosstimbersdental.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://www.crosstimbersdental.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=51",
+          "evidence_ref": "https://www.crosstimbersdental.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://www.crosstimbersdental.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://www.crosstimbersdental.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://www.crosstimbersdental.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://www.crosstimbersdental.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "EMAIL_PENDING",
+        "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+        "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+        "candidate_email": "info@crosstimbersdental.com",
+        "candidate_source": "Website footer mailto"
+      },
+      "rank": 2
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-APIE",
+      "practice_name": "Associates in Periodontics, Implantology & Endodontics ('Associates in PIE')",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 46,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Specialty groups live on referral flow; referral acknowledgment speed and multi-site scheduling coordination are plausible friction points",
+      "contact": {
+        "phone": "+19725383700",
+        "phone_status": "VERIFIED",
+        "booking_route": "New Patient Registration page + Schedule an Appointment flow on piedental.com"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://piedental.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://piedental.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=46",
+          "evidence_ref": "https://piedental.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://piedental.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://piedental.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://piedental.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://piedental.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "EMAIL_PENDING",
+        "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+        "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+        "candidate_email": "office@piedental.com",
+        "candidate_source": "Practice's official Facebook page listing (public business email)"
+      },
+      "rank": 4
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-CANYONCREEK",
+      "practice_name": "Canyon Creek Family Dentistry of Richardson (Canyon Creek Family Dentistry, P.A.)",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 43,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Call-dependent same-day/emergency booking concentrates on reception during open hours with zero published after-hours capture",
+      "contact": {
+        "phone": "+19726443800",
+        "phone_status": "VERIFIED",
+        "booking_route": "Appointment-request flow; site instructs calling for same-day"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://canyoncreekfamilydentistry.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://canyoncreekfamilydentistry.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=43",
+          "evidence_ref": "https://canyoncreekfamilydentistry.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://canyoncreekfamilydentistry.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://canyoncreekfamilydentistry.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://canyoncreekfamilydentistry.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://canyoncreekfamilydentistry.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "NONE",
+        "reason_code": "NO_BUSINESS_EMAIL_FOUND"
+      },
+      "rank": 6
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-ALEXANDER",
+      "practice_name": "Alexander Cosmetic, Family & Implant Dentistry PLLC (co-branded 'Alexander & Song Dentistry' at same suite)",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 41,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Form-generated leads accumulate over the 3.5-day weekly closure; urgent-care callers outside hours have no published capture path",
+      "contact": {
+        "phone": "+19729392888",
+        "phone_status": "VERIFIED",
+        "booking_route": "On-page Request an Appointment form (first/last/email/phone/patient-status/how-did-you-hear fields)"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://calexanderdds.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://calexanderdds.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=41",
+          "evidence_ref": "https://calexanderdds.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://calexanderdds.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://calexanderdds.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://calexanderdds.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://calexanderdds.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "EMAIL_PENDING",
+        "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+        "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+        "candidate_email": "office@asdentistrytx.com",
+        "candidate_source": "Practice's official Facebook page (Alexander & Song Dentistry) - FOUND_CANDIDATE, not EMAIL_READY"
+      },
+      "rank": 9
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-SMILESFAM",
+      "practice_name": "Smiles Family Dental (Angelie V. Zamora DDS)",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 32,
+      "pain_label": "LEADING_HYPOTHESIS (low depth)",
+      "pain_hypothesis": "Split-location call routing without unified triage creates plausible consistency gaps; evidence depth still shallow",
+      "contact": {
+        "phone": "+19723461100",
+        "phone_status": "VERIFIED",
+        "booking_route": "Unresolved (site partially reviewed)"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://smilesfamilydental.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://smilesfamilydental.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=32",
+          "evidence_ref": "https://smilesfamilydental.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://smilesfamilydental.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://smilesfamilydental.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://smilesfamilydental.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://smilesfamilydental.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "NONE",
+        "reason_code": "NO_BUSINESS_EMAIL_FOUND"
+      },
+      "rank": 11
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-BEARPED",
+      "practice_name": "Bear Pediatric Dentistry & Orthodontics (Bear Dental Corp)",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 41,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Single-line parent/referral traffic across two specialties creates plausible queueing at peak times; not measured",
+      "contact": {
+        "phone": "+14695982327",
+        "phone_status": "VERIFIED",
+        "booking_route": "https://bearpd.com/request-an-appointment"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://bearpd.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://bearpd.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=41",
+          "evidence_ref": "https://bearpd.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://bearpd.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://bearpd.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://bearpd.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://bearpd.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "NONE",
+        "reason_code": "NO_BUSINESS_EMAIL_FOUND"
+      },
+      "rank": 7
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-DAZZLE",
+      "practice_name": "Dazzle Dental Care, PA",
+      "decision": "BLOCKED",
+      "reason_code": "INSUFFICIENT_PAIN_EVIDENCE",
+      "reason_detail": "pain_evidence_label=UNVERIFIED",
+      "score": 0,
+      "primary_state": "BLOCKED",
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://dazzledentalcare.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://dazzledentalcare.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "BLOCKED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "INSUFFICIENT_PAIN_EVIDENCE",
+          "evidence_ref": "https://dazzledentalcare.com"
+        }
+      ]
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-AOS",
+      "practice_name": "Advanced Orthodontic Studio",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 32,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Multi-market founder-led ortho group has plausible coordination/follow-up seams; evidence depth moderate-low",
+      "contact": {
+        "phone": "+12142727626",
+        "phone_status": "VERIFIED",
+        "booking_route": "'Dr. Navarro Remote' consult button (remote consult offering) (PROVEN feature)"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://advancedorthodonticstudio.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://advancedorthodonticstudio.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=32",
+          "evidence_ref": "https://advancedorthodonticstudio.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://advancedorthodonticstudio.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://advancedorthodonticstudio.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://advancedorthodonticstudio.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://advancedorthodonticstudio.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "NONE",
+        "reason_code": "NO_BUSINESS_EMAIL_FOUND"
+      },
+      "rank": 12
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-ARNICA",
+      "practice_name": "Arnica Dental Care",
+      "decision": "QUALIFIED",
+      "reason_code": "",
+      "offer_id": "DENTAL-MCR-001",
+      "hedge_required": true,
+      "score": 36,
+      "pain_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Solo operators commonly defer non-clinical callbacks; systematic follow-up cadence plausible gap",
+      "contact": {
+        "phone": "+14694688269",
+        "phone_status": "VERIFIED",
+        "booking_route": "Book Appointment button (route URL unresolved)"
+      },
+      "audit_trail": [
+        {
+          "from_state": "DISCOVERED",
+          "to_state": "RESEARCHING",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "batch accepted",
+          "evidence_ref": "https://arnicadentalclinic.com"
+        },
+        {
+          "from_state": "RESEARCHING",
+          "to_state": "RESEARCHED",
+          "actor": "OX ALPHA 2",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "evidence pack delivered",
+          "evidence_ref": "https://arnicadentalclinic.com"
+        },
+        {
+          "from_state": "RESEARCHED",
+          "to_state": "SCORED",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "weighted_score=36",
+          "evidence_ref": "https://arnicadentalclinic.com"
+        },
+        {
+          "from_state": "SCORED",
+          "to_state": "OFFER_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "bound:DENTAL-MCR-001",
+          "evidence_ref": "https://arnicadentalclinic.com"
+        },
+        {
+          "from_state": "OFFER_READY",
+          "to_state": "CONTACT_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "contact tracks opened",
+          "evidence_ref": "https://arnicadentalclinic.com"
+        },
+        {
+          "from_state": "CONTACT_PENDING",
+          "to_state": "PHONE_PENDING",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "phone verified",
+          "evidence_ref": "https://arnicadentalclinic.com"
+        },
+        {
+          "from_state": "PHONE_PENDING",
+          "to_state": "CALL_READY",
+          "actor": "OX ALPHA 3",
+          "timestamp": "2026-08-24T19:06:44+00:00",
+          "reason": "call gate passed",
+          "evidence_ref": "https://arnicadentalclinic.com"
+        }
+      ],
+      "primary_state": "CALL_READY",
+      "email_track": {
+        "state": "EMAIL_PENDING",
+        "reason_code": "EMAIL_VERIFICATION_REQUIRED",
+        "detail": "email not verification-status VERIFIED; email verification timestamp missing",
+        "candidate_email": "contact@arnicadentalclinic.com",
+        "candidate_source": "Website 'Email Us' block"
+      },
+      "rank": 10
+    }
+  ],
+  "reconciliation": {
+    "law": "input == qualified + blocked + excluded",
+    "equation": "13 = 12 + 1 + 0",
+    "holds": true
+  }
+}

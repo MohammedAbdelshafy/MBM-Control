@@ -30,24 +30,29 @@ class EvidenceStatus(str, Enum):
 
 
 class PipelineState(str, Enum):
-    """Explicit pipeline states (mission contract, 16 states)."""
+    """Explicit pipeline states (canonical contract v2.0, 21 states)."""
 
     DISCOVERED = "DISCOVERED"
     RESEARCHING = "RESEARCHING"
     RESEARCHED = "RESEARCHED"
     SCORED = "SCORED"
     OFFER_READY = "OFFER_READY"
-    EMAIL_READY = "EMAIL_READY"
+    CONTACT_PENDING = "CONTACT_PENDING"
     PHONE_PENDING = "PHONE_PENDING"
+    EMAIL_PENDING = "EMAIL_PENDING"
+    EMAIL_READY = "EMAIL_READY"
     CALL_READY = "CALL_READY"
     CONTACTED = "CONTACTED"
     RESPONDED = "RESPONDED"
-    MEETING_BOOKED = "MEETING_BOOKED"
+    DEMO_REQUESTED = "DEMO_REQUESTED"
+    DEMO_BOOKED = "DEMO_BOOKED"
     PILOT = "PILOT"
     WON = "WON"
     LOST = "LOST"
+    NURTURE = "NURTURE"
     SUPPRESSED = "SUPPRESSED"
     INVALID = "INVALID"
+    BLOCKED = "BLOCKED"
 
 
 class ContactClass(str, Enum):

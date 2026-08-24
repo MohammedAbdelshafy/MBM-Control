@@ -1,0 +1,502 @@
+"""contact_verification_pipeline -- P0/P1 lead-quality rebuild for the MBM Dialer.
+
+Implements the contact verification state machine, synthetic-phone detection,
+multi-source consensus scoring, quarantine ledger, call-feedback handling,
+and the seller quality gate.
+
+Design laws:
+  - A phone existing is NOT a phone verified. An owner named is NOT an owner
+    verified. Callable requires the full chain.
+  - History is never destroyed: bad data is QUARANTINED with provenance.
+  - Every decision records actor, reason, timestamp (audit events).
+  - Scoring weights are configuration, not truth.
+
+Verification chain (Phase-2 model):
+    DISCOVERED -> PROPERTY_VERIFIED -> OWNER_VERIFIED -> CONTACT_ENRICHED
+    -> CONTACT_CROSSCHECKED -> PHONE_VERIFIED -> COMPLIANCE_CHECKED -> CALLABLE
+
+Failure states: NEEDS_REVIEW, BAD_PHONE, OWNER_MISMATCH, STALE_CONTACT, DNC,
+LITIGATOR, SUPPRESSED, SYNTHETIC, MALFORMED, NO_VERIFIED_CONTACT.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import re
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Optional
+
+# ---------------------------------------------------------------------------
+# Verification states (Phase 2)
+# ---------------------------------------------------------------------------
+
+CHAIN_STATES = [
+    "DISCOVERED",
+    "PROPERTY_VERIFIED",
+    "OWNER_VERIFIED",
+    "CONTACT_ENRICHED",
+    "CONTACT_CROSSCHECKED",
+    "PHONE_VERIFIED",
+    "COMPLIANCE_CHECKED",
+    "CALLABLE",
+]
+
+FAILURE_STATES = [
+    "NEEDS_REVIEW", "BAD_PHONE", "OWNER_MISMATCH", "STALE_CONTACT", "DNC",
+    "LITIGATOR", "SUPPRESSED", "SYNTHETIC", "MALFORMED", "NO_VERIFIED_CONTACT",
+]
+
+# Lead lanes that must never share a callable queue (Phase 8)
+LANE_SEGMENTS = {
+    "REAL_ESTATE_SELLER": {"segment": "DISTRESSED_SELLER"},
+    "AI_BUSINESS_PROSPECT": {"segment": "AI_CONSULTANCY"},
+    "HEALTHCARE_PROSPECT": {"segment": "HEALTHCARE_CLINIC"},
+    "CONSTRUCTION_PROSPECT": {"segment": "CONTRACTOR"},
+    "OTHER_B2B": {"segment": "*other*"},
+}
+
+CORPORATE_ENTITY_RE = re.compile(
+    r"\b(LLC|L\.L\.C\.|LP|L\.P\.|INC|CORP|TRUST|PARTNERS(HIP)?|HOLDINGS?|REO|"
+    r"CAPITAL|PROPERTIES|INVESTMENTS|GROUP|VENTURES|ENTERPRISES)\b",
+    re.IGNORECASE,
+)
+
+
+def _iso_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+# ---------------------------------------------------------------------------
+# Phone normalization / validity
+# ---------------------------------------------------------------------------
+
+_DIGITS_RE = re.compile(r"\d+")
+
+
+def normalize_phone(raw: Any) -> Optional[str]:
+    if raw is None:
+        return None
+    digits = "".join(_DIGITS_RE.findall(str(raw)))
+    if digits.startswith("1") and len(digits) == 11:
+        digits = digits[1:]
+    if len(digits) != 10:
+        return None
+    area, exch = digits[0:3], digits[3:6]
+    if area[0] in "01" or exch[0] in "01":
+        return None
+    return digits
+
+
+class SyntheticPhoneDetector:
+    """Detects phones that pattern-match fabrication rather than telephony."""
+
+    @staticmethod
+    def id_derived(lead_id: str, phone_raw: Any) -> bool:
+        """True when a tail of the lead id appears inside the phone digits.
+
+        This is the exact failure mode of the 2026-08 'Phase 1 Recovery'
+        contamination: phones were constructed from record ids.
+        """
+        id_digits = re.sub(r"\D", "", str(lead_id or ""))
+        phone = normalize_phone(phone_raw)
+        if not id_digits or not phone:
+            return False
+        tail = id_digits[-7:]
+        return len(tail) >= 5 and tail in phone[-10:]
+
+    @staticmethod
+    def repeated_digits(phone_raw: Any, run: int = 5) -> bool:
+        phone = normalize_phone(phone_raw)
+        if not phone:
+            return False
+        return bool(re.search(r"(.)\1{%d,}" % (run - 1), phone))
+
+    @staticmethod
+    def reserved_555(phone_raw: Any) -> bool:
+        phone = normalize_phone(phone_raw)
+        return bool(phone) and phone[3:6] == "555"
+
+    @classmethod
+    def classify(cls, lead_id: str, phone_raw: Any) -> Optional[str]:
+        """Return SYNTHETIC/MALFORMED/None."""
+        phone = normalize_phone(phone_raw)
+        if not phone:
+            return "MALFORMED"
+        if cls.reserved_555(phone) or cls.repeated_digits(phone):
+            return "SYNTHETIC"
+        if cls.id_derived(lead_id, phone_raw):
+            return "SYNTHETIC"
+        return None
+
+
+# ---------------------------------------------------------------------------
+# Consensus scoring (Phase 4) -- configurable, documented, not truth
+# ---------------------------------------------------------------------------
+
+DEFAULT_WEIGHTS = {
+    "OWNER_MATCH": 30,
+    "ADDRESS_MATCH": 20,
+    "MULTI_SOURCE_MATCH": 20,
+    "RECENCY": 10,
+    "PHONE_TYPE_MOBILE": 10,
+    "SOURCE_RELIABILITY": 10,
+}
+DEFAULT_THRESHOLDS = {"HIGH": 90, "REVIEW_POLICY": 75, "NEEDS_REVIEW": 60}
+
+
+@dataclass
+class PhoneCandidate:
+    phone: str                    # normalized 10-digit
+    owner_match: float = 0.0      # 0..1 evidence that phone belongs to owner
+    address_match: float = 0.0    # 0..1 property/address linkage
+    sources: list[str] = field(default_factory=list)
+    line_type: str = ""           # mobile | landline | voip | unknown
+    last_verified_at: str = ""
+    source_reliability: float = 0.5   # 0..1 per-provider reliability
+    dnc: bool = False
+    litigator: bool = False
+    suppressed: bool = False
+
+
+@dataclass
+class ConsensusConfig:
+    weights: dict = field(default_factory=lambda: dict(DEFAULT_WEIGHTS))
+    thresholds: dict = field(default_factory=lambda: dict(DEFAULT_THRESHOLDS))
+    recency_days_full: int = 30
+
+
+class PhoneConsensusEngine:
+    """Scores and ranks phone candidates for ONE lead. Configurable only."""
+
+    def __init__(self, config: ConsensusConfig | None = None):
+        self.cfg = config or ConsensusConfig()
+
+    def _recency_score(self, last_verified_at: str) -> float:
+        if not last_verified_at:
+            return 0.0
+        try:
+            dt = datetime.fromisoformat(str(last_verified_at).replace("Z", "+00:00"))
+        except ValueError:
+            return 0.0
+        days = max((datetime.now(timezone.utc) - dt).days, 0)
+        window = max(self.cfg.recency_days_full, 1)
+        return max(0.0, 1.0 - days / window)
+
+    def score_candidate(self, cand: PhoneCandidate) -> dict:
+        w = self.cfg.weights
+        if cand.dnc or cand.suppressed or cand.litigator:
+            return {
+                "phone": cand.phone, "score": 0, "tier": "DO_NOT_CALL",
+                "compliance_block": True,
+                "breakdown": {},
+                "reasons": ["DNC/suppression/litigator flag overrides any score"],
+            }
+        breakdown = {
+            "OWNER_MATCH": round(w["OWNER_MATCH"] * min(max(cand.owner_match, 0.0), 1.0), 1),
+            "ADDRESS_MATCH": round(w["ADDRESS_MATCH"] * min(max(cand.address_match, 0.0), 1.0), 1),
+            "MULTI_SOURCE_MATCH": round(
+                w["MULTI_SOURCE_MATCH"] * (min(len(set(cand.sources)), 2) / 2), 1),
+            "RECENCY": round(w["RECENCY"] * self._recency_score(cand.last_verified_at), 1),
+            "PHONE_TYPE_MOBILE": round(
+                w["PHONE_TYPE_MOBILE"] * (1.0 if cand.line_type.lower() == "mobile" else 0.3), 1),
+            "SOURCE_RELIABILITY": round(
+                w["SOURCE_RELIABILITY"] * min(max(cand.source_reliability, 0.0), 1.0), 1),
+        }
+        total = round(sum(breakdown.values()), 1)
+        t = self.cfg.thresholds
+        if total >= t["HIGH"]:
+            tier = "HIGH_CONFIDENCE_CALLABLE"
+        elif total >= t["REVIEW_POLICY"]:
+            tier = "CALLABLE_WITH_REVIEW_POLICY"
+        elif total >= t["NEEDS_REVIEW"]:
+            tier = "NEEDS_REVIEW"
+        else:
+            tier = "DO_NOT_CALL"
+        return {"phone": cand.phone, "score": total, "tier": tier,
+                "breakdown": breakdown, "compliance_block": False}
+
+    def rank(self, candidates: list[PhoneCandidate]) -> list[dict]:
+        ranked = [self.score_candidate(c) for c in candidates]
+        ranked.sort(key=lambda r: (-r["score"], r["phone"]))
+        return ranked
+
+
+# ---------------------------------------------------------------------------
+# Quarantine ledger (Phase 5)
+# ---------------------------------------------------------------------------
+
+PHONE_STATUS_VALUES = {
+    "VERIFIED", "UNVERIFIED", "BAD", "DISCONNECTED", "OWNER_MISMATCH",
+    "DNC", "SUPPRESSED", "NEEDS_RECHECK", "SYNTHETIC_ID_DERIVED",
+    "MALFORMED", "CATEGORY_MISMATCH",
+}
+
+
+class QuarantineLedger:
+    """Append-only JSONL quarantine/history store. Never deletes."""
+
+    def __init__(self, path: Path):
+        self.path = Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+
+    def add(self, *, lead_id: str, company: str, phone: str, phone_status: str,
+            reason_code: str, detail: str = "", previous_callable: bool = False,
+            actor: str = "OX-ENGINEERING") -> dict:
+        assert phone_status in PHONE_STATUS_VALUES, f"bad status {phone_status}"
+        event = {
+            "event_id": hashlib.sha256(
+                f"{lead_id}|{phone}|{phone_status}|{_iso_now()}".encode()
+            ).hexdigest()[:16],
+            "ts": _iso_now(),
+            "lead_id": lead_id,
+            "company": company,
+            "phone": phone,
+            "phone_status": phone_status,
+            "reason_code": reason_code,
+            "detail": detail[:300],
+            "previous_callable": previous_callable,
+            "actor": actor,
+        }
+        with self.path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(event, ensure_ascii=False) + "\n")
+        return event
+
+    def known_bad_phones(self) -> set[str]:
+        bad: set[str] = set()
+        if not self.path.exists():
+            return bad
+        for line in self.path.read_text(encoding="utf-8").splitlines():
+            try:
+                e = json.loads(line)
+                if e.get("phone") and e.get("phone_status") not in ("VERIFIED", "UNVERIFIED"):
+                    bad.add(re.sub(r"\D", "", e["phone"])[-10:])
+            except json.JSONDecodeError:
+                continue
+        return bad
+
+
+# ---------------------------------------------------------------------------
+# Call feedback loop (Phase 6)
+# ---------------------------------------------------------------------------
+
+CALL_OUTCOMES = {
+    "BAD_NUMBER", "CONNECTED_OWNER", "WRONG_PERSON", "WRONG_NUMBER",
+    "DISCONNECTED", "VOICEMAIL", "NO_ANSWER", "DO_NOT_CALL", "INTERESTED",
+    "NOT_INTERESTED", "CALLBACK", "APPOINTMENT", "QUALIFIED", "UNQUALIFIED",
+}
+BAD_PHONE_OUTCOMES = {"BAD_NUMBER", "WRONG_NUMBER", "DISCONNECTED"}
+DNC_OUTCOMES = {"DO_NOT_CALL"}
+STATUS_FOR_OUTCOME = {
+    "BAD_NUMBER": "BAD",
+    "WRONG_NUMBER": "BAD",
+    "DISCONNECTED": "DISCONNECTED",
+    "DO_NOT_CALL": "DNC",
+    "WRONG_PERSON": "OWNER_MISMATCH",
+}
+
+
+@dataclass
+class CallFeedbackResult:
+    lead_id: str
+    outcome: str
+    phone_status: str | None
+    remove_from_callable: bool
+    trigger_reverify: bool
+    audit_event: dict
+
+
+def handle_call_feedback(
+    lead: dict,
+    outcome: str,
+    actor: str = "rep",
+    note: str = "",
+    next_phone: Any = None,
+) -> CallFeedbackResult:
+    """Apply one rep/system call outcome to a lead dict IN PLACE and return
+    the resulting actions. The caller persists via the canonical writer."""
+    assert outcome in CALL_OUTCOMES, f"unknown outcome {outcome}"
+    ts = _iso_now()
+    lead.setdefault("call_history", [])
+    audit_event = {
+        "event": "CALL_FEEDBACK",
+        "outcome": outcome,
+        "actor": actor,
+        "ts": ts,
+        "note": note[:200],
+    }
+    lead["call_history"].append(audit_event)
+    lead["last_call_result"] = outcome
+    lead["last_call_at"] = ts
+
+    remove_from_callable = False
+    trigger_reverify = False
+    phone_status: str | None = None
+
+    if outcome in BAD_PHONE_OUTCOMES:
+        phone_status = STATUS_FOR_OUTCOME[outcome]
+        old = lead.get("phone")
+        lead.setdefault("quarantined_phones", []).append(
+            {"phone": old, "status": phone_status, "ts": ts, "outcome": outcome})
+        lead["phone_status"] = phone_status
+        if next_phone:
+            lead["phone"] = next_phone
+            lead["phone_verified"] = False
+            lead["verification_status"] = "UNVERIFIED"
+            trigger_reverify = True
+        else:
+            lead["callable"] = False
+            lead["is_callable"] = False
+            lead["queue_bucket"] = "QUARANTINED_BAD_NUMBER"
+            lead["next_action"] = "REVERIFY_CONTACT"
+        remove_from_callable = not bool(next_phone)
+        trigger_reverify = True
+        lead["confidence"] = max(0, int(lead.get("confidence") or lead.get("callability_score") or 50) - 25)
+    elif outcome in DNC_OUTCOMES:
+        phone_status = "DNC"
+        lead["callable"] = False
+        lead["is_callable"] = False
+        lead["suppression_reason"] = "REP_REPORTED_DNC"
+        lead["queue_bucket"] = "SUPPRESSED"
+        remove_from_callable = True
+    elif outcome == "WRONG_PERSON":
+        phone_status = "OWNER_MISMATCH"
+        lead["owner_match_status"] = "MISMATCH_REPORTED"
+        lead["queue_bucket"] = "NEEDS_REVIEW_OWNER_MISMATCH"
+        lead["callable"] = False
+        remove_from_callable = True
+
+    lead["updated_at"] = ts
+    return CallFeedbackResult(
+        lead_id=str(lead.get("id")), outcome=outcome, phone_status=phone_status,
+        remove_from_callable=remove_from_callable, trigger_reverify=trigger_reverify,
+        audit_event=audit_event,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Seller quality gate (Phase 8)
+# ---------------------------------------------------------------------------
+
+SELLER_REQUIRED_EVIDENCE = (
+    "valid_property", "verified_owner", "ownership_relationship",
+    "property_address", "contact_path", "compliance_clear", "provenance",
+)
+
+
+def seller_quality_gate(lead: dict) -> tuple[bool, str]:
+    """SELLER lane admission. Returns (admitted, gate_state/reason).
+
+    Hard rules:
+      - synthetic/id-derived/malformed phone -> SYNTHETIC/MALFORMED
+      - healthcare-registry sourcing in the seller lane -> CATEGORY_MISMATCH
+      - institutional/corporate contacts -> NEEDS_REVIEW (weak seller fit)
+      - county-parcel verified natural-person owners pass.
+    """
+    lead_id = str(lead.get("id"))
+    verdict = SyntheticPhoneDetector.classify(lead_id, lead.get("phone"))
+    if verdict == "MALFORMED":
+        return False, "MALFORMED"
+    if verdict == "SYNTHETIC":
+        return False, "SYNTHETIC"
+
+    src = f"{lead.get('skip_trace_source','')} {lead.get('source','')}".lower()
+    if "npi" in src or "cms" in src or "healthcare" in src:
+        return False, "CATEGORY_MISMATCH"
+
+    if str(lead.get("owner_status")) != "VERIFIED_OWNER":
+        return False, "NEEDS_REVIEW"
+
+    method = str(lead.get("verification_method") or "")
+    if "DCAD_OFFICIAL_TAX_ROLL_PARCEL_VERIFIED" not in method:
+        return False, "STALE_CONTACT"
+
+    contact = f"{lead.get('contact','')} {lead.get('company','')}"
+    if CORPORATE_ENTITY_RE.search(contact):
+        return False, "NEEDS_REVIEW"
+
+    return True, "CALLABLE"
+
+
+# ---------------------------------------------------------------------------
+# Whole-database audit (Phase 7)
+# ---------------------------------------------------------------------------
+
+def audit_database(db: list[dict], quarantine: QuarantineLedger) -> dict:
+    known_bad = quarantine.known_bad_phones()
+    report: dict[str, Any] = {
+        "generated_at": _iso_now(),
+        "total_leads": len(db),
+        "by_segment": {},
+        "total_callable": 0,
+        "verified_phone_count": 0,
+        "unverified_phone_count": 0,
+        "bad_phone_count": 0,
+        "owner_mismatch_count": 0,
+        "dnc_count": 0,
+        "suppressed_count": 0,
+        "needs_review_count": 0,
+        "synthetic_phone_count": 0,
+        "malformed_phone_count": 0,
+        "multi_source_match_rate": 0.0,
+        "seller_gate": {"admitted": 0, "blocked_by_reason": {}},
+        "phone_confidence_distribution": {"HIGH_CONFIDENCE_CALLABLE": 0},
+        "contamination_classes": {},
+    }
+    seg = report["by_segment"]
+    contamination: dict[str, int] = {}
+    multi_source_hits = 0
+    phones_with_source = 0
+
+    for lead in db:
+        s = lead.get("segment") or "UNKNOWN"
+        seg[s] = seg.get(s, 0) + 1
+        if lead.get("callable") in (True, "True"):
+            report["total_callable"] += 1
+        pv = lead.get("phone_verified") in (True, "True")
+        if pv:
+            report["verified_phone_count"] += 1
+        else:
+            report["unverified_phone_count"] += 1
+
+        verdict = SyntheticPhoneDetector.classify(str(lead.get("id")), lead.get("phone"))
+        digits = normalize_phone(lead.get("phone"))
+        key10 = digits or ""
+        if key10 and key10 in known_bad:
+            report["bad_phone_count"] += 1
+        if verdict == "SYNTHETIC":
+            report["synthetic_phone_count"] += 1
+            contamination["SYNTHETIC_ID_DERIVED_OR_PATTERN"] = contamination.get("SYNTHETIC_ID_DERIVED_OR_PATTERN", 0) + 1
+        elif verdict == "MALFORMED":
+            report["malformed_phone_count"] += 1
+            contamination["MALFORMED"] = contamination.get("MALFORMED", 0) + 1
+        if str(lead.get("suppression_reason") or "").strip():
+            report["suppressed_count"] += 1
+        if str(lead.get("owner_match_status") or "").strip():
+            report["owner_mismatch_count"] += 1
+
+        psrc = str(lead.get("phone_source") or lead.get("skip_trace_source") or "")
+        if psrc.strip():
+            phones_with_source += 1
+            low = psrc.lower()
+            if sum(k in low for k in ("registry", "site", "dcad", "county", "nppes")) >= 2:
+                multi_source_hits += 1
+
+        if s == "DISTRESSED_SELLER":
+            admitted, state = seller_quality_gate(lead)
+            if admitted:
+                report["seller_gate"]["admitted"] += 1
+            else:
+                reasons = report["seller_gate"]["blocked_by_reason"]
+                reasons[state] = reasons.get(state, 0) + 1
+
+    report["multi_source_match_rate"] = (
+        round(multi_source_hits / phones_with_source, 4) if phones_with_source else 0.0
+    )
+    report["contamination_classes"] = contamination
+    report["real_contact_rate_inputs"] = {
+        "note": "REAL_CONTACT_RATE = connected_owner / dialed; populated from telemetry as calls accrue",
+        "verified_owner_share": round(report["verified_phone_count"] / len(db), 4) if db else 0.0,
+    }
+    return report

@@ -1,0 +1,57 @@
+{
+  "generated_at": "2026-08-24T19:21:17+00:00",
+  "total_leads": 4916,
+  "by_segment": {
+    "HEALTHCARE_CLINIC": 4402,
+    "AI_CONSULTANCY": 81,
+    "MOBILE_APPS": 25,
+    "B2B_AGENCY": 21,
+    "CONTRACTOR": 27,
+    "WEBSITE_DESIGN": 25,
+    "DISTRESSED_SELLER": 135,
+    "COMMERCIAL": 172,
+    "SENIOR_OWNER": 18,
+    "UNKNOWN": 10
+  },
+  "total_callable": 1349,
+  "verified_phone_count": 4790,
+  "unverified_phone_count": 126,
+  "bad_phone_count": 131,
+  "owner_mismatch_count": 0,
+  "dnc_count": 0,
+  "suppressed_count": 110,
+  "needs_review_count": 0,
+  "synthetic_phone_count": 108,
+  "malformed_phone_count": 53,
+  "multi_source_match_rate": 0.0,
+  "seller_gate": {
+    "admitted": 2,
+    "blocked_by_reason": {
+      "CATEGORY_MISMATCH": 36,
+      "SYNTHETIC": 95,
+      "MALFORMED": 2
+    }
+  },
+  "phone_confidence_distribution": {
+    "HIGH_CONFIDENCE_CALLABLE": 0
+  },
+  "contamination_classes": {
+    "SYNTHETIC_ID_DERIVED_OR_PATTERN": 108,
+    "MALFORMED": 53
+  },
+  "real_contact_rate_inputs": {
+    "note": "REAL_CONTACT_RATE = connected_owner / dialed; populated from telemetry as calls accrue",
+    "verified_owner_share": 0.9744
+  },
+  "remediation": {
+    "applied": true,
+    "leads_changed": 133,
+    "reason_tally": {
+      "SELLER_SOURCE_CATEGORY_MISMATCH": 36,
+      "PHONE_SYNTHETIC_ID_DERIVED": 95,
+      "PHONE_MALFORMED": 2
+    },
+    "callable_before": 1349,
+    "note": "callable_after computed post-write"
+  }
+}
