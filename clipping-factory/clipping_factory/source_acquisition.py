@@ -52,12 +52,12 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def _ffprobe_duration(path: Path) -> float:
+def _ffprobe_duration(path: Path, timeout_sec: int = 30) -> float:
     try:
         r = subprocess.run(
             ["ffprobe", "-v", "error", "-show_entries", "format=duration",
              "-of", "default=noprint_wrappers=1:nokey=1", str(path)],
-            capture_output=True, text=True, timeout=30,
+            capture_output=True, text=True, timeout=timeout_sec,
         )
         return float(r.stdout.strip())
     except Exception:
@@ -149,7 +149,18 @@ def acquire_source(
 
     size = dest.stat().st_size
     dur = _ffprobe_duration(dest)
+    if dur < 1800:
+        # transient probe failures happen (OneDrive hydration, AV scan locks):
+        # one slow retry before declaring the source unusable
+        retry_info = {"attempt": 1, "duration_sec": round(dur, 2),
+                      "reason": "below_feature_floor", "retry_timeout_sec": 240}
+        print(f"[{campaign_id}] probe_retry: {json.dumps(retry_info)}")
+        dur = _ffprobe_duration(dest, timeout_sec=240)
+        if dur >= 1800:
+            recovered = {"attempt": 2, "duration_sec": round(dur, 2), "recovered": True}
+            print(f"[{campaign_id}] probe_retry: {json.dumps(recovered)}")
     if dur < 1800:  # feature-length sanity floor (>=30 min) blocks recuts/clips
+        result.status = "blocked"
         result.error = f"SOURCE_BLOCKED: probed duration {dur:.0f}s too short for a feature source"
         return result
 

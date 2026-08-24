@@ -62,6 +62,7 @@
         "avoid_repetition": true
       },
       "story_structure": ["hook", "who_where", "strange_event", "escalation", "reveal", "ending", "final_sting"],
+      "beat_aligned_visuals": true,
       "content_safety": {
         "min_transformative_ratio": 0.6,
         "require_original_narration": true,

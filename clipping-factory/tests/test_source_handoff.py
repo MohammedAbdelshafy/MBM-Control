@@ -1,4 +1,4 @@
-"""
+﻿"""
 Regression + failure-injection suite for the DISCOVERY -> RESOLVED SOURCE ->
 ACQUISITION contract, the pre-production gate, the optional visual provider
 architecture, and script quality invariants.
@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 
-# ── Discovery -> Source handoff ──────────────────────────────────────
+# â”€â”€ Discovery -> Source handoff â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def test_pd_candidates_carry_resolved_uri():
     """Every public-domain candidate reaching production must have a real URI."""
@@ -62,7 +62,7 @@ def test_resolver_url_for_uses_cache(monkeypatch):
         assert resolver.url_for("Unknown Film", 1950) == ""
 
 
-# ── Script quality ───────────────────────────────────────────────────
+# â”€â”€ Script quality â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def _mk_script(**kw):
     from clipping_factory.script_agent import generate_recap_script
@@ -100,7 +100,7 @@ def test_script_estimated_duration_in_band():
         f"estimated {s.estimated_duration_sec}s outside the 35-75s band"
 
 
-# ── Optional visual provider architecture ────────────────────────────
+# â”€â”€ Optional visual provider architecture â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def test_higgsfield_unconfigured_is_unavailable_and_never_fake():
     """No HF_API_KEY -> UNAVAILABLE, ok=False, empty output. Never a fake job."""
@@ -132,7 +132,7 @@ def test_router_falls_back_to_local_when_higgsfield_down():
 
 
 def test_plan_required_does_not_block(monkeypatch):
-    """PLAN_REQUIRED must return ok=False with state preserved — campaign continues."""
+    """PLAN_REQUIRED must return ok=False with state preserved â€” campaign continues."""
     from clipping_factory.providers.higgsfield_provider import (
         HiggsfieldProvider, ProviderState,
     )
@@ -147,7 +147,7 @@ def test_plan_required_does_not_block(monkeypatch):
     assert r["output"] == ""
 
 
-# ── Pre-production gate ──────────────────────────────────────────────
+# â”€â”€ Pre-production gate â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def test_full_cycle_gate_skips_empty_uri_candidate():
     """A candidate without source_uri is recorded source_blocked, never produced."""
@@ -176,7 +176,7 @@ def test_full_cycle_gate_skips_empty_uri_candidate():
          patch("clipping_factory.full_cycle.release_run_lock"), \
          patch("clipping_factory.full_cycle.complete_heartbeat"), \
          patch("clipping_factory.full_cycle.update_ledger"), \
-         patch("clipping_factory.full_cycle._load_state", return_value={}):
+         patch("clipping_factory.full_cycle._read_status_file", return_value={}):
         out = run_full_cycle(movie_count=1)
 
     statuses = [r.get("status") for r in out["results"]]
@@ -185,7 +185,7 @@ def test_full_cycle_gate_skips_empty_uri_candidate():
         "production must never be attempted without a usable source"
 
 
-# ── Duplicate prevention guard ──────────────────────────────────────
+# â”€â”€ Duplicate prevention guard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def test_duplicate_campaign_skipped_by_guard(monkeypatch):
     """If a campaign is already ready_to_publish, _produce_one must skip it."""
@@ -205,7 +205,7 @@ def test_duplicate_campaign_skipped_by_guard(monkeypatch):
 
     # Simulate state where campaign is already terminal
     fake_state = {"TR-1922-AAAA": {"status": "ready_to_publish"}}
-    monkeypatch.setattr("clipping_factory.full_cycle._load_state",
+    monkeypatch.setattr("clipping_factory.full_cycle._read_status_file",
                         lambda: fake_state)
 
     from clipping_factory.full_cycle import _produce_one
@@ -233,7 +233,7 @@ def test_duplicate_not_rejected_when_not_terminal(monkeypatch):
 
     # Non-terminal status should NOT be skipped
     fake_state = {"TR-1968-BBBB": {"status": "researched"}}
-    monkeypatch.setattr("clipping_factory.full_cycle._load_state",
+    monkeypatch.setattr("clipping_factory.full_cycle._read_status_file",
                         lambda: fake_state)
 
     from clipping_factory.full_cycle import _produce_one
@@ -244,7 +244,7 @@ def test_duplicate_not_rejected_when_not_terminal(monkeypatch):
         "non-terminal status must not trigger duplicate guard"
 
 
-# ── QA boolean type ──────────────────────────────────────────────────
+# â”€â”€ QA boolean type â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def test_qa_passed_is_boolean():
     """qa.passed must be a bool, never a string like 'aac'."""
@@ -265,7 +265,7 @@ def test_qa_passed_is_boolean():
         f"passed must be bool, got {type(qa['passed']).__name__}: {qa['passed']!r}"
 
 
-# ── Script punctuation ───────────────────────────────────────────────
+# â”€â”€ Script punctuation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def test_script_no_double_periods():
     """Narration must not contain '..' double periods."""
@@ -358,3 +358,4 @@ def test_script_has_hook_and_sting():
     # Sting must reference the movie name (movie-specific, not generic)
     assert "test movie" in lines[-1].lower(), \
         f"final line should reference the movie, got: {lines[-1]!r}"
+

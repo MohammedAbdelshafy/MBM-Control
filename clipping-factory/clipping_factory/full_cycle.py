@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import random
+import re
 import shutil
 import subprocess
 import time
@@ -36,6 +37,14 @@ FFMPEG = "ffmpeg"
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _source_usable(src) -> bool:
+    """A source result is only usable with a real, existing local file."""
+    try:
+        return bool(getattr(src, "local_path", "")) and Path(src.local_path).is_file()
+    except Exception:
+        return False
 
 
 def _probe(path: Path) -> Dict[str, Any]:
@@ -80,13 +89,62 @@ def _run_ffmpeg(args: List[str], cwd: Path, timeout: int = 1800) -> bool:
         return False
 
 
-def _load_state() -> Dict[str, Any]:
-    if STATUS_FILE.exists():
+def _read_status_file() -> Optional[Dict[str, Any]]:
+    """Read movie_status.json with bounded retries (OneDrive sync races).
+
+    Returns {} when no state exists yet; returns None only after repeated
+    read/parse failures - callers decide fail-open or fail-closed."""
+    if not STATUS_FILE.exists():
+        return {}
+    for attempt in range(3):
         try:
-            return json.loads(STATUS_FILE.read_text(encoding="utf-8"))
+            data = json.loads(STATUS_FILE.read_text(encoding="utf-8"))
+            return data if isinstance(data, dict) else {}
         except Exception:
-            pass
-    return {}
+            time.sleep(0.5)
+    return None
+
+
+def _terminal_campaign_ids(state: Optional[Dict[str, Any]]) -> List[str]:
+    """Campaign ids whose status is terminal (already produced/published)."""
+    if not isinstance(state, dict):
+        return []
+    return [cid for cid, v in state.items()
+            if isinstance(v, dict) and v.get("status") in
+            ("ready_to_publish", "published", "verified")]
+
+
+def _produced_artifact_campaigns() -> Dict[str, bool]:
+    """Artifact-dir reconciliation map: {campaign_id: has_packaged_output}.
+
+    Artifact directories are GROUND TRUTH: movie_status.json can regress
+    (OneDrive conflict rollbacks), packaged artifacts cannot be conjured.
+    Cached once per process after first production write."""
+    cached = getattr(_produced_artifact_campaigns, "_cache", None)
+    if cached is not None:
+        return cached
+    out: Dict[str, bool] = {}
+    try:
+        if ARTIFACTS_ROOT.exists():
+            for d in ARTIFACTS_ROOT.iterdir():
+                if d.is_dir():
+                    parts = d.name.split("_", 2)
+                    if len(parts) == 3 and (d / "publish_package.json").exists():
+                        out[parts[2]] = True
+    except Exception:
+        pass
+    _produced_artifact_campaigns._cache = out
+    return out
+
+
+def invalidate_artifact_cache() -> None:
+    if hasattr(_produced_artifact_campaigns, "_cache"):
+        del _produced_artifact_campaigns._cache
+
+
+def _load_state() -> Dict[str, Any]:
+    state = _read_status_file()
+    return state if isinstance(state, dict) else {}
 
 
 def _save_state(state: Dict[str, Any]) -> None:
@@ -415,9 +473,11 @@ def run_full_cycle(channel_slug: str = "twistsrevealed",
 
         # 1. DISCOVERY — draw a wide pool first, then prioritize candidates whose
         #    real source is verifiably available (public domain provenance)
-        exclude = [cid for cid, v in _load_state().items()
-                   if isinstance(v, dict) and v.get("status") in
-                   ("ready_to_publish", "published", "verified")]
+        state = _read_status_file()
+        if state is None:
+            print("[state] WARNING: movie_status.json unreadable after retries - "
+                  "discovery exclusion degraded; duplicate guard remains fail-closed")
+        exclude = _terminal_campaign_ids(state)
         pool = discover_movies(genres=profile.genres, count=max(count * 6, 24),
                                exclude_ids=exclude, status_file=None)
         pd_first = sorted(
@@ -493,11 +553,31 @@ def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool,
     # terminal. `force=True` is ONLY for explicit regeneration runs; the
     # scheduled discovery path never passes it.
     if not force:
-        state = _load_state()
+        state = _read_status_file()
+        if state is None:
+            print(f"[{campaign_id}] SKIP_STATE_UNREADABLE: duplicate guard "
+                  "fail-closed (state file unreadable)")
+            record: Dict[str, Any] = {
+                "campaign_id": campaign_id, "movie": f"{movie.title} ({movie.year})",
+                "run_id": run_id, "started_at": _now(), "stages": {},
+                "status": "skipped_state_unreadable",
+            }
+            return record
         existing = state.get(campaign_id, {})
         if isinstance(existing, dict) and existing.get("status") in ("ready_to_publish", "published", "verified"):
             print(f"[{campaign_id}] SKIP_DUPLICATE: already {existing['status']}")
             record: Dict[str, Any] = {
+                "campaign_id": campaign_id, "movie": f"{movie.title} ({movie.year})",
+                "run_id": run_id, "started_at": _now(), "stages": {},
+                "status": "skipped_duplicate",
+            }
+            return record
+        if _produced_artifact_campaigns().get(campaign_id):
+            # reconciliation barrier: state regressed but the packaged artifact
+            # proves this campaign was already produced - never re-render it
+            print(f"[{campaign_id}] SKIP_DUPLICATE_ARTIFACT: packaged output "
+                  "exists despite non-terminal state (state regression)")
+            record = {
                 "campaign_id": campaign_id, "movie": f"{movie.title} ({movie.year})",
                 "run_id": run_id, "started_at": _now(), "stages": {},
                 "status": "skipped_duplicate",
@@ -552,6 +632,16 @@ def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool,
             set_campaign_state(campaign_id, "blocked",
                                {"reason": src.error})
             stage("source_acquisition", status=src.status, error=src.error)
+            record["status"] = "source_blocked"
+            (adir / "campaign.json").write_text(json.dumps(record, indent=2), encoding="utf-8")
+            return record
+        if not _source_usable(src):
+            # a cached/empty local_path must never reach file operations
+            # (Path("") == "." -> PermissionError on copy)
+            set_campaign_state(campaign_id, "blocked",
+                               {"reason": src.error or "SOURCE_BLOCKED: local_path missing"})
+            stage("source_acquisition", status="invalid_source",
+                  error=src.error or "local_path missing")
             record["status"] = "source_blocked"
             (adir / "campaign.json").write_text(json.dumps(record, indent=2), encoding="utf-8")
             return record
@@ -613,24 +703,67 @@ def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool,
         record["visual_provider"] = vp
 
         structure = profile.story_structure or ["hook", "setup", "escalation", "reveal", "ending", "sting"]
-        n_seg = max(len(structure), 6)
-        seg_len = vo_duration / n_seg
-        sdur = src.duration_sec
-        usable_start = sdur * 0.03
-        usable_len = sdur * 0.92
+
+        # 6b. BEAT-ALIGNED VISUAL PLAN (replaces uniform splits when enabled)
+        visual_plan_doc = None
         seg_files = []
-        for i, phase in enumerate(structure[:n_seg] + ["beat"] * max(0, n_seg - len(structure))):
-            start = usable_start + ((i + 0.5) / n_seg) * usable_len
-            name = f"seg_{i:02d}.mp4"
-            ok = _cut_vertical_segment(source_copy, work, name, start, seg_len + 0.2)
-            if ok:
-                seg_files.append(name)
-        if len(seg_files) < max(3, n_seg // 2):
+        try:
+            if getattr(profile, "beat_aligned_visuals", False):
+                from .beat_visual_engine import (detect_scene_cuts, build_visual_plan,
+                                                 build_uniform_fallback,
+                                                 render_beat_segments)
+                sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+|\n+",
+                                                         script.narration) if s.strip()]
+                cuts_cache = ARTIFACTS_ROOT.parent / "artifacts" / "clipping_factory" / "scene_cuts"
+                cuts = detect_scene_cuts(source_copy, cache_dir=cuts_cache)
+                if len(cuts) >= 20:
+                    plan = build_visual_plan(vo_duration, sentences, [],
+                                             cuts=cuts, source_duration=src.duration_sec)
+                    issues = []
+                    try:
+                        from .beat_visual_engine import validate_plan
+                        issues = validate_plan(plan, vo_duration)
+                    except Exception:
+                        issues = ["validator error"]
+                    if not issues:
+                        visual_plan_doc = plan
+                    stage("visual_plan", mode="beat_aligned",
+                          segments=plan["segment_count"],
+                          change_every_sec=plan["visual_change_every_sec"],
+                          fallback=bool(issues), issues=issues[:3])
+                if visual_plan_doc is None:
+                    visual_plan_doc = build_uniform_fallback(
+                        vo_duration, n_seg=max(len(structure), 6), source_duration=src.duration_sec)
+                    stage("visual_plan", mode="uniform_fallback",
+                          segments=visual_plan_doc["segment_count"])
+                seg_files = render_beat_segments(source_copy, work, visual_plan_doc,
+                                                 _cut_vertical_segment)
+        except Exception as ve:
+            stage("visual_plan", error=str(ve)[:200])
+            seg_files = []
+
+        if not seg_files:
+            # legacy uniform path (also the engine's safety net)
+            n_seg = max(len(structure), 6)
+            seg_len = vo_duration / n_seg
+            sdur = src.duration_sec
+            usable_start = sdur * 0.03
+            usable_len = sdur * 0.92
+            for i, phase in enumerate(structure[:n_seg] + ["beat"] * max(0, n_seg - len(structure))):
+                start = usable_start + ((i + 0.5) / n_seg) * usable_len
+                name = f"seg_{i:02d}.mp4"
+                ok = _cut_vertical_segment(source_copy, work, name, start, seg_len + 0.2)
+                if ok:
+                    seg_files.append(name)
+        if len(seg_files) < max(3, 4):
             set_campaign_state(campaign_id, "failed", {"reason": "visual segmentation failed"})
             stage("visuals", segments=len(seg_files), ok=False)
             record["status"] = "failed"
             (adir / "campaign.json").write_text(json.dumps(record, indent=2), encoding="utf-8")
             return record
+        if visual_plan_doc is not None:
+            (adir / "visual_plan.json").write_text(
+                json.dumps(visual_plan_doc, indent=2), encoding="utf-8")
         concat_ok = _concat_segments(work, seg_files, "concat.mp4")
         stage("visuals", segments=len(seg_files), concat=concat_ok,
               provider=vp.get("provider"), provider_state=vp.get("state"))
@@ -690,6 +823,7 @@ def _produce_one(movie: MovieCandidate, profile, run_id: str, publish: bool,
                            {"score": qa["score"], "artifact": str(adir)})
         record["status"] = "ready"
         record["artifact_dir"] = str(adir)
+        invalidate_artifact_cache()
 
         # 10. PACKAGE
         package = {

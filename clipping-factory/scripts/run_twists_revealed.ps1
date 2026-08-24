@@ -110,8 +110,19 @@ if ($Publish) { $PyArgs += "--publish" }
 $exitCode = 0
 Push-Location $RepoRoot
 try {
-    $output = & $PythonExe @PyArgs 2>&1
-    $output | ForEach-Object { Write-Log "$_" }
+    # PS5.1: with EAP=Stop, the first stderr line from 2>&1 throws a
+    # NativeCommandError and destroys the buffered output (traceback lost).
+    # Stream line-by-line under Continue so tracebacks survive in the log.
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    & $PythonExe @PyArgs 2>&1 | ForEach-Object {
+        if ($_ -is [System.Management.Automation.ErrorRecord]) {
+            Write-Log $_.ToString() "PYERR"
+        } else {
+            Write-Log "$_"
+        }
+    }
+    $ErrorActionPreference = $prevEAP
     $exitCode = $LASTEXITCODE
 } catch {
     Write-Log "RUNNER ERROR: $_" "ERROR"
