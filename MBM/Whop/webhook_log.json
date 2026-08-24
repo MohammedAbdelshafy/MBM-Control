@@ -1,0 +1,17 @@
+[
+  {
+    "id": "smoke_1787565739059",
+    "action": "payment.succeeded",
+    "received_at": "2026-08-24T10:02:19.097Z"
+  },
+  {
+    "id": "smoke_1787571368661",
+    "action": "payment.succeeded",
+    "received_at": "2026-08-24T11:36:08.686Z"
+  },
+  {
+    "id": "smoke_1787572441923",
+    "action": "payment.succeeded",
+    "received_at": "2026-08-24T11:54:01.947Z"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "event": "cta_click",
+    "props": {
+      "target": "#pricing"
+    },
+    "received_at": "2026-08-23T21:42:28.764Z"
+  },
+  {
+    "event": "signup",
+    "props": {
+      "source": "free_plan"
+    },
+    "received_at": "2026-08-23T21:42:28.799Z"
+  },
+  {
+    "event": "landing_view",
+    "timestamp": "2026-08-24T10:02:20.019Z",
+    "session_id": "smoke_sess",
+    "utm_source": "smoke",
+    "landing_variant": "A",
+    "props": {
+      "landing_variant": "A"
+    },
+    "received_at": "2026-08-24T10:02:20.019Z",
+    "_fingerprint": "[\"landing_view\",\"smoke_sess\",null,{\"landing_variant\":\"A\"}]"
+  },
+  {
+    "event": "landing_view",
+    "timestamp": "2026-08-24T11:36:09.141Z",
+    "session_id": "smoke_sess",
+    "utm_source": "smoke",
+    "landing_variant": "A",
+    "props": {
+      "landing_variant": "A"
+    },
+    "received_at": "2026-08-24T11:36:09.141Z",
+    "_fingerprint": "[\"landing_view\",\"smoke_sess\",null,{\"landing_variant\":\"A\"}]"
+  },
+  {
+    "event": "landing_view",
+    "timestamp": "2026-08-24T11:54:02.036Z",
+    "session_id": "smoke_sess",
+    "utm_source": "smoke",
+    "landing_variant": "A",
+    "props": {
+      "landing_variant": "A"
+    },
+    "received_at": "2026-08-24T11:54:02.036Z",
+    "_fingerprint": "[\"landing_view\",\"smoke_sess\",null,{\"landing_variant\":\"A\"}]"
+  }
+]

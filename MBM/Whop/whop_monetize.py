@@ -466,10 +466,17 @@ def cmd_affiliate():
 
 # ─── report ───
 def cmd_report():
-    """Gather REAL Whop revenue signals and write logs/whop_revenue.json."""
+    """Gather REAL Whop revenue signals and write logs/whop_revenue.json.
+
+    REST mode delegates to whop_live.sync_live() which:
+      - scopes /memberships by company_id (fixes the 400 unauthorized bug),
+      - applies carry-forward protection (a failed call never destroys the
+        last known-good snapshot),
+      - reports members/revenue honestly (UNVERIFIED / UNAVAILABLE, not 0).
+    """
     out = {"timestamp": datetime.now(timezone.utc).isoformat(),
            "account_id": ACCOUNT_ID, "mode": "rest" if has_rest() else "cli",
-           "memberships_active": 0, "members": 0, "net_revenue_7d": None,
+           "memberships_active": None, "members": None, "net_revenue_7d": None,
            "products": [], "errors": []}
 
     def _try(fn):
@@ -480,43 +487,66 @@ def cmd_report():
             return None
 
     if has_rest():
-        res = _try(lambda: whop_rest("/memberships", {"account_id": ACCOUNT_ID, "status": "active", "first": 100}))
-        if isinstance(res, dict):
-            out["memberships_active"] = len(res.get("data") or res.get("memberships") or [])
-        prods = _try(lambda: whop_rest("/products", {"company_id": ACCOUNT_ID}))
-        if isinstance(prods, dict):
-            rows = prods.get("data") or []
-            out["members"] = sum(p.get("member_count") or 0 for p in rows)
-            out["products"] = [{"id": p.get("id"), "title": p.get("title"),
-                                "member_count": p.get("member_count") or 0} for p in rows]
+        from whop_live import sync_live  # local import keeps CLI startup light
+        snap = _try(lambda: sync_live())
+        if isinstance(snap, dict):
+            out.update(snap)
+            out["mode"] = "rest"
     else:
         res = _try(lambda: run_whop(["memberships", "list", "--account_id", ACCOUNT_ID, "--status", "active", "--first", "100"]))
         if isinstance(res, dict):
-            out["memberships_active"] = len(res.get("data") or [])
+            rows = res.get("data") or []
+            out["memberships_active"] = len(rows)
+            out["memberships_data_status"] = "VERIFIED" if rows or not out["errors"] else "UNVERIFIED"
+            out["members"] = len(rows)
         prods = _try(lambda: run_whop(["products", "list", "--account_id", ACCOUNT_ID]))
         if isinstance(prods, dict):
             rows = prods.get("data") or []
-            out["members"] = sum(p.get("member_count") or 0 for p in rows)
+            out["members"] = sum(p.get("member_count") or 0 for p in rows) or out.get("members")
             out["products"] = [{"id": p.get("id"), "title": p.get("title"),
                                 "member_count": p.get("member_count") or 0} for p in rows]
+
+    # Transient-failure guard: never let a degraded pull destroy the
+    # last-known-good catalog. Carry it forward with an explicit marker.
+    if not out.get("products"):
+        prev = _load_json(LOGS_DIR / "whop_revenue.json")
+        if isinstance(prev, dict) and prev.get("products"):
+            out["products"] = prev["products"]
+            if not out.get("members"):
+                out["members"] = prev.get("members")
+            out.setdefault("_carry_forward_applied", []).append("products")
+            out["products_carried_forward_from"] = prev.get("timestamp")
+
+    # Data honesty: never publish a bare 0 that we could not verify.
+    mem_status = out.get("memberships_data_status")
+    if mem_status not in ("VERIFIED", "STALE"):
+        out["memberships_active"] = None
+        out["memberships_data_status"] = out.get("memberships_data_status") or "UNVERIFIED"
+        out["memberships_reason"] = out.get("memberships_reason") or "MEMBERSHIP_DATA_NOT_VERIFIED"
+        out["members"] = None
+        out["members_status"] = out.get("members_status") or "UNVERIFIED"
 
     _save_json(LOGS_DIR / "whop_revenue.json", out)
     _telegram_digest(out)
     print(f"WHOP REVENUE: {json.dumps(out, default=str)}")
-    print(json.dumps(_contract("success", out)))
+    print(json.dumps(_contract(
+        "success" if out.get("snapshot_status") in ("LIVE_VALID", "LIVE_PARTIAL")
+        or not has_rest() else "failure", out)))
     return out
 
 
 def _telegram_digest(out):
     """Push a compact revenue/members digest to Telegram."""
-    members = out.get("members") or 0
-    active = out.get("memberships_active") or 0
+    members = out.get("members")
+    active = out.get("memberships_active")
     revenue = out.get("net_revenue_7d")
-    rev_txt = f"${revenue}" if revenue is not None else "n/a"
+    mem_txt = f"{members}" if isinstance(members, int) else "UNVERIFIED"
+    act_txt = f"{active}" if isinstance(active, int) else "UNVERIFIED"
+    rev_txt = f"${revenue}" if isinstance(revenue, (int, float)) else "n/a"
     prods = out.get("products") or []
     lines = [f"<b>✅ Whop Digest</b>",
-             f"Active memberships: {active}",
-             f"Total members: {members}",
+             f"Active memberships: {act_txt}",
+             f"Total members: {mem_txt}",
              f"Net revenue (7d): {rev_txt}",
              f"Products surfaced: {len(prods)}"]
     if out.get("errors"):

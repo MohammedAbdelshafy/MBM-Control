@@ -634,6 +634,10 @@ function normalizeWhopWebhook(payload, receivedAt) {
   for (const key of ['user_id', 'email', 'username']) { if (member[key]) customerRef[key] = member[key]; }
   if (data.user_id) customerRef.user_id = data.user_id;
 
+  // Per-product funnel attribution: carry product/plan ids when Whop sends them.
+  const productId = payment.product_id || data.product_id || null;
+  const planId = payment.plan_id || data.plan_id || (data.plan && typeof data.plan === 'object' ? data.plan.id : null);
+
   return {
     schema_version: 1,
     event_id: payload.id || payload.event_id || crypto.randomUUID(),
@@ -645,7 +649,11 @@ function normalizeWhopWebhook(payload, receivedAt) {
     amount_usd: amount,
     currency: (payment.currency || 'USD').toUpperCase(),
     attribution: { via: 'webhook' },
-    metadata: { action },
+    metadata: {
+      action,
+      ...(productId ? { product_id: String(productId) } : {}),
+      ...(planId ? { plan_id: String(planId) } : {}),
+    },
   };
 }
 
@@ -699,6 +707,15 @@ app.post('/api/webhook/whop', (req, res) => {
     console.log('[Webhook] Whop payload processed', eventId);
     res.json({ received: true, stored: true });
   } catch(e) {
+    // Failed deliveries must be observable (Whop retries on non-2xx).
+    console.error('[Webhook] processing failed:', e.message);
+    try {
+      fs.appendFileSync(
+        path.join(__dirname, '..', 'MBM', 'Whop', 'logs', 'webhook_failures.jsonl'),
+        JSON.stringify({ timestamp: new Date().toISOString(), error: e.message,
+                         signature_present: Boolean(req.headers['x-whop-signature']) }) + '\n',
+        'utf8');
+    } catch {}
     res.status(500).json({error: 'storage failed'});
   }
 });

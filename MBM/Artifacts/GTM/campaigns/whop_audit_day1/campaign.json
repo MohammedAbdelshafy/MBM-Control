@@ -1,0 +1,14 @@
+{
+  "campaign": "whop_audit_day1",
+  "objective": "FIRST_VERIFIED_PURCHASE",
+  "product": "Revenue Audit Engine",
+  "product_id": "prod_L2MmMKYlE9LAv",
+  "plan_id": "plan_Sg0oIq3Tf4rlQ",
+  "price_usd": 149,
+  "promise": "72-hour revenue leakage audit: we map your lead-to-revenue pipeline and hand you a ranked fix list.",
+  "base_url": "https://mbm-dialer-app.vercel.app",
+  "prospects": 25,
+  "source_file": "MBM\\Artifacts\\GTM_TOP25_EXECUTION_QUEUE.json",
+  "generated_at": "2026-08-24T12:09:30.947975+00:00",
+  "send_policy": "HUMAN_APPROVED_ONLY_governor_L3"
+}

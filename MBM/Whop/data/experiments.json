@@ -1,0 +1,56 @@
+{
+  "experiments": {
+    "headline_test_v1": {
+      "id": "headline_test_v1",
+      "hypothesis": "Variant B (AI Sales Rep angle) drives more CTA clicks to pricing than Variant A",
+      "control": "A",
+      "variants": [
+        "A",
+        "B"
+      ],
+      "metric": "cta_click_rate",
+      "min_sample_per_variant": 100,
+      "min_days": 7,
+      "start": "2026-08-24T09:38:11.121764+00:00",
+      "end": null,
+      "sample": {},
+      "result": null,
+      "decision": "RUNNING",
+      "schema_version": 1,
+      "sample_counts": {
+        "A": 0,
+        "B": 0
+      },
+      "last_analysis": {
+        "analyzed_at": "2026-08-24T11:32:17.601221+00:00",
+        "experiment": "headline_test_v1",
+        "hypothesis": "Variant B (AI Sales Rep angle) drives more CTA clicks to pricing than Variant A",
+        "metric": "cta_click_rate",
+        "days_running": 0,
+        "results_by_variant": {
+          "A": {
+            "views": 0,
+            "conversions": 0,
+            "rate": null
+          },
+          "B": {
+            "views": 0,
+            "conversions": 0,
+            "rate": null
+          }
+        },
+        "verdict": "INCONCLUSIVE",
+        "why": [
+          "min 100 views/variant required",
+          "min 7 days runtime required (0d so far)"
+        ],
+        "decision_policy": "winner declared only after >= 100 views/variant AND >= 7d",
+        "provenance": "DERIVED",
+        "evidence": [
+          "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\MBM\\Whop\\logs\\revenue_events.jsonl",
+          "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\MBM\\Whop\\data\\experiments.json"
+        ]
+      }
+    }
+  }
+}
