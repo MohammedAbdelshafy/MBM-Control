@@ -1,12 +1,12 @@
 # Lead Qualification & Verification Report
 
 ### Executive Summary
-- **Input Candidates (Post-QA):** 48
-- **Fully Verified (Passed Cross-Reference):** 33
-- **Rejected (Unverifiable Signal):** 15
+- **Input Candidates (Post-QA):** 57
+- **Fully Verified (Passed Cross-Reference):** 40
+- **Rejected (Unverifiable Signal):** 17
 
 ### Verdict
-**Final Pack:** 33 leads added to `wholesalers_final_qualified.csv`.
+**Final Pack:** 40 leads added to `wholesalers_final_qualified.csv`.
 
 ### Rejection Log
 | Company | Email | Phone | Reason |
@@ -21,6 +21,8 @@
 | Velocity Properties | james@velocityproperties.com | +1 653-815-5682 | Email domain lacks MX records (Unverifiable) |
 | Vanguard Home Buyers | john@vanguardhomebuyers.com | +1 405-237-3508 | Email domain lacks MX records (Unverifiable) |
 | Stellar Investments | james@stellarinvestments.com | +1 671-247-9816 | Email domain lacks MX records (Unverifiable) |
+| Liberty Acquisitions | michael@libertyacquisitions.com | +1 852-390-1659 | Email domain lacks MX records (Unverifiable) |
+| Velocity Holdings | john@velocityholdings.com | +1 603-442-4954 | Email domain lacks MX records (Unverifiable) |
 | Velocity Equity | emily@velocityequity.com | +1 945-281-2459 | Email domain lacks MX records (Unverifiable) |
 | Nova Equity | sarah@novaequity.com | +1 372-551-8800 | Email domain lacks MX records (Unverifiable) |
 | Summit Capital | robert@summitcapital.com | +1 241-232-7515 | Email domain lacks MX records (Unverifiable) |

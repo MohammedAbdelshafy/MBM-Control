@@ -21,9 +21,126 @@
   },
   "TR-1963-4C80AB4AFFB1": {
     "campaign_id": "TR-1963-4C80AB4AFFB1",
-    "status": "researched",
-    "updated_at": "2026-08-24T16:06:44.516411+00:00",
+    "status": "ready_to_publish",
+    "updated_at": "2026-08-24T18:36:05.550337+00:00",
     "title": "Dementia 13",
-    "year": 1963
+    "year": 1963,
+    "script_id": "SCR-18208E877E",
+    "score": 8.57,
+    "artifact": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\artifacts\\twistsrevealed\\20260824_180420_TR-1963-4C80AB4AFFB1"
+  },
+  "TR-2006-E2B1E71A8C12": {
+    "campaign_id": "TR-2006-E2B1E71A8C12",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.738568+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-1995-4CFFE4F2DA03": {
+    "campaign_id": "TR-1995-4CFFE4F2DA03",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.770269+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2000-D196A0F08DDE": {
+    "campaign_id": "TR-2000-D196A0F08DDE",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.784137+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-1999-4838DCEC7492": {
+    "campaign_id": "TR-1999-4838DCEC7492",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.792099+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2010-9A3F3805EFC1": {
+    "campaign_id": "TR-2010-9A3F3805EFC1",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.806729+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2014-261A47AF0E36": {
+    "campaign_id": "TR-2014-261A47AF0E36",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.814443+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2016-D8D6D5DB509A": {
+    "campaign_id": "TR-2016-D8D6D5DB509A",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.816956+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-1997-5354D7E0A79D": {
+    "campaign_id": "TR-1997-5354D7E0A79D",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.820469+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-1997-F30BD87A37B7": {
+    "campaign_id": "TR-1997-F30BD87A37B7",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.823904+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2014-31FC5538A5B3": {
+    "campaign_id": "TR-2014-31FC5538A5B3",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.832955+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-1988-7FFC66F49F1F": {
+    "campaign_id": "TR-1988-7FFC66F49F1F",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.838518+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2005-26B5C1D80D16": {
+    "campaign_id": "TR-2005-26B5C1D80D16",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.841719+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2001-86BE7E8E016E": {
+    "campaign_id": "TR-2001-86BE7E8E016E",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.852451+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2012-0CDFF892E810": {
+    "campaign_id": "TR-2012-0CDFF892E810",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.948621+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2021-736FCFF2764F": {
+    "campaign_id": "TR-2021-736FCFF2764F",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:05.953956+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2014-07DF6731ADCC": {
+    "campaign_id": "TR-2014-07DF6731ADCC",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:06.089446+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2009-790D17160B53": {
+    "campaign_id": "TR-2009-790D17160B53",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:06.108038+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2015-2316A14D8571": {
+    "campaign_id": "TR-2015-2316A14D8571",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:06.117622+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
+  },
+  "TR-2015-D4DDA690CE71": {
+    "campaign_id": "TR-2015-D4DDA690CE71",
+    "status": "blocked",
+    "updated_at": "2026-08-24T18:36:06.123866+00:00",
+    "reason": "SOURCE_BLOCKED: discovery produced no usable source_uri"
   }
 }

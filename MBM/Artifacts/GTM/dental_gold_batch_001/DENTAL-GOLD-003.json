@@ -1,0 +1,144 @@
+{
+  "batch_id": "DENTAL-GOLD-003",
+  "version": "3.0",
+  "terminal": "OX ALPHA 2 — Prospect Intelligence Engine v3",
+  "timestamp": "2026-08-24T23:30:00Z",
+  "boundary": "OX2 does NOT assert CALL_READY or EMAIL_READY. No emails sent, no calls placed, no dialer/infrastructure modified. OX3 owns scoring, offer selection, contact verification, and queues.",
+  "cycle_focus": {
+    "enrichment_first": true,
+    "pending_resolutions_attempted": ["Breckinridge/Thrive", "Bear Pediatric email", "121 Dental Care (Vahadi second entity)", "Irving geography pull", "Lewisville geography pull"],
+    "geography_queue_state": {"completed_this_cycle": ["Irving", "Lewisville"], "remaining": ["Grapevine", "Southlake", "Wylie", "Rockwall"]}
+  },
+  "new_gold": [
+    {
+      "company_id": "DENTAL-GOLD-003-THRIVE",
+      "legal_entity": "BRECKINRIDGE DENTAL AND ORTHODONTICS (registry row; successor brand operating as Thrave/Thrive)",
+      "brand": "Thrive Dental & Orthodontics",
+      "practice_name": "Thrive Dental & Orthodontics",
+      "practice_type": "Multi-location general dentistry + orthodontics group (dual-provider model per location)",
+      "website": "https://thrivedentist.com",
+      "website_status": "CURRENT_OFFICIAL (breckinridgedental.com 301-redirects here; founder name Coughlin + Richardson presence verified on target)",
+      "locations": [
+        {"city": "Frisco", "status": "Now Welcoming Patients"},
+        {"city": "Allen", "status": "Now Welcoming Patients"},
+        {"city": "Sachse", "status": "Now Welcoming Patients"},
+        {"city": "Richardson", "status": "Now Welcoming Patients; registry anchor 4150 E Renner Rd Ste 400"},
+        {"city": "Dallas", "status": "Now Welcoming Patients"},
+        {"city": "North Dallas", "status": "Now Welcoming Patients"},
+        {"city": "Garland", "status": "CONFLICT - nav tab exists; homepage copy says six offices"}
+      ],
+      "npi": ["1376921528"],
+      "address": "4150 E Renner Rd Ste 400, Richardson, TX 75082 (registry anchor)",
+      "city": "Richardson + Frisco + Allen + Sachse + Dallas + North Dallas (+Garland conflict)",
+      "state": "TX",
+      "business_phones": [
+        {"phone": "+19722489119", "type": "practice line", "source": "NPPES 1376921528 mailing/location telephone", "status": "REGISTRY_ONLY", "note": "Site uses Book Now widget; static numbers live behind JS location pages - not yet captured"}
+      ],
+      "decision_maker": {
+        "name": "Dr. Nathan Coughlin, DDS (with Dr. Christine Coughlin, Chief Clinical Officer)",
+        "role": "CEO · Orthodontist · Co-founder",
+        "source": "thrivedentist.com Meet-the-Team ('Dr. Nathan Coughlin CEO · Orthodontist') + NPPES 1376921528 authorized_official 'Owner'",
+        "confidence": "HIGH"
+      },
+      "business_emails": [{"email": null, "status": "NOT_FOUND_THIS_PASS"}],
+      "booking_routes": ["Site-wide 'Book Now' / 'Schedule Appointment' widget (PROVEN)", "Emergency Care 'Get Emergency Care' flow (PROVEN)"],
+      "operating_model": {
+        "patient_entry_points": ["Web booking widget", "Phone during office hours", "Same-day emergency walk-in/call at all locations", "Free orthodontic consultations"],
+        "call_entry_points": ["Central booking CTAs on every page", "Per-location pages (numbers behind interactive layer)"],
+        "booking_methods": ["Online widget", "Phone"],
+        "intake_methods": ["'Your paperwork is completed before you arrive' pre-visit digital intake (PROVEN)"],
+        "referral_methods": ["Internal dentist<->orthodontist co-location replaces external referrals (published positioning)"],
+        "followup_methods": ["Treatment coordinators walk patients through plans (PROVEN role exists)", "Whitening-for-life retention program (PROVEN)"],
+        "insurance_workflow": "'Benefits are verified before your visit' + 'We verify your insurance ahead of time' (PROVEN institutionalized pre-visit verification)",
+        "patient_communication": "English/Spanish toggle ('Esp') (PROVEN)",
+        "hours": "Published per-location (not captured this pass)",
+        "after_hours": "EXPLICIT: 'We don't offer after-hours care, so call during office hours' (FAQ verbatim, PROVEN published boundary)",
+        "emergency_flow": "'Same-day emergency appointments are available at all six Thrive locations' (PROVEN)"
+      },
+      "signals": {
+        "technology": ["Digital x-rays reviewed on operatory screens (PROVEN claim)", "Modern operatory buildout claims"],
+        "premium": ["Veneers/implants/sedation (nitrous, oral, IV)/Invisalign menu (PROVEN catalog)", "$129/mo ortho financing (PROVEN offer)", "Healthy Smiles discount plan (PROVEN)", "Complimentary whitening-for-life (PROVEN)"],
+        "staffing": ["Named executives: CEO, Chief Clinical Officer, COO (Sam Green), Chief Advising Officer (Jeff Parchman) (PROVEN)", "Careers page (PROVEN existence)", "Dual general dentist + orthodontist at every location (PROVEN claim)"],
+        "operational": ["6-7 simultaneous locations (CONFLICT on count)", "Centralized booking across sites", "Pre-visit insurance verification workflow", "Treatment-coordinator function"],
+        "marketing": ["Free ortho consults", "New-patient emergency acquisition", "Review volume claims ('Thousands of Happy Smiles' video wall)", "5 social platforms incl. TikTok/Pinterest"]
+      },
+      "pain_hypotheses": [
+        {
+          "what": "After-hours and peak-call coverage gap across a 6-7 location group whose own FAQ directs emergency callers to office hours only",
+          "why": "Group promises same-day emergencies at every location but publishes an explicit no-after-hours boundary; all booking funnels converge on staffed-hours phone/web intake",
+          "evidence": "FAQ verbatim + same-day promise + centralized Book Now (all PROVEN, thrivedentist.com, retrieved 2026-08-24)",
+          "unknown": "Actual call volumes, unanswered rates, per-location staffing",
+          "label": "LEADING_HYPOTHESIS"
+        },
+        {
+          "what": "Pre-visit insurance verification is institutionalized across 6-7 sites, concentrating eligibility work before every appointment",
+          "why": "Verification-before-visit is a headline differentiator in their copy, implying significant recurring manual verification load",
+          "evidence": "Why-Thrive + First Visit sections verbatim (PROVEN)",
+          "unknown": "Team size performing verifications; turnaround SLAs",
+          "label": "LEADING_HYPOTHESIS"
+        }
+      ],
+      "evidence_graph": [
+        {"claim": "Operates six/seven DFW offices with dual providers", "claim_type": "identity_operating_model", "status": "PROVEN_with_internal_conflict_on_count", "source": "thrivedentist.com homepage + locations page", "retrieval_timestamp": "2026-08-24T22:40Z", "confidence": "HIGH", "notes": "Nav shows 7 tabs incl Garland; body says six"},
+        {"claim": "No after-hours care offered; emergency callers directed to office hours", "claim_type": "workflow_boundary", "status": "PROVEN", "source": "thrivedentist.com FAQ", "retrieval_timestamp": "2026-08-24T22:40Z", "confidence": "HIGH"},
+        {"claim": "Insurance benefits verified before visits", "claim_type": "workflow", "status": "PROVEN", "source": "thrivedentist.com Why-Thrive", "retrieval_timestamp": "2026-08-24T22:40Z", "confidence": "HIGH"},
+        {"claim": "Brand succession from Breckinridge Dental and Orthodontics", "claim_type": "entity_relationship", "status": "LEADING_HYPOTHESIS", "source": "301 redirect breckinridgedental.com -> thrivedentist.com + Coughlin name on both NPPES row and Thrive team page", "retrieval_timestamp": "2026-08-24T22:20Z", "confidence": "MEDIUM-HIGH", "notes": "Formal legal succession documents NOT reviewed"}
+      ],
+      "confidence": {"identity": "HIGH", "contact": "MEDIUM", "pain": "MEDIUM-HIGH (hypotheses)"},
+      "commercial_maturity": "MULTI_LOCATION trending ENTERPRISE_LIKE (named C-suite, standardized playbooks, centralized booking)",
+      "owner_accessibility": "BUSINESS_CONTACT_ONLY (web forms/booking; owner email not published)",
+      "missing_data": ["Per-location static phones", "Email addresses", "Garland active/inactive resolution", "Hours matrix", "Formal rebrand paperwork"],
+      "conflicts": [
+        {"field": "location_count", "source_A": "Homepage copy: 'six offices'", "source_B": "Locations nav: 7 tabs incl Garland", "likely_reason": "Newest location (Garland) launch mid-transition", "resolution_status": "OPEN"},
+        {"field": "legal_name_vs_brand", "source_A": "NPPES: BRECKINRIDGE DENTAL AND ORTHODONTICS", "source_B": "Operating brand: Thrive Dental & Orthodontics", "likely_reason": "Rebrand", "resolution_status": "OPEN (strong circumstantial link)"}
+      ],
+      "sources": ["https://thrivedentist.com", "https://thrivedentist.com/locations", "https://npiregistry.cms.hhs.gov/", "redirect observation: breckinridgedental.com"],
+      "retrieval_timestamps": ["2026-08-24T22:35Z", "2026-08-24T22:50Z", "2026-08-24T20:20Z", "2026-08-24T22:20Z"]
+    }
+  ],
+  "material_upgrades_to_existing_gold": [
+    {
+      "company_id": "DENTAL-GOLD-001-LONESTAR",
+      "upgrade": "SECOND_LOCATION_ENTITY_DISCOVERED",
+      "detail": {
+        "related_entity": {"legal_name": "121 DENTAL CARE, PA", "npi": "1346483062", "address": "380 E State Highway 121 Business Suite 160, Lewisville, TX 75057", "phone": "+19722218888", "phone_status": "REGISTRY_ONLY", "authorized_official": "AFSHIN VAHADI DDS, President (identical to LONESTAR record)"},
+        "relationship": "SAME_OWNER_MULTI_LOCATION",
+        "relationship_confidence": "MEDIUM-HIGH",
+        "website": "UNRESOLVED (121dentalcare.com dead DNS; search rate-limited this window)"
+      },
+      "conflicts_add": [],
+      "location_count_revised": "1 confirmed by site + 1 sister entity (registry-anchored)"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-SMILESFAM",
+      "upgrade": "MULTI_LINE_CONFIRMED",
+      "detail": "Four published numbers reconciled: 346-1100 (Flower Mound == NPPES LOCATION row), 277-1971 (Arlington == NPPES mailing-row), 444-9337 (== NPPES authorized-official phone), plus 646-1718 and 896-0313 SITE_PUBLISHED roles unknown."
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-BEARPED",
+      "upgrade": "CONTACT_PAGE_DEPTH",
+      "detail": "Fax (469) 545-1545 captured; Saturday by-appointment-only hours confirmed; site managed by external agency 'Magnify Dental Marketing' (PROVEN outsourced marketing ops). Email remains Cloudflare-obfuscated to automated fetch - deliberately unresolved."
+    }
+  ],
+  "schema_migration_note": "All 13 prior GOLD records (batches 001-002) are hereby governed by v3 schema; their full v3 fields (operating_model, signals, split confidences, commercial_maturity, owner_accessibility) carry forward from DENTAL-GOLD-002.json content with these defaults where not previously stated: commercial_maturity=DIGITAL or MULTI_LOCATION per record; owner_accessibility=BUSINESS_CONTACT_ONLY; identity/contact/pain confidences as previously scored.",
+  "pending_delta": [
+    {"entity": "Rodeo Dental / AAVA DENTAL IRVING PLLC + related Zarrabi entities (Irving pull)", "pending_reason": "ENTITY_CONFLICT + scale review - large multi-city private group; ownership concentration across many PLLCs needs dedicated cycle", "research_attempts": 1, "next_action": "Dedicated entity-resolution pass before any promotion"},
+    {"entity": "Access Dental family (Irving mailing MSO pattern)", "pending_reason": "CORPORATE_PARENT pattern - excluded from owner-led unless JARVIS overrides"},
+    {"entity": "121 DENTAL CARE PA website", "pending_reason": "OFFICIAL_DOMAIN_UNRESOLVED", "next_action": "Retry search when quota resets; probe 121dental variants"}
+  ],
+  "rejected_log_delta": [
+    {"entity": "AFFORDABLE DENTURES & IMPLANTS - TEXAS PLLC (1053568238)", "reason": "National chain structure; fails owner-led filter"},
+    {"entity": "BRIDENT DDS PC (1144930835)", "reason": "Reconfirm corporate rejection (CA HQ, COO signer)"}
+  ],
+  "quality_gates_run": {
+    "duplicate_check": "PASS (Thrive linked to Breckinridge NPI as relationship, not duplicate row; 121 Dental attached to LONESTAR as related entity)",
+    "source_check": "PASS (every claim URL-backed)",
+    "freshness_check": "PASS (all retrievals within FRESH window, same-day)",
+    "email_guess_check": "PASS (no patterns constructed; Bear left unresolved)",
+    "phone_guess_check": "PASS (Thrive number explicitly REGISTRY_ONLY)",
+    "unsupported_claim_check": "PASS (hypotheses labeled)",
+    "entity_conflict_check": "PASS (conflicts surfaced: Thrive count/Garland, Breckinridge rebrand, AOS Carrollton legacy)",
+    "suppression_awareness_check": "PASS (no export produced; OX3 gate untouched)",
+    "schema_validation": "PASS (v3 required fields present)"
+  }
+}

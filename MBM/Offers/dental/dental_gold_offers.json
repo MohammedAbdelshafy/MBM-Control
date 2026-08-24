@@ -126,22 +126,37 @@
    "company": "Thrive Dental & Orthodontics",
    "offer_id": "AI-PATIENT-INTAKE",
    "offer_name": "AI Patient Intake Pilot",
-   "fit_reason": "Institutionalized pre-visit insurance verification + site-wide booking convergence make intake/verification automation the narrowest PROVEN-workflow wedge.",
+   "fit_reason": "PROVEN-WORKFLOW wedge: institutionalized pre-visit insurance verification now confirmed at a second site ('verified for you... no surprise bills ever'), plus Book-Now convergence and walk-in/block-scheduling intake load. Strongest evidence-backed match.",
    "expected_value": null,
    "recommended_channel": "phone_after_contact_capture",
    "recommended_CTA": "10-minute intake-pilot discussion (one location)",
    "second_best_offer": {
     "offer_id": "AI-RECEPTIONIST",
-    "why": "Staffed-hours overflow across sites; chosen as secondary because MCR is weakened by their explicit no-after-hours boundary and active same-day answering culture."
+    "why": "Walk-in surge absorption + same-day positioning during staffed hours (LEADING_HYPOTHESIS 0.55/0.60); reception assist secondary."
    },
    "rejected_for_this_prospect": {
     "offer_id": "DENTAL-MCR-001",
     "why": "Published FAQ excludes after-hours; same-day promise implies engaged daytime answering - weakest published wedge."
-   }
+   },
+   "evidence_tier": "PROVEN_WORKFLOW",
+   "rejected_offers": [
+    {
+     "offer_id": "DENTAL-MCR-001",
+     "why": "No direct evidence of missed calls; after-hours excluded; 'they have a phone' != 'they miss calls'. Rejected on critical review."
+    },
+    {
+     "offer_id": "FOLLOWUP-001",
+     "why": "Financed-plan/cash-pricing surfaces exist but no published follow-up gap evidence. Weak hypothesis only."
+    }
+   ],
+   "integration_note": "Modento booking identified -> AI-PATIENT-INTAKE pilot has a concrete integration target; wedge unchanged."
   }
  ],
  "campaign_id": "CAMP-DENTAL-DFW-MCR-001",
  "vertical": "dental_dfw",
- "version": "FROZEN-v1.0",
- "frozen_at": "2026-08-24T19:22:36Z"
+ "version": "FROZEN-v1.4",
+ "frozen_at": "2026-08-24T20:39:37Z",
+ "delta": "DENTAL-GOLD-008",
+ "status": "COMMERCIAL_FREEZE_READY",
+ "final": true
 }

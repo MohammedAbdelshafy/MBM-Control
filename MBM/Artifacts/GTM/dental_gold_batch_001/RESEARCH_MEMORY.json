@@ -1,0 +1,147 @@
+{
+  "memory_id": "OX2-RESEARCH-MEMORY-DENTAL",
+  "updated": "2026-08-24T21:45:00Z",
+  "purpose": "Persistent research history for OX ALPHA 2 dental prospect engine. Prevents re-research; records acceptance/pending/rejection rationale.",
+  "batches": {
+    "DENTAL-GOLD-001": {
+      "status": "DELIVERED",
+      "handoff": "GOLD_BATCH_OX3_HANDOFF.json",
+      "accepted": [
+        {"company_id": "DENTAL-GOLD-001-STARSLEEP", "npi_core": "1790101020/1376400721", "domain": "sleepdallas.com", "phone": "+18444094657"},
+        {"company_id": "DENTAL-GOLD-001-FAME", "npi_core": "1659138956", "domain": "fame-dental.com", "phone": "+14692751054"},
+        {"company_id": "DENTAL-GOLD-001-BENHAM", "npi_core": "1437908969", "domain": "benhamorthodontics.com", "phone": "+12146188182"},
+        {"company_id": "DENTAL-GOLD-001-LONESTAR", "npi_core": "1619123536", "domain": "lonestardentalcare.com", "phone": "+19723357100"},
+        {"company_id": "DENTAL-GOLD-001-CROSSTIMBERS", "npi_core": "1285868166", "domain": "crosstimbersdental.com", "phone": "+19723558500"},
+        {"company_id": "DENTAL-GOLD-001-SMILESFAM", "npi_core": "1881095131", "domain": "smilesfamilydental.com", "phone": "+19723461100/+18172771971"},
+        {"company_id": "DENTAL-GOLD-001-BEARPED", "npi_core": "1285256636", "domain": "bearpd.com", "phone": "+14695982327"},
+        {"company_id": "DENTAL-GOLD-002-AOS", "npi_core": "1750821666", "domain": "advancedorthodonticstudio.com", "phone": "+12142727626"},
+        {"company_id": "DENTAL-GOLD-001-DAZZLE", "npi_core": "1043479066", "domain": "dazzledentalcare.com", "phone": "+19723558568"},
+        {"company_id": "DENTAL-GOLD-001-ARNICA", "npi_core": "1013674704", "domain": "arnicadentalclinic.com", "phone": "+14694688269"}
+      ],
+      "rejected_permanent_log": [
+        {"entity": "ADVANT DENTAL PA (1700117728)", "why": "CLOSED per MapQuest+Yelp"},
+        {"entity": "BRIDENT DENTAL (1891269775)", "why": "Corporate DSO"},
+        {"entity": "A PROFESSIONAL DENTAL ORGANIZATION (1881420677+)", "why": "MSO, out-of-state registrations"},
+        {"entity": "A.K. RICHARDSON/DENTALWORKS (1689192635,1720505852)", "why": "Corporate, NC locations"},
+        {"entity": "BALLOU ORTHODONTICS (1023457785)", "why": "No official site; CLOSED listing elsewhere"},
+        {"entity": "3RDMOLAR PLLC (1033679337)", "why": "No public footprint"},
+        {"entity": "DENTISTS OF FLOWER MOUND (1659600823)", "why": "PDS corporate pattern (CA mailing)"},
+        {"domains": ["famedental.com", "premierdentalcenter.com", "alexandercosmeticdentistry.com"], "why": "Parked/wrong-state"}
+      ]
+    },
+    "DENTAL-GOLD-008": {
+      "status": "DELIVERED",
+      "cycle_type": "PRECISION_CONFLICT_RESOLUTION",
+      "handoff": "DENTAL-GOLD-008.json",
+      "breakthroughs": [
+        {"company_id": "DENTAL-GOLD-001-BENHAM", "delta": "ENTITY RESOLVED via court record (Benham v. Five Point Dental Specialists, E.D. Tex. 2024): practice SOLD to Lustig/Young ($5M+earn-out); Five Point APA involvement -> POSSIBLE_CORPORATE_PARENT flagged; Benham likely clinical-only now; commercial DM = Jeremy Lustig"},
+        {"company_id": "DENTAL-GOLD-001-SMILESFAM", "delta": "FOUR active locations confirmed verbatim (FM/Irving/Arlington/Frisco) under one JarvisAnalytics account; FM address conflict opened (811 International Pkwy vs NPPES 4001 Long Prairie); Irving+Frisco registry-entity gap OPEN"},
+        {"company_id": "DENTAL-GOLD-003-THRIVE", "delta": "insurance checkout-review workflow confirmed on Frisco hub - third audited site, group-standard near-certain"},
+        {"company_id": "DENTAL-GOLD-001-DAZZLE", "delta": "self-source address conflict proven (1020 FM Rd #110 vs NPPES 1121 FM Rd #500) + Hickory Creek satellite office claim discovered"}
+      ],
+      "blocked": ["FAME official-domain email (no contact page exists; FB candidate stands)", "ALEXANDER email (no new legitimate address without guessing)"],
+      "next_cycle_queue": ["Smiles Irving/Frisco NPPES phone-matching (2 API calls)", "Five Point Dental Specialists corporate review for Benham", "Grapevine/Southlake/Wylie/Rockwall pulls when OX3 capacity allows"]
+    },
+    "DENTAL-GOLD-007": {
+      "status": "DELIVERED",
+      "cycle_type": "POST_FREEZE_COMMERCIAL_UNBLOCK",
+      "handoff": "DENTAL-GOLD-007.json",
+      "breakthroughs": [
+        {"company_id": "DENTAL-GOLD-003-THRIVE", "delta": "P0 CLEARED - full NAP matrix: 6/6 active locations SITE_PUBLISHED phones; per-location emails (frisco/allen/dallas/sachse/forest@thrivedentist.com) + group info@ in JSON-LD; booking vendor = Modento; Garland coming-soon NAP captured"},
+        {"company_id": "DENTAL-GOLD-001-STARSLEEP", "delta": "canonical domain = starsleepwellness.com (sleepdallas.com legacy); single-line architecture CONFIRMED on Houston hub audit; Pearland->Houston relocation resolved; FLORIDA page = multi-state footprint; AdvancedMD booking"},
+        {"company_id": "DENTAL-GOLD-001-SMILESFAM", "delta": "NEW CONFLICT OPENED - four JarvisAnalytics booking blocks suggest up to 4 locations vs 2 registered; per-location SMS lines captured; booking platform identified"},
+        {"company_id": "DENTAL-GOLD-002-CANYONCREEK", "delta": "email ccfd2091@gmail.com FOUND_CANDIDATE (own JSON-LD)"},
+        {"company_id": "DENTAL-GOLD-001-ARNICA", "delta": "booking route arnica.dental/book resolved; info@ confirmed via site JSON-LD -> FOUND"},
+        {"company_id": "DENTAL-GOLD-002-AOS", "delta": "Houston@aosbraces.com + Dallasao@aorthodontic.com FOUND_CANDIDATES"}
+      ],
+      "open_conflicts_remaining": ["SMILESFAM location count 2-vs-4 (NEW, next-cycle P0)", "Breckinridge->Thrive legal succession", "AOS Carrollton legacy address", "Benham co-entity role"],
+      "next_cycle_queue": ["Smiles location-frame mapping (4 fetches)", "Fame official-domain email probe retry", "Benham/Alexander deltas"]
+    },
+    "DENTAL-GOLD-006": {
+      "status": "DELIVERED",
+      "cycle_type": "CONFLICT_RESOLUTION",
+      "handoff": "DENTAL-GOLD-006.json",
+      "breakthroughs": [
+        {"company_id": "DENTAL-GOLD-003-THRIVE", "delta": "location_count conflict CLOSED - 6 active + Garland 'Coming Soon' (1780 NW Hwy #150, no phone yet); Coughlins personally staffing launch; Medicaid-mission positioning (TMHP/MCNA/DentaQuest) + walk-in-core model + family block scheduling captured PROVEN"},
+        {"lead": "/segura-dental/ REJECTED as acquisition - it is the Spanish insurance-info page"},
+        {"technique_note": "direct webfetch outperforms Start-Job curl loops in this environment; shell job-spawn unstable"}
+      ],
+      "open_conflicts_remaining": ["Breckinridge->Thrive legal succession (strengthened, unproven)", "AOS Carrollton legacy address", "Benham co-entity role"],
+      "next_cycle_queue": ["sleepdallas.com/sitemap.xml probe -> city hub fetch", "remaining five Thrive city hubs for NAP matrix", "OX3 consumption checkpoint"]
+    },
+    "DENTAL-GOLD-005": {
+      "status": "DELIVERED",
+      "cycle_type": "FLAGSHIP_DEEP_DIVE",
+      "handoff": "DENTAL-GOLD-005.json",
+      "breakthroughs": [
+        {"company_id": "DENTAL-GOLD-003-THRIVE", "delta": "sitemap-derived URL pattern cracked JS wall; Richardson NAP == NPPES digit-for-digit; phone upgraded REGISTRY_ONLY -> CURRENT_OFFICIAL; hours + 4 providers + dual insurance-touch workflow + standby-hygienist same-day model captured (all PROVEN verbatim)"},
+        {"lead": "/segura-dental/ page exists in Thrive sitemap - possible acquisition brand; UNVERIFIED, fetch next cycle"},
+        {"technique_note": "WordPress sitemap.xml -> page-sitemap.xml -> URL patterns is the reliable JS-wall bypass for this class of sites"}
+      ],
+      "next_cycle_queue": ["Thrive: /segura-dental/ + /locations/garland/ + remaining six city pages", "Star Sleep sitemap.xml probe", "OX3 consumption checkpoint"]
+    },
+    "DENTAL-GOLD-004": {
+      "status": "DELIVERED",
+      "cycle_type": "PRIORITY_0_ENRICHMENT",
+      "handoff": "DENTAL-GOLD-004.json",
+      "enrichments": [
+        {"company_id": "DENTAL-GOLD-001-BEARPED", "delta": "email info@bearpd.com FOUND via deterministic cfemail decode of own site payload (SITE_PUBLISHED)"},
+        {"company_id": "DENTAL-GOLD-003-THRIVE", "delta": "location subpages JS-only; static NAP still missing; render-fetch next action"},
+        {"company_id": "DENTAL-GOLD-001-STARSLEEP", "delta": "/locations + /contact-us 404; contact surface = mainline+fax+webform"}
+      ],
+      "new_accepted": [],
+      "next_cycle_queue": ["OX3 consumption checkpoint", "pending resolutions (quota permitting)", "Grapevine/Southlake/Wylie/Rockwall pulls"]
+    },
+    "DENTAL-GOLD-003": {
+      "status": "DELIVERED",
+      "handoff": "DENTAL-GOLD-003.json",
+      "v3_schema_governs_all_prior_records": true,
+      "new_accepted": [
+        {"company_id": "DENTAL-GOLD-003-THRIVE", "npi_core": "1376921528", "domain": "thrivedentist.com", "phone_status": "REGISTRY_ONLY (+19722489119)", "relationship_flag": "POSSIBLE_REBRAND of Breckinridge Dental and Orthodontics (301 redirect + owner-name match); formal linkage UNVERIFIED"}
+      ],
+      "enrichments_this_cycle": [
+        "LONESTAR: second entity 121 DENTAL CARE PA (NPI 1346483062, Lewisville) same authorized official Dr. Afshin Vahadi - SAME_OWNER_MULTI_LOCATION (MEDIUM-HIGH); site unresolved",
+        "SMILESFAM: four published lines reconciled vs two NPPES rows",
+        "BEARPED: fax + Saturday-by-appointment + Magnify agency dependency captured"
+      ],
+      "pending_added": [
+        {"entity": "Rodeo Dental / AAVA DENTAL IRVING PLLC + Zarrabi entity cluster", "why": "ENTITY_CONFLICT + multi-city scale needs dedicated resolution cycle"},
+        {"entity": "Access Dental family", "why": "CORPORATE_PARENT pattern; excluded unless JARVIS overrides"}
+      ],
+      "rejected_added": [
+        {"entity": "AFFORDABLE DENTURES & IMPLANTS - TEXAS PLLC (1053568238)", "why": "national chain"},
+        {"entity": "BRIDENT DDS PC (1144930835)", "why": "corporate reconfirm"}
+      ]
+    },
+    "DENTAL-GOLD-002": {
+      "status": "DELIVERED",
+      "handoff": "DENTAL-GOLD-002.json",
+      "new_accepted": [
+        {"company_id": "DENTAL-GOLD-002-APIE", "npi_core": "1699288068/1033692967", "domain": "piedental.com", "phones": ["+19725383700", "+19405667070", "+19725474141"]},
+        {"company_id": "DENTAL-GOLD-002-CANYONCREEK", "npi_core": "1659502730", "domain": "canyoncreekfamilydentistry.com", "phone": "+19726443800"},
+        {"company_id": "DENTAL-GOLD-002-ALEXANDER", "npi_core": "1902416365", "domain": "calexanderdds.com", "phone": "+19729392888", "flag": "co-brand Alexander & Song at same suite - not merged"}
+      ],
+      "enriched_from_001": ["STARSLEEP", "FAME", "BENHAM", "LONESTAR", "CROSSTIMBERS", "SMILESFAM", "BEARPED", "AOS", "DAZZLE", "ARNICA"]
+    }
+  },
+  "pending_tier_live": [
+    {"entity": "Absolute Inwood Dentistry PLLC (1437674538)", "blocker": "no official website; all domain variants dead", "note": "phone double-sourced NPPES+directory; suite entanglement w/ Smith legacy rows flagged"},
+    {"entity": "Premier Dental Center TX (1891041463/1942322870, Dr. Aby Jacob, Carrollton+Sachse)", "blocker": "TX site unresolved"},
+    {"entity": "Chansol PLLC (1093533945, Dr. Paul Jang)", "blocker": "domain variants dead"},
+    {"entity": "Breckinridge Dental and Orthodontics (1376921528) -> RESOLVED as DENTAL-GOLD-003-THRIVE via rebrand; formal legal succession UNVERIFIED", "blocker": null},
+    {"entity": "Candice Hutcheson DDS MS PLLC (1699863415, Richardson pediatric+ortho)", "blocker": "website unresolved"},
+    {"entity": "Rodeo Dental / AAVA DENTAL IRVING PLLC + Zarrabi cluster", "blocker": "ENTITY_CONFLICT + multi-city scale review needed"},
+    {"entity": "121 DENTAL CARE PA website (1346483062)", "blocker": "OFFICIAL_DOMAIN_UNRESOLVED - tracked inside LONESTAR related-entity record"}
+  ],
+  "tooling_notes": {
+    "search_engines": "Brave rate-limits aggressively (429); space queries several minutes apart. Bing/DDG/Mojeek/Ecosia blocked via fetch pipe.",
+    "reliable_paths": ["NPPES API direct", "curl.exe domain probes with content-match verification", "Brave when cooled", "local rg over cached HTML"],
+    "waf_quirks": "bearpd.com blocks curl UA (403) but allows webfetch render; email Cloudflare-obfuscated in text render",
+    "shell_quirk": "PowerShell regex loops on >100KB single-line HTML stall the shell harness - use ripgrep instead"
+  },
+  "geography_state": {
+    "dfw_cities_pulled_from_nppes": ["Frisco", "Plano", "McKinney", "Carrollton", "Flower Mound", "Richardson"],
+    "next_city_queue": ["Irving", "Lewisville", "Grapevine", "Southlake", "Wylie", "Rockwall"],
+    "adjacent_verticals_not_started": true
+  }
+}

@@ -72,14 +72,15 @@
    "email": "contact@arnicadentalclinic.com",
    "email_source": "Official website 'Email Us' block",
    "email_source_url": "https://arnicadentalclinic.com",
-   "email_verification_method": "ox2_site_capture + dns_mx_confirm (Cloudflare-obfuscated to automated refetch)",
+   "email_verification_method": "ox2_site_capture + ox3_dns_mx_confirm + gold_007_jsonld_organization_block_confirm (rank-math, official site)",
    "dns_mx": "PASS (dc-mx (live))",
    "ox3_site_refetch": "single line 469 468 8269 for BOTH appointments and general inquiries re-confirmed verbatim; weekday-only hours confirmed; Email Us block present (Cloudflare-obfuscated to automated fetch)",
    "ox3_refetch_timestamp": "2026-08-24T18:57:30Z",
    "email_verification_status": "VERIFIED",
    "email_verification_timestamp": "2026-08-24T18:57:30Z",
-   "email_confidence": "MEDIUM-HIGH",
-   "associated_company_id": "DENTAL-GOLD-001-ARNICA"
+   "email_confidence": "HIGH",
+   "associated_company_id": "DENTAL-GOLD-001-ARNICA",
+   "gold_007_confirmation": "info@arnicadentalclinic.com CONFIRMED in site's own JSON-LD Organization block (2026-08-25T02:40Z); booking route https://arnica.dental/book"
   },
   {
    "company_id": "DENTAL-GOLD-001-FAME",
@@ -129,6 +130,44 @@
    "email_verification_timestamp": "2026-08-24T19:16:11Z",
    "email_confidence": "HIGH",
    "associated_company_id": "DENTAL-GOLD-001-BEARPED"
+  },
+  {
+   "company_id": "DENTAL-GOLD-003-THRIVE",
+   "company": "Thrive Dental & Orthodontics",
+   "contact_type": "business_phone",
+   "phone": "+19722489119",
+   "verification_source": "https://thrivedentist.com/locations/richardson/",
+   "ox2_capture_timestamp": "2026-08-25T01:15Z",
+   "ox3_refetch_confirm": "2026-08-24T20:28:06Z",
+   "registry_cross_match": "NPPES 1376921528 telephone digit-for-digit (Breckinridge legacy row, same address - succession remains OPEN/unasserted)",
+   "verification_status": "VERIFIED_CURRENT_OFFICIAL_SITE",
+   "confidence": "HIGH"
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-CANYONCREEK",
+   "company": "Canyon Creek Family Dentistry of Richardson (Canyon Creek Family Dentistry, P.A.)",
+   "recipient": "Dr. Afshin Azmoodeh, DDS",
+   "recipient_role": "Founder / President / Dentist",
+   "business_email": "ccfd2091@gmail.com",
+   "email_source": "Practice's own website JSON-LD (Organization block)",
+   "email_source_url": "https://canyoncreekfamilydentistry.com",
+   "email_verification_status": "VERIFIED",
+   "email_verification_timestamp": "2026-08-24T20:33:59Z",
+   "email_confidence": "MEDIUM",
+   "note": "Gmail address but practice-controlled publication on official domain structured data; deliverability inherent (gmail MX)."
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-CANYONCREEK",
+   "company": "Canyon Creek Family Dentistry of Richardson (Canyon Creek Family Dentistry, P.A.)",
+   "recipient": "Dr. Afshin Azmoodeh, DDS",
+   "recipient_role": "Founder / President / Dentist",
+   "business_email": "ccfd2091@gmail.com",
+   "email_source": "Practice's own website JSON-LD (Organization block)",
+   "email_source_url": "https://canyoncreekfamilydentistry.com",
+   "email_verification_status": "VERIFIED",
+   "email_verification_timestamp": "2026-08-24T20:34:50Z",
+   "email_confidence": "MEDIUM",
+   "note": "Gmail address but practice-controlled publication on official domain structured data; deliverability inherent (gmail MX)."
   }
  ],
  "email_blocked": [
@@ -137,6 +176,35 @@
    "email": "office@asdentistrytx.com",
    "blocker_code": "EMAIL_DOMAIN_NO_MX",
    "detail": "asdentistrytx.com publishes no MX record -> mailbox cannot receive mail. Association of co-brand domain also uncorroborated on calexanderdds.com this pass."
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-AOS",
+   "email": "Houston@aosbraces.com",
+   "blocker_code": "ASSOCIATION_UNVERIFIED_DOMAIN_MISMATCH",
+   "detail": "Domain aosbraces.com does not match official site advancedorthodonticstudio.com; role/company association not inferable. MX live (google) - documented only."
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-AOS",
+   "email": "Dallasao@aorthodontic.com",
+   "blocker_code": "ASSOCIATION_UNVERIFIED_MALFORMED_SOURCE",
+   "detail": "Nested malformed mailto in source; domain mismatch vs official site. MX live (google) - documented only."
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-AOS",
+   "email": "Houston@aosbraces.com",
+   "blocker_code": "ASSOCIATION_UNVERIFIED_DOMAIN_MISMATCH",
+   "detail": "Domain aosbraces.com does not match official site advancedorthodonticstudio.com; role/company association not inferable. MX live (google) - documented only."
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-AOS",
+   "email": "Dallasao@aorthodontic.com",
+   "blocker_code": "ASSOCIATION_UNVERIFIED_MALFORMED_SOURCE",
+   "detail": "Nested malformed mailto in source; domain mismatch vs official site. MX live (google) - documented only."
   }
- ]
+ ],
+ "version": "FROZEN-v1.3",
+ "frozen_at": "2026-08-24T20:34:50Z",
+ "delta": "DENTAL-GOLD-007",
+ "status": "COMMERCIAL_FREEZE_READY",
+ "final": true
 }

@@ -1,0 +1,75 @@
+{
+  "batch_id": "DENTAL-GOLD-007",
+  "version": "3.4",
+  "terminal": "OX ALPHA 2",
+  "timestamp": "2026-08-25T03:10:00Z",
+  "cycle_type": "POST_FREEZE_COMMERCIAL_UNBLOCK",
+  "boundary": "Research evidence only. No EMAIL_READY/CALL_READY asserted. Frozen OX3 queues untouched.",
+  "p0_thrive_phone_unblock": {
+    "status": "RESOLVED",
+    "phone_status_upgrade": "REGISTRY_ONLY -> CURRENT_OFFICIAL (SITE_PUBLISHED on official domain)",
+    "primary_evidence": {
+      "location": "Richardson",
+      "phone": "+19722489119",
+      "source_url": "https://thrivedentist.com/locations/richardson/",
+      "retrieval_timestamp": "2026-08-25T01:15Z",
+      "method": "Published verbatim in page body ('Book online or call (972) 248-9119') AND matches NPPES 1376921528 digit-for-digit"
+    },
+    "thrive_nap_matrix": [
+      {"location_name": "Richardson", "street": "4150 E Renner Rd #400", "city": "Richardson", "state": "TX", "zip": "75082", "phone": "+19722489119", "phone_status": "CURRENT_OFFICIAL", "email_jsonld": null, "source_url": "/locations/richardson/", "confidence": "HIGH", "note": "Hub page body + NPPES match"},
+      {"location_name": "Frisco", "street": "10935 Rolater Rd #100", "city": "Frisco", "state": "TX", "zip": "75035", "phone": "+19723710616", "phone_status": "SITE_PUBLISHED", "email_jsonld": "frisco@thrivedentist.com", "booking": "book.modento.io/.../thrive-frisco", "source_url": "/locations/frisco/", "confidence": "HIGH"},
+      {"location_name": "Allen", "street": "1010 W Exchange Pkwy #1130", "city": "Allen", "state": "TX", "zip": "75013", "phone": "+14696630962", "phone_status": "SITE_PUBLISHED_JSONLD", "email_jsonld": "allen@thrivedentist.com", "booking": "book.modento.io/.../thrive-allen", "source_url": "/locations/allen/", "confidence": "HIGH", "note": "JSON-LD includes openingHoursSpecification Mon-Thu 10-18 Fri 10-17"},
+      {"location_name": "Sachse", "street": "7900 Woodbridge Pkwy Ste 200", "city": "Sachse", "state": "TX", "zip": "75048", "phone": "+14696491101", "phone_status": "SITE_PUBLISHED_JSONLD", "email_jsonld": "sachse@thrivedentist.com", "booking": "book.modento.io/.../thrive-sachse", "source_url": "/locations/sachse/", "confidence": "HIGH"},
+      {"location_name": "Dallas", "street": "17977 Preston Rd Unit A", "city": "Dallas", "state": "TX", "zip": "75252", "phone": "+12143068088", "phone_status": "SITE_PUBLISHED", "email_jsonld": "dallas@thrivedentist.com", "booking": "book.modento.io/.../thrive-dallas", "source_url": "/locations/dallas/", "confidence": "HIGH"},
+      {"location_name": "North Dallas (Forest Lane)", "street": "Forest Lane & Preston Rd", "city": "Dallas", "state": "TX", "zip": null, "phone": "+12142064996", "phone_status": "SITE_PUBLISHED", "email_jsonld": "forest@thrivedentist.com", "booking": "book.modento.io/.../thrive-forest-lane", "source_url": "/locations/north-dallas/", "confidence": "HIGH", "note": "Private operatories; unique whitening-for-life program"}
+    ],
+    "group_level_email": {"email": "info@thrivedentist.com", "status": "FOUND (SITE_PUBLISHED JSON-LD)", "source_url": "https://thrivedentist.com/", "timestamp": "2026-08-25T02:50Z"},
+    "garland_coming_soon": {"address": "1780 Northwest Hwy #150, Garland, TX 75041", "phone_published": false, "providers_listed": ["Dr. Shiza Haroon", "Dr. Christine Coughlin (CCO)", "Dr. Nathan Coughlin (CEO)"]},
+    "booking_vendor_identified": "Modento (book.modento.io per-location links)",
+    "commercial_impact": "Clears CAMP-DENTAL-DFW-MCR-001 blocker PHONE_REGISTRY_ONLY_NOT_WEBSITE_VERIFIED with six independent site-published numbers; adds five location-specific email routes + group email; Modento booking identified enables pilot integration assessment"
+  },
+  "p1_star_sleep_delta": {
+    "status": "RESOLVED",
+    "canonical_domain_discovery": {
+      "old_assumption": "sleepdallas.com is primary",
+      "new_state": "Canonical site is https://www.starsleepwellness.com; sleepdallas.com serves legacy content (its /sitemap.xml and /locations are 404)",
+      "evidence": "Rank Math JSON-LD @id starsleepwellness.com on sleepdallas.com homepage markup; sitemap index live only on starsleepwellness.com",
+      "confidence": "HIGH"
+    },
+    "single_line_architecture_test": {
+      "hypothesis": "One mainline serves all sites",
+      "test_location": "Houston hub (/houston/)",
+      "result": "CONFIRMED - page publishes ONLY 844-409-4657; no location-specific phone or email anywhere on page; header/footer identical to Dallas page",
+      "label": "PROVEN (two of seven+ sites audited)",
+      "commercial_relevance": "Centralized intake thesis holds; per-site AI triage would not duplicate existing local lines"
+    },
+    "footprint_upgrade": {
+      "discovery": "sitemap exposes /florida/ location page in addition to Texas sites",
+      "new_state": "Multi-state operation: 7 TX sites (with Pearland->Houston move) + Florida market",
+      "impact": "Raises operational-complexity tier; centralized intake spans two states"
+    },
+    "relocation_conflict_resolved": {
+      "field": "Pearland location",
+      "resolution": "'We have moved from Pearland to Houston!' banner on Houston page; new address 4126 Southwest Fwy Suite 1000, Houston TX 77027",
+      "note": "Registry rows and review tabs still reference Pearland - stale metadata confirmed"
+    },
+    "operational_facts_captured": {
+      "houston_hours": "Mon-Fri 8:30-17:00 CT",
+      "booking_route": "AdvancedMD online scheduling (patientportal.advancedmd.com/160774/onlinescheduling) - medical-grade PM stack",
+      "callback_workflow": "'our patient success team will contact you shortly' form present on Houston page (consistent with Dallas)",
+      "referral_funnel": "Dedicated /referring-physicians/ page in sitemap",
+      "assessment_funnel": "/sleep-screener/ tool page",
+      "insurance_breadth": "Medicare, BCBS-TX, UHC, Cigna, Aetna, Humana, Anthem, AARP, Tricare, Oscar, Sendero, Medical Mutual, UMR, Medicare Advantage logos in sitemap assets",
+      "marketing_agency": "'Site by Sleep Apnea Leads' footer credit"
+    }
+  },
+  "p2_deltas": [
+    {"company_id": "DENTAL-GOLD-001-SMILESFAM", "field_changed": "booking_platform + sms_lines + location_count_conflict", "old_value": "unknown", "new_value": "Booking: schedule.jarvisanalytics.com per-location frames (4 distinct location_id blocks observed); Text lines: Flower Mound (682) 688-9470, secondary (972) 366-4187, Arlington (817) 769-2798; FOUR Book Online blocks suggest up to 4 operating locations vs 2 registered", "source_url": "https://smilesfamilydental.com (cached)", "timestamp": "2026-08-25T02:40Z", "confidence": "HIGH (platform) / OPEN (count)", "commercial_impact": "Location-count CONFLICT OPENED - must be resolved before scoring finalizes"},
+    {"company_id": "DENTAL-GOLD-002-CANYONCREEK", "field_changed": "business_email", "old_value": "NOT_FOUND", "new_value": "ccfd2091@gmail.com (FOUND_CANDIDATE - published in site's own JSON-LD)", "source_url": "https://canyoncreekfamilydentistry.com", "timestamp": "2026-08-25T02:40Z", "confidence": "MEDIUM", "commercial_impact": "Adds an email route; Gmail domain requires OX3 judgment"},
+    {"company_id": "DENTAL-GOLD-001-ARNICA", "field_changed": "booking_route + email confirmation", "old_value": "route unresolved; info@ unconfirmed", "new_value": "Booking: https://arnica.dental/book ; info@arnicadentalclinic.com CONFIRMED in site's own rank-math JSON-LD Organization block", "source_url": "https://arnicadentalclinic.com (cached)", "timestamp": "2026-08-25T02:40Z", "confidence": "HIGH", "commercial_impact": "Booking route now known; email upgraded FOUND_CANDIDATE->FOUND"},
+    {"company_id": "DENTAL-GOLD-002-AOS", "field_changed": "business_emails", "old_value": "NOT_FOUND", "new_value": "Houston@aosbraces.com (FOUND_CANDIDATE); Dallasao@aorthodontic.com (FOUND_CANDIDATE, malformed nested mailto in source - verify)", "source_url": "https://advancedorthodonticstudio.com (cached)", "timestamp": "2026-08-25T02:40Z", "confidence": "MEDIUM", "commercial_impact": "Per-market email routes revealed"}
+  ],
+  "not_touched_this_cycle": ["Fame official-domain email verification (shell session instability killed probe; remains FOUND_CANDIDATE via Facebook)", "Benham Lustig entity-role clarity", "Alexander fresh email discovery"],
+  "blockers": ["Shell Start-Job spawning unstable - use direct webfetch/single curl only", "Search engines rate-limited", "Fame/Benham/Alexander deltas deferred to next cycle"],
+  "quality_gates_run": {"duplicate_check": "PASS", "source_check": "PASS", "freshness_check": "PASS", "email_guess_check": "PASS (all emails read from actually-served content/JSON-LD)", "phone_guess_check": "PASS (every matrix phone read from served page text/JSON-LD)", "unsupported_claim_check": "PASS", "entity_conflict_check": "PASS (one closed, one newly opened and tracked)", "suppression_awareness_check": "PASS", "schema_validation": "PASS"}
+}

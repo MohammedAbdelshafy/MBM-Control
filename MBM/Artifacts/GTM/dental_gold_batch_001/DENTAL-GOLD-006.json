@@ -1,0 +1,64 @@
+{
+  "batch_id": "DENTAL-GOLD-006",
+  "version": "3.3",
+  "terminal": "OX ALPHA 2 — Continuous Mode v4",
+  "timestamp": "2026-08-25T02:20:00Z",
+  "boundary": "No EMAIL_READY / CALL_READY asserted. Nothing sent. Infrastructure untouched.",
+  "cycle_focus": "THRIVE conflict resolution + entity-graph hygiene",
+  "intelligence_deltas": [
+    {
+      "company_id": "DENTAL-GOLD-003-THRIVE",
+      "company": "Thrive Dental & Orthodontics",
+      "delta_found": [
+        "CONFLICT #1 RESOLVED: Garland page live with 'Coming Soon!' status -> roster is 6 ACTIVE locations + 1 ANNOUNCED pre-launch site",
+        "Garland NAP captured: 1780 Northwest Hwy #150, Garland, TX 75041 (no phone published yet)",
+        "Garland hours: Mon-Thu 10-18, Fri 10-17 (no Saturday)",
+        "Coughlins personally listed as Garland providers: Nathan Coughlin (CEO - Orthodontist), Christine Coughlin (Chief Clinical Officer - Dentist) + Dr. Shiza Haroon",
+        "/segura-dental/ identified as Spanish-language insurance education page - acquisition hypothesis REJECTED"
+      ],
+      "old_state": {"location_count": "CONFLICT OPEN (6 vs 7)", "segura_lead": "UNVERIFIED acquisition candidate"},
+      "new_state": {"location_count": "RESOLVED: 6 active + 1 coming-soon (Garland)", "location_count_conflict_status": "CLOSED", "segura_lead": "REJECTED (insurance info page, not an acquired brand)"},
+      "new_proven_signals": [
+        {"signal": "WALK_INS_CORE_MODEL", "evidence": "'Walk-ins are a core part of how our Garland office runs' + 'walk-ins welcome daily' FAQ (PROVEN verbatim)", "commercial_relevance": "Unscheduled arrival flow competes with scheduled load for the same front-desk capacity", "missing_proof": "Walk-in volume share", "next_best_research": "None available publicly"},
+        {"signal": "MEDICAID_MISSION_POSITIONING", "evidence": "'We built our Garland office specifically to serve this community: TMHP, MCNA, and DentaQuest accepted and welcomed... it's the mission' (PROVEN verbatim)", "commercial_relevance": "Public-program eligibility/prior-auth workload is materially heavier than PPO-only practices; also implies higher call intensity per appointment", "missing_proof": "Medicaid patient share", "next_best_research": "None public"},
+        {"signal": "BENEFITS_VERIFICATION_BEFORE_SEEN_GARLAND", "evidence": "'Your insurance, verified for you. Before your visit, our front desk confirms exactly what your plan covers' + 'no surprise bills at checkout. Ever.' (PROVEN verbatim)", "commercial_relevance": "Confirms dual-touch insurance workflow extends to newest site; institutional standard across group", "missing_proof": "Verification team size", "next_best_research": "None public"},
+        {"signal": "FAMILY_BLOCK_SCHEDULING", "evidence": "'family block scheduling means all your kids can be seen back-to-back in one visit' (PROVEN verbatim)", "commercial_relevance": "Multi-patient scheduling complexity per call", "missing_proof": "Utilization", "next_best_research": "None"},
+        {"signal": "WRITTEN_CASH_PRICING + CHERRY_FINANCING", "evidence": "FAQ + payment sections (PROVEN verbatim)", "commercial_relevance": "Treatment-plan follow-up surface for financed plans", "missing_proof": "Financed plan volume", "next_best_research": "None"}
+      ],
+      "pain_hypotheses_delta": [
+        {"what": "Walk-in surge absorption layered on scheduled care at the Medicaid-focused newest site", "label": "LEADING_HYPOTHESIS", "confidence": 0.55},
+        {"what": "Dual-touch insurance workflow (pre-visit + checkout) now confirmed at two audited sites; likely group-wide standard", "label": "LEADING_HYPOTHESIS (generalization from 2 of 6 sites)", "confidence": 0.60}
+      ],
+      "conflicts_update": [
+        {"field": "location_count", "status": "CLOSED", "resolution": "6 active + Garland coming-soon"},
+        {"field": "succession_relationship", "status": "OPEN (strengthened)", "note": "Coughlins listing themselves as providers at new Garland launch further evidences owner-operators; legal succession still unproven and NOT asserted"}
+      ],
+      "contactability_after_cycle": "BUSINESS_CONTACT_ONLY (booking widget + Garland phone unpublished; Richardson line CURRENT_OFFICIAL)",
+      "unknown_remaining": ["Per-location phones for 5 non-Richardson sites", "Group email", "Booking widget vendor", "Legal succession documents"],
+      "next_action": "Fetch remaining five city hubs (/locations/{city}/) to complete NAP/hours matrix"
+    },
+    {
+      "company_id": "_ENTITY_GRAPH_HYGIENE",
+      "company": "Segura Dental hypothesis",
+      "delta_found": ["/segura-dental/ fetched"],
+      "old_state": "UNVERIFIED possible-acquisition brand",
+      "new_state": "REJECTED - page is the Spanish-language 'dental insurance' education page (seguro = insurance); not a practice brand",
+      "status": "REJECTED",
+      "evidence": "Page title 'Seguro Dental | Thrive Dental and Orthodontics'; content is insurer list + educational copy",
+      "timestamp": "2026-08-25T01:55Z"
+    }
+  ],
+  "pending_queue_state": "Unchanged. Star Sleep sitemap probe deferred (shell job instability); next cycle first action.",
+  "rejected_delta": ["Segura Dental acquisition hypothesis (REJECTED by direct fetch evidence)"],
+  "quality_gates_run": {
+    "duplicate_check": "PASS",
+    "source_check": "PASS",
+    "freshness_check": "PASS",
+    "email_guess_check": "PASS",
+    "phone_guess_check": "PASS (Garland phone explicitly recorded as unpublished)",
+    "unsupported_claim_check": "PASS",
+    "entity_conflict_check": "PASS (one conflict closed, one kept open honestly)",
+    "suppression_awareness_check": "PASS",
+    "schema_validation": "PASS"
+  }
+}

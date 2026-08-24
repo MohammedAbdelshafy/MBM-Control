@@ -1,9 +1,38 @@
 {
  "generated_at": "2026-08-24T19:16:11Z",
  "queue_version": "DENTAL-EMAIL-Q2",
- "count": 7,
+ "count": 9,
  "suppression_checked_against": "MBM/Artifacts/suppressed_bad_phones.json (102 entries)",
  "records": [
+  {
+   "company_id": "DENTAL-GOLD-003-THRIVE",
+   "company": "Thrive Dental & Orthodontics",
+   "recipient": "Dr. Nathan Coughlin",
+   "recipient_role": "CEO - Orthodontist",
+   "business_email": "info@thrivedentist.com",
+   "email_source": "Official homepage JSON-LD (SITE_PUBLISHED)",
+   "email_source_url": "https://thrivedentist.com/",
+   "email_verification_status": "VERIFIED",
+   "email_verification_timestamp": "2026-08-24T20:34:50Z",
+   "email_confidence": "HIGH",
+   "pain_score": 82,
+   "pain_category": "PATIENT_INTAKE",
+   "pain_evidence": "PROVEN workflows: pre-visit verification + checkout benefits review (verbatim); walk-ins core model; family block scheduling; LEADING_HYPOTHESIS group-scale intake bottleneck (0.60)",
+   "offer_id": "AI-PATIENT-INTAKE",
+   "offer_name": "AI Patient Intake Pilot",
+   "personalization_evidence": "Verbatim dual-touch verification copy; six DFW locations; Modento booking; standby-hygienist same-day model (all published on thrivedentist.com)",
+   "approved_subject": "The pre-visit leg of your insurance double-check",
+   "approved_body": "Hi Dr. Coughlin,\n\nI noticed Thrive verifies insurance before every appointment and then reviews it again at checkout - remaining maximums, deductible status, what to schedule before year-end. Doing that consistently across six DFW offices takes real front-desk discipline.\n\nWe're building an AI intake assistant that automates the pre-visit leg - verification and intake handled before patients arrive - so your team keeps the human checkout conversation they're known for. We're looking for a few group practices to pilot it at one location.\n\nWould a 10-minute look be unreasonable? And if this isn't relevant, tell me and I won't follow up.\n\nMohammed",
+   "suppression_status": "clear",
+   "email_ready": true,
+   "queue_history": {
+    "previous_rank": 11,
+    "note": "NEW via GOLD-007 group email passing full gate"
+   },
+   "changed_because": "GOLD-007 info@thrivedentist.com SITE_PUBLISHED + MX pass",
+   "changed_at": "2026-08-24T20:34:50Z",
+   "source_batch": "DENTAL-GOLD-007"
+  },
   {
    "company_id": "DENTAL-GOLD-001-CROSSTIMBERS",
    "company": "Cross Timbers Dental, PC",
@@ -26,7 +55,7 @@
    "suppression_status": "clear",
    "email_ready": true,
    "queue_history": {
-    "previous_rank": 1
+    "previous_rank": 2
    }
   },
   {
@@ -51,7 +80,7 @@
    "suppression_status": "clear",
    "email_ready": true,
    "queue_history": {
-    "previous_rank": 2
+    "previous_rank": 3
    }
   },
   {
@@ -76,7 +105,7 @@
    "suppression_status": "clear",
    "email_ready": true,
    "queue_history": {
-    "previous_rank": 3
+    "previous_rank": 4
    }
   },
   {
@@ -101,8 +130,37 @@
    "suppression_status": "clear",
    "email_ready": true,
    "queue_history": {
-    "previous_rank": 4
+    "previous_rank": 5
    }
+  },
+  {
+   "company_id": "DENTAL-GOLD-002-CANYONCREEK",
+   "company": "Canyon Creek Family Dentistry of Richardson (Canyon Creek Family Dentistry, P.A.)",
+   "recipient": "Dr. Afshin Azmoodeh, DDS",
+   "recipient_role": "Founder / President / Dentist",
+   "business_email": "ccfd2091@gmail.com",
+   "email_source": "Practice's own website JSON-LD",
+   "email_source_url": "https://canyoncreekfamilydentistry.com",
+   "email_verification_status": "VERIFIED",
+   "email_verification_timestamp": "2026-08-24T20:34:50Z",
+   "email_confidence": "MEDIUM",
+   "pain_score": 60,
+   "pain_category": "MISSED_CALL_RECOVERY",
+   "pain_evidence": "LEADING_HYPOTHESIS: same-day/emergency explicitly routed through phone answering during business hours only (verbatim PROVEN); volumes unmeasured (0.58)",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "personalization_evidence": "'Fastest way to make a same-day appointment is to call the practice directly' + emergency-care call instruction + 4 named dentists (all PROVEN on site)",
+   "approved_subject": "Same-day scheduling at Canyon Creek",
+   "approved_body": "Hi Dr. Azmoodeh,\n\nI noticed Canyon Creek tells patients the fastest way to get a same-day appointment is to call the office directly - and with four dentists covering kids' care through emergencies, same-day requests arrive by phone.\n\nWe're piloting an AI assistant that returns missed patient calls within minutes and gets them reconnected or booked, working alongside your front desk. One location, 30 days, judged against your own baseline.\n\nWould 10 minutes be unreasonable? If this isn't relevant, tell me and I won't follow up.\n\nMohammed",
+   "suppression_status": "clear",
+   "email_ready": true,
+   "queue_history": {
+    "previous_rank": 10,
+    "note": "NEW via GOLD-007 JSON-LD candidate passing full gate"
+   },
+   "changed_because": "GOLD-007 candidate verified (practice-published JSON-LD)",
+   "changed_at": "2026-08-24T20:34:50Z",
+   "source_batch": "DENTAL-GOLD-007"
   },
   {
    "company_id": "DENTAL-GOLD-001-BENHAM",
@@ -126,7 +184,7 @@
    "suppression_status": "clear",
    "email_ready": true,
    "queue_history": {
-    "previous_rank": 5
+    "previous_rank": 7
    }
   },
   {
@@ -151,7 +209,7 @@
    "suppression_status": "clear",
    "email_ready": true,
    "queue_history": {
-    "previous_rank": null,
+    "previous_rank": 8,
     "note": "NEW via GOLD-004 enrichment"
    }
   },
@@ -165,26 +223,30 @@
    "email_source_url": "https://arnicadentalclinic.com",
    "email_verification_status": "VERIFIED",
    "email_verification_timestamp": "2026-08-24T18:57:30Z",
-   "email_confidence": "MEDIUM-HIGH",
+   "email_confidence": "HIGH",
    "pain_score": 50,
    "pain_category": "MISSED_CALL_RECOVERY",
    "pain_evidence": "LEADING_HYPOTHESIS: Service mix, hours, single-line setup PROVEN. Backlog not observed.",
    "offer_id": "DENTAL-MCR-001",
    "offer_name": "Missed Call Recovery",
-   "personalization_evidence": "One published line serves BOTH appointments and inquiries (PROVEN); Long accepted-insurance grid rendered (PROVEN presence)",
+   "personalization_evidence": "One published line serves BOTH appointments and inquiries (PROVEN); Long accepted-insurance grid rendered (PROVEN presence); booking route arnica.dental/book published; booking route arnica.dental/book published",
    "approved_subject": "One line, two jobs (Arnica Dental)",
    "approved_body": "Hi Dr. Vasilev,\n\nI noticed Arnica's single Frisco line handles both appointments and general inquiries, weekdays only - which usually means the dentist is the schedule.\n\nWe're piloting an AI assistant that calls back missed patient calls within minutes and reconnects or books them, so elective-treatment conversations don't have to wait for a quiet moment. Looking for a few solo practices to test it.\n\nWould 10 minutes be unreasonable? If this isn't relevant, say so and I won't follow up.\n\nMohammed",
    "suppression_status": "clear",
    "email_ready": true,
    "queue_history": {
-    "previous_rank": 6
-   }
+    "previous_rank": 9
+   },
+   "changed_because": "GOLD-007 JSON-LD confirmation",
+   "changed_at": "2026-08-24T20:34:50Z",
+   "source_batch": "DENTAL-GOLD-007"
   }
  ],
  "campaign_id": "CAMP-DENTAL-DFW-MCR-001",
  "vertical": "dental_dfw",
- "version": "FROZEN-v1.0",
- "frozen_at": "2026-08-24T19:22:36Z",
+ "version": "FROZEN-v1.4",
+ "frozen_at": "2026-08-24T20:39:37Z",
  "status": "COMMERCIAL_FREEZE_READY",
- "final": true
+ "final": true,
+ "delta": "DENTAL-GOLD-008"
 }

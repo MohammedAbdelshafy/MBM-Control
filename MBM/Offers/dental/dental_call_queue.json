@@ -8,24 +8,54 @@
    "company_id": "DENTAL-GOLD-002-DAZZLE",
    "reason_code": "INSUFFICIENT_OPERATIONAL_EVIDENCE",
    "detail": "Identity/phone verified, but OX2 collected zero operational evidence (pain UNVERIFIED 0.25). Outreach would be unsupported. Deferred to OX2 deep-dive."
-  },
-  {
-   "company_id": "DENTAL-GOLD-003-THRIVE",
-   "reason_code": "PHONE_REGISTRY_ONLY_NOT_WEBSITE_VERIFIED",
-   "detail": "Phone remains REGISTRY_ONLY and the actual number was not delivered in the handoff. Per phone gate, registry-only != current official-site verification. Scored 74/OFFER_READY; unblocks instantly once OX2 captures a site-published business line."
   }
  ],
  "queue": [
   {
    "rank": 1,
+   "company_id": "DENTAL-GOLD-003-THRIVE",
+   "company": "Thrive Dental & Orthodontics",
+   "decision_maker": "Nathan Coughlin (CEO - Orthodontist); Christine Coughlin (Chief Clinical Officer - Dentist)",
+   "role": "CEO / Chief Clinical Officer (self-listed as Garland providers)",
+   "verified_phone": "+19722489119",
+   "verification_source": "thrivedentist.com/locations/richardson/ == NPPES digit-for-digit (OX2 2026-08-25T01:15Z; OX3 refetch 2026-08-24T20:28:06Z)",
+   "pain_score": 83,
+   "priority_tier": "A2",
+   "pain_category": "PATIENT_INTAKE",
+   "proven_evidence": [
+    "Same-day emergency promise at ALL locations (FAQ verbatim)",
+    "After-hours coverage explicitly excluded (FAQ verbatim)",
+    "'Your insurance, verified for you' pre-visit verification + 'no surprise bills at checkout. Ever.' (Garland, verbatim) - dual-touch workflow confirmed at 2nd audited site",
+    "'Walk-ins are a core part of how our Garland office runs' + 'walk-ins welcome daily' (verbatim)",
+    "Medicaid mission verbatim: TMHP, MCNA, DentaQuest 'accepted and welcomed... it's the mission'",
+    "'family block scheduling means all your kids can be seen back-to-back in one visit' (verbatim)",
+    "Written cash pricing + Cherry financing (FAQ/payment sections)",
+    "Standardized Medit scanning; single Book Now convergence"
+   ],
+   "pain_hypothesis": "Dual-touch insurance workflow (pre-visit + checkout) is group-wide standard (generalized from 2 of 6 audited sites); Walk-in surge absorption layered on scheduled care at the Medicaid-focused newest site",
+   "offer_id": "AI-PATIENT-INTAKE",
+   "offer_name": "AI Patient Intake Pilot",
+   "why_this_prospect": "PROVEN-WORKFLOW wedge: institutionalized pre-visit insurance verification now confirmed at a second site ('verified for you... no surprise bills ever'), plus Book-Now convergence and walk-in/block-scheduling intake load. Strongest evidence-backed match.",
+   "opening": "Hi Dr. Coughlin, this is Mohammed. I'll keep this brief. I saw your Richardson team verifies insurance before every visit and again at checkout - that dual-touch discipline across six offices is exactly the workflow we built an AI intake assistant for.",
+   "likely_objection": "Our front desk already handles insurance verification.",
+   "recommended_response": "They clearly do - we automate the pre-visit leg so patients arrive already verified and your team keeps the human checkout conversation they're known for.",
+   "cta": "Would a 10-minute pilot look at the Richardson office be unreasonable?",
+   "script_integrity_note": "No missed-call/revenue/HIPAA claims. Succession relationship never mentioned on call.",
+   "queue_history": {
+    "previous_rank": 1,
+    "note": "NEW ENTRY via GOLD-005 phone unlock"
+   }
+  },
+  {
+   "rank": 2,
    "company_id": "DENTAL-GOLD-001-STARSLEEP",
    "company": "Star Sleep & Wellness (legacy: Sleep Dallas)",
    "decision_maker": "Dr. Brady Kent Smith, DDS",
    "role": "Owner / Founding Practitioner & Chief Medical Officer",
    "verified_phone": "+18444094657",
-   "verification_source": "Site header/footer/location pages == all NPPES rows (multi-source identical)",
+   "verification_source": "starsleepwellness.com canonical + sleepdallas.com legacy header/footer == all NPPES rows (multi-source identical)",
    "verification_timestamp": "2026-08-24T17:40Z; 2026-08-24T16:05-17:05Z",
-   "pain_score": 74,
+   "pain_score": 77,
    "priority_tier": "B1",
    "pain_category": "MISSED_CALL_RECOVERY",
    "proven_evidence": [
@@ -43,12 +73,12 @@
    "cta": "10-minute look at ONE location's overflow",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 1,
+    "previous_rank": 2,
     "status_unchanged": true
    }
   },
   {
-   "rank": 2,
+   "rank": 3,
    "company_id": "DENTAL-GOLD-001-CROSSTIMBERS",
    "company": "Cross Timbers Dental, PC",
    "decision_maker": "Dr. Brad Revering, DDS",
@@ -76,12 +106,12 @@
    "cta": "10-minute front-desk pilot discussion",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 2,
+    "previous_rank": 3,
     "status_unchanged": true
    }
   },
   {
-   "rank": 3,
+   "rank": 4,
    "company_id": "DENTAL-GOLD-002-APIE",
    "company": "Associates in Periodontics, Implantology & Endodontics ('Associates in PIE')",
    "decision_maker": "Dr. Michael Goodwin, DDS, MS",
@@ -108,12 +138,12 @@
    "cta": "10-minute referral follow-up pilot talk",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 3,
+    "previous_rank": 4,
     "status_unchanged": true
    }
   },
   {
-   "rank": 4,
+   "rank": 5,
    "company_id": "DENTAL-GOLD-001-FAME",
    "company": "Fame Dental (A2Z Family Dental, PLLC)",
    "decision_maker": "Dr. Amit Merchant, DMD, FAGD, FICD",
@@ -140,12 +170,12 @@
    "cta": "10-minute look at one location",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 4,
+    "previous_rank": 5,
     "status_unchanged": true
    }
   },
   {
-   "rank": 5,
+   "rank": 6,
    "company_id": "DENTAL-GOLD-002-CANYONCREEK",
    "company": "Canyon Creek Family Dentistry of Richardson (Canyon Creek Family Dentistry, P.A.)",
    "decision_maker": "Dr. Afshin Azmoodeh, DDS",
@@ -172,12 +202,12 @@
    "cta": "10-minute look",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 5,
+    "previous_rank": 6,
     "status_unchanged": true
    }
   },
   {
-   "rank": 6,
+   "rank": 7,
    "company_id": "DENTAL-GOLD-001-LONESTAR",
    "company": "Lone Star Dental Care (Aesthetic Dentistry, PA)",
    "decision_maker": "Dr. Afshin Vahadi, DDS",
@@ -204,20 +234,55 @@
    "cta": "10-minute look",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 6,
+    "previous_rank": 7,
     "status_unchanged": true
    }
   },
   {
-   "rank": 7,
+   "rank": 8,
+   "company_id": "DENTAL-GOLD-001-SMILESFAM",
+   "company": "Smiles Family Dental (Angelie V. Zamora DDS)",
+   "decision_maker": "Dr. Angelie V. Zamora, DDS",
+   "role": "Owner / President / Dentist",
+   "verified_phone": "+19723461100",
+   "verification_source": "smilesfamilydental.com tel: links cross-matched against two separate NPPES rows",
+   "verification_timestamp": "2026-08-24T21:15Z; 2026-08-24T18:40Z",
+   "pain_score": 60,
+   "priority_tier": "LOW",
+   "pain_category": "MISSED_CALL_RECOVERY",
+   "proven_evidence": [
+    "Both location phones published on one site and matched to two distinct NPPES rows (PROVEN two-market operation under one brand)",
+    "Medicaid identifier on registry (PROVEN public-program participation)",
+    "JarvisAnalytics per-location booking frames + published SMS text lines (platform facts PROVEN; location count CONFLICT OPEN)",
+    "JarvisAnalytics per-location booking frames + published SMS text lines (platform facts PROVEN; location count CONFLICT OPEN)",
+    "Four active locations named on homepage with direct lines (verbatim)",
+    "One centralized JarvisAnalytics booking account serves all four offices (PROVEN)",
+    "Multi-provider roster: Zamora / Kim / Shrestha / Keesler"
+   ],
+   "pain_hypothesis": "Split-location call routing without unified triage creates plausible consistency gaps; evidence depth still shallow",
+   "offer_id": "DENTAL-MCR-001",
+   "offer_name": "Missed Call Recovery",
+   "why_this_prospect": "Four offices on ONE centralized JarvisAnalytics scheduling brain - intake automation wedge is concrete",
+   "opening": "Hi Zamora, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that you publish four phone numbers across Flower Mound and Arlington.",
+   "likely_objection": "We already have front desk staff.",
+   "recommended_response": "This works beside them - it only touches calls that already rang unanswered; your team stays the front line.",
+   "cta": "10-minute look",
+   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
+   "queue_history": {
+    "previous_rank": 13,
+    "status_unchanged": true
+   }
+  },
+  {
+   "rank": 9,
    "company_id": "DENTAL-GOLD-001-BENHAM",
    "company": "Benham Orthodontics & Associates, PA",
-   "decision_maker": "Dr. Adam W. Benham, DDS, MS",
-   "role": "Owner / Orthodontist",
+   "decision_maker": "Dr. Jeremy Lustig (+ Dr. Andrew Young)",
+   "role": "Commercial owners (acquired practice; corporate-parent POSSIBLE)",
    "verified_phone": "+12146188182",
    "verification_source": "Official site + Yelp + Nextdoor + BubbleLife (4-source agreement)",
    "verification_timestamp": "2026-08-24T18:05Z; 2026-08-24T16:20Z; 2026-08-24T19:45Z",
-   "pain_score": 57,
+   "pain_score": 55,
    "priority_tier": "NURTURE",
    "pain_category": "PATIENT_FOLLOWUP",
    "proven_evidence": [
@@ -228,19 +293,19 @@
    "pain_hypothesis": "Weekend-generated consult requests wait up to 3 days for human response; follow-up sequence completion plausible gap",
    "offer_id": "FOLLOWUP-001",
    "offer_name": "Patient Follow-Up",
-   "why_this_prospect": "Free-consult acquisition + 96-hour weekly closure window; follow-up sequence is the natural wedge.",
+   "why_this_prospect": "Free-consult funnel remains, but outreach now routes through post-acquisition ownership - pitch targets workflow, not owner vanity",
    "opening": "Hi Benham, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that you offer complimentary consultations at two offices while closing Fridays through Sundays.",
    "likely_objection": "We call people back ourselves.",
    "recommended_response": "It covers the gap moments - nights, weekends, mid-appointment - then hands warm patients to your team.",
    "cta": "10-minute consult follow-up pilot talk",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 7,
+    "previous_rank": 8,
     "status_unchanged": true
    }
   },
   {
-   "rank": 8,
+   "rank": 10,
    "company_id": "DENTAL-GOLD-002-ALEXANDER",
    "company": "Alexander Cosmetic, Family & Implant Dentistry PLLC (co-branded 'Alexander & Song Dentistry' at same suite)",
    "decision_maker": "Dr. Christabelle Alexander, DDS, MAGD",
@@ -267,12 +332,12 @@
    "cta": "10-minute look",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 8,
+    "previous_rank": 9,
     "status_unchanged": true
    }
   },
   {
-   "rank": 9,
+   "rank": 11,
    "company_id": "DENTAL-GOLD-001-BEARPED",
    "company": "Bear Pediatric Dentistry & Orthodontics (Bear Dental Corp)",
    "decision_maker": "Dr. Dennis Bear, DMD (with Dr. Maggie Wang, orthodontist - husband/wife team)",
@@ -298,12 +363,12 @@
    "cta": "10-minute look",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 9,
+    "previous_rank": 10,
     "status_unchanged": true
    }
   },
   {
-   "rank": 10,
+   "rank": 12,
    "company_id": "DENTAL-GOLD-001-ARNICA",
    "company": "Arnica Dental Care",
    "decision_maker": "Dr. Anna Vasilev, DMD",
@@ -329,12 +394,12 @@
    "cta": "10-minute look",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 10,
+    "previous_rank": 11,
     "status_unchanged": true
    }
   },
   {
-   "rank": 11,
+   "rank": 13,
    "company_id": "DENTAL-GOLD-002-AOS",
    "company": "Advanced Orthodontic Studio",
    "decision_maker": "Dr. Marco A. Navarro-Flores",
@@ -359,36 +424,6 @@
    "cta": "10-minute look",
    "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
    "queue_history": {
-    "previous_rank": 11,
-    "status_unchanged": true
-   }
-  },
-  {
-   "rank": 12,
-   "company_id": "DENTAL-GOLD-001-SMILESFAM",
-   "company": "Smiles Family Dental (Angelie V. Zamora DDS)",
-   "decision_maker": "Dr. Angelie V. Zamora, DDS",
-   "role": "Owner / President / Dentist",
-   "verified_phone": "+19723461100",
-   "verification_source": "smilesfamilydental.com tel: links cross-matched against two separate NPPES rows",
-   "verification_timestamp": "2026-08-24T21:15Z; 2026-08-24T18:40Z",
-   "pain_score": 48,
-   "priority_tier": "LOW",
-   "pain_category": "MISSED_CALL_RECOVERY",
-   "proven_evidence": [
-    "Both location phones published on one site and matched to two distinct NPPES rows (PROVEN two-market operation under one brand)",
-    "Medicaid identifier on registry (PROVEN public-program participation)"
-   ],
-   "pain_hypothesis": "Split-location call routing without unified triage creates plausible consistency gaps; evidence depth still shallow",
-   "offer_id": "DENTAL-MCR-001",
-   "offer_name": "Missed Call Recovery",
-   "why_this_prospect": "Four published entry points across two markets without visible unified intake.",
-   "opening": "Hi Zamora, this is Mohammed. I'll keep this very brief. We build AI workflow tools for dental practices - I saw that you publish four phone numbers across Flower Mound and Arlington.",
-   "likely_objection": "We already have front desk staff.",
-   "recommended_response": "This works beside them - it only touches calls that already rang unanswered; your team stays the front line.",
-   "cta": "10-minute look",
-   "script_integrity_note": "No missed-call rates, revenue loss, recovery stats, customers, case studies, HIPAA/FDA claims. Hypotheses labeled as such.",
-   "queue_history": {
     "previous_rank": 12,
     "status_unchanged": true
    }
@@ -396,8 +431,9 @@
  ],
  "campaign_id": "CAMP-DENTAL-DFW-MCR-001",
  "vertical": "dental_dfw",
- "version": "FROZEN-v1.0",
- "frozen_at": "2026-08-24T19:22:36Z",
+ "version": "FROZEN-v1.4",
+ "frozen_at": "2026-08-24T20:43:08Z",
  "status": "COMMERCIAL_FREEZE_READY",
- "final": true
+ "final": true,
+ "delta": "DENTAL-GOLD-008"
 }

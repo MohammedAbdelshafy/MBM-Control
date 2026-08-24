@@ -1,0 +1,120 @@
+{
+  "batch_id": "DENTAL-GOLD-002",
+  "terminal": "OX ALPHA 2",
+  "timestamp": "2026-08-24T21:35:00Z",
+  "policy": {
+    "FOUND_vs_READY": "OX2 may mark an email FOUND. OX2 MUST NOT and DOES NOT mark EMAIL_READY. That gate belongs to OX ALPHA 3.",
+    "sources_allowed": ["official practice website", "official contact page", "official business-domain email", "clearly public professional listing (e.g., practice's own Facebook page)"],
+    "never_done": "No email formats guessed; no first.last@domain constructed; no obfuscated address decoded by inference"
+  },
+  "email_candidates": [
+    {
+      "company_id": "DENTAL-GOLD-001-BEARPED",
+      "practice_name": "Bear Pediatric Dentistry & Orthodontics",
+      "email": "info@bearpd.com",
+      "source": "Practice's own served contact-page markup (Cloudflare data-cfemail payload, deterministically decoded)",
+      "source_url": "https://bearpd.com/contact-us",
+      "retrieval_timestamp": "2026-08-25T00:35Z",
+      "email_context": "General practice inbox on the practice's own domain; decoded from published content, not guessed",
+      "confidence": "HIGH",
+      "ox2_status": "FOUND",
+      "added_in_batch": "DENTAL-GOLD-004"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-LONESTAR",
+      "practice_name": "Lone Star Dental Care",
+      "email": "info@lonestardentalcare.com",
+      "source": "Official website footer contact block",
+      "source_url": "https://www.lonestardentalcare.com",
+      "retrieval_timestamp": "2026-08-24T17:20Z",
+      "email_context": "General practice inbox published alongside phone/address",
+      "confidence": "HIGH",
+      "ox2_status": "FOUND"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-CROSSTIMBERS",
+      "practice_name": "Cross Timbers Dental",
+      "email": "info@crosstimbersdental.com",
+      "source": "Official website footer mailto link",
+      "source_url": "https://www.crosstimbersdental.com",
+      "retrieval_timestamp": "2026-08-24T19:00Z",
+      "email_context": "'Email Us' footer link on official domain",
+      "confidence": "HIGH",
+      "ox2_status": "FOUND"
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-APIE",
+      "practice_name": "Associates in PIE",
+      "email": "office@piedental.com",
+      "source": "Practice's official Facebook page listing",
+      "source_url": "https://www.facebook.com/AssociatesinPIE",
+      "retrieval_timestamp": "2026-08-24T20:30Z",
+      "email_context": "Public business email on practice-controlled page; matches official domain piedental.com",
+      "confidence": "HIGH",
+      "ox2_status": "FOUND"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-BENHAM",
+      "practice_name": "Benham Orthodontics & Associates PA",
+      "email": "info@benhamorthodontics.com",
+      "source": "Official Instagram bio + site team page (search-index snippet)",
+      "source_url": "https://www.instagram.com/benhamorthodontics",
+      "retrieval_timestamp": "2026-08-24T19:45Z",
+      "email_context": "Published in the practice's own social bio",
+      "confidence": "MEDIUM-HIGH",
+      "ox2_status": "FOUND"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-ARNICA",
+      "practice_name": "Arnica Dental Care",
+      "email": "contact@arnicadentalclinic.com",
+      "source": "Official website 'Email Us' block",
+      "source_url": "https://arnicadentalclinic.com",
+      "retrieval_timestamp": "2026-08-24T17:10Z",
+      "email_context": "Site-published general contact inbox",
+      "confidence": "HIGH",
+      "ox2_status": "FOUND"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-ARNICA",
+      "practice_name": "Arnica Dental Care",
+      "email": "drvasilev@arnicadentalclinic.com",
+      "source": "CMS NPPES registry DIRECT endpoint for NPI 1013674704",
+      "source_url": "https://npiregistry.cms.hhs.gov/",
+      "retrieval_timestamp": "2026-08-24T16:50Z",
+      "email_context": "Direct-messaging address registered by the provider with CMS; owner-attributed per NPPES metadata. Per JARVIS special handling: FOUND_CANDIDATE only.",
+      "confidence": "MEDIUM",
+      "ox2_status": "FOUND_CANDIDATE"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-FAME",
+      "practice_name": "Fame Dental",
+      "email": "info@fame-dental.com",
+      "source": "Practice's official Facebook page listing (public)",
+      "source_url": "https://www.facebook.com/FameDentalFrisco",
+      "retrieval_timestamp": "2026-08-24T19:45Z",
+      "email_context": "Business email on practice-controlled page matching official domain",
+      "confidence": "MEDIUM-HIGH",
+      "ox2_status": "FOUND_CANDIDATE"
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-ALEXANDER",
+      "practice_name": "Alexander Cosmetic, Family & Implant Dentistry / Alexander & Song Dentistry",
+      "email": "office@asdentistrytx.com",
+      "source": "Practice's official Facebook page listing",
+      "source_url": "https://www.facebook.com/asdentistry",
+      "retrieval_timestamp": "2026-08-24T21:00Z",
+      "email_context": "Co-brand domain (asdentistrytx.com) distinct from calexanderdds.com; entity-brand mapping flagged for OX3 review",
+      "confidence": "MEDIUM",
+      "ox2_status": "FOUND_CANDIDATE"
+    }
+  ],
+  "unresolved_email_notes": [
+    {"company_id": "DENTAL-GOLD-001-BEARPED", "note": "Email exists on bearpd.com/contact-us but is Cloudflare-obfuscated to automated fetch; deliberately NOT guessed or decoded by inference"},
+    {"company_id": "DENTAL-GOLD-001-STARSLEEP", "note": "No public email located; web form is the published channel"},
+    {"company_id": "DENTAL-GOLD-002-CANYONCREEK", "note": "No public email captured this pass"},
+    {"company_id": "DENTAL-GOLD-001-SMILESFAM", "note": "None captured in partial site review"},
+    {"company_id": "DENTAL-GOLD-002-DAZZLE", "note": "None captured in partial site review"},
+    {"company_id": "DENTAL-GOLD-002-AOS", "note": "None captured"}
+  ]
+}

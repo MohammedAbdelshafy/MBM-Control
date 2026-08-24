@@ -1,0 +1,59 @@
+{
+  "batch_id": "DENTAL-GOLD-008",
+  "version": "3.5",
+  "terminal": "OX ALPHA 2",
+  "timestamp": "2026-08-25T04:00:00Z",
+  "cycle_type": "PRECISION_CONFLICT_RESOLUTION",
+  "boundary": "Research deltas only. No EMAIL_READY/CALL_READY. Nothing sent. Frozen queues untouched.",
+  "p0_smiles_location_conflict": {
+    "status": "RESOLVED",
+    "resolution": "FOUR ACTIVE LOCATIONS confirmed by the practice's own homepage copy",
+    "verbatim_evidence": "\"With four dental office locations... Call our Flower Mound office at (972) 346-1100, our Irving office at (972) 444-9337, our Arlington office at (817) 277-1971, or our Frisco office at (972) 646-1718.\"",
+    "location_matrix": [
+      {"city": "Flower Mound", "address_current": "811 International Pkwy Suite 420, Flower Mound TX 75022", "phone": "+19723461100", "sms": "+16826889470", "booking_frame": "...829896", "providers": ["Dr. Angelie Zamora", "Dr. Shrestha"], "note": "ADDRESS CONFLICT vs NPPES (4001 Long Prairie Rd Ste 110) - relocation or correction; site current"},
+      {"city": "Irving", "address_current": null, "phone": "+19724449337", "sms": "+19723664187", "booking_frame": "...895251", "note": "Address not captured this pass; phone == NPPES authorized-official telephone"},
+      {"city": "Arlington", "address_current": "3900 Arlington Highlands Blvd Suite 261, Arlington TX 76018", "phone": "+18172771971", "sms": "+18177692798", "booking_frame": "...942786", "providers": ["Dr. Ashley Keesler"], "note": "== NPPES mailing-row address+phone"},
+      {"city": "Frisco", "address_current": null, "phone": "+19726461718", "sms": null, "booking_frame": "...707476", "note": "No SMS line published"}
+    ],
+    "entity_resolution": {
+      "relationship": "MULTI_LOCATION",
+      "evidence": "All four booking frames share one JarvisAnalytics account (sfdlco-dtxa) => single centralized scheduling system",
+      "registry_gap": "NPPES rows cover Flower Mound + Arlington only; Irving + Frisco operate under entities not yet identified in pulls - NEW registry-gap conflict OPENED"
+    },
+    "new_conflicts_opened": [
+      {"field": "Flower Mound address", "source_A": "Site header/footer: 811 International Pkwy Suite 420", "source_B": "NPPES LOCATION: 4001 Long Prairie Rd Ste 110", "likely_reason": "Relocation not filed with NPPES", "status": "OPEN"},
+      {"field": "registered_entities_for_Irving_and_Frisco_sites", "source_A": "Site: four locations one brand", "source_B": "Registry pulls to date show two sites", "likely_reason": "Additional PLLC registrations exist but were not in sampled city pulls", "status": "OPEN - next_action: targeted NPPES queries (Irving/Frisco city pulls already contain candidate rows; match by phone)"}
+    ],
+    "commercial_impact": "Location count corrected 2->4; centralized JarvisAnalytics scheduling confirmed; multi-provider roster (Zamora/Kim/Shrestha/Keesler) confirmed; Smiles rises in operational-complexity weighting"
+  },
+  "p1_fame_email": {
+    "status": "BLOCKED",
+    "detail": "fame-dental.com/contact-us/ and /contact both 404; no contact page exists in nav (contact handled via on-page forms/modals); rendered homepage contains no mailto",
+    "current_state": "info@fame-dental.com remains FOUND_CANDIDATE via official Facebook listing only",
+    "next_action": "Capture fame-dental.com raw HTML and inspect footer/form action fields for a published address"
+  },
+  "p2_benham_entity_role": {
+    "status": "RESOLVED",
+    "finding": "Practice was SOLD. Per federal litigation record (Benham v. Five Point Dental Specialists, Inc., E.D. Tex. CIVIL 4:24-CV-484-SDJ, judgment context July 2024): 'Benham also conveyed his entire ownership interest in the practice to Dr. Jeremy Lustig and Dr. [Andrew Young] in exchange for five million dollars and additional earn-out compensation', within an Asset Purchase framework involving Five Point Dental Specialists.",
+    "implications": [
+      "Commercial owner/decision-maker: Dr. Jeremy Lustig (+ Dr. Andrew Young) - explains NPPES 'BENHAM ORTHODONTICS' entities listing LUSTIG as authorized official",
+      "Dr. Adam Benham: likely continuing clinical provider (naming rights retained per APA structure) - clinical/provider role, NOT presumed owner",
+      "POSSIBLE_CORPORATE_PARENT flagged: Five Point Dental Specialists involvement requires review before owner-led classification",
+      "Lustig also operates Lustig & Young Orthodontics (Fort Worth/Azle, separate brand) - operator footprint beyond Benham brand"
+    ],
+    "sources": ["https://caselaw.vlex.com (case summary)", "https://law.justia.com via casemine.com mirror", "https://lustigyoungortho.com"],
+    "retrieval_timestamp": "2026-08-25T03:50Z",
+    "confidence": "HIGH (court record)",
+    "commercial_impact": "MATERIAL - changes decision-maker identity, adds corporate-parent flag, affects owner-led scoring for DENTAL-GOLD-001-BENHAM"
+  },
+  "p3_alexander_email": {
+    "status": "BLOCKED",
+    "detail": "calexanderdds.com/contact 404; Wix homepage publishes no address; asdentistrytx.com is NO-MX and was not rescued per directive; no new legitimate address found without guessing",
+    "current_state": "office@asdentistrytx.com remains FOUND_CANDIDATE (Facebook-sourced) with deliverability risk flagged"
+  },
+  "bonus_deltas_from_cached_evidence": [
+    {"company_id": "DENTAL-GOLD-001-DAZZLE", "field_changed": "address + location_count", "old_value": "1121 Flower Mound Rd Suite 500 (NPPES); 1 location", "new_value": "Site JSON-LD + footer: 1020 Flower Mound Rd Suite 110, Flower Mound TX 75028; homepage states 'satellite office in Hickory Creek, TX'", "source_url": "https://dazzledentalcare.com (cached s91)", "timestamp": "2026-08-25T03:30Z", "confidence": "HIGH (self-published)", "commercial_impact": "NPPES stale-address conflict CONFIRMED within own sources; potential 2nd service point discovered"},
+    {"company_id": "DENTAL-GOLD-003-THRIVE", "field_changed": "insurance-workflow generalization evidence", "old_value": "dual-touch verification proven at Richardson + Garland", "new_value": "Frisco hub page repeats identical checkout-review language ('what was covered today, what is remaining in your annual maximum... before your benefits reset on January 1st') - third audited site", "source_url": "/locations/frisco/", "timestamp": "2026-08-25T02:55Z", "confidence": "PROVEN x3", "commercial_impact": "Group-standard workflow thesis now near-certain"}
+  ],
+  "quality_gates_run": {"duplicate_check": "PASS", "source_check": "PASS", "freshness_check": "PASS", "email_guess_check": "PASS (nothing constructed)", "phone_guess_check": "PASS", "unsupported_claim_check": "PASS", "entity_conflict_check": "PASS (two new conflicts opened honestly)", "suppression_awareness_check": "PASS", "schema_validation": "PASS"}
+}

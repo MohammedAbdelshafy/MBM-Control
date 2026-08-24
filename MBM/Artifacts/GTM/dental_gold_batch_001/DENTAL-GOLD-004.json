@@ -1,0 +1,87 @@
+{
+  "batch_id": "DENTAL-GOLD-004",
+  "version": "3.1",
+  "terminal": "OX ALPHA 2 — Supreme Research Intelligence",
+  "timestamp": "2026-08-25T00:50:00Z",
+  "cycle_type": "PRIORITY_0_ENRICHMENT",
+  "boundary": "No CALL_READY. No EMAIL_READY. Nothing sent. Dialer/infrastructure untouched. OX3 owns all downstream gates.",
+  "priority_law_compliance": "P0 enrichment executed first; P1/P2 deferred to next cycle by design (downstream consumption pending).",
+  "enrichment_results": [
+    {
+      "company_id": "DENTAL-GOLD-001-BEARPED",
+      "practice_name": "Bear Pediatric Dentistry & Orthodontics",
+      "material_delta": {
+        "business_email": {
+          "email": "info@bearpd.com",
+          "status": "FOUND (SITE_PUBLISHED)",
+          "method": "Deterministic Cloudflare data-cfemail decode of the practice's own served contact-page markup (hex payload 5b32353d341b393e3a292b3f75383436). Domain matches practice domain exactly. NOT a pattern guess.",
+          "source_url": "https://bearpd.com/contact-us",
+          "retrieval_timestamp": "2026-08-25T00:35Z",
+          "confidence": "HIGH",
+          "ox2_status": "FOUND — never EMAIL_READY"
+        }
+      },
+      "fields_upgraded": ["business_email", "email_source", "missing_data(resolved email)"]
+    },
+    {
+      "company_id": "DENTAL-GOLD-003-THRIVE",
+      "practice_name": "Thrive Dental & Orthodontics",
+      "material_delta": {
+        "website_depth_probe": "Location subpages (/richardson, /locations/richardson, /location/*, /richardson-tx) return 404 or JS-only shells; static per-location phones/emails/hours remain uncaptured.",
+        "operating_model_precision": "Emergency flow verbatim retained: same-day at all locations; after-hours explicitly excluded (FAQ). Booking converges on site-wide Book Now widget.",
+        "next_research_action": "Render-thru fetcher (not curl) against individual city pages, or capture XHR booking-config endpoints during a permitted interactive session."
+      },
+      "conflicts_status": ["location_count 6-vs-7 OPEN", "Breckinridge legal succession OPEN"],
+      "fields_upgraded": ["missing_data precision", "next_research_action"]
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-STARSLEEP",
+      "material_delta": {
+        "route_probe": "/locations and /contact-us return 404; published contact surface remains: single mainline +18444094657, fax +12146144277, per-location pages reachable from 'Find a Location' nav, and the patient-success callback web form.",
+        "next_research_action": "Capture one city subpage (e.g. Dallas) for per-location email if any exists."
+      },
+      "fields_upgraded": ["booking_routes clarification", "next_research_action"]
+    },
+    {
+      "company_id": "_ROSTER_REVALIDATION",
+      "note": "Lone Star(+121 Dental related entity), Cross Timbers, Associates in PIE, Fame Dental, Benham Orthodontics, Smiles Family Dental, Arnica Dental Care, Advanced Orthodontic Studio, Dazzle Dental Care, Canyon Creek Family Dentistry, Alexander Cosmetic: records re-validated against research memory this cycle; no contradictions introduced; no field changes beyond timestamps.",
+      "revalidation_timestamp": "2026-08-25T00:45Z"
+    }
+  ],
+  "pending_queue_state": {
+    "unchanged_and_tracked_in_memory": [
+      {"entity": "Rodeo/AAVA Zarrabi cluster", "reason": "ENTITY_CONFLICT scale review"},
+      {"entity": "Absolute Inwood Dentistry PLLC", "reason": "OFFICIAL_DOMAIN_UNRESOLVED"},
+      {"entity": "Premier Dental Center TX (Jacob entities)", "reason": "OFFICIAL_DOMAIN_UNRESOLVED"},
+      {"entity": "Chansol PLLC", "reason": "OFFICIAL_DOMAIN_UNRESOLVED"},
+      {"entity": "Candice Hutcheson DDS MS PLLC", "reason": "OFFICIAL_DOMAIN_UNRESOLVED"},
+      {"entity": "121 DENTAL CARE PA website", "reason": "OFFICIAL_DOMAIN_UNRESOLVED (inside LONESTAR related-entity)"}
+    ],
+    "resolution_note": "All require search-engine quota windows that were exhausted this cycle; no evidence improvements were safely available. Left explicitly pending per §Priority 1."
+  },
+  "new_gold_this_cycle": [],
+  "rejected_delta": [],
+  "quality_gates_run": {
+    "duplicate_check": "PASS",
+    "source_check": "PASS",
+    "freshness_check": "PASS (all touches FRESH)",
+    "email_guess_check": "PASS (decode was of actually-published payload, domain-matched)",
+    "phone_guess_check": "PASS (no new numbers asserted)",
+    "unsupported_claim_check": "PASS",
+    "entity_conflict_check": "PASS (Thrive conflicts kept OPEN)",
+    "suppression_awareness_check": "PASS (no exports produced)",
+    "schema_validation": "PASS"
+  },
+  "top_research_opportunities": [
+    {"rank": 1, "company": "Thrive Dental & Orthodontics", "why": "6-7 dual-provider offices, C-suite named, universal same-day emergency promise with explicit no-after-hours FAQ boundary, institutionalized pre-visit insurance verification, $129/mo ortho funnel", "strongest_evidence": "FAQ verbatim + Why-Thrive verification copy (PROVEN)", "pain_hypothesis": "Staffed-hours intake bottleneck at multi-site scale + verification workload (LEADING_HYPOTHESIS)", "confidence": {"identity": "HIGH", "contact": "MEDIUM", "pain": "MEDIUM-HIGH"}, "unknown": "Per-location phones/emails/hours; Garland status; volumes", "contactability": "BUSINESS_CONTACT_ONLY", "next_research_action": "Render-fetch city pages for static NAP + hours matrix"},
+    {"rank": 2, "company": "Star Sleep & Wellness", "why": "7 sites on one toll-free line + physician-referral desk + patient-success callback promise", "strongest_evidence": "Single-line architecture across 9 NPI rows (PROVEN)", "pain_hypothesis": "Centralized intake/referral triage latency", "confidence": {"identity": "HIGH", "contact": "HIGH", "pain": "MEDIUM-HIGH"}, "unknown": "Referral volume, roster", "contactability": "BUSINESS_CONTACT_ONLY", "next_research_action": "One city-subpage email sweep"},
+    {"rank": 3, "company": "Cross Timbers Dental", "why": "'Call to see if we take your insurance' + same-day emergency + membership plan + CareStack portal", "strongest_evidence": "Verbatim workflow instructions (PROVEN)", "pain_hypothesis": "Front-desk benefits/scheduling concentration", "confidence": {"identity": "HIGH", "contact": "HIGH", "pain": "MEDIUM-HIGH"}, "unknown": "Membership scale", "contactability": "DIRECTLY_REACHABLE (published info@)", "next_research_action": "None required before OX3 scoring"},
+    {"rank": 4, "company": "Associates in PIE", "why": "Referral-dependent specialty group, 3 sites, staggered weekday closures", "strongest_evidence": "Referral form + GD testimonial (PROVEN)", "pain_hypothesis": "Referral acknowledgment + scheduling seams", "confidence": {"identity": "HIGH", "contact": "HIGH", "pain": "MEDIUM"}, "unknown": "Referral throughput", "contactability": "DIRECTLY_REACHABLE (office@ candidate)", "next_research_action": "None required"},
+    {"rank": 5, "company": "Fame Dental", "why": "63 open hrs/wk incl Sundays + same-day emergencies + Pearl AI adopter", "strongest_evidence": "Hours/emergency/insurance-help copy (PROVEN)", "pain_hypothesis": "After-hours call capture gap", "confidence": {"identity": "HIGH", "contact": "HIGH", "pain": "MEDIUM-HIGH"}, "unknown": "Missed-call incidence", "contactability": "info@ FOUND_CANDIDATE", "next_research_action": "Verify email on own domain footer"},
+    {"rank": 6, "company": "Canyon Creek Family Dentistry", "why": "Verbatim call-first same-day instructions; 4 dentists; pediatric+adult mix", "strongest_evidence": "Site copy (PROVEN)", "pain_hypothesis": "Reception-only same-day routing", "confidence": {"identity": "HIGH", "contact": "HIGH", "pain": "MEDIUM"}, "unknown": "Booking platform, email", "contactability": "BUSINESS_CONTACT_ONLY", "next_research_action": "Low"},
+    {"rank": 7, "company": "Benham Orthodontics", "why": "Free-consult funnel vs Fri-Sun closure", "strongest_evidence": "Hours + consult offers (PROVEN)", "pain_hypothesis": "Weekend lead-response latency", "confidence": {"identity": "HIGH", "contact": "HIGH", "pain": "MEDIUM"}, "unknown": "Consult volume; Lustig entity role", "contactability": "DIRECTLY_REACHABLE (info@)", "next_research_action": "Entity-role review"},
+    {"rank": 8, "company": "Smiles Family Dental", "why": "Two markets, four published lines, Medicaid participation", "strongest_evidence": "Multi-line/multi-NPI reconciliation (PROVEN)", "pain_hypothesis": "Split-market intake consistency (low depth)", "confidence": {"identity": "HIGH", "contact": "MEDIUM", "pain": "LOW-MEDIUM"}, "unknown": "Full site depth", "contactability": "BUSINESS_CONTACT_ONLY", "next_research_action": "Homepage deep-read"},
+    {"rank": 9, "company": "Arnica Dental Care", "why": "Solo cosmetic operator, single shared line, elective plans", "strongest_evidence": "Service mix + hours + single-line setup (PROVEN)", "pain_hypothesis": "Treatment-plan follow-up cadence gap", "confidence": {"identity": "HIGH", "contact": "HIGH", "pain": "MEDIUM-LOW"}, "unknown": "Backlog existence", "contactability": "DIRECTLY_REACHABLE (contact@ + owner DIRECT endpoint candidate)", "next_research_action": "None required"},
+    {"rank": 10, "company": "Alexander Cosmetic, Family & Implant Dentistry", "why": "Urgent-care Call Now + insurance verification in first visit + Mon-Thu window with always-on forms", "strongest_evidence": "Site blocks (PROVEN)", "pain_hypothesis": "Closed-window lead accumulation", "confidence": {"identity": "HIGH", "contact": "MEDIUM-HIGH", "pain": "MEDIUM"}, "unknown": "Song ownership stake", "contactability": "FOUND_CANDIDATE (co-brand domain)", "next_research_action": "Brand-entity mapping"}
+  ]
+}

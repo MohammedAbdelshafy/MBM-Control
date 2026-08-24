@@ -1,0 +1,67 @@
+{
+  "batch_id": "DENTAL-GOLD-005",
+  "version": "3.2",
+  "terminal": "OX ALPHA 2 — Continuous Intelligence Mode v4",
+  "timestamp": "2026-08-25T01:40:00Z",
+  "boundary": "No EMAIL_READY. No CALL_READY. Nothing sent. No dialer/infrastructure changes.",
+  "cycle_focus": "THRIVE DEEP-DIVE (flagship P0) via sitemap-derived URL discovery",
+  "new_gold": [],
+  "gold_enriched_deep_dives": [
+    {
+      "company_id": "DENTAL-GOLD-003-THRIVE",
+      "practice_name": "Thrive Dental & Orthodontics",
+      "deep_dive_timestamp": "2026-08-25T01:20Z",
+      "discovery_breakthrough": "page-sitemap.xml exposed /locations/{city}/dentists/ and /locations/{city}/ URL patterns; JS-wall bypassed",
+      "identity_upgrade": {
+        "phone_status_change": "REGISTRY_ONLY -> CURRENT_OFFICIAL",
+        "phone_evidence": "Richardson hub page publishes '4150 E Renner Rd #400 Richardson, TX 75082 (972) 248-9119' == NPPES 1376921528 telephone digit-for-digit",
+        "address_confirmed": true,
+        "confidence_after_upgrade": {"identity": "HIGH", "contact": "HIGH", "pain": "MEDIUM-HIGH"}
+      },
+      "richardson_location_record": {
+        "address": "4150 E Renner Rd #400, Richardson, TX 75082",
+        "phone": "+19722489119",
+        "hours": "Mon-Thu 10:00-18:00 | Fri 10:00-17:00 | alternate Saturdays 09:00-16:00",
+        "providers": ["Dr. Shiza Haroon (Dentist)", "Dr. Swapna Reddy (Dentist)", "Dr. Raamis Hirani (Orthodontist)", "Dr. Estefany Montelongo (Dentist)"],
+        "tenure_claim": "'serving the Richardson community for over a decade' - consistent with legacy Breckinridge practice at same address (strengthens POSSIBLE_REBRAND, still not legal proof)"
+      },
+      "operating_model_additions": {
+        "same_day_mechanics": "'We keep multiple hygienists on standby so same-day appointments including same-day cleanings are a real operational capability' (PROVEN verbatim)",
+        "insurance_double_verification": "Benefits verified BEFORE every appointment AND reviewed AT CHECKOUT ('what was covered today, remaining annual maximum, deductible status, and what to schedule before December 31st') (PROVEN verbatim)",
+        "emergency_flow_detail": "In-house emergency root canals and extractions; 'Call (972) 248-9119 the moment a dental emergency happens'; antibiotics/Rx flow aided by Walgreens across the street (PROVEN)",
+        "ortho_funnel": "Free consultations, $129/mo plans, 3D digital scanner 'no impressions ever', whitening trays at completion, Saturday ortho appointments (PROVEN)",
+        "payer_mix": "18+ PPO plans + Texas Medicaid TMHP + MCNA; Healthy Smiles Discount Plan $89/year (+$49/family member) (PROVEN - note: homepage said different plan framing; per-location page is more specific)",
+        "staffing_signal_new": "Multiple hygienists on standby explicitly staffed for demand absorption (PROVEN staffing-for-flexibility posture)"
+      },
+      "evidence_graph_additions": [
+        {"claim": "Richardson NAP matches registry row exactly", "status": "PROVEN", "source": "/locations/richardson/", "timestamp": "2026-08-25T01:15Z"},
+        {"claim": "Dual insurance-touch workflow (pre-visit verify + checkout benefits review)", "status": "PROVEN", "source": "/locations/richardson/ 'What Makes Our Richardson Office Different'", "timestamp": "2026-08-25T01:15Z"},
+        {"claim": "Same-day capability backed by standby hygienist staffing model", "status": "PROVEN", "source": "/locations/richardson/", "timestamp": "2026-08-25T01:15Z"},
+        {"claim": "Location tenure >10 years at Renner Rd address", "status": "PROVEN (self-published claim)", "source": "/locations/richardson/", "timestamp": "2026-08-25T01:15Z"},
+        {"claim": "Segura Dental brand page exists inside Thrive sitemap (/segura-dental/) - possible acquired-practice landing page", "status": "UNVERIFIED", "source": "page-sitemap.xml", "timestamp": "2026-08-25T01:05Z", "next_action": "Fetch /segura-dental/ next cycle"}
+      ],
+      "conflicts_update": [
+        {"field": "location_count", "source_A": "Homepage copy 'six offices'", "source_B": "Nav tabs: Frisco, Allen, Garland, Sachse, Dallas, North Dallas, Richardson", "likely_reason": "Garland launch pending or page consolidation", "resolution_status": "OPEN", "next_action": "Fetch /locations/garland/ variant when quota allows"},
+        {"field": "succession_relationship", "source_A": "NPPES BRECKINRIDGE DENTAL AND ORTHODONTICS @ 4150 E Renner Rd (owner Coughlin)", "source_B": "Thrive Richardson page: same NAP, 'over a decade' tenure, Coughlin as CEO", "likely_reason": "Rebrand of continuing practice", "resolution_status": "STRENGTHENED_LEADING_HYPOTHESIS - still not legal proof"}
+      ],
+      "remaining_missing_data": ["Email addresses (none published)", "Other six city NAP/hours pages (pattern now known)", "Garland status", "Booking widget vendor identity"]
+    }
+  ],
+  "other_p0_touches_this_cycle": [
+    {"company_id": "DENTAL-GOLD-001-STARSLEEP", "delta": "Homepage raw markup pulled; city-slug href extraction inconclusive due to shell regex constraints; location URLs remain discoverable next cycle via sitemap.xml probe (same technique as Thrive)"},
+    {"company_id": "DENTAL-GOLD-001-BEARPED", "delta": "Email FOUND last cycle stands; no further touches needed before OX3 scoring"}
+  ],
+  "pending_queue_state": "Unchanged (6 items). Search-quota windows did not open this cycle; no forced resolutions.",
+  "rejected_delta": [],
+  "quality_gates_run": {
+    "duplicate_check": "PASS",
+    "source_check": "PASS",
+    "freshness_check": "PASS",
+    "email_guess_check": "PASS",
+    "phone_guess_check": "PASS (phone upgraded only on digit-for-digit site+registry match)",
+    "unsupported_claim_check": "PASS",
+    "entity_conflict_check": "PASS (both Thrive conflicts kept OPEN with next actions)",
+    "suppression_awareness_check": "PASS",
+    "schema_validation": "PASS"
+  }
+}
