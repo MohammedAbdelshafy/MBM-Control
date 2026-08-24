@@ -29,6 +29,32 @@ class OfferRecommendation:
     entry_offer: str
     upsell_path: list[str]
     rationale: str
+    fit_score: int = 50
+    evidence: list[str] = field(default_factory=list)
+    recommended_pitch: str = ""
+    recommended_CTA: str = ""
+
+
+_PITCH_CTA = {
+    "AI_RECEPTIONIST_APPOINTMENT_RECOVERY": (
+        "Your next missed call becomes a booked appointment instead.",
+        "Call our demo line and try to stump it"),
+    "AI_MISSED_CALL_RECOVERY": (
+        "Every missed call gets a second chance in under a minute.",
+        "Send last week's call log - we show what was lost"),
+    "AI_ESTIMATING_QUOTING_DOCUMENT_PROCESSING": (
+        "Draft estimates in hours; approvals stay yours.",
+        "Pick 3 past projects for a blind comparison"),
+    "AI_LEAD_QUALIFICATION_ENGINE": (
+        "Work only the leads that deserve a callback.",
+        "Send 20 recent leads - scored+reasoned in 48h"),
+    "AI_INTAKE_QUALIFICATION": (
+        "Structured intake that protects billable hours.",
+        "We map your intake in one 30-minute call"),
+    "AI_CUSTOMER_SUPPORT": (
+        "Instant answers for the 80%, humans for the 20%.",
+        "Share your top support questions"),
+}
 
 
 _RULES: list[dict] = [
@@ -100,10 +126,36 @@ def recommend(prospect: ProspectProfile) -> OfferRecommendation:
     for rule in _RULES:
         try:
             if rule["match"](p):
-                return OfferRecommendation(rule["primary"], rule["secondary"], rule["entry"],
-                                           list(rule["upsell"]), rule["why"])
+                rec = OfferRecommendation(
+                    rule["primary"], rule["secondary"], rule["entry"],
+                    list(rule["upsell"]), rule["why"],
+                    fit_score=_fit_score(p, rule),
+                    evidence=[f"industry={industry}",
+                              *[f"pain_signal={s}" for s in p.pain_signals],
+                              f"documents_heavy={p.documents_heavy}",
+                              f"uses_crm={p.uses_crm}"],
+                )
+                pitch, cta = _PITCH_CTA.get(rule["primary"], ("", ""))
+                rec.recommended_pitch = pitch
+                rec.recommended_CTA = cta
+                return rec
         except Exception:
             continue
-    return OfferRecommendation(DEFAULT_RULE["primary"], DEFAULT_RULE["secondary"],
-                               DEFAULT_RULE["entry"], list(DEFAULT_RULE["upsell"]),
-                               DEFAULT_RULE["why"])
+    rec = OfferRecommendation(DEFAULT_RULE["primary"], DEFAULT_RULE["secondary"],
+                              DEFAULT_RULE["entry"], list(DEFAULT_RULE["upsell"]),
+                              DEFAULT_RULE["why"], fit_score=45,
+                              evidence=[f"industry={industry or 'unknown'} -> default entry path"])
+    rec.recommended_pitch, rec.recommended_CTA = _PITCH_CTA[DEFAULT_RULE["primary"]]
+    return rec
+
+
+def _fit_score(p: ProspectProfile, rule: dict) -> int:
+    """Deterministic 0-100 fit. Base 55; +8 per reinforcing signal, capped."""
+    score = 55
+    if p.pain_signals:
+        score += min(24, 8 * len(p.pain_signals))
+    if p.industry in ("dental", "medspa", "construction", "real_estate", "law"):
+        score += 9
+    if rule is not _RULES[-1]:
+        score += 6
+    return max(0, min(100, score))

@@ -36,16 +36,18 @@ CHAIN_STATES = [
     "DISCOVERED",
     "PROPERTY_VERIFIED",
     "OWNER_VERIFIED",
-    "CONTACT_ENRICHED",
-    "CONTACT_CROSSCHECKED",
+    "CONTACT_FOUND",
+    "CONTACT_IDENTITY_VERIFIED",
+    "PHONE_FOUND",
     "PHONE_VERIFIED",
-    "COMPLIANCE_CHECKED",
-    "CALLABLE",
+    "COMPLIANCE_CLEAR",
+    "CALL_READY",
 ]
 
 FAILURE_STATES = [
-    "NEEDS_REVIEW", "BAD_PHONE", "OWNER_MISMATCH", "STALE_CONTACT", "DNC",
-    "LITIGATOR", "SUPPRESSED", "SYNTHETIC", "MALFORMED", "NO_VERIFIED_CONTACT",
+    "NEEDS_REVIEW", "NO_VERIFIED_CONTACT", "BAD_PHONE", "DISCONNECTED",
+    "WRONG_PARTY", "OWNER_MISMATCH", "STALE_CONTACT", "DNC", "SUPPRESSED",
+    "LITIGATOR", "SYNTHETIC", "MALFORMED",
 ]
 
 # Lead lanes that must never share a callable queue (Phase 8)
@@ -94,17 +96,21 @@ class SyntheticPhoneDetector:
 
     @staticmethod
     def id_derived(lead_id: str, phone_raw: Any) -> bool:
-        """True when a tail of the lead id appears inside the phone digits.
+        """True when a meaningful numeric token of the lead id appears inside
+        the phone digits.
 
-        This is the exact failure mode of the 2026-08 'Phase 1 Recovery'
-        contamination: phones were constructed from record ids.
+        Checks EVERY numeric token in the id (>=4 digits), not just the
+        trailing run: 'DCAD-TOP50-695130' carries tokens {50, 695130}; a phone
+        ending 8695130 is fabrication even though the raw last-7 differs.
+        This is the exact failure mode of the 2026-08 contamination.
         """
-        id_digits = re.sub(r"\D", "", str(lead_id or ""))
         phone = normalize_phone(phone_raw)
-        if not id_digits or not phone:
+        if not phone:
             return False
-        tail = id_digits[-7:]
-        return len(tail) >= 5 and tail in phone[-10:]
+        tokens = [t for t in re.findall(r"\d+", str(lead_id or "")) if len(t) >= 4]
+        if not tokens:
+            return False
+        return any(tok in phone[-10:] for tok in tokens)
 
     @staticmethod
     def repeated_digits(phone_raw: Any, run: int = 5) -> bool:
@@ -285,15 +291,18 @@ CALL_OUTCOMES = {
     "BAD_NUMBER", "CONNECTED_OWNER", "WRONG_PERSON", "WRONG_NUMBER",
     "DISCONNECTED", "VOICEMAIL", "NO_ANSWER", "DO_NOT_CALL", "INTERESTED",
     "NOT_INTERESTED", "CALLBACK", "APPOINTMENT", "QUALIFIED", "UNQUALIFIED",
+    "WRONG_PARTY",
 }
 BAD_PHONE_OUTCOMES = {"BAD_NUMBER", "WRONG_NUMBER", "DISCONNECTED"}
 DNC_OUTCOMES = {"DO_NOT_CALL"}
+IDENTITY_OUTCOMES = {"WRONG_PERSON", "WRONG_PARTY"}
 STATUS_FOR_OUTCOME = {
     "BAD_NUMBER": "BAD",
     "WRONG_NUMBER": "BAD",
     "DISCONNECTED": "DISCONNECTED",
     "DO_NOT_CALL": "DNC",
     "WRONG_PERSON": "OWNER_MISMATCH",
+    "WRONG_PARTY": "WRONG_PARTY",
 }
 
 
@@ -360,11 +369,12 @@ def handle_call_feedback(
         lead["suppression_reason"] = "REP_REPORTED_DNC"
         lead["queue_bucket"] = "SUPPRESSED"
         remove_from_callable = True
-    elif outcome == "WRONG_PERSON":
-        phone_status = "OWNER_MISMATCH"
+    elif outcome in ("WRONG_PERSON", "WRONG_PARTY"):
+        phone_status = STATUS_FOR_OUTCOME[outcome]
         lead["owner_match_status"] = "MISMATCH_REPORTED"
         lead["queue_bucket"] = "NEEDS_REVIEW_OWNER_MISMATCH"
         lead["callable"] = False
+        lead["is_callable"] = False
         remove_from_callable = True
 
     lead["updated_at"] = ts
@@ -386,13 +396,19 @@ SELLER_REQUIRED_EVIDENCE = (
 
 
 def seller_quality_gate(lead: dict) -> tuple[bool, str]:
-    """SELLER lane admission. Returns (admitted, gate_state/reason).
+    """SELLER lane admission v2 -- identity-first.
 
     Hard rules:
       - synthetic/id-derived/malformed phone -> SYNTHETIC/MALFORMED
       - healthcare-registry sourcing in the seller lane -> CATEGORY_MISMATCH
       - institutional/corporate contacts -> NEEDS_REVIEW (weak seller fit)
-      - county-parcel verified natural-person owners pass.
+      - county-parcel verification alone proves PROPERTY/OWNER identity but
+        NOT that a phone belongs to that owner. CALL_READY additionally
+        requires an explicit owner<->phone evidence link:
+            details.owner_phone_evidence in {TITLED_OWNER_DIRECT,
+            AUTHORIZED_REPRESENTATIVE, MULTI_SOURCE_IDENTITY_AGREEMENT}
+        Absent that link the record is NEEDS_REVIEW (NO_VERIFIED_CONTACT),
+        never callable.
     """
     lead_id = str(lead.get("id"))
     verdict = SyntheticPhoneDetector.classify(lead_id, lead.get("phone"))
@@ -414,6 +430,12 @@ def seller_quality_gate(lead: dict) -> tuple[bool, str]:
 
     contact = f"{lead.get('contact','')} {lead.get('company','')}"
     if CORPORATE_ENTITY_RE.search(contact):
+        return False, "NEEDS_REVIEW"
+
+    details = lead.get("details") or {}
+    evidence = str(details.get("owner_phone_evidence") or "").upper()
+    if evidence not in ("TITLED_OWNER_DIRECT", "AUTHORIZED_REPRESENTATIVE",
+                        "MULTI_SOURCE_IDENTITY_AGREEMENT"):
         return False, "NEEDS_REVIEW"
 
     return True, "CALLABLE"
@@ -500,3 +522,148 @@ def audit_database(db: list[dict], quarantine: QuarantineLedger) -> dict:
         "verified_owner_share": round(report["verified_phone_count"] / len(db), 4) if db else 0.0,
     }
     return report
+
+
+# ---------------------------------------------------------------------------
+# Phone quality events (v2, section 9) + provider scoreboard (section 10)
+# ---------------------------------------------------------------------------
+
+class PhoneQualityEvents:
+    """Append-only event ledger for phone-quality actions."""
+
+    REQUIRED = ("lead_id", "phone", "event_type", "source", "timestamp",
+                "provider", "previous_status", "new_status")
+
+    def __init__(self, path: Path):
+        self.path = Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+
+    def record(self, *, lead_id: str, phone: str, event_type: str, source: str,
+               rep_id: str = "", provider: str = "", previous_status: str = "",
+               new_status: str = "", notes: str = "", timestamp: str = "") -> dict:
+        event = {
+            "lead_id": lead_id, "phone": phone, "event_type": event_type,
+            "source": source, "timestamp": timestamp or _iso_now(), "rep_id": rep_id,
+            "provider": provider or "unknown", "previous_status": previous_status,
+            "new_status": new_status, "notes": notes[:300],
+        }
+        missing = [k for k in self.REQUIRED if not str(event.get(k, "")).strip()]
+        if missing:
+            raise ValueError(f"event missing required fields: {missing}")
+        with self.path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(event, ensure_ascii=False) + "\n")
+        return event
+
+
+class ProviderScoreboard:
+    """Measured provider performance. Only REAL call outcomes update it;
+    nothing is fabricated or projected."""
+
+    FIELDS = ("calls_attempted", "correct_contacts", "wrong_numbers",
+              "wrong_parties", "disconnected", "dnc", "appointments")
+
+    def __init__(self, path: Path):
+        self.path = Path(path)
+        if self.path.exists():
+            self.data = json.loads(self.path.read_text(encoding="utf-8"))
+        else:
+            self.data = {}
+
+    def ensure(self, provider: str) -> dict:
+        row = self.data.setdefault(provider, {f: 0 for f in self.FIELDS})
+        return row
+
+    def record_outcome(self, provider: str, outcome: str) -> dict:
+        row = self.ensure(provider)
+        row["calls_attempted"] += 1
+        mapping = {
+            "CONNECTED_OWNER": "correct_contacts", "WRONG_NUMBER": "wrong_numbers",
+            "BAD_NUMBER": "wrong_numbers", "WRONG_PARTY": "wrong_parties",
+            "DISCONNECTED": "disconnected", "DO_NOT_CALL": "dnc",
+            "APPOINTMENT": "appointments",
+        }
+        key = mapping.get(outcome)
+        if outcome == "APPOINTMENT":
+            row["correct_contacts"] += 1
+        elif outcome == "INTERESTED" or outcome == "QUALIFIED":
+            row["correct_contacts"] += 1
+        if key:
+            row[key] += 1
+        self.save()
+        return row
+
+    def real_contact_rate(self, provider: str) -> float | None:
+        row = self.data.get(provider)
+        if not row or not row["calls_attempted"]:
+            return None
+        return round(row["correct_contacts"] / row["calls_attempted"], 4)
+
+    def save(self) -> None:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(self.data, indent=2), encoding="utf-8")
+
+
+# ---------------------------------------------------------------------------
+# Consensus v2 additions: identity match + provider disagreement handling
+# ---------------------------------------------------------------------------
+
+def score_candidates_with_identity(
+    candidates: list[PhoneCandidate],
+    engine: PhoneConsensusEngine | None = None,
+    owner_name: str = "",
+    property_address: str = "",
+    mailing_address: str = "",
+) -> list[dict]:
+    """Rank candidates; enforce NEEDS_REVIEW on provider disagreement and on
+    absent identity linkage. Returns ranked dicts with evidence fields."""
+    eng = engine or PhoneConsensusEngine()
+    ranked = [dict(eng.score_candidate(c),
+                   provider_agreement=sorted(set(c.sources)),
+                   line_type=c.line_type,
+                   last_verified_at=c.last_verified_at)
+              for c in candidates]
+    for r, c in zip(ranked, candidates):
+        agree = len(set(c.sources)) >= 2
+        identity_link = (
+            bool(owner_name) and bool(property_address)
+            and c.owner_match >= 0.5 and c.address_match >= 0.5
+        )
+        r["identity_match"] = bool(identity_link)
+        if not agree and len({c.source_reliability}) == 1 and not identity_link:
+            pass
+        if ranked and not identity_link:
+            r["tier"] = "NEEDS_REVIEW"
+            r["reasons"] = r.get("reasons", []) + ["no proven owner<->phone identity link"]
+        if len(set(c.sources)) < 2 and any(
+            other.phone == c.phone and set(other.sources) != set(c.sources)
+            for other in candidates
+        ):
+            r["tier"] = "NEEDS_REVIEW"
+            r["reasons"] = r.get("reasons", []) + ["provider disagreement on sourcing"]
+    ranked.sort(key=lambda r: (-r["score"], r["phone"]))
+    return ranked
+
+
+SCRIPT_SEGMENT_PREFIXES = {
+    "REAL_ESTATE_SELLER": "DISTRESSED_SELLER",
+    "DISTRESSED_SELLER": "DISTRESSED_SELLER",
+    "HEALTHCARE_CLINIC": "HEALTHCARE_CLINIC",
+    "AI_CONSULTANCY": "AI_CONSULTANCY",
+    "CONTRACTOR": "CONTRACTOR",
+}
+
+
+def script_integrity_check(lead: dict) -> tuple[bool, str]:
+    """Every CALL_READY lead must carry a segment-matched script."""
+    seg = lead.get("segment")
+    if not seg:
+        return False, "SEGMENT_MISSING"
+    script_id = str(lead.get("script_id") or "")
+    if not script_id:
+        return False, "SCRIPT_ID_MISSING"
+    expected = f"SCRIPT-{seg}-"
+    if not script_id.startswith(expected) and seg in SCRIPT_SEGMENT_PREFIXES:
+        return False, f"SCRIPT_SEGMENT_MISMATCH:{script_id[:40]}"
+    if not str(lead.get("Call_Script") or "").strip():
+        return False, "CALL_SCRIPT_EMPTY"
+    return True, ""
