@@ -10,19 +10,19 @@ inputs:
     required: false
     default: ci:notification
   telegram_bot_token:
-    description: Telegram bot token (pass ${{ secrets.TELEGRAM_BOT_TOKEN }})
+    description: Telegram bot token (pass the TELEGRAM_BOT_TOKEN secret at the call site)
     required: false
     default: ''
   telegram_chat_id:
-    description: Telegram chat id (pass ${{ secrets.TELEGRAM_CHAT_ID }})
+    description: Telegram chat id (pass the TELEGRAM_CHAT_ID secret at the call site)
     required: false
     default: ''
   vite_supabase_url:
-    description: Supabase URL (pass ${{ secrets.VITE_SUPABASE_URL }})
+    description: Supabase URL (pass the VITE_SUPABASE_URL secret at the call site)
     required: false
     default: ''
   supabase_service_role_key:
-    description: Supabase service role key (pass ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }})
+    description: Supabase service role key (pass the SUPABASE_SERVICE_ROLE_KEY secret at the call site)
     required: false
     default: ''
 

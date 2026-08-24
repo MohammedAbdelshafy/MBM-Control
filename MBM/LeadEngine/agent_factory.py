@@ -662,8 +662,19 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
     }
 
     try:
-        r = requests.post("https://api.retellai.com/create-agent", headers=headers, json=agent_payload, timeout=30)
-        if r.status_code in (200, 201):
+        r = None
+        for attempt in range(3):
+            r = requests.post("https://api.retellai.com/create-agent", headers=headers, json=agent_payload, timeout=30)
+            if r.status_code in (200, 201):
+                break
+            # Retell intermittently returns transient 404 "Not Found" on this
+            # endpoint right after LLM creation; back off and retry.
+            if r.status_code in (404, 429, 500, 502, 503, 504) and attempt < 2:
+                wait = 3 * (attempt + 1)
+                print(f"  [~] Transient {r.status_code} on create-agent (attempt {attempt + 1}/3), retrying in {wait}s")
+                time.sleep(wait)
+                continue
+        if r is not None and r.status_code in (200, 201):
             data = r.json()
             agent_id = data.get("agent_id", "unknown")
             return {
@@ -677,7 +688,10 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
                 "status": "deployed"
             }
         else:
-            print(f"  [-] Failed: {r.status_code} - {r.text[:100]}")
+            if r is None:
+                print("  [-] Failed: no response from create-agent")
+            else:
+                print(f"  [-] Failed: {r.status_code} - {r.text[:100]}")
             return None
     except Exception as e:
         print(f"  [!] Error: {e}")
