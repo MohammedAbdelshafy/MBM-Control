@@ -28,6 +28,7 @@ def env(tmp_path, monkeypatch):
     cdir = tmp_path / "campaign"
     monkeypatch.setattr(mod, "QUEUE_JSON", queue)
     monkeypatch.setattr(mod, "CAMPAIGN_DIR", cdir)
+    monkeypatch.setattr(mod, "EVENTS_LOG", tmp_path / "events.jsonl")  # NEVER touch real logs
     return mod
 
 
@@ -80,7 +81,8 @@ def test_mark_transitions_and_duplicate_guard(env):
         env.mark("AUDIT-01", "bogus")
 
 
-def test_funnel_diagnoses_each_leak_stage(env, monkeypatch):
+def test_funnel_diagnoses_each_leak_stage(env, monkeypatch, tmp_path):
+    evlog = tmp_path / "events.jsonl"
     env.build(limit=2)
     out = env.funnel()["outputs"]
     assert any("NO_TRAFFIC" in p for p in out["diagnosis"])
@@ -101,27 +103,22 @@ def test_funnel_diagnoses_each_leak_stage(env, monkeypatch):
     out = env.funnel()["outputs"]
     assert any("PURCHASE_NO_WEBHOOK" in p for p in out["diagnosis"])
 
-    evlog = Path(env.BASE_DIR) / "logs" / "revenue_events.jsonl"
-    evlog.parent.mkdir(parents=True, exist_ok=True)
     evlog.write_text(json.dumps({
         "event_id": "real_1", "event_name": "purchase",
         "source": "whop_webhook", "amount_usd": 149}) + "\n", encoding="utf-8")
     out = env.funnel()["outputs"]
     assert any("FUNNEL_HEALTHY" in p for p in out["diagnosis"])
-    evlog.unlink()
+    assert not evlog.exists() or evlog.read_text(encoding="utf-8") != ""
 
 
-def test_smoke_events_never_count_as_revenue(env):
-    evlog = Path(env.BASE_DIR) / "logs" / "revenue_events.jsonl"
+def test_smoke_events_never_count_as_revenue(env, tmp_path):
+    evlog = tmp_path / "events.jsonl"
     evlog.parent.mkdir(parents=True, exist_ok=True)
     evlog.write_text(json.dumps({
         "event_id": "smoke_123", "event_name": "purchase",
         "source": "whop_webhook"}) + "\n", encoding="utf-8")
-    try:
-        out = env.funnel()["outputs"]
-        assert out["webhook_real_purchases"] == 0
-    finally:
-        evlog.unlink()
+    out = env.funnel()["outputs"]
+    assert out["webhook_real_purchases"] == 0
 
 
 def test_landing_url_carries_prospect_level_attribution(env):

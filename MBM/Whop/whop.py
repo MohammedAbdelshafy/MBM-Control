@@ -258,6 +258,107 @@ def cmd_command_center():
     _print(ros.command_center())
 
 
+def _classify_event(e: dict) -> str:
+    """REAL / TEST / MOCK / UNKNOWN — smoke markers never become revenue."""
+    eid = str(e.get("event_id") or "")
+    if eid.startswith("smoke_"):
+        return "TEST"
+    uid = str((e.get("customer_ref") or {}).get("user_id") or "")
+    meta = e.get("metadata") or {}
+    if uid.startswith("usr_smoke") or (e.get("session_id") == "smoke_sess") \
+            or (e.get("attribution") or {}).get("utm_source") == "smoke" \
+            or e.get("source") == "smoke" or meta.get("utm_source") == "smoke":
+        return "TEST"
+    if not eid:
+        return "UNKNOWN"
+    return "REAL"
+
+
+def cmd_daily():
+    """Daily revenue command: traffic/clicks/checkouts/purchases/revenue/customers/
+    top product/top source/funnel leak/next action. REAL evidence only;
+    UNKNOWN stays UNKNOWN; TEST never counts as revenue."""
+    events = []
+    if ros.EVENTS_FILE.exists():
+        for line in ros.EVENTS_FILE.read_text(encoding="utf-8").splitlines():
+            try:
+                events.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+
+    def stage(name):
+        rows = [e for e in events if e.get("event_name") == name]
+        real = [e for e in rows if _classify_event(e) == "REAL"]
+        return {"count": len(rows), "real": len(real), "test": len(rows) - len(real),
+                "classification": ("REAL" if real else
+                                   ("TEST" if rows else "NO_DATA"))}
+
+    views, clicks, checkouts = stage("landing_view"), stage("cta_click"), stage("checkout_started")
+    purchases = [e for e in events
+                 if e.get("event_name") == "purchase" and _classify_event(e) == "REAL"
+                 and e.get("source") == "whop_webhook"]
+    revenue = sum(float(e.get("amount_usd") or 0) for e in purchases)
+    customers = {json.dumps(e.get("customer_ref"), sort_keys=True): True for e in purchases}
+    by_product, by_source = {}, {}
+    for e in purchases:
+        pid = (e.get("metadata") or {}).get("product_id") or "UNATTRIBUTED"
+        by_product[pid] = by_product.get(pid, 0) + 1
+    for e in events:
+        src = (e.get("attribution") or {}).get("utm_source") \
+            or (e.get("metadata") or {}).get("utm_source")
+        if src and _classify_event(e) == "REAL":
+            by_source[src] = by_source.get(src, 0) + 1
+
+    # Section-11 leak classification on REAL stages only.
+    leak, next_action = "NO_DATA", "execute whop_audit_day1 touches"
+    r_v, r_c = views["real"], clicks["real"]
+    if purchases:
+        ful_log = BASE_DIR / "logs" / "fulfillments.jsonl"
+        fulfilled = ful_log.exists() and ful_log.stat().st_size > 0
+        leak = None if fulfilled else "PURCHASE_NO_FULFILLMENT -> operations: run REVENUE_AUDIT_FULFILLMENT_SOP"
+        next_action = "upsell qualification per SOP" if fulfilled else "fulfill within 72h clock"
+    elif checkouts["real"] > 0:
+        leak = "CHECKOUT_NO_PURCHASE -> trust/pricing/checkout problem"
+        next_action = "inspect checkout drop-off; do NOT write software"
+    elif r_c > 0:
+        leak = "CTA_NO_CHECKOUT -> landing/offer problem" if checkouts["count"] == 0 \
+            else "CHECKOUT_STARTED_UNVERIFIED -> verify beacon wiring"
+        next_action = "fix landing offer clarity before more traffic"
+    elif r_v > 0:
+        leak = "TRAFFIC_NO_CTA -> messaging problem"
+        next_action = "strengthen CTA copy; keep traffic constant"
+    elif views["count"] > 0 or clicks["count"] > 0:
+        leak = "ONLY_TEST_TRAFFIC -> no real distribution yet"
+    else:
+        leak = "NO_TRAFFIC -> distribution problem"
+
+    import whop_live as wl
+    snap = wl.load_previous_snapshot()
+    members = wl.members_report(snap)
+    _print({
+        "date": _now_iso_day(),
+        "traffic": views, "clicks": clicks, "checkouts": checkouts,
+        "purchases": {"count": len(purchases), "classification": ("REAL" if purchases else "NO_DATA")},
+        "revenue": ({"value": revenue, "currency": "USD", "classification": "REAL"}
+                    if purchases else
+                    {"value": "UNAVAILABLE", "reason": "NO_REVENUE_EVIDENCE"}),
+        "customers": {"count": len(customers),
+                      "classification": ("REAL" if customers else "NO_DATA")},
+        "top_product": (max(by_product, key=by_product.get) if by_product else "UNAVAILABLE"),
+        "top_source": (max(by_source, key=by_source.get) if by_source else "UNAVAILABLE"),
+        "funnel_leak": leak,
+        "next_action": next_action,
+        "memberships_active": members["value"],
+        "membership_status": members["status"],
+        "provenance": {"events_file": str(ros.EVENTS_FILE)},
+    })
+
+
+def _now_iso_day() -> str:
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+
 COMMANDS = {
     "status": cmd_status, "sync": cmd_sync, "products": cmd_products,
     "revenue": cmd_revenue, "funnel": cmd_funnel,
@@ -265,7 +366,7 @@ COMMANDS = {
     "upsells": cmd_upsells, "winbacks": cmd_winbacks,
     "experiments": cmd_experiments, "alerts": cmd_alerts,
     "economics": cmd_economics, "simulate": cmd_simulate, "qa": cmd_qa,
-    "command-center": cmd_command_center,
+    "daily": cmd_daily, "command-center": cmd_command_center,
 }
 
 

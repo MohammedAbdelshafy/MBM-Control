@@ -1,0 +1,413 @@
+{
+  "runs": [
+    {
+      "run_id": "20260824_151029",
+      "at": "2026-08-24T15:14:49.043256+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1968-D0F1BFB9452C",
+          "movie": "Night of the Living Dead (1968)",
+          "status": "skipped_duplicate",
+          "qa": null
+        },
+        {
+          "id": "TR-1962-A744E6E21B87",
+          "movie": "Carnival of Souls (1962)",
+          "status": "ready",
+          "qa": 8.95
+        }
+      ]
+    },
+    {
+      "run_id": "20260824_150106",
+      "at": "2026-08-24T15:04:40.263779+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1922-B02CE02259AB",
+          "movie": "Nosferatu (1922)",
+          "status": "ready",
+          "qa": 9.27
+        }
+      ]
+    },
+    {
+      "run_id": "20260824_130952",
+      "at": "2026-08-24T13:14:49.033221+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1920-A38FE1F94821",
+          "movie": "The Cabinet of Dr. Caligari (1920)",
+          "status": "ready",
+          "qa": 9.48
+        }
+      ]
+    },
+    {
+      "run_id": "20260823_180958",
+      "at": "2026-08-23T18:20:02.160115+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1968-D0F1BFB9452C",
+          "movie": "Night of the Living Dead (1968)",
+          "status": "ready",
+          "qa": 8.81
+        }
+      ]
+    },
+    {
+      "run_id": "20260823_180547",
+      "at": "2026-08-23T18:09:25.973576+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1922-B02CE02259AB",
+          "movie": "Nosferatu (1922)",
+          "status": "ready",
+          "qa": 9.23
+        }
+      ]
+    },
+    {
+      "run_id": "20260823_180100",
+      "at": "2026-08-23T18:05:11.441725+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1920-A38FE1F94821",
+          "movie": "The Cabinet of Dr. Caligari (1920)",
+          "status": "ready",
+          "qa": 8.59
+        }
+      ]
+    },
+    {
+      "run_id": "20260823_170042",
+      "at": "2026-08-23T17:03:58.031674+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1922-B02CE02259AB",
+          "movie": "Nosferatu (1922)",
+          "status": "ready",
+          "qa": 10.0
+        }
+      ]
+    },
+    {
+      "run_id": "20260823_165506",
+      "at": "2026-08-23T16:59:05.250142+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1920-A38FE1F94821",
+          "movie": "The Cabinet of Dr. Caligari (1920)",
+          "status": "ready",
+          "qa": 10.0
+        }
+      ]
+    },
+    {
+      "run_id": "20260823_160006",
+      "at": "2026-08-23T16:08:46.987915+00:00",
+      "status": "success",
+      "produced": 2,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1922-B02CE02259AB",
+          "movie": "Nosferatu (1922)",
+          "status": "ready",
+          "qa": 10.0
+        },
+        {
+          "id": "TR-1968-D0F1BFB9452C",
+          "movie": "Night of the Living Dead (1968)",
+          "status": "ready",
+          "qa": 10.0
+        }
+      ]
+    },
+    {
+      "run_id": "20260823_141342",
+      "at": "2026-08-23T14:17:09.956391+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1920-A38FE1F94821",
+          "movie": "The Cabinet of Dr. Caligari (1920)",
+          "status": "ready",
+          "qa": 10.0
+        }
+      ]
+    },
+    {
+      "run_id": "20260823_140131",
+      "at": "2026-08-23T14:04:48.613927+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 0,
+      "discovered": 24,
+      "source_blocked": 0,
+      "campaigns": [
+        {
+          "id": "TR-1920-A38FE1F94821",
+          "movie": "The Cabinet of Dr. Caligari (1920)",
+          "status": "ready",
+          "qa": 10.0
+        }
+      ]
+    },
+    {
+      "run_id": "20260822_142001",
+      "at": "2026-08-22T14:24:31.951314+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 23,
+      "campaigns": [
+        {
+          "id": "TR-1920-A38FE1F94821",
+          "movie": "The Cabinet of Dr. Caligari (1920)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-1922-B02CE02259AB",
+          "movie": "Nosferatu (1922)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-1968-D0F1BFB9452C",
+          "movie": "Night of the Living Dead (1968)",
+          "status": "ready",
+          "qa": 10.0
+        },
+        {
+          "id": "TR-1962-A744E6E21B87",
+          "movie": "Carnival of Souls (1962)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-1959-3E93A8706335",
+          "movie": "House on Haunted Hill (1959)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-1963-4C80AB4AFFB1",
+          "movie": "Dementia 13 (1963)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-1995-4CFFE4F2DA03",
+          "movie": "The Usual Suspects (1995)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2009-C4581717C942",
+          "movie": "The Secret in Their Eyes (2009)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-1999-4838DCEC7492",
+          "movie": "The Sixth Sense (1999)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2016-3A2239C1BC98",
+          "movie": "The Handmaiden (2016)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2003-8BCA02006959",
+          "movie": "Memories of Murder (2003)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2014-261A47AF0E36",
+          "movie": "Gone Girl (2014)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2016-D8D6D5DB509A",
+          "movie": "The Invisible Guest (2016)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2013-EF0775FACF74",
+          "movie": "Prisoners (2013)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-1997-5354D7E0A79D",
+          "movie": "Perfect Blue (1997)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2010-4DB37EC8D3D3",
+          "movie": "Black Swan (2010)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2001-C09D381E8E53",
+          "movie": "The Others (2001)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-1998-990E1CFB00DE",
+          "movie": "Dark City (1998)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2014-31FC5538A5B3",
+          "movie": "Predestination (2014)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2016-8DA0DF3EFB65",
+          "movie": "The Wailing (2016)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2013-0D389CD97E15",
+          "movie": "Coherence (2013)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2009-75D1878968F7",
+          "movie": "Triangle (2009)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2014-07DF6731ADCC",
+          "movie": "It Follows (2014)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-2015-2316A14D8571",
+          "movie": "The Invitation (2015)",
+          "status": "source_blocked",
+          "qa": null
+        }
+      ]
+    },
+    {
+      "run_id": "20260822_134512",
+      "at": "2026-08-22T13:48:56.640652+00:00",
+      "status": "success",
+      "produced": 1,
+      "rejected": 0,
+      "failed": 2,
+      "campaigns": [
+        {
+          "id": "TR-1920-A38FE1F94821",
+          "movie": "The Cabinet of Dr. Caligari (1920)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-1922-B02CE02259AB",
+          "movie": "Nosferatu (1922)",
+          "status": "source_blocked",
+          "qa": null
+        },
+        {
+          "id": "TR-1968-D0F1BFB9452C",
+          "movie": "Night of the Living Dead (1968)",
+          "status": "ready",
+          "qa": 10.0
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "ready_to_publish": 4,
+    "published": 0,
+    "verified": 0
+  },
+  "updated_at": "2026-08-24T15:14:49.045469+00:00",
+  "lifetime": {
+    "runs_total": 11,
+    "campaigns_discovered": 264,
+    "campaigns_source_blocked": 0,
+    "campaigns_produced": 12,
+    "clips_rendered": 12,
+    "clips_rejected": 0,
+    "clips_ready": 12,
+    "clips_published": 0,
+    "clips_verified": 0
+  }
+}

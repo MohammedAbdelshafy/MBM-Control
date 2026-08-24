@@ -4,8 +4,12 @@ Offer: **Revenue Audit Engine $149 one-time** (prod_L2MmMKYlE9LAv)
 Checkout: https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ
 Landing: https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=direct&utm_campaign=whop_audit_day1&utm_content=CAMPAIGN
 
-Rules: 1 touch per prospect today. Mark each touch:
+Rules: 1 touch per prospect today (max 3 total). Mark each touch:
 `python MBM/Whop/whop_first_revenue_campaign.py mark <ID> --status contacted`
+
+Follow-up schedule (stop permanently after):
+- D3: only if no reply; reference original message; no new pitch (cap 1)
+- D7: final touch; 'closing the loop' framing; then stop permanently (cap 1)
 
 ## AUDIT-01 — 2 FRIENDS HOME HEALTH AND HOSPICE (HUMAIRA ZAKREA, owner operator)
 - Phone: `` | Channel: PHONE | Status: **PENDING**
@@ -181,3 +185,4 @@ Rules: 1 touch per prospect today. Mark each touch:
 - WhatsApp: n/a
 - [Gmail 1-click](https://mail.google.com/mail/?view=cm&fs=1&su=%22SENSE%22ATIONAL%20KIDS%3A%20where%20your%20lead%20spend%20leaks%20revenue%20%2872h%20audit%29&body=%22SENSE%22ATIONAL%20KIDS%3A%20where%20your%20lead%20spend%20leaks%20revenue%20%2872h%20audit%29%0AHi%20Robyn%20Kaiser%2C%0A%0AYou%20don%27t%20know%20me%20yet%20%E2%80%94%20short%20and%20specific%3A%0A%0AYour%20situation%20%28public%20signal%29%3A%20Front-desk%20phone%20overload%20during%20peak%20hours%2C%20lost%20after-hours%20appointment%20booking%2C%20and%20uncalled%20patient%20recall%20lists.%0A%0AOur%2072-hour%20revenue%20leakage%20audit%3A%20we%20map%20your%20lead-to-revenue%20pipeline%20and%20hand%20you%20a%20ranked%20fix%20list.%20Flat%20%24149%2C%20delivered%20in%2072%20hours%2C%20no%20retainer%20required.%0A%0ADetails%20%2B%20checkout%3A%20https%3A//mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html%23engines%3Futm_source%3Doutreach%26utm_medium%3Ddirect%26utm_campaign%3Dwhop_audit_day1%26utm_content%3DAUDIT-25%0A%0A%E2%80%94%20MBM%20Revenue%20Engineering%0A)
 <details><summary>Message text</summary><br>Hi Robyn Kaiser — quick one. You're likely losing revenue to: front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists. We run a 72-hour audit that maps exactly where leads leak before they become revenue ($149 flat, fix-list included): https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=direct&utm_campaign=whop_audit_day1&utm_content=AUDIT-25</details>
+

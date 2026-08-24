@@ -1,5 +1,7 @@
 Company,Contact_Name,Email,Phone,Website,City,Lead_Source,Status,Confidence,QA_Status
+Horizon Acquisitions,David Martinez,david@horizonacquisitions.com,+1 470-942-3740,https://www.horizonacquisitions.com,"Houston, TX",PropStream Export,New,100,Passed
 Prime Wholesalers,Robert Miller,robert@primewholesalers.com,+1 432-748-4678,https://www.primewholesalers.com,"Orlando, FL",PropStream Export,New,100,Passed
+Horizon Home Buyers,James Miller,james@horizonhomebuyers.com,+1 672-538-1290,https://www.horizonhomebuyers.com,"Austin, TX",PropStream Export,New,100,Passed
 Apex Wholesalers,Christopher Rodriguez,christopher@apexwholesalers.com,+1 493-654-1715,https://www.apexwholesalers.com,"Miami, FL",PropStream Export,New,100,Passed
 Elite Wholesalers,Robert Miller,robert@elitewholesalers.com,+1 280-213-4926,https://www.elitewholesalers.com,"Atlanta, GA",PropStream Export,New,100,Passed
 Stellar Home Buyers,Michael Garcia,michael@stellarhomebuyers.com,+1 254-930-1212,https://www.stellarhomebuyers.com,"Houston, TX",PropStream Export,New,100,Passed
@@ -15,24 +17,28 @@ Nova Properties,Sarah Rodriguez,sarah@novaproperties.com,+1 671-654-5276,https:/
 Nova Capital,Ashley Williams,ashley@novacapital.com,+1 506-348-8501,https://www.novacapital.com,"Charlotte, NC",PropStream Export,New,100,Passed
 Summit Real Estate,Robert Brown,robert@summitrealestate.com,+1 786-992-2663,https://www.summitrealestate.com,"Austin, TX",PropStream Export,New,80,Passed
 Pioneer Holdings,Sarah Jones,sarah@pioneerholdings.com,+1 670-290-1730,https://www.pioneerholdings.com,"Phoenix, AZ",PropStream Export,New,80,Passed
+Summit Home Buyers,John Smith,john@summithomebuyers.com,+1 780-587-5283,https://www.summithomebuyers.com,"Atlanta, GA",PropStream Export,New,100,Passed
 Nova Investments,Christopher Brown,christopher@novainvestments.com,+1 730-534-6792,https://www.novainvestments.com,"Dallas, TX",PropStream Export,New,100,Passed
+Stellar Capital,Jessica Garcia,jessica@stellarcapital.com,+1 660-587-1548,https://www.stellarcapital.com,"Houston, TX",PropStream Export,New,100,Passed
 Velocity Properties,James Johnson,james@velocityproperties.com,+1 653-815-5682,https://www.velocityproperties.com,"Austin, TX",PropStream Export,New,100,Passed
 Pioneer Acquisitions,David Williams,david@pioneeracquisitions.com,+1 838-204-8423,https://www.pioneeracquisitions.com,"Dallas, TX",PropStream Export,New,100,Passed
 Vanguard Home Buyers,John Jones,john@vanguardhomebuyers.com,+1 405-237-3508,https://www.vanguardhomebuyers.com,"Denver, CO",PropStream Export,New,100,Passed
+Stellar Investments,James Brown,james@stellarinvestments.com,+1 671-247-9816,https://www.stellarinvestments.com,"Denver, CO",PropStream Export,New,100,Passed
+Velocity Investments,Brian Johnson,brian@velocityinvestments.com,+1 384-489-7018,https://www.velocityinvestments.com,"Houston, TX",PropStream Export,New,100,Passed
+Liberty Acquisitions,Michael Williams,michael@libertyacquisitions.com,+1 852-390-1659,https://www.libertyacquisitions.com,"Austin, TX",PropStream Export,New,100,Passed
+Apex Properties,Michael Rodriguez,michael@apexproperties.com,+1 313-271-9931,https://www.apexproperties.com,"Phoenix, AZ",PropStream Export,New,100,Passed
 Pioneer Real Estate,John Davis,john@pioneerrealestate.com,+1 667-298-1690,https://www.pioneerrealestate.com,"Houston, TX",PropStream Export,New,80,Passed
+Velocity Holdings,John Brown,john@velocityholdings.com,+1 603-442-4954,https://www.velocityholdings.com,"Tampa, FL",PropStream Export,New,80,Passed
 Velocity Equity,Emily Johnson,emily@velocityequity.com,+1 945-281-2459,https://www.velocityequity.com,"Houston, TX",PropStream Export,New,100,Passed
-Titan Real Estate,Michael Miller,michael@titanrealestate.com,+1 578-428-5795,https://www.titanrealestate.com,"Austin, TX",PropStream Export,New,80,Passed
 Vanguard Acquisitions,Emily Rodriguez,emily@vanguardacquisitions.com,+1 658-643-1144,https://www.vanguardacquisitions.com,"Charlotte, NC",PropStream Export,New,100,Passed
 Eagle Properties,James Brown,james@eagleproperties.com,+1 282-323-6052,https://www.eagleproperties.com,"Denver, CO",PropStream Export,New,100,Passed
 BlueSky Equity,James Rodriguez,james@blueskyequity.com,+1 894-324-6666,https://www.blueskyequity.com,"Charlotte, NC",PropStream Export,New,100,Passed
 NextGen Properties,William Martinez,william@nextgenproperties.com,+1 418-455-1952,https://www.nextgenproperties.com,"Austin, TX",PropStream Export,New,100,Passed
-Titan Acquisitions,James Jones,james@titanacquisitions.com,+1 650-224-7561,https://www.titanacquisitions.com,"Orlando, FL",PropStream Export,New,100,Passed
 Prime Capital,James Smith,james@primecapital.com,+1 852-981-6641,https://www.primecapital.com,"Atlanta, GA",PropStream Export,New,100,Passed
 BlueSky Capital,Robert Smith,robert@blueskycapital.com,+1 670-507-9557,https://www.blueskycapital.com,"Phoenix, AZ",PropStream Export,New,100,Passed
 Prime Investments,Emily Johnson,emily@primeinvestments.com,+1 494-473-3899,https://www.primeinvestments.com,"Dallas, TX",PropStream Export,New,100,Passed
 Pioneer Home Buyers,Christopher Davis,christopher@pioneerhomebuyers.com,+1 737-720-8904,https://www.pioneerhomebuyers.com,"Denver, CO",PropStream Export,New,100,Passed
 Apex Equity,William Williams,william@apexequity.com,+1 978-329-5455,https://www.apexequity.com,"Houston, TX",PropStream Export,New,100,Passed
-Vanguard Solutions,Christopher Davis,christopher@vanguardsolutions.com,+1 835-975-4252,https://www.vanguardsolutions.com,"Denver, CO",PropStream Export,New,100,Passed
 Horizon Holdings,Emily Davis,emily@horizonholdings.com,+1 297-861-6948,https://www.horizonholdings.com,"Tampa, FL",PropStream Export,New,80,Passed
 Prime Solutions,Michael Miller,michael@primesolutions.com,+1 408-671-3796,https://www.primesolutions.com,"Houston, TX",PropStream Export,New,100,Passed
 Vanguard Properties,Sarah Johnson,sarah@vanguardproperties.com,+1 284-549-3039,https://www.vanguardproperties.com,"Austin, TX",PropStream Export,New,100,Passed
@@ -42,11 +48,12 @@ Eagle Acquisitions,Robert Miller,robert@eagleacquisitions.com,+1 409-546-7962,ht
 Velocity Solutions,David Rodriguez,david@velocitysolutions.com,+1 664-515-7155,https://www.velocitysolutions.com,"Houston, TX",PropStream Export,New,100,Passed
 BlueSky Properties,James Davis,james@blueskyproperties.com,+1 293-791-4112,https://www.blueskyproperties.com,"Orlando, FL",PropStream Export,New,100,Passed
 NextGen Home Buyers,John Garcia,john@nextgenhomebuyers.com,+1 921-938-8059,https://www.nextgenhomebuyers.com,"Houston, TX",PropStream Export,New,100,Passed
+Summit Capital,Robert Smith,robert@summitcapital.com,+1 241-232-7515,https://www.summitcapital.com,"Austin, TX",PropStream Export,New,100,Passed
+NextGen Wholesalers,Robert Garcia,robert@nextgenwholesalers.com,+1 309-245-6958,https://www.nextgenwholesalers.com,"Charlotte, NC",PropStream Export,New,100,Passed
 Liberty Solutions,Michael Williams,michael@libertysolutions.com,+1 695-989-9509,https://www.libertysolutions.com,"Austin, TX",PropStream Export,New,100,Passed
 Horizon Properties,David Jones,david@horizonproperties.com,+1 582-826-5630,https://www.horizonproperties.com,"Denver, CO",PropStream Export,New,100,Passed
 Velocity Home Buyers,Emily Miller,emily@velocityhomebuyers.com,+1 960-793-6570,https://www.velocityhomebuyers.com,"Austin, TX",PropStream Export,New,100,Passed
 Horizon Equity,Emily Williams,emily@horizonequity.com,+1 286-897-2910,https://www.horizonequity.com,"Charlotte, NC",PropStream Export,New,100,Passed
 Vanguard Real Estate,James Miller,james@vanguardrealestate.com,+1 596-518-5748,https://www.vanguardrealestate.com,"Miami, FL",PropStream Export,New,80,Passed
-Elite Acquisitions,Christopher Martinez,christopher@eliteacquisitions.com,+1 245-675-3698,https://www.eliteacquisitions.com,"Dallas, TX",PropStream Export,New,100,Passed
 Eagle Investments,James Martinez,james@eagleinvestments.com,+1 237-375-9453,https://www.eagleinvestments.com,"Orlando, FL",PropStream Export,New,100,Passed
 Pioneer Investments,John Johnson,john@pioneerinvestments.com,+1 920-409-7768,https://www.pioneerinvestments.com,"Dallas, TX",PropStream Export,New,100,Passed

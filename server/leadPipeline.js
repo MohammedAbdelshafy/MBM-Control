@@ -276,8 +276,8 @@ Mohammed Abdelshafy
 abdelshafyclapps@gmail.com`,
 });
 
-const SELLER_TEMPLATE = (lead) => ({
-  subject: `We want to buy your property at ${lead.address.split(',')[0] || lead.address} — Cash Offer`,
+const SELLER_TEMPLATE = (lead = {}) => ({
+  subject: `We want to buy your property at ${(lead.address || 'your property').split(',')[0] || lead.address} — Cash Offer`,
   body: `Hi ${lead.owner || 'Property Owner'},
 
 We noticed your property at ${lead.address} has some code concerns that we can help with.
@@ -450,7 +450,7 @@ Send WhatsApp messages to +201040404118 with these offers:
 |---|---|---|---|---|---|---|
 `;
   withPhone.forEach((s, i) => {
-    const msg = `Hi ${s.owner || 'there'}, we buy houses AS-IS at ${s.address.split(',')[0] || s.address}. Cash offer, close in 7 days. Reply for a free quote!`;
+    const msg = `Hi ${s.owner || 'there'}, we buy houses AS-IS at ${(s.address || 'your property').split(',')[0] || s.address}. Cash offer, close in 7 days. Reply for a free quote!`;
     md += `| ${i + 1} | ${s.owner || 'N/A'} | ${s.phone} | ${s.address} | ${s.distress} | ${s.priority} | ${msg} |\n`;
   });
 

@@ -3,8 +3,8 @@
   "target": 100,
   "money": {
     "confirmed_revenue_usd": 0.0,
-    "new_pipeline_usd": 12000.0,
-    "expected_value_usd": 4800.0,
+    "new_pipeline_usd": 11750.0,
+    "expected_value_usd": 4700.0,
     "proposals_count": 2,
     "deals_won_count": 0
   },
@@ -23,7 +23,7 @@
     "confirmed": 4,
     "today": 0,
     "tomorrow": 0,
-    "briefs_ready": 5
+    "briefs_ready": 0
   },
   "outreach": {
     "positive_replies": 0,
@@ -75,13 +75,13 @@
       "booked": 4,
       "confirmed": 4,
       "today": 0,
-      "briefs_ready": 5
+      "briefs_ready": 0
     },
     "pipeline": {
       "active_opportunities": 6,
       "proposals": 2,
-      "pipeline_value_usd": 12000.0,
-      "expected_value_usd": 4800.0,
+      "pipeline_value_usd": 11750.0,
+      "expected_value_usd": 4700.0,
       "confirmed_revenue_usd": 0.0
     },
     "alerts": {
@@ -92,32 +92,32 @@
   },
   "top_opportunities": [
     {
-      "company": "ADVANTAGE MEDICAL GROUP LLC",
-      "buyer": "ARCILIO ALVARADO",
-      "role": "CEO/PRESIDENT",
-      "offer": "AI Assistant Retainer",
-      "stage": "QUALIFIED",
-      "expected_value_usd": 14990.0,
-      "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
-      "next_action": "CALL_DISCOVERY"
-    },
-    {
       "company": "2 FRIENDS HOME HEALTH AND HOSPICE",
       "buyer": "HUMAIRA ZAKREA",
       "role": "owner operator",
       "offer": "AI Assistant Retainer",
-      "stage": "QUALIFIED",
-      "expected_value_usd": 14990.0,
+      "stage": "HOT_BUYER",
+      "expected_value_usd": 22050.0,
       "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
       "next_action": "CALL_DISCOVERY"
     },
     {
-      "company": "A STEP AHEAD PEDIATRIC PT, PC",
-      "buyer": "BECKY WRIGHT",
-      "role": "President",
+      "company": "ACHIEVE PEDIATRIC THERAPY",
+      "buyer": "HEATHER GRAY",
+      "role": "Owner/Occupational Therapist",
       "offer": "AI Assistant Retainer",
-      "stage": "QUALIFIED",
-      "expected_value_usd": 14990.0,
+      "stage": "HOT_BUYER",
+      "expected_value_usd": 22050.0,
+      "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
+      "next_action": "CALL_DISCOVERY"
+    },
+    {
+      "company": "ABILITY HEALTH SERVICES INC",
+      "buyer": "JOHN GUERRINA",
+      "role": "vice-president",
+      "offer": "AI Assistant Retainer",
+      "stage": "HOT_BUYER",
+      "expected_value_usd": 22050.0,
       "why_now": "TIMING SIGNAL: Active hiring for 'Medical Receptionist / Patient Care Coordinator' and recent discussion on 'CMS NPI Registry API v2.1'. Recent activity indicates urgent capacity strain.",
       "next_action": "CALL_DISCOVERY"
     }
@@ -125,64 +125,61 @@
   "top_actions": [
     {
       "rank": 1,
-      "company": "ADVANTAGE MEDICAL GROUP LLC",
-      "buyer": "ARCILIO ALVARADO",
-      "action": "PHONE",
-      "priority": 14.99,
-      "phone": "+17873068356",
-      "id": "ADVANTAGE MEDICAL GROUP LLC"
-    },
-    {
-      "rank": 2,
       "company": "2 FRIENDS HOME HEALTH AND HOSPICE",
       "buyer": "HUMAIRA ZAKREA",
       "action": "PHONE",
-      "priority": 14.99,
+      "priority": 22.05,
       "phone": "+12147626392",
       "id": "2 FRIENDS HOME HEALTH AND HOSPICE"
     },
     {
-      "rank": 3,
-      "company": "A STEP AHEAD PEDIATRIC PT, PC",
-      "buyer": "BECKY WRIGHT",
+      "rank": 2,
+      "company": "ACHIEVE PEDIATRIC THERAPY",
+      "buyer": "HEATHER GRAY",
       "action": "PHONE",
-      "priority": 14.99,
-      "phone": "+13037502995",
-      "id": "A STEP AHEAD PEDIATRIC PT, PC"
+      "priority": 22.05,
+      "phone": "+14072775400",
+      "id": "ACHIEVE PEDIATRIC THERAPY"
+    },
+    {
+      "rank": 3,
+      "company": "ABILITY HEALTH SERVICES INC",
+      "buyer": "JOHN GUERRINA",
+      "action": "PHONE",
+      "priority": 22.05,
+      "phone": "+14076880070",
+      "id": "ABILITY HEALTH SERVICES INC"
     },
     {
       "rank": 4,
-      "company": "ABILITY PRO THERAPY, LLC",
-      "buyer": "CHRISTOPHER BURDS",
+      "company": "ADAPTIVE MOVEMENTS PEDIATRIC THERAPY",
+      "buyer": "ANGELA DUGAN",
       "action": "PHONE",
-      "priority": 14.99,
-      "phone": "+14043079109",
-      "id": "ABILITY PRO THERAPY, LLC"
+      "priority": 22.05,
+      "phone": "+16023947694",
+      "id": "ADAPTIVE MOVEMENTS PEDIATRIC THERAPY"
     },
     {
       "rank": 5,
-      "company": "ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS",
-      "buyer": "FREDA DESKIN",
+      "company": "ABOVE & BEYOND THERAPY SERVICES LLC",
+      "buyer": "THOMAS LONG",
       "action": "PHONE",
-      "priority": 14.99,
-      "phone": "+14059476273",
-      "id": "ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS"
+      "priority": 22.05,
+      "phone": "+16028662231",
+      "id": "ABOVE & BEYOND THERAPY SERVICES LLC"
     }
   ],
-  "biggest_win": "Apex Mechanical & Air Solutions converted from HOT lead → booked demo.",
-  "blocker": {
-    "issue": "Daily verified lead shortfall of 100 leads.",
-    "action": "Trigger NPI registry expansion."
-  },
+  "biggest_win": "Apex Mechanical converted from HOT lead → booked demo.",
+  "blocker": null,
   "next_moves": [
-    "Prepare demo for Apex Mechanical & Air Solutions ()",
-    "Follow up with 2 FRIENDS HOME HEALTH AND HOSPICE on AI Assistant Retainer proposal",
-    "Call A STEP AHEAD PEDIATRIC PT, PC to confirm demo slot"
+    "Call 2 FRIENDS HOME HEALTH AND HOSPICE — HOT · AI Assistant Retainer",
+    "Follow up with ACHIEVE PEDIATRIC THERAPY on AI Assistant Retainer proposal",
+    "Call ABILITY HEALTH SERVICES INC to confirm demo slot"
   ],
   "sources": {
-    "factory": "none",
+    "factory": "2026-08-17",
     "production_metrics": true,
     "email_state": false,
-    "meetings_index": 6
+    "meetings_index": 0
   }
 }

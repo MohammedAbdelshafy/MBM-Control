@@ -9,6 +9,21 @@
   "base_url": "https://mbm-dialer-app.vercel.app",
   "prospects": 25,
   "source_file": "MBM\\Artifacts\\GTM_TOP25_EXECUTION_QUEUE.json",
-  "generated_at": "2026-08-24T12:09:30.947975+00:00",
+  "follow_up_schedule": [
+    {
+      "day": 3,
+      "channel": "same_as_first_touch",
+      "cap": 1,
+      "rule": "only if no reply; reference original message; no new pitch"
+    },
+    {
+      "day": 7,
+      "channel": "same_as_first_touch",
+      "cap": 1,
+      "rule": "final touch; 'closing the loop' framing; then stop permanently"
+    }
+  ],
+  "max_touches_per_prospect": 3,
+  "generated_at": "2026-08-24T12:46:17.368631+00:00",
   "send_policy": "HUMAN_APPROVED_ONLY_governor_L3"
 }

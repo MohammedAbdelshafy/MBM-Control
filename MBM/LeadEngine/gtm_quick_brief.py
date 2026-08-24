@@ -42,6 +42,14 @@ try:
 except Exception:
     pass
 
+try:
+    from MBM.Scripts.neteller_config import neteller_link
+except Exception:
+    def neteller_link(amount: float, item: str, currency: str = "USD", **kw) -> str:
+        import urllib.parse
+        params = urllib.parse.urlencode({"email": "abdelshafyclapps@gmail.com", "account": "4599228811", "amount": f"{float(amount):.2f}", "currency": currency, "item": item})
+        return f"https://member.neteller.com/pay?{params}"
+
 ARTIFACTS_DIR = Path(os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
 GTM_ARTIFACTS_DIR = ARTIFACTS_DIR / "GTM"
 GTM_ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -134,6 +142,17 @@ class GtmMeetingCenter:
         if self.index_path.exists():
             try:
                 self.index = json.loads(self.index_path.read_text(encoding="utf-8"))
+                if isinstance(self.index.get("meetings"), list):
+                    import json
+                    meetings_dict = {}
+                    for mid in self.index["meetings"]:
+                        j_path = self.meetings_dir / f"{mid}.json"
+                        if j_path.exists():
+                            try:
+                                meetings_dict[mid] = json.loads(j_path.read_text(encoding="utf-8"))
+                            except Exception:
+                                pass
+                    self.index["meetings"] = meetings_dict
             except Exception:
                 self.index = {"meetings": {}, "last_synced": ""}
 
@@ -175,6 +194,14 @@ class GtmMeetingCenter:
         when = m.get("date", "TBD")
         if m.get("time"):
             when = f"{when} {m['time']}"
+            
+        offer = m.get("ai_fit") or m.get("recommended_ai_assistant") or m.get("offer") or "AI Assistant Retainer"
+        try:
+            ev = float(m.get("expected_value_usd", 8400.0))
+        except Exception:
+            ev = 8400.0
+        checkout_link = neteller_link(ev, offer.replace(" ", "_"))
+
         lines = [
             f"# Meeting Brief: {m.get('company', '—')}",
             "",
@@ -193,6 +220,9 @@ class GtmMeetingCenter:
             "## Objections & Stakeholders",
             f"- **Objections:** {m.get('objections', 'None recorded.')}",
             f"- **Stakeholders:** {m.get('stakeholders', '—')}",
+            "",
+            "## Revenue Attribution (Neteller)",
+            f"- **Instant Checkout:** {checkout_link}",
             "",
             "## Next Steps",
             f"- **Recommended Demo:** {m.get('recommended_demo', '15-minute diagnostic: pain calibration -> live voice demo -> integrations -> retainer SOW')}",
@@ -796,7 +826,13 @@ class GtmQuickBrief:
         if top_opps:
             lines += ["", "🎯 TOP OPPORTUNITIES"]
             for i, opp in enumerate(top_opps[:3], start=1):
-                lines.append(f"{i}. **{opp.get('company')}** — {opp.get('buyer')} ({opp.get('offer')}) | EV: ${opp.get('expected_value_usd', 0):,.0f} | Next: {opp.get('next_action')}")
+                offer = opp.get('offer') or 'AI Assistant'
+                try:
+                    ev = float(opp.get('expected_value_usd', 8400.0))
+                except Exception:
+                    ev = 8400.0
+                checkout_link = neteller_link(ev, offer.replace(' ', '_'))
+                lines.append(f"{i}. **{opp.get('company')}** — {opp.get('buyer')} ({offer}) | EV: ${ev:,.0f} | Next: {opp.get('next_action')} | 🔗 [Checkout]({checkout_link})")
 
         if b.get("biggest_win"):
             lines += ["", "🏆 BIGGEST WIN", b["biggest_win"]]
@@ -914,7 +950,20 @@ class GtmQuickBrief:
             bus.publish(
                 NotificationKind.DAILY_BRIEF,
                 f"daily_brief_{day}",
-                {"summary": f"DAILY_TARGET_REACHED — {result['actual']} verified", "data": result},
+                {
+                    "summary": f"DAILY_TARGET_REACHED — {result['actual']} verified",
+                    "telegram_text": (
+                        f"✅ DAILY TARGET REACHED\n\n"
+                        f"Verified: {result['actual']}/{result['target']}\n"
+                        f"Verification rate: {result['verification_rate_pct']}%"
+                    ),
+                    "text": (
+                        f"DAILY_TARGET_REACHED\n\n"
+                        f"Verified leads: {result['actual']} / target {result['target']}\n"
+                        f"Verification rate: {result['verification_rate_pct']}%"
+                    ),
+                    "data": result,
+                },
             )
         else:
             bus.publish(

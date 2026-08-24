@@ -142,3 +142,51 @@ class CanonicalLead:
         if self.seller_intent_provenance:
             d["seller_intent_provenance"] = self.seller_intent_provenance.to_dict()
         return d
+
+@dataclass
+class CanonicalBuyer:
+    """Deterministic land buyer entity."""
+    buyer_id: str
+    buyer_name: str
+    company: str
+    buyer_type: str = "UNKNOWN"
+    market: str = ""
+    state: str = ""
+    county: str = ""
+    target_zip: List[str] = field(default_factory=list)
+    min_acres: float = 0.0
+    max_acres: float = 0.0
+    target_lot_size: str = ""
+    price_min: float = 0.0
+    price_max: float = 0.0
+    price_per_lot: float = 0.0
+    zoning: List[str] = field(default_factory=list)
+    utilities: List[str] = field(default_factory=list)
+    road_access: List[str] = field(default_factory=list)
+    property_type: List[str] = field(default_factory=list)
+    lots_per_month: int = 0
+    homes_per_year: int = 0
+    buying_activity: str = "UNKNOWN"
+    source: str = ""
+    source_url: str = ""
+    evidence: str = ""
+    observed_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    confidence: float = 0.0
+    status: str = "ACTIVE"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+@dataclass
+class BuyerMatch:
+    """Match result between a property and a buyer."""
+    buyer_id: str
+    property_id: str
+    match_score: float = 0.0 # 0.0 - 100.0
+    match_reasons: List[str] = field(default_factory=list)
+    mismatch_reasons: List[str] = field(default_factory=list)
+    evidence: str = ""
+    confidence: float = 0.0
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)

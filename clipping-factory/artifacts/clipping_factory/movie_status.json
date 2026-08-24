@@ -1,0 +1,29 @@
+{
+  "TR-1968-BBBB": {
+    "status": "ready_to_publish",
+    "campaign_id": "TR-1968-BBBB",
+    "updated_at": "2026-08-24T15:26:20.916217+00:00",
+    "title": "Night of the Living Dead",
+    "year": 1968,
+    "script_id": "SCR-E1038547BE",
+    "score": 8.92,
+    "artifact": "C:\\Users\\omare\\AppData\\Local\\Temp\\tmpp2bkr4ce\\orig_artifacts_absent\\RUN_TEST_TR-1968-BBBB"
+  },
+  "TR-1959-3E93A8706335": {
+    "campaign_id": "TR-1959-3E93A8706335",
+    "status": "ready_to_publish",
+    "updated_at": "2026-08-24T16:06:44.302619+00:00",
+    "title": "House on Haunted Hill",
+    "year": 1959,
+    "script_id": "SCR-7AF8974C03",
+    "score": 9.16,
+    "artifact": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\artifacts\\twistsrevealed\\20260824_160015_TR-1959-3E93A8706335"
+  },
+  "TR-1963-4C80AB4AFFB1": {
+    "campaign_id": "TR-1963-4C80AB4AFFB1",
+    "status": "researched",
+    "updated_at": "2026-08-24T16:06:44.516411+00:00",
+    "title": "Dementia 13",
+    "year": 1963
+  }
+}

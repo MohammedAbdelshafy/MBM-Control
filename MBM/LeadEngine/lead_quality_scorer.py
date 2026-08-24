@@ -189,6 +189,12 @@ def score_lead(lead):
     if row.get("bedrooms") or d.get("Beds"):
         fit_points += 20
         fit_hits.append("bedrooms")
+    if row.get("acreage") or d.get("Acreage"):
+        fit_points += 20
+        fit_hits.append("acreage")
+    if row.get("zoning") or d.get("Zoning"):
+        fit_points += 10
+        fit_hits.append("zoning")
     factors["property_fit"] = {
         "score": fit_points,
         "weight": WEIGHTS["property_fit"],
@@ -255,8 +261,16 @@ def score_lead(lead):
     }
 
     # ---- 7. BUYER DEMAND (only legit buyer signals) ----
+    match_score = float(row.get("buyer_match_score") or d.get("Buyer_Match_Score") or 0)
     bd = row.get("buyer_demand") or d.get("Buyer_Demand") or ""
-    if bd:
+    if match_score > 0:
+        factors["buyer_demand"] = {
+            "score": int(match_score), "weight": WEIGHTS["buyer_demand"],
+            "reason": f"buyer_match_score={match_score}",
+            "source": "buyer_matching_engine", "observed_at": "",
+            "confidence": "high", "freshness_days": None, "evidence": bd or "matched",
+        }
+    elif bd:
         factors["buyer_demand"] = {
             "score": 80, "weight": WEIGHTS["buyer_demand"],
             "reason": f"buyer_demand={bd}",

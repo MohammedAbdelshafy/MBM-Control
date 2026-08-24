@@ -151,6 +151,22 @@ class GLMWorker:
         self.groq_key = os.getenv("GROQ_API_KEY")
         self.gemini_key = os.getenv("GEMINI_API_KEY")
         self.nvidia_key = os.getenv("NVIDIA_API_KEY")
+        
+        self.openai_client = None
+        self.model_provider = "UNKNOWN"
+        self.model_name = "UNKNOWN"
+        try:
+            import openai
+            if self.gemini_key:
+                self.openai_client = openai.OpenAI(api_key=self.gemini_key, base_url="https://generativelanguage.googleapis.com/v1beta/openai/")
+                self.model_provider = "Google"
+                self.model_name = "gemini-2.5-flash"
+            elif self.groq_key:
+                self.openai_client = openai.OpenAI(api_key=self.groq_key, base_url="https://api.groq.com/openai/v1")
+                self.model_provider = "Groq"
+                self.model_name = "llama3-8b-8192"
+        except ImportError:
+            pass
 
     def _cache_key(self, task: str, payload: Any) -> str:
         s = f"{task}:{json.dumps(payload, sort_keys=True, default=str)}"
@@ -449,6 +465,97 @@ class GLMWorker:
             "reason": reason,
             "recommendation": "MERGE_RECORD" if is_dup else "KEEP_SEPARATE",
         }
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # 5. GLM_EMAIL_AGENT & GLM_QA_AGENT (Outreach)
+    # ──────────────────────────────────────────────────────────────────────────
+
+    def draft_outreach_email(self, lead_data: Dict[str, Any], context: str = "") -> Dict[str, Any]:
+        """Drafts a personalized outreach email using the configured LLM."""
+        if not self.openai_client:
+            return {"body": "Failed to draft email: No OpenAI-compatible API key found.", "provider": self.model_provider, "model": self.model_name}
+        
+        prompt = f"""You are the MBM LeadEngine Outreach Agent.
+Draft a highly personalized, high-converting outreach email for this lead.
+No aggressive selling. Keep it professional, concise, and focused on value.
+Context: {context}
+
+Lead Data:
+{json.dumps(lead_data, indent=2)}
+
+Output ONLY the email body (do not include subject line or any preamble)."""
+        
+        try:
+            start_t = time.perf_counter()
+            response = self.openai_client.chat.completions.create(
+                model=self.model_name,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+                max_tokens=500,
+                timeout=15.0
+            )
+            latency_ms = (time.perf_counter() - start_t) * 1000.0
+            self.tracker.record_call(len(prompt.split()), 200, ModelRoutingTier.MEDIUM, latency_ms, success=True)
+            return {
+                "body": response.choices[0].message.content.strip(),
+                "provider": self.model_provider,
+                "model": self.model_name
+            }
+        except Exception as e:
+            err_msg = "MODEL_UNAVAILABLE (Timeout)" if "timeout" in str(e).lower() else str(e)
+            return {"body": f"Error drafting email: {err_msg}", "provider": self.model_provider, "model": self.model_name}
+
+    def qa_outreach_email(self, email_body: str, lead_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Audits generated content to ensure no hallucinations or aggressive selling."""
+        if not self.openai_client:
+            return {"approved": False, "reason": "No LLM client configured"}
+        
+        prompt = f"""You are the MBM LeadEngine QA Agent.
+Review the following email drafted for the lead.
+Check for:
+1. Aggressive selling or spammy tone.
+2. Factual hallucinations (claiming things about the lead that aren't in Lead Data).
+3. Professionalism.
+
+Lead Data:
+{json.dumps(lead_data, indent=2)}
+
+Email Body:
+{email_body}
+
+OUTPUT STRICTLY A VALID JSON OBJECT starting with {{ and ending with }}. NO MARKDOWN, NO PREAMBLE, NO BACKTICKS.
+Example:
+{{"approved": true, "reason": "Looks good"}}
+"""
+        try:
+            start_t = time.perf_counter()
+            response = self.openai_client.chat.completions.create(
+                model=self.model_name,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.0,
+                max_tokens=500,
+                timeout=15.0,
+                response_format={"type": "json_object"} if "groq" not in self.model_name else None
+            )
+            latency_ms = (time.perf_counter() - start_t) * 1000.0
+            self.tracker.record_call(len(prompt.split()), 50, ModelRoutingTier.LIGHT, latency_ms, success=True)
+            
+            content = response.choices[0].message.content.strip()
+            import re
+            json_match = re.search(r'\{[\s\S]*\}', content)
+            if json_match:
+                content = json_match.group(0)
+            else:
+                return {"approved": False, "reason": "Malformed JSON: No valid JSON block found in output."}
+                
+            try:
+                return json.loads(content)
+            except json.JSONDecodeError:
+                return {"approved": False, "reason": "Malformed JSON: Decode error."}
+                
+        except Exception as e:
+            err_msg = "MODEL_UNAVAILABLE (Timeout)" if "timeout" in str(e).lower() else str(e)
+            return {"approved": False, "reason": f"QA Failed: {err_msg}"}
 
 
 # ══════════════════════════════════════════════════════════════════════════════

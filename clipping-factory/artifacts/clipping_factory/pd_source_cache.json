@@ -1,0 +1,56 @@
+{
+  "House on Haunted Hill (1959)": {
+    "identifier": "devula-006-house-on-haunted-hill",
+    "url": "https://archive.org/download/devula-006-house-on-haunted-hill/Devula-006-House%20on%20Haunted%20Hill.mp4",
+    "file": "Devula-006-House on Haunted Hill.mp4",
+    "size_mb": 458,
+    "verified": true,
+    "duration_sec": 4966.08,
+    "local_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\video_repos\\public_domain\\house_on_haunted_hill_1959\\source.mp4"
+  },
+  "Night of the Living Dead (1968)": {
+    "identifier": "night-of-the-living-dead-1968_202508",
+    "url": "https://archive.org/download/night-of-the-living-dead-1968_202508/Night%20of%20the%20Living%20Dead%201968.mp4",
+    "file": "Night of the Living Dead 1968.mp4",
+    "size_mb": 569,
+    "verified": true,
+    "duration_sec": 5717.21,
+    "local_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\video_repos\\public_domain\\night_of_the_living_dead_1968\\source.mp4"
+  },
+  "Carnival of Souls (1962)": {
+    "identifier": "castle-cat-tv-10-carnival-of-souls-1962",
+    "url": "https://archive.org/download/castle-cat-tv-10-carnival-of-souls-1962/Castle%20Cat%20TV%2010_%20Carnival%20of%20Souls%20%281962%29.mp4",
+    "file": "Castle Cat TV 10_ Carnival of Souls (1962).mp4",
+    "size_mb": 1020,
+    "verified": true,
+    "duration_sec": 4909.16,
+    "local_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\video_repos\\public_domain\\carnival_of_souls_1962\\source.mp4"
+  },
+  "Dementia 13 (1963)": {
+    "identifier": "16dementia13",
+    "url": "https://archive.org/download/16dementia13/16%20dementia%2013.mp4",
+    "file": "16 dementia 13.mp4",
+    "size_mb": 534,
+    "verified": true,
+    "duration_sec": 5372.72,
+    "local_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\video_repos\\public_domain\\dementia_13_1963\\source.mp4"
+  },
+  "The Cabinet of Dr. Caligari (1920)": {
+    "identifier": "the-cabinet-of-dr.-caligari-1920-full-movie",
+    "url": "https://archive.org/download/the-cabinet-of-dr.-caligari-1920-full-movie/The%20Cabinet%20of%20Dr.%20Caligari%20%281920%29%20FULL%20MOVIE.mp4",
+    "file": "The Cabinet of Dr. Caligari (1920) FULL MOVIE.mp4",
+    "size_mb": 323,
+    "verified": true,
+    "duration_sec": 4462.64,
+    "local_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\video_repos\\public_domain\\the_cabinet_of_dr__caligari_1920\\source.mp4"
+  },
+  "Nosferatu (1922)": {
+    "identifier": "H3Nosferatu1922SilentMovie",
+    "url": "https://archive.org/download/H3Nosferatu1922SilentMovie/h-3%20Nosferatu%20%281922%29%20%5BSilent%20Movie%5D.mp4",
+    "file": "h-3 Nosferatu (1922) [Silent Movie].mp4",
+    "size_mb": 259,
+    "verified": true,
+    "duration_sec": 4845.84,
+    "local_path": "C:\\Users\\omare\\OneDrive\\Desktop\\AI\\clipping-factory\\video_repos\\public_domain\\nosferatu_1922\\source.mp4"
+  }
+}

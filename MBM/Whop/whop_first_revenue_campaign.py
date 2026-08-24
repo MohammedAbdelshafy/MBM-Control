@@ -35,6 +35,7 @@ BASE_DIR = Path(__file__).resolve().parent
 ROOT_DIR = BASE_DIR.parent.parent
 QUEUE_JSON = ROOT_DIR / "MBM" / "Artifacts" / "GTM_TOP25_EXECUTION_QUEUE.json"
 CAMPAIGN_DIR = ROOT_DIR / "MBM" / "Artifacts" / "GTM" / "campaigns" / "whop_audit_day1"
+EVENTS_LOG = BASE_DIR / "logs" / "revenue_events.jsonl"
 
 DEFAULT_BASE_URL = "https://mbm-dialer-app.vercel.app"
 LANDING_PATH = "/productized-service/ai-consultancy-sprint/landing.html#engines"
@@ -49,6 +50,14 @@ OFFER = {
     "price_usd": 149,
     "promise": "72-hour revenue leakage audit: we map your lead-to-revenue pipeline and hand you a ranked fix list.",
 }
+
+FOLLOW_UP_SCHEDULE = [
+    {"day": 3, "channel": "same_as_first_touch", "cap": 1,
+     "rule": "only if no reply; reference original message; no new pitch"},
+    {"day": 7, "channel": "same_as_first_touch", "cap": 1,
+     "rule": "final touch; 'closing the loop' framing; then stop permanently"},
+]
+MAX_TOUCHES_PER_PROSPECT = 3
 
 STATUSES = ["pending", "contacted", "replied", "checkout_started", "purchased", "opted_out"]
 STAGE_ORDER = ["generated", "contacted", "replied", "checkout_started", "purchased"]
@@ -132,8 +141,12 @@ def build(base_url: str = DEFAULT_BASE_URL, limit: int | None = None) -> dict:
         f"Checkout: {CHECKOUT_URL}",
         f"Landing: {landing_url(base_url, 'CAMPAIGN')}",
         "",
-        "Rules: 1 touch per prospect today. Mark each touch:",
+        f"Rules: 1 touch per prospect today (max {MAX_TOUCHES_PER_PROSPECT} total). "
+        "Mark each touch:",
         "`python MBM/Whop/whop_first_revenue_campaign.py mark <ID> --status contacted`",
+        "",
+        "Follow-up schedule (stop permanently after):",
+        *[f"- D{f['day']}: {f['rule']} (cap {f['cap']})" for f in FOLLOW_UP_SCHEDULE],
         "",
     ]
 
@@ -197,6 +210,8 @@ def build(base_url: str = DEFAULT_BASE_URL, limit: int | None = None) -> dict:
         source_rel = str(QUEUE_JSON)
     campaign = {**OFFER, "base_url": base_url, "prospects": len(csv_rows),
                 "source_file": source_rel,
+                "follow_up_schedule": FOLLOW_UP_SCHEDULE,
+                "max_touches_per_prospect": MAX_TOUCHES_PER_PROSPECT,
                 "generated_at": _now(), "send_policy": "HUMAN_APPROVED_ONLY_governor_L3"}
     _atomic_write(CAMPAIGN_DIR / "campaign.json", json.dumps(campaign, indent=2))
     _atomic_write(CAMPAIGN_DIR / "DAY1_PLAYBOOK.md", "\n".join(playbook_lines) + "\n")
@@ -273,7 +288,7 @@ def funnel() -> dict:
         for stage in STAGE_ORDER[1: idx + 1]:
             counts[stage] += 1
     webhook_real = 0
-    evlog = BASE_DIR / "logs" / "revenue_events.jsonl"
+    evlog = EVENTS_LOG
     if evlog.exists():
         for line in evlog.read_text(encoding="utf-8").splitlines():
             try:

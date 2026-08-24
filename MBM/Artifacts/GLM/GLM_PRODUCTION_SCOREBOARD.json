@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-08-24T09:24:22.911814+00:00",
+  "glm_workers": {
+    "active": 2,
+    "productive": 2,
+    "blocked": 0,
+    "idle": 0,
+    "duplicate": 0,
+    "orphaned": 0,
+    "failed": 0
+  },
+  "last_72h": {
+    "leads_verified": 0,
+    "scripts_generated": 0,
+    "followups_recommended": 0,
+    "content_produced": 0,
+    "deployments": 2,
+    "blockers_removed": 0
+  },
+  "revenue_impact": {
+    "verified_usd": 0.0,
+    "estimated_usd": 20000.0
+  }
+}

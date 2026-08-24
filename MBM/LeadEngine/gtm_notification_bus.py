@@ -58,6 +58,14 @@ except Exception:
     pass
 
 try:
+    from MBM.Scripts.neteller_config import neteller_link
+except Exception:
+    def neteller_link(amount: float, item: str, currency: str = "USD", **kw) -> str:
+        import urllib.parse
+        params = urllib.parse.urlencode({"email": "abdelshafyclapps@gmail.com", "account": "4599228811", "amount": f"{float(amount):.2f}", "currency": currency, "item": item})
+        return f"https://member.neteller.com/pay?{params}"
+
+try:
     sys.stdout.reconfigure(encoding="utf-8")
 except Exception:
     pass
@@ -300,7 +308,7 @@ class EmailDeliveryAdapter(DeliveryAdapter):
 
     def deliver(self, record: NotificationRecord, payload: Dict[str, Any]) -> bool:
         self.outbox_dir.mkdir(parents=True, exist_ok=True)
-        body = payload.get("text", "")
+        body = payload.get("text", "") or payload.get("telegram_text", "") or payload.get("summary", "")
         subject = payload.get("subject", f"[MBM GTM] {record.kind}")
         safe_key = "".join(c if c.isalnum() or c in "_-" else "_" for c in record.delivery_key)
         md = (
@@ -767,13 +775,20 @@ def format_telegram_daily_brief(brief: Dict[str, Any]) -> str:
 def format_hot_buyer_message(buyer: Dict[str, Any]) -> str:
     ev = buyer.get("expected_value_usd", buyer.get("priority", 0))
     ev_str = f"${ev:,.0f}" if isinstance(ev, (int, float)) and ev > 0 else "High"
+    offer = buyer.get('ai_fit', buyer.get('recommended_ai_assistant', buyer.get('offer', '24/7 AI Receptionist & Voice Agent')))
+    try:
+        val_num = float(ev) if isinstance(ev, (int, float)) and ev > 0 else 8400.0
+    except Exception:
+        val_num = 8400.0
+    checkout = neteller_link(val_num, offer.replace(" ", "_"))
     return (
         "🔥 HOT BUYER\n\n"
         f"{buyer.get('company', '—')}\n"
         f"{buyer.get('decision_maker', buyer.get('buyer', '—'))} · {buyer.get('role', 'Decision Maker')}\n\n"
         f"Pain:\n{buyer.get('pain', buyer.get('pain_point', '—'))}\n\n"
-        f"Offer:\n{buyer.get('ai_fit', buyer.get('recommended_ai_assistant', buyer.get('offer', '24/7 AI Receptionist & Voice Agent')))}\n\n"
+        f"Offer:\n{offer}\n\n"
         f"Expected Value:\n{ev_str}\n\n"
+        f"Checkout Link:\n{checkout}\n\n"
         "Next:\n📞 Call discovery"
     )
 
@@ -827,25 +842,43 @@ def format_meeting_booked_message(meeting: Dict[str, Any]) -> str:
 
 def format_deal_won_message(deal: Dict[str, Any]) -> str:
     val = deal.get("value", deal.get("deal_value", "$4,000/mo"))
+    try:
+        import re
+        match = re.search(r'\$?([\d,]+(?:\.\d{2})?)', str(val))
+        val_num = float(match.group(1).replace(',', '')) if match else 4000.0
+    except Exception:
+        val_num = 4000.0
+    offer = deal.get('offer', 'AI Assistant Retainer')
+    checkout = neteller_link(val_num, offer.replace(" ", "_"))
     rev_state = deal.get("revenue_state", deal.get("payment_state", "CONFIRMED (Neteller)"))
     next_step = deal.get("next_step", deal.get("next_action", "Onboarding kickoff & client setup"))
     return (
         "💰 DEAL WON\n\n"
         f"Company:\n{deal.get('company', '—')}\n\n"
-        f"Offer:\n{deal.get('offer', 'AI Assistant Retainer')}\n\n"
+        f"Offer:\n{offer}\n\n"
         f"Value:\n{val}\n\n"
         f"Revenue State:\n{rev_state}\n\n"
+        f"Checkout Link:\n{checkout}\n\n"
         f"Next Step:\n{next_step}"
     )
 
 
 def format_proposal_message(proposal: Dict[str, Any]) -> str:
     val = proposal.get("value", proposal.get("deal_value", "$3,500/mo"))
+    try:
+        import re
+        match = re.search(r'\$?([\d,]+(?:\.\d{2})?)', str(val))
+        val_num = float(match.group(1).replace(',', '')) if match else 3500.0
+    except Exception:
+        val_num = 3500.0
+    offer = proposal.get('offer', 'AI Assistant Retainer')
+    checkout = neteller_link(val_num, offer.replace(" ", "_"))
     return (
         "📑 PROPOSAL\n\n"
         f"{proposal.get('company', '—')}\n\n"
-        f"Offer:\n{proposal.get('offer', 'AI Assistant Retainer')}\n\n"
+        f"Offer:\n{offer}\n\n"
         f"Value:\n{val}\n\n"
+        f"Checkout Link:\n{checkout}\n\n"
         "Status:\nAwaiting decision"
     )
 

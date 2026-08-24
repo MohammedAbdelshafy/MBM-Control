@@ -1,20 +1,22 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '.env' }); // load .env as well to get GMAIL_SEND_ENABLED
 import { createClient } from '@supabase/supabase-js';
 
 const nodemailer = await import('nodemailer').then(m => m.default);
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://prgmwljhbjtcjmwnjaao.supabase.co';
 
-// Parse sender pool: "email:password,email:password,..."
-// Falls back to single-account mode with SMTP_USER/SMTP_PASS
+// Preflight: CONFIG_HEALTH
+if (process.env.GMAIL_SEND_ENABLED !== 'true' && !process.argv.includes('--test-gmail') && !process.argv.includes('--dry-run')) {
+  console.error('[emailSender] FATAL: GMAIL_SEND_ENABLED is false. Failing closed.');
+  process.exit(1);
+}
+
 const senderPoolRaw = process.env.SMTP_SENDER_POOL || '';
 const senderAccounts = [];
 
 if (senderPoolRaw.includes(':')) {
-  // Multi-account mode: email:password pairs, separated by ',' or ';'
-  // Gmail app passwords are often pasted WITH spaces ("abcd efgh ijkl mnop") —
-  // strip all whitespace so a copy-paste app password survives verbatim.
   const entries = senderPoolRaw.split(/[,;]/).map(e => e.trim()).filter(Boolean);
   for (const entry of entries) {
     const [email, ...passParts] = entry.split(':');
@@ -24,7 +26,6 @@ if (senderPoolRaw.includes(':')) {
     });
   }
 } else {
-  // Single-account fallback
   senderAccounts.push({
     email: process.env.SMTP_USER || 'abdelshafyclapps@gmail.com',
     pass: (process.env.SMTP_PASS || '').replace(/\s+/g, '')
@@ -51,8 +52,6 @@ function getTransporter(email, pass) {
 }
 
 async function preflightAccounts() {
-  // Validate each sender account before sending. Bad credentials (535) or
-  // disabled accounts get dropped so we never waste the send budget on them.
   const valid = [];
   for (const acct of senderAccounts) {
     const transporter = getTransporter(acct.email, acct.pass);
@@ -61,7 +60,10 @@ async function preflightAccounts() {
       valid.push({ address: acct.email, transporter });
       console.log(`[emailSender] ✅ Sender verified: ${acct.email}`);
     } catch (err) {
-      console.log(`[emailSender] ⚠️ Sender REJECTED (dropped): ${acct.email} — ${err.message}`);
+      console.error(`[emailSender] ⚠️ Sender REJECTED (dropped): ${acct.email} — ${err.message}`);
+      if (err.responseCode === 535) {
+        console.error(`[emailSender] ⚠️ Gmail 535 BadCredentials detected. Never retrying this account.`);
+      }
       try { transporter.close(); } catch (_) {}
     }
   }
@@ -72,27 +74,56 @@ function delay(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-async function sendOne(transporter, supabase, email, fromAddress, fromName) {
+async function sendOne(transporter, supabase, email, fromAddress, fromName, isDryRun) {
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"${fromName}" <${fromAddress}>`,
       to: email.recipient_email,
       subject: email.subject,
       text: email.body,
-      html: email.body.includes('<') ? email.body : undefined,
+      html: email.body && email.body.includes('<') ? email.body : undefined,
     });
-    await supabase
-      .from('email_queue')
-      .update({ status: 'sent', sent_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-      .eq('id', email.id);
-    return { id: email.id, status: 'sent', sender: fromAddress };
+    if (!isDryRun && supabase) {
+      // Mark sent ONLY after SMTP success
+      await supabase
+        .from('email_queue')
+        .update({ status: 'sent', sent_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+        .eq('id', email.id);
+    }
+    return { id: email.id, status: 'sent', sender: fromAddress, messageId: info.messageId };
   } catch (err) {
-    await supabase
-      .from('email_queue')
-      .update({ status: 'failed', error: err.message, updated_at: new Date().toISOString() })
-      .eq('id', email.id);
+    if (!isDryRun && supabase) {
+      // Mark failed after permanent failure
+      await supabase
+        .from('email_queue')
+        .update({ status: 'failed', error: err.message, updated_at: new Date().toISOString() })
+        .eq('id', email.id);
+    }
     return { id: email.id, status: 'failed', error: err.message };
   }
+}
+
+async function runTestGmail(poolTransporters) {
+  // Phase 8: CANARY ARCHITECTURE FIX
+  // Bypass queue completely. Send one direct SMTP email.
+  console.log('[emailSender] Running dedicated SMTP canary test...');
+  const poolObj = poolTransporters[0];
+  const testEmail = {
+    recipient_email: 'abdelshafyplay@gmail.com',
+    subject: 'MBM Pipeline Canary',
+    body: 'This is an internal canary message confirming SMTP connectivity.'
+  };
+  const result = await sendOne(poolObj.transporter, null, testEmail, poolObj.address, 'MBM System', false);
+  if (result.status === 'sent') {
+    console.log(`CANARY = PASS`);
+    console.log(`MESSAGE_ID = ${result.messageId}`);
+    console.log(`SENT_AT = ${new Date().toISOString()}`);
+  } else {
+    console.log(`CANARY = FAIL`);
+    console.error(`ERROR = ${result.error}`);
+  }
+  console.log(`PROSPECT_EMAILS_SENT = 0`);
+  return;
 }
 
 export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = false, dryRun = false } = {}) {
@@ -100,43 +131,80 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!supabase) {
     if (!serviceRoleKey) {
-      throw new Error('SUPABASE_SERVICE_ROLE_KEY env var required');
+      console.error('[emailSender] FATAL: SUPABASE_SERVICE_ROLE_KEY env var required. CONFIG_HEALTH failed.');
+      process.exit(1);
     }
     supabase = createClient(supabaseUrl, serviceRoleKey);
   }
 
-  // Build transporter pool with per-account credentials, then verify each
-  // account and drop the broken ones before any real send.
+  // Preflight: SMTP_HEALTH
   let poolTransporters = await preflightAccounts();
   if (poolTransporters.length === 0) {
     if (isDryRun) {
       console.log('[emailSender] ℹ️ Running in DRY-RUN mode (mocking SMTP delivery)');
       poolTransporters = [{ address: 'dry-run@contecai.com', transporter: { sendMail: async () => ({ messageId: 'dry-run-id' }), close: () => {} } }];
     } else {
-      throw new Error('All sender accounts failed verification — fix SMTP_SENDER_POOL / SMTP_PASS or use --dry-run');
+      console.error('[emailSender] FATAL: All sender accounts failed verification. SMTP_HEALTH failed. Failing closed.');
+      process.exit(1);
     }
   }
 
-  console.log(`[emailSender] Active sender pool: ${poolTransporters.length} accounts`);
-  poolTransporters.forEach(p => console.log(`  - ${p.address}`));
+  if (process.argv.includes('--test-gmail')) {
+    await runTestGmail(poolTransporters);
+    process.exit(0);
+  }
 
-  const fromName = process.env.SMTP_FROM_NAME || 'Contech AI Agentic Teamz';
-  const sendDelay = parseInt(process.env.EMAIL_SEND_DELAY_MS || '100');
+  // Preflight: QUEUE_HEALTH & DUPLICATE_HEALTH
+  console.log('[emailSender] Preflight passed. Starting dispatch loop.');
+
+  const fromName = process.env.SMTP_FROM_NAME || 'MBM Operations';
   const concurrency = parseInt(process.env.EMAIL_CONCURRENCY || '5');
 
   let totalSent = 0;
   let totalFailed = 0;
   let iterations = 0;
 
-  while (true) {
-    const { data: emails, error } = await supabase
-      .from('email_queue')
-      .select('*')
-      .eq('status', 'qued')
-      .limit(batchSize)
-      .order('created_at', { ascending: true });
+  // Track recipients in current run to prevent intra-run duplicates
+  const sessionRecipients = new Set();
 
-    if (error) throw new Error(`Failed to fetch queue: ${error.message}`);
+  while (true) {
+    // Fail closed if query unhealthy
+    const { data: rawEmails, error } = await supabase
+      .from('email_queue')
+      .select('id, recipient_email, subject, body')
+      .eq('status', 'qued')
+      .limit(batchSize);
+
+    if (error) {
+      console.error(`[emailSender] FATAL: Failed to fetch queue. QUEUE_HEALTH failed. Error: ${error.message}`);
+      process.exit(1);
+    }
+    
+    const emails = [];
+    for (const em of (rawEmails || [])) {
+      const addr = (em.recipient_email || '').toLowerCase().trim();
+      
+      // Exclusion logic (Phase 7 & 9)
+      const isDummy = !addr || !addr.includes('@') || addr.includes('example.com') || addr.includes('test');
+      const isInternal = addr.endsWith('@abdelshafyclapps.com') || addr === 'abdelshafyplay@gmail.com';
+      const isDup = sessionRecipients.has(addr);
+
+      if (isDummy || isInternal) {
+        console.log(`[emailSender] ⚠️ Rejecting internal/test email: ${addr}`);
+        if (!isDryRun) {
+          await supabase.from('email_queue').update({ status: 'skipped', error: 'Internal/Dummy recipient excluded by policy' }).eq('id', em.id);
+        }
+      } else if (isDup) {
+        console.log(`[emailSender] ⚠️ Rejecting batch duplicate: ${addr}`);
+        if (!isDryRun) {
+          await supabase.from('email_queue').update({ status: 'duplicate', error: 'Duplicate in current dispatch session' }).eq('id', em.id);
+        }
+      } else {
+        sessionRecipients.add(addr);
+        emails.push({ ...em, recipient_email: addr }); // Normalize address
+      }
+    }
+
     if (!emails || emails.length === 0) {
       if (!continuous) break;
       await delay(5000);
@@ -149,13 +217,12 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
     let sent = 0;
     let failed = 0;
 
-    // Send in parallel batches with round-robin pool rotation & anti-flagging delays
     for (let i = 0; i < emails.length; i += concurrency) {
       const batch = emails.slice(i, i + concurrency);
       const results = await Promise.allSettled(
         batch.map((email, idx) => {
           const poolObj = poolTransporters[(i + idx) % poolTransporters.length];
-          return sendOne(poolObj.transporter, supabase, email, poolObj.address, fromName);
+          return sendOne(poolObj.transporter, supabase, email, poolObj.address, fromName, isDryRun);
         })
       );
 
@@ -164,7 +231,6 @@ export async function sendEmailQueue({ supabase, batchSize = 5000, continuous = 
         else failed++;
       }
 
-      // Anti-flagging delay between batches (2 - 5 seconds)
       const randomDelay = Math.floor(Math.random() * 3000) + 2000;
       await delay(randomDelay);
     }
@@ -187,7 +253,12 @@ if (process.argv[1]?.endsWith('emailSender.js')) {
   const continuous = process.argv.includes('--continuous');
   const batchSizeArg = process.argv.find(arg => arg.startsWith('--batchSize='));
   const batchSize = batchSizeArg ? parseInt(batchSizeArg.split('=')[1], 10) : 5000;
-  const result = await sendEmailQueue({ batchSize, continuous });
-  console.log('FINAL:', JSON.stringify(result));
-  process.exit(0);
+  
+  sendEmailQueue({ batchSize, continuous }).then(result => {
+    if (result) console.log('FINAL:', JSON.stringify(result));
+    process.exit(0);
+  }).catch(err => {
+    console.error('FATAL ERROR:', err);
+    process.exit(1);
+  });
 }

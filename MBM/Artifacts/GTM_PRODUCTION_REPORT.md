@@ -1,6 +1,6 @@
 # MBM GTM Production Readiness & Execution Report
 
-**Execution Timestamp:** 2026-08-22 13:52:12 UTC  
+**Execution Timestamp:** 2026-08-23 13:11:21 UTC  
 **Batch Size:** `10 Top Opportunities`  
 **Monetization Rail:** `Neteller` (`abdelshafyclapps@gmail.com` | ID: `4599228811`)  
 **Production Gate:** 🛡️ `ACTIVE & HUMAN-GOVERNED`
@@ -43,8 +43,8 @@ CLOSED WON REVENUE ($0.00)
 
 | Metric | Amount (USD) | Definition / Invariant |
 |---|---|---|
-| **Active Pipeline Value** | **$12,000.00** | Active qualified opportunities in Meeting / Proposal stage |
-| **Expected Weighted Value** | **$4,800.00** | Probability-adjusted pipeline value ($40\%$ weighted) |
+| **Active Pipeline Value** | **$11,750.00** | Active qualified opportunities in Meeting / Proposal stage |
+| **Expected Weighted Value** | **$4,700.00** | Probability-adjusted pipeline value ($40\%$ weighted) |
 | **Confirmed Realized Revenue** | **$0.00** | Verified Neteller transactions (Proposal ≠ Revenue) |
 
 ---
@@ -53,16 +53,16 @@ CLOSED WON REVENUE ($0.00)
 
 | Company | Decision Maker | Channel | Outcome | Final State | Meeting Brief |
 |---|---|---|---|---|---|
-| **ADVANTAGE MEDICAL GROUP LLC** | ARCILIO ALVARADO | `PHONE` | `MEETING_BOOKED` | **MEETING_BOOKED** | [`meeting_brief_advantage_medical_group_llc.md`](file:///C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\meeting_brief_advantage_medical_group_llc.md) |
 | **2 FRIENDS HOME HEALTH AND HOSPICE** | HUMAIRA ZAKREA | `PHONE` | `MEETING_BOOKED` | **MEETING_BOOKED** | [`meeting_brief_2_friends_home_health_and_hospice.md`](file:///C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\meeting_brief_2_friends_home_health_and_hospice.md) |
-| **A STEP AHEAD PEDIATRIC PT, PC** | BECKY WRIGHT | `PHONE` | `MEETING_BOOKED` | **MEETING_BOOKED** | [`meeting_brief_a_step_ahead_pediatric_pt__pc.md`](file:///C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\meeting_brief_a_step_ahead_pediatric_pt__pc.md) |
-| **ABILITY PRO THERAPY, LLC** | CHRISTOPHER BURDS | `PHONE` | `MEETING_BOOKED` | **MEETING_BOOKED** | [`meeting_brief_ability_pro_therapy__llc.md`](file:///C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\meeting_brief_ability_pro_therapy__llc.md) |
-| **ADVANCED SCIENCE AND TECHNOLOGY EDUCATION CHARTER SCHOOLS** | FREDA DESKIN | `PHONE` | `INTEREST_CONFIRMED` | **ENGAGED** | — |
-| **ACHIEVE PEDIATRIC THERAPY** | HEATHER GRAY | `PHONE` | `INTEREST_CONFIRMED` | **ENGAGED** | — |
-| **ABILITY HEALTH SERVICES INC** | JOHN GUERRINA | `PHONE` | `INTEREST_CONFIRMED` | **ENGAGED** | — |
-| **A BRIGHTER AVENUE LLC** | JONI STRICKER | `PHONE` | `PROPOSAL_SENT` | **PROPOSAL** | — |
-| **AADYA LLC** | PAWAN DHAWAN | `PHONE` | `PROPOSAL_SENT` | **PROPOSAL** | — |
-| **AGING WITH POWER** | JULIE DENDY | `PHONE` | `NOT_INTERESTED` | **NURTURE** | — |
+| **ACHIEVE PEDIATRIC THERAPY** | HEATHER GRAY | `PHONE` | `MEETING_BOOKED` | **MEETING_BOOKED** | [`meeting_brief_achieve_pediatric_therapy.md`](file:///C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\meeting_brief_achieve_pediatric_therapy.md) |
+| **ABILITY HEALTH SERVICES INC** | JOHN GUERRINA | `PHONE` | `MEETING_BOOKED` | **MEETING_BOOKED** | [`meeting_brief_ability_health_services_inc.md`](file:///C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\meeting_brief_ability_health_services_inc.md) |
+| **ADAPTIVE MOVEMENTS PEDIATRIC THERAPY** | ANGELA DUGAN | `PHONE` | `MEETING_BOOKED` | **MEETING_BOOKED** | [`meeting_brief_adaptive_movements_pediatric_therapy.md`](file:///C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\meeting_brief_adaptive_movements_pediatric_therapy.md) |
+| **ABOVE & BEYOND THERAPY SERVICES LLC** | THOMAS LONG | `PHONE` | `INTEREST_CONFIRMED` | **ENGAGED** | — |
+| **A&K THERAPY AND WOUND CARE SPECIALISTS LLC** | ALISON GEYMER | `PHONE` | `INTEREST_CONFIRMED` | **ENGAGED** | — |
+| **ALL ABOUT KIDS HOME THERAPY SERVICES, INC** | AMY BRUN | `PHONE` | `INTEREST_CONFIRMED` | **ENGAGED** | — |
+| **ACTIVE HEALTH CARE, PA** | JEFFREY LIPP | `PHONE` | `PROPOSAL_SENT` | **PROPOSAL** | — |
+| **ACTIVE PT SVCS** | LISETTE PORTES | `PHONE` | `PROPOSAL_SENT` | **PROPOSAL** | — |
+| **ACTIVE LIVING PT & WELLNESS LLC** | JACOB SPRUTE | `PHONE` | `NOT_INTERESTED` | **NURTURE** | — |
 
 ---
 ## 4. Production Safety & Invariant Guarantees

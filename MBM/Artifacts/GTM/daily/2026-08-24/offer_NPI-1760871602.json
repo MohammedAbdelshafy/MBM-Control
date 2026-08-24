@@ -1,0 +1,22 @@
+{
+  "sku": "AI-ASSISTANT-VIP-RETAINER",
+  "offer_name": "AI Autonomous Operations & Inbound Intake Agent",
+  "problem_solved": "Missed phone inquiries, delayed follow-up, and administrative bottleneck",
+  "core_workflow": "Answers inbound inquiries on 1st ring, qualifies customer requirements, books directly into business calendar",
+  "implementation_scope": "Direct phone system connection, CRM/calendar sync, automated SMS appointment confirmation",
+  "pricing_model": "MONTHLY_RETAINER",
+  "setup_fee_usd": 1000.0,
+  "monthly_fee_usd": 2000.0,
+  "performance_fee": "Optional 5% revenue share on closed appointments",
+  "neteller_checkout_link": "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=2000.00&currency=USD&item=AI-ASSISTANT-VIP-RETAINER",
+  "entry_diagnostic": "15-Minute Operational Workflow & Lead Leakage Audit",
+  "expansion_paths": [
+    "AI Multi-Channel Follow-Up Bot",
+    "Customer Review & Retention Agent"
+  ],
+  "roi_hypothesis": {
+    "observed": "Average client customer value is $500 - $2,500",
+    "estimated": "Automating intake and follow-up recovers 15+ hours/week of admin time and prevents lead leakage",
+    "assumed": "Closing 2 extra clients per month pays for the retainer with 2.5x ROI"
+  }
+}

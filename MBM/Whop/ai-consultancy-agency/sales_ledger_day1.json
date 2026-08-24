@@ -70,5 +70,120 @@
     },
     "next_action": "WAIT_FOR_RESPONSE",
     "notes": "First send"
+  },
+  {
+    "timestamp": "2026-08-23T11:24:17.487532+00:00",
+    "prospect_id": "LEAD_IDEMPOTENT_01",
+    "agent": "SELLER_CASCADE_ENGINE",
+    "channel": "WHATSAPP",
+    "previous_state": "CASCADE_QUEUED",
+    "new_state": "WHATSAPP_SENT",
+    "action": "SELLER_CASCADE_DAY_0_INITIAL",
+    "offer": "AI Consultancy Sprint Audit",
+    "offer_price": 297.0,
+    "checkout_url": "https://whop.com/checkout/plan_e3ibiYXeeAaZV",
+    "evidence": {
+      "lead_id": "LEAD_IDEMPOTENT_01",
+      "channel": "WHATSAPP",
+      "stage": "DAY_0_INITIAL",
+      "status": "SENT",
+      "timestamp": "2026-08-23T11:24:17.480818+00:00",
+      "notes": "First send",
+      "provider_result": {}
+    },
+    "next_action": "WAIT_FOR_RESPONSE",
+    "notes": "First send"
+  },
+  {
+    "timestamp": "2026-08-23T12:24:44.859798+00:00",
+    "prospect_id": "LEAD_IDEMPOTENT_01",
+    "agent": "SELLER_CASCADE_ENGINE",
+    "channel": "WHATSAPP",
+    "previous_state": "CASCADE_QUEUED",
+    "new_state": "WHATSAPP_SENT",
+    "action": "SELLER_CASCADE_DAY_0_INITIAL",
+    "offer": "AI Consultancy Sprint Audit",
+    "offer_price": 297.0,
+    "checkout_url": "https://whop.com/checkout/plan_e3ibiYXeeAaZV",
+    "evidence": {
+      "lead_id": "LEAD_IDEMPOTENT_01",
+      "channel": "WHATSAPP",
+      "stage": "DAY_0_INITIAL",
+      "status": "SENT",
+      "timestamp": "2026-08-23T12:24:44.853896+00:00",
+      "notes": "First send",
+      "provider_result": {}
+    },
+    "next_action": "WAIT_FOR_RESPONSE",
+    "notes": "First send"
+  },
+  {
+    "timestamp": "2026-08-23T12:34:57.702245+00:00",
+    "prospect_id": "LEAD_IDEMPOTENT_01",
+    "agent": "SELLER_CASCADE_ENGINE",
+    "channel": "WHATSAPP",
+    "previous_state": "CASCADE_QUEUED",
+    "new_state": "WHATSAPP_SENT",
+    "action": "SELLER_CASCADE_DAY_0_INITIAL",
+    "offer": "AI Consultancy Sprint Audit",
+    "offer_price": 297.0,
+    "checkout_url": "https://whop.com/checkout/plan_e3ibiYXeeAaZV",
+    "evidence": {
+      "lead_id": "LEAD_IDEMPOTENT_01",
+      "channel": "WHATSAPP",
+      "stage": "DAY_0_INITIAL",
+      "status": "SENT",
+      "timestamp": "2026-08-23T12:34:57.700248+00:00",
+      "notes": "First send",
+      "provider_result": {}
+    },
+    "next_action": "WAIT_FOR_RESPONSE",
+    "notes": "First send"
+  },
+  {
+    "timestamp": "2026-08-23T12:47:04.912790+00:00",
+    "prospect_id": "LEAD_IDEMPOTENT_01",
+    "agent": "SELLER_CASCADE_ENGINE",
+    "channel": "WHATSAPP",
+    "previous_state": "CASCADE_QUEUED",
+    "new_state": "WHATSAPP_SENT",
+    "action": "SELLER_CASCADE_DAY_0_INITIAL",
+    "offer": "AI Consultancy Sprint Audit",
+    "offer_price": 297.0,
+    "checkout_url": "https://whop.com/checkout/plan_e3ibiYXeeAaZV",
+    "evidence": {
+      "lead_id": "LEAD_IDEMPOTENT_01",
+      "channel": "WHATSAPP",
+      "stage": "DAY_0_INITIAL",
+      "status": "SENT",
+      "timestamp": "2026-08-23T12:47:04.904983+00:00",
+      "notes": "First send",
+      "provider_result": {}
+    },
+    "next_action": "WAIT_FOR_RESPONSE",
+    "notes": "First send"
+  },
+  {
+    "timestamp": "2026-08-23T13:14:47.507966+00:00",
+    "prospect_id": "LEAD_IDEMPOTENT_01",
+    "agent": "SELLER_CASCADE_ENGINE",
+    "channel": "WHATSAPP",
+    "previous_state": "CASCADE_QUEUED",
+    "new_state": "WHATSAPP_SENT",
+    "action": "SELLER_CASCADE_DAY_0_INITIAL",
+    "offer": "AI Consultancy Sprint Audit",
+    "offer_price": 297.0,
+    "checkout_url": "https://whop.com/checkout/plan_e3ibiYXeeAaZV",
+    "evidence": {
+      "lead_id": "LEAD_IDEMPOTENT_01",
+      "channel": "WHATSAPP",
+      "stage": "DAY_0_INITIAL",
+      "status": "SENT",
+      "timestamp": "2026-08-23T13:14:47.504966+00:00",
+      "notes": "First send",
+      "provider_result": {}
+    },
+    "next_action": "WAIT_FOR_RESPONSE",
+    "notes": "First send"
   }
 ]

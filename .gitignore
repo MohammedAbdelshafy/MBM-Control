@@ -278,3 +278,14 @@ MBM/Phound/campaigns/
 MBM/Recruitment/outreach_packs/
 MBM/Recruitment/reddit_recruitment_posts.json
 .vercel
+
+# Twists Revealed production run outputs (large media; regenerated per run)
+clipping-factory/artifacts/twistsrevealed/**
+!clipping-factory/artifacts/twistsrevealed/
+!clipping-factory/artifacts/twistsrevealed/ledger.json
+
+# ffmpeg scene-cut cache (regenerable)
+clipping-factory/artifacts/clipping_factory/scene_cuts/
+
+# P0 ingestion purge backups (lead PII — keep local only)
+MBM/Artifacts/*.bak_p0

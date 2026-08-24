@@ -1,6 +1,6 @@
 # GTM REVENUE SCOREBOARD
 
-**Generated:** 2026-08-22T13:52:16.191643+00:00
+**Generated:** 2026-08-23T13:11:32.336677+00:00
 **Canonical Funnel:** [https://mbm-dialer-app.vercel.app/sprint/](https://mbm-dialer-app.vercel.app/sprint/)
 **Primary Offer:** AI Consultancy Sprint Audit ($297.00) · [`plan_e3ibiYXeeAaZV`](https://whop.com/checkout/plan_e3ibiYXeeAaZV)
 

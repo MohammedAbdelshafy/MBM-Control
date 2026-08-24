@@ -1,13 +1,15 @@
 {
   "last_started": "2026-08-20T14:18:33.952939+00:00",
-  "status": "test",
-  "duration_sec": 0.0,
-  "campaigns_found": 2,
-  "clips_produced": 0,
+  "status": "success",
+  "duration_sec": 259.3,
+  "campaigns_found": 24,
+  "clips_produced": 1,
   "clips_rejected": 0,
   "clips_queued": 0,
   "clips_published": 0,
   "publish_failures": 0,
   "next_run": "",
-  "updated_at": "2026-08-20T14:18:33.952939+00:00"
+  "updated_at": "2026-08-24T15:14:49.039733+00:00",
+  "higgsfield_status": "not_required_local_pipeline",
+  "last_completed": "2026-08-24T15:14:49.039733+00:00"
 }

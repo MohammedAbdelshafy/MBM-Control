@@ -34,6 +34,12 @@ class GLMRole(str, Enum):
     INTEGRATION_ENGINEER = "GLM_INTEGRATION_ENGINEER"
     REVENUE_ANALYST = "GLM_REVENUE_ANALYST"
     ORCHESTRATOR = "GLM_ORCHESTRATOR"
+    RESEARCH_AGENT = "GLM_RESEARCH_AGENT"
+    BUYER_AGENT = "GLM_BUYER_AGENT"
+    PROPERTY_AGENT = "GLM_PROPERTY_AGENT"
+    QUALIFICATION_AGENT = "GLM_QUALIFICATION_AGENT"
+    EMAIL_AGENT = "GLM_EMAIL_AGENT"
+    QA_AGENT = "GLM_QA_AGENT"
 
 
 class AgentSpec(BaseModel):
@@ -164,6 +170,48 @@ AGENT_REGISTRY: Dict[GLMRole, AgentSpec] = {
         description="Coordinates swarm execution, selects high-value missions, enforces file locks, and manages regression gates.",
         preferred_tier=ModelRoutingTier.DEEP_GLM,
         capabilities=["mission_planning", "concurrency_locking", "verification_gating", "executive_reporting"],
+    ),
+    GLMRole.RESEARCH_AGENT: AgentSpec(
+        role=GLMRole.RESEARCH_AGENT,
+        name="GLM Research Agent",
+        description="Deep dives into market trends, niche gaps, and competitive intelligence to inform GTM strategies.",
+        preferred_tier=ModelRoutingTier.DEEP_GLM,
+        capabilities=["market_analysis", "niche_discovery", "competitive_intelligence"],
+    ),
+    GLMRole.BUYER_AGENT: AgentSpec(
+        role=GLMRole.BUYER_AGENT,
+        name="GLM Buyer Agent",
+        description="Models buyer intent, identifies high-value acquisition targets, and matches leads to optimal buyers.",
+        preferred_tier=ModelRoutingTier.MEDIUM,
+        capabilities=["buyer_intent_scoring", "target_matching", "acquisition_modeling"],
+    ),
+    GLMRole.PROPERTY_AGENT: AgentSpec(
+        role=GLMRole.PROPERTY_AGENT,
+        name="GLM Property Agent",
+        description="Analyzes real estate assets, verifies property intelligence, and integrates county appraisal records.",
+        preferred_tier=ModelRoutingTier.DEEP_GLM,
+        capabilities=["property_verification", "asset_valuation", "appraisal_analysis"],
+    ),
+    GLMRole.QUALIFICATION_AGENT: AgentSpec(
+        role=GLMRole.QUALIFICATION_AGENT,
+        name="GLM Qualification Agent",
+        description="Audits raw leads against baseline criteria and scores them for pipeline entry.",
+        preferred_tier=ModelRoutingTier.DEEP_GLM,
+        capabilities=["lead_qualification", "criteria_auditing", "pipeline_scoring"],
+    ),
+    GLMRole.EMAIL_AGENT: AgentSpec(
+        role=GLMRole.EMAIL_AGENT,
+        name="GLM Email Agent",
+        description="Drafts personalized, high-converting outreach emails targeting key decision makers.",
+        preferred_tier=ModelRoutingTier.MEDIUM,
+        capabilities=["email_drafting", "personalization", "objection_handling_prep"],
+    ),
+    GLMRole.QA_AGENT: AgentSpec(
+        role=GLMRole.QA_AGENT,
+        name="GLM QA Agent",
+        description="Audits generated content (like emails) to ensure no hallucinations, aggressive selling, or factual errors.",
+        preferred_tier=ModelRoutingTier.LIGHT,
+        capabilities=["content_audit", "hallucination_detection", "compliance_check"],
     ),
 }
 

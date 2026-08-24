@@ -94,5 +94,53 @@
     "attempts": 1,
     "last_error": "",
     "last_attempt_at": "2026-08-16T19:14:15.418996+00:00"
+  },
+  "daily_brief_2026-08-24|in_app": {
+    "event_id": "notif_ac837dbfb728",
+    "delivery_key": "daily_brief_2026-08-24",
+    "kind": "DAILY_BRIEF",
+    "channel": "in_app",
+    "priority": "P2",
+    "created_at": "2026-08-24T10:59:55.437549+00:00",
+    "status": "DELIVERED",
+    "attempts": 2,
+    "last_error": "",
+    "last_attempt_at": "2026-08-24T10:59:55.437549+00:00"
+  },
+  "daily_brief_2026-08-24|email": {
+    "event_id": "notif_3073c3487e4c",
+    "delivery_key": "daily_brief_2026-08-24",
+    "kind": "DAILY_BRIEF",
+    "channel": "email",
+    "priority": "P2",
+    "created_at": "2026-08-24T10:59:55.457034+00:00",
+    "status": "DELIVERED",
+    "attempts": 2,
+    "last_error": "",
+    "last_attempt_at": "2026-08-24T10:59:55.457034+00:00"
+  },
+  "daily_brief_2026-08-24|gmail": {
+    "event_id": "notif_a180b36c73cf",
+    "delivery_key": "daily_brief_2026-08-24",
+    "kind": "DAILY_BRIEF",
+    "channel": "gmail",
+    "priority": "P2",
+    "created_at": "2026-08-24T10:59:55.471024+00:00",
+    "status": "FAILED",
+    "attempts": 3,
+    "last_error": "Gmail SMTP send failed: (535, b'5.7.8 Username and Password not accepted. For more information, go to\\n5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-482c9c0bef5sm7935522f8f.31 - gsmtp')",
+    "last_attempt_at": "2026-08-24T10:59:55.471024+00:00"
+  },
+  "daily_brief_2026-08-24|telegram": {
+    "event_id": "notif_23bfec6893c1",
+    "delivery_key": "daily_brief_2026-08-24",
+    "kind": "DAILY_BRIEF",
+    "channel": "telegram",
+    "priority": "P2",
+    "created_at": "2026-08-24T10:59:56.760924+00:00",
+    "status": "DUPLICATE_SKIPPED",
+    "attempts": 0,
+    "last_error": "telegram toggle disabled for DAILY_BRIEF",
+    "last_attempt_at": ""
   }
 }

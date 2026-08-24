@@ -1,0 +1,147 @@
+{
+  "run_id": "daily-ingest-20260824T123907-3300",
+  "run_date": "2026-08-24",
+  "mode": "dry_run",
+  "source": "npi_verified_callsheet.json@2026-08-23T11:55:59.239638+00:00",
+  "started_at": "2026-08-24T12:39:07.273563+00:00",
+  "completed_at": "2026-08-24T12:39:12.615189+00:00",
+  "raw_count": 2388,
+  "accepted_count": 0,
+  "new_count": 0,
+  "duplicate_count": 2306,
+  "suppressed_count": 21,
+  "rejected_count": 61,
+  "needs_review_count": 0,
+  "canonical_revision": 36,
+  "canonical_revision_before": 36,
+  "canonical_count": 4484,
+  "canonical_count_before": 4484,
+  "dataset_hash": "b353215d8652e0b74fbecaa50d794ef7f0506244d6babd4a612879faefbd4f53",
+  "dataset_hash_before": "b353215d8652e0b74fbecaa50d794ef7f0506244d6babd4a612879faefbd4f53",
+  "script_coverage": 100.0,
+  "segment_coverage": 100.0,
+  "live_verified": false,
+  "live_skipped": true,
+  "status": "QUARANTINED",
+  "write_performed": false,
+  "zero_yield_reason": "",
+  "errors": [],
+  "needs_review_ids": [],
+  "sample_traces": [],
+  "stages": {
+    "source_fetch": {
+      "completed": true,
+      "detail": "2388 rows from npi_verified_callsheet.json@2026-08-23T11:55:59.239638+00:00"
+    },
+    "raw_ingest": {
+      "completed": true,
+      "detail": "2385 structured candidates (3 malformed dropped)"
+    },
+    "phone_identity_validation": {
+      "completed": true,
+      "detail": "US phone + identity gate applied to every candidate"
+    },
+    "provenance_validation": {
+      "completed": true,
+      "detail": "LeadProvenanceGate applied to every candidate"
+    },
+    "synthetic_check": {
+      "completed": true,
+      "detail": "strong synthetic fingerprint veto applied"
+    },
+    "dedupe": {
+      "completed": true,
+      "detail": "2306 duplicates (2190 enriched via history-preserving merge)"
+    },
+    "suppression_dnc_check": {
+      "completed": true,
+      "detail": "21 suppressed/DNC (suppression index size 102)"
+    },
+    "classification": {
+      "completed": true,
+      "detail": "0 NEEDS_REVIEW; segments=[]"
+    },
+    "script_assignment": {
+      "completed": true,
+      "detail": "coverage 100.0% (canonical script engine)"
+    },
+    "canonical_write": {
+      "completed": true,
+      "detail": "dry-run: no write performed"
+    },
+    "revision_audit": {
+      "completed": true,
+      "detail": "dry-run: no revision bump"
+    },
+    "queue_prioritization": {
+      "completed": true,
+      "detail": "planned newest-first order (dry-run)"
+    },
+    "live_verification": {
+      "completed": true,
+      "detail": "dry-run: live release check deferred until --apply"
+    }
+  },
+  "projected_count": 4484,
+  "live": {
+    "performed": false,
+    "ok": false,
+    "reason": ""
+  },
+  "acceptance_gate": {
+    "source_fetch_succeeded": true,
+    "raw_count_recorded": true,
+    "verification_completed": true,
+    "synthetic_rejection_completed": true,
+    "dedupe_completed": true,
+    "suppression_dnc_completed": true,
+    "classification_completed": true,
+    "script_enrichment_completed": true,
+    "canonical_db_write_succeeded": true,
+    "revision_incremented": false,
+    "audit_entry_recorded": true,
+    "accepted_gt_zero_or_documented": false,
+    "queue_refreshed": true,
+    "newest_first_verified": true,
+    "live_dialer_updated": true
+  },
+  "runs": [
+    {
+      "run_id": "daily-ingest-20260824T122801-9100",
+      "status": "QUARANTINED",
+      "mode": "dry_run",
+      "raw": 2388,
+      "new": 0,
+      "duplicates": 2306,
+      "suppressed": 21,
+      "rejected": 61,
+      "needs_review": 0,
+      "write_performed": false,
+      "canonical_revision": 36,
+      "live_verified": false
+    },
+    {
+      "run_id": "daily-ingest-20260824T123907-3300",
+      "status": "QUARANTINED",
+      "mode": "dry_run",
+      "raw": 2388,
+      "new": 0,
+      "duplicates": 2306,
+      "suppressed": 21,
+      "rejected": 61,
+      "needs_review": 0,
+      "write_performed": false,
+      "canonical_revision": 36,
+      "live_verified": false
+    }
+  ],
+  "day_totals": {
+    "raw": 4776,
+    "accepted": 0,
+    "new": 0,
+    "duplicates": 4612,
+    "suppressed": 42,
+    "rejected": 122,
+    "needs_review": 0
+  }
+}
