@@ -79,28 +79,73 @@ def resolve(task: str) -> str:
     raise RuntimeError(f"No local model available for task '{task}'. Is Ollama running?")
 
 
+def _ollama_generate(
+    model: str,
+    prompt: str,
+    system: Optional[str] = None,
+    temperature: float = 0.3,
+    max_tokens: int = 800,
+) -> Optional[str]:
+    """Call the Ollama /api/generate endpoint for a resolved local model."""
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "stream": False,
+        "options": {"temperature": temperature, "num_predict": max_tokens},
+    }
+    if system:
+        payload["system"] = system
+    req = urllib.request.Request(
+        f"{OLLAMA_BASE}/api/generate",
+        data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=180) as r:
+        data = json.load(r)
+    return (data.get("response") or "").strip() or None
+
+
 def generate(
     prompt: str,
     task: str = "strategy",
     system: Optional[str] = None,
     temperature: float = 0.3,
     max_tokens: int = 800,
+    transport=None,
 ) -> str:
-    import sys
-    from pathlib import Path
-    BACKEND = Path(__file__).resolve().parent.parent.parent / "backend"
-    if str(BACKEND) not in sys.path:
-        sys.path.insert(0, str(BACKEND))
-        
-    from app.services.ai_service import AIService
-    
-    ai = AIService()
+    """Generate text. Local-first (Ollama), then backend AIService.complete().
+
+    `transport` is injectable for tests (defaults to Ollama /api/generate).
+    On total failure this raises RuntimeError — callers are expected to have
+    deterministic template fallbacks. It NEVER returns fabricated content.
+    """
+    # 1) Local Ollama (preferred): uses the task-resolved model, honoring
+    #    temperature/max_tokens. Honors the module's local-only contract.
     try:
-        response = ai.generate(prompt=prompt, system_instruction=system)
-        return response
+        model = resolve(task)
+        fn = transport or _ollama_generate
+        resp = fn(model=model, prompt=prompt, system=system, temperature=temperature, max_tokens=max_tokens)
+        if resp:
+            return resp
     except Exception as e:
-        print(f"Gemini fallback for {task}: {e}")
-        return '{"title": "Viral Short", "description": "Wait for it... #viral", "hook_score": 0.95, "hashtags": ["#viral", "#fyp"]}'
+        print(f"[model_registry] local generation failed for task '{task}': {e}")
+
+    # 2) Backend fallback (Anthropic/Gemini/OpenAI) when available.
+    try:
+        import sys
+        from pathlib import Path
+        BACKEND = Path(__file__).resolve().parent.parent.parent / "backend"
+        if str(BACKEND) not in sys.path:
+            sys.path.insert(0, str(BACKEND))
+        from app.services.ai_service import AIService
+        ai = AIService()
+        resp = ai.complete(prompt=prompt, model=resolve(task), system=system, max_tokens=max_tokens, temperature=temperature)
+        if resp:
+            return resp
+    except Exception as e:
+        print(f"[model_registry] backend generation failed for task '{task}': {e}")
+
+    raise RuntimeError(f"All generation paths failed for task '{task}' (Ollama down and no backend provider).")
 
 
 def embed(text: str) -> list[float]:

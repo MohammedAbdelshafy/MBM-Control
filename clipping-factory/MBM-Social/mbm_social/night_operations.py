@@ -299,19 +299,21 @@ def mission_queue_optimization() -> dict:
     queue_dir = ROOT / "publish_queue"
     cleaned = 0
     rebalanced = 0
+    # Never delete outright: stale drafts are archived to a backup folder so a
+    # human can recover them (fixes the prior destructive purge finding).
+    archive_dir = ROOT / "backups" / "stale_queue"
+    archive_dir.mkdir(parents=True, exist_ok=True)
 
     if queue_dir.exists():
         for f in queue_dir.glob("*.json"):
             try:
                 data = json.loads(f.read_text(encoding="utf-8"))
 
-                # Remove drafts older than 7 days
-                created = data.get("publish_time", data.get("status", ""))
+                # Archive drafts older than 7 days (no silent deletion)
                 if data.get("status") == "draft":
-                    # Check file age
                     file_age_days = (datetime.now() - datetime.fromtimestamp(f.stat().st_mtime)).days
                     if file_age_days > 7:
-                        f.unlink()
+                        shutil.copy2(f, archive_dir / f.name)
                         cleaned += 1
                         continue
 
@@ -564,6 +566,47 @@ def mission_anty_shadowban_schedule() -> dict:
 
 # ─── Main runner ─────────────────────────────────────────────────────
 
+def mission_dead_letter_review() -> dict:
+    """Phase 15: review the dead-letter queue (failed/blocked publishes).
+
+    Reports counts per reason. Safe auto-fix: packages older than 14 days with
+    a recoverable reason are moved to backups/dead_letter_archive (never deleted)
+    so the active dead-letter dir stays actionable for humans.
+    """
+    dl_dir = ROOT / "publish_queue" / "dead_letter"
+    archive_dir = ROOT / "backups" / "dead_letter_archive"
+    archive_dir.mkdir(parents=True, exist_ok=True)
+
+    reasons: dict[str, int] = {}
+    total = 0
+    archived = 0
+    if dl_dir.exists():
+        now = datetime.now()
+        for f in dl_dir.glob("*.json"):
+            try:
+                data = json.loads(f.read_text(encoding="utf-8"))
+                reason = (data.get("dead_letter") or {}).get("reason", "unknown")
+                reasons[reason] = reasons.get(reason, 0) + 1
+                total += 1
+                age_days = (now - datetime.fromtimestamp(f.stat().st_mtime)).days
+                if age_days > 14:
+                    shutil.copy2(f, archive_dir / f.name)
+                    archived += 1
+            except Exception:
+                continue
+
+    report = {
+        "timestamp": datetime.now().isoformat(),
+        "dead_letter_total": total,
+        "reasons": reasons,
+        "archived_old": archived,
+        "status": "healthy" if total == 0 else "attention",
+        "action": "review blocked/manual platforms; do not re-publish without a real id",
+    }
+    _save_report(report, "dead_letter_review")
+    return report
+
+
 def run_all_missions() -> dict:
     """Run all night operations missions and compile executive report."""
     _log("NIGHT_OPS", "Starting night operations run...")
@@ -579,6 +622,7 @@ def run_all_missions() -> dict:
         ("learning_update", mission_learning_update),
         ("queue_optimization", mission_queue_optimization),
         ("platform_health", mission_platform_health),
+        ("dead_letter_review", mission_dead_letter_review),
         ("opportunity_scan", mission_opportunity_scan),
         ("repository_backup", mission_repository_backup),
         ("anty_shadowban_schedule", mission_anty_shadowban_schedule),

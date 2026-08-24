@@ -139,6 +139,37 @@ Each brand defines KPIs in `kpis.yaml`: target_views_30d, target_ctr, target_avg
 
 Data stored in `LearningMemory.json` — no database writes for learning.
 
+## Production Revision (M-022)
+
+The pipeline was revised (2026-08-25) to eliminate fabricated outputs and add
+operational resilience. Key facts:
+
+- **Canonical runtime:** `mbm_social/campaign_runner.py::run_campaign` is the single
+  entry point for a resilient campaign. It wires every `autonomous_runtime` stage,
+  emits an append-only event log (`event_bus.py`), writes checkpoints for resume
+  (`checkpoint.py`), enforces the rights gate (`source_registry.py`) and quality gate
+  (`quality_gate_policy.py`), and routes publishes through an honest platform matrix
+  (`platform_registry.py`) with a circuit breaker + dead-letter queue
+  (`circuit_breaker.py`).
+- **Honest platform status:** YouTube = fully supported; Instagram/TikTok =
+  MANUAL_REQUIRED (Playwright, no auto-verify); LinkedIn/X = BLOCKED (no publisher).
+  Blocked/manual packages are preserved in `publish_queue/dead_letter/` and a GitHub
+  issue is opened when a repo is configured (`github_app.py`). No platform is ever
+  marked Published without a real success id.
+- **Real inference:** `model_registry.generate()` is Ollama-first (or backend fallback)
+  and raises on total failure — it never returns canned JSON.
+- **Fake removed:** the old root `mbm_social_autonomous_runtime.py` fabricated analytics
+  and is quarantined to `.QUARANTINED`; a delegating shim now uses the real package.
+- **Quality gates:** 10 configurable gates (see `quality_gate_policy.DEFAULT_THRESHIERS`);
+  failures carry exact reasons (`rights_blocked`, `quality_failed`, `manual_required`,
+  `publish_failed`, `publish_blocked`).
+- **Client mode:** `client_campaign.py` distinguishes INTERNAL_BRAND vs CLIENT_CAMPAIGN
+  with validation. **Websites:** `app_websites.py` generates config-driven static sites.
+- **Tested:** `tests/test_m022_modules.py` — 21 hermetic tests (units + E2E resume, quality
+  fail, rights block, dead-letter, blocked platform).
+- See `Reports/ClippingFactory_Production_Readiness.md` and
+  `Reports/Platform_Capability_Matrix.md`.
+
 ## Night Operations
 
 `night_operations.py` runs automated overnight missions:
@@ -167,6 +198,15 @@ python -c "from mbm_social.autonomous_runtime import run_autonomous_campaign; pr
 
 # Run night operations
 python -m mbm_social.night_operations
+
+# Run the canonical resilient campaign runtime (dry-run by default)
+python -c "from mbm_social.campaign_runner import run_campaign, CampaignContext; print(run_campaign(CampaignContext(campaign_id='demo', brand='dontwatchthis', profile='dark_stories'), queue_dir=None))"
+
+# Inspect the honest platform matrix
+python -c "from mbm_social.platform_registry import PlatformRegistry as P; print(P.all_capabilities())"
+
+# Evaluate a quality gate
+python -c "from mbm_social.quality_gate_policy import GatePolicy; print(GatePolicy().evaluate({'hook_score':0.9,'brand_fit':0.8,'visual_score':0.5},['youtube']))"
 
 # Run learning engine update
 python -c "from mbm_social.learning_engine import auto_update_scoring_weights; print(auto_update_scoring_weights())"

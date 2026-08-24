@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -35,8 +36,10 @@ except Exception:
 ROOT = Path(__file__).resolve().parent.parent
 STATE_FILE = ROOT / "paced_state.json"
 
-MAX_DAILY = 25
-GAP_MINUTES = 15
+# Defaults match the documented throttle: max 5 posts/day, >=120 min apart.
+# Override via env (PACED_MAX_DAILY / PACED_GAP_MINUTES) for per-account tuning.
+MAX_DAILY = int(os.getenv("PACED_MAX_DAILY", "5"))
+GAP_MINUTES = int(os.getenv("PACED_GAP_MINUTES", "120"))
 
 BRANDS = [
     "cutedosage",
@@ -84,8 +87,21 @@ def pick_brand(state: dict) -> tuple[str, list]:
     return "", []
 
 
-def run_paced(dry_run: bool = False, force: bool = False, brand_only: str | None = None) -> dict:
+def run_paced(
+    dry_run: bool = False,
+    force: bool = False,
+    brand_only: str | None = None,
+    mode: str | None = None,
+) -> dict:
     from mbm_social import post_orchestrator as orch
+
+    # Resolve publish mode: explicit arg > PUBLISH_MODE env > dry_run flag.
+    if mode is None:
+        mode = os.getenv("PUBLISH_MODE", "dry_run").strip().lower()
+    if mode not in orch.PUBLISH_MODES:
+        mode = "dry_run"
+    if dry_run:
+        mode = "dry_run"
 
     state = _load_state()
     now = _now()
@@ -99,6 +115,7 @@ def run_paced(dry_run: bool = False, force: bool = False, brand_only: str | None
     finish = {
         "date": today,
         "posted": 0,
+        "mode": mode,
         "skipped_reason": "",
         "next_action": "wait for next paced window",
         "owner": "system",
@@ -139,14 +156,16 @@ def run_paced(dry_run: bool = False, force: bool = False, brand_only: str | None
 
     print(f"[PACED] Window open -> publishing [{brand}]: '{title}' ({filepath.name})")
     if dry_run:
-        print(f"[dry-run] Would call publish_package on newest {brand} draft; ")
+        print(f"[dry-run] Would call publish_package on newest {brand} draft (mode={mode}); ")
         print(f"[dry-run] remaining today now = {MAX_DAILY - len([p for p in posts if p.get('status')=='published'])}")
         state["rotation_idx"] = (state.get("rotation_idx", 0) + 1) % len(BRANDS)
         _save_state(state)
         finish["skipped_reason"] = "dry-run only; no real post"
         return finish
 
-    result = orch.publish_package(filepath, package, dry_run=False)
+    # Mode is passed explicitly so post_orchestrator does not silently
+    # fall back to dry_run (previous bug: run_paced omitted mode entirely).
+    result = orch.publish_package(filepath, package, dry_run=False, mode=mode)
     published = result.get("status") == "published"
 
     posts.append({
@@ -178,9 +197,15 @@ def main(argv=None) -> int:
     parser.add_argument("--dry-run", action="store_true", help="Pick a brand, post nothing.")
     parser.add_argument("--force", action="store_true", help="Ignore daily budget + gap window.")
     parser.add_argument("--brand", help="Post only this brand (ignores rotation).")
+    parser.add_argument("--mode", choices=("dry_run", "test", "live"),
+                        default=os.getenv("PUBLISH_MODE", "dry_run"),
+                        help="Publish mode forwarded to post_orchestrator. Default: $PUBLISH_MODE.")
     args = parser.parse_args(argv)
 
-    res = run_paced(dry_run=args.dry_run, force=args.force, brand_only=args.brand)
+    mode = args.mode
+    if args.dry_run:
+        mode = "dry_run"
+    res = run_paced(dry_run=args.dry_run, force=args.force, brand_only=args.brand, mode=mode)
     try:
         print(json.dumps(res, indent=2, ensure_ascii=False))
     except Exception:

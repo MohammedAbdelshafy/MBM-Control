@@ -81,3 +81,15 @@ def shortform_session_dirs(slug: str) -> dict:
 def active_brands() -> list[dict]:
     reg = load_registry("BrandRegistry.json")
     return [b for b in reg["brands"].values() if b.get("active")]
+
+
+def list_brands() -> list[str]:
+    """Return the list of configured brand slugs (fixes missing API used by
+    social_account_discovery)."""
+    reg = load_registry("BrandRegistry.json")
+    if reg.get("brands"):
+        return list(reg["brands"].keys())
+    # Fallback: scan the Brands/ directory.
+    if BRANDS_DIR.exists():
+        return sorted(p.name for p in BRANDS_DIR.iterdir() if p.is_dir())
+    return []

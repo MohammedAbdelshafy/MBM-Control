@@ -13,6 +13,7 @@ No parallel systems created — this is a thin orchestration layer.
 from __future__ import annotations
 
 import json
+import os
 import time
 import traceback
 from dataclasses import dataclass, field, asdict
@@ -495,19 +496,19 @@ def run_autonomous_campaign(
 
 
 def run_from_queue() -> dict:
-    """Pick the next draft from publish_queue and run the publisher."""
-    queue_dir = ROOT / "publish_queue"
-    if not queue_dir.exists():
-        return {"error": "no publish_queue directory"}
+    """Pick the next draft from publish_queue and run the authoritative publisher.
 
-    for f in sorted(queue_dir.glob("*.json")):
-        data = json.loads(f.read_text(encoding="utf-8"))
-        if data.get("status") == "draft":
-            result = stage_publisher(str(f), "internal")
-            if result.get("published"):
-                data["status"] = "published"
-                data["published_at"] = datetime.now().isoformat()
-                f.write_text(json.dumps(data, indent=2), encoding="utf-8")
-            return {"processed": str(f), **result}
+    Delegates to post_orchestrator.publish_package so status is written by the
+    single source of truth (no fake 'published' when no real id was returned).
+    """
+    from . import post_orchestrator as orch
 
-    return {"error": "no drafts in queue"}
+    pending = orch.pending_packages(limit=1)
+    if not pending:
+        return {"error": "no drafts in queue"}
+    filepath, package = pending[0]
+    mode = os.getenv("PUBLISH_MODE", "dry_run").strip().lower()
+    if mode not in orch.PUBLISH_MODES:
+        mode = "dry_run"
+    result = orch.publish_package(filepath, package, dry_run=(mode == "dry_run"), mode=mode)
+    return {"processed": str(filepath), "status": result.get("status"), **result}

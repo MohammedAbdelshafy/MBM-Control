@@ -97,6 +97,72 @@ def _gen_thumb_text(brand: dict, title: str, hook: str) -> tuple[str, str]:
     return " ".join(words), "template-fallback"
 
 
+def build_platform_metadata(brand: dict, transcript: str, hook: str, title: str,
+                             caption: str, hashtags: list[str]) -> dict:
+    """Phase 5: generate INDEPENDENT metadata per platform (no blind reuse).
+
+    YouTube Shorts: title + description + hashtags.
+    TikTok: caption (shorter, punchy) + hashtags.
+    Instagram: caption (story-led) + hashtags.
+    Falls back to deterministic transformations when the local model is down.
+    """
+    def tiktok_caption() -> tuple[str, str]:
+        try:
+            sys = "You write TikTok captions: 1 short hook sentence, no hashtags here."
+            prompt = f"Clip hook: {hook}\nTranscript: {transcript[:400]}\nReturn ONLY the caption, <=120 chars."
+            model = mr.resolve("caption_generation")
+            out = mr.generate(prompt, task="caption_generation", system=sys, max_tokens=60)
+            if out:
+                return out[:120], model
+        except Exception:
+            pass
+        return (hook or caption)[:120] or f"Follow {brand.get('handle','')} for more.", "template-fallback"
+
+    def ig_caption() -> tuple[str, str]:
+        try:
+            sys = "You write Instagram Reels captions: a relatable 1-2 sentence line, no hashtags here."
+            prompt = f"Clip hook: {hook}\nTranscript: {transcript[:400]}\nReturn ONLY the caption, <=200 chars."
+            model = mr.resolve("caption_generation")
+            out = mr.generate(prompt, task="caption_generation", system=sys, max_tokens=80)
+            if out:
+                return out[:200], model
+        except Exception:
+            pass
+        return (caption or hook)[:200] or f"{hook} Save this for later. ✨", "template-fallback"
+
+    tt, m_tt = tiktok_caption()
+    ig, m_ig = ig_caption()
+    return {
+        "youtube_shorts": {"title": title, "description": caption, "hashtags": hashtags},
+        "tiktok": {"caption": tt, "hashtags": hashtags, "_model": m_tt},
+        "instagram": {"caption": ig, "hashtags": hashtags, "_model": m_ig},
+    }
+
+
+def score_thumbnail_variants(brand: dict, variants: list[dict]) -> list[dict]:
+    """Phase 6: score thumbnail/cover variants with explicit rubric axes.
+
+    Axes (each 0..1, honest provenance recorded):
+      mobile_readability, face_prominence, subject_clarity,
+      emotional_signal, text_readability, brand_consistency.
+    Returns variants sorted by blended score with reasons. This is a heuristic
+    scorer (no image model required); provenance is 'heuristic' so downstream
+    code never treats it as a measured ground truth unless an LLM/vision refines it.
+    """
+    weights = {"mobile_readability": 0.2, "face_prominence": 0.2, "subject_clarity": 0.2,
+               "emotional_signal": 0.15, "text_readability": 0.15, "brand_consistency": 0.1}
+    scored = []
+    for v in variants:
+        axes = {k: float(v.get(k, 0.5)) for k in weights}
+        total = sum(weights[k] * axes[k] for k in weights)
+        reasons = [f"{k} {axes[k]:.2f}" for k, w in weights.items() if w >= 0.15]
+        scored.append({**v, "score": round(total, 4), "axes": axes,
+                       "provenance": v.get("provenance", "heuristic"),
+                       "reasons": reasons})
+    scored.sort(key=lambda x: x["score"], reverse=True)
+    return scored
+
+
 def build_package(
     clip: dict,
     candidate: dict,
@@ -106,6 +172,11 @@ def build_package(
     slug = route["brand"]
     brand = bc.load_brand(slug)
     ch = bc.channel_for_brand(slug)
+    posting = brand.get("posting", {})
+    if isinstance(posting, dict):
+        posting_windows = posting.get("windows", ["12:00"])
+    else:
+        posting_windows = ["12:00"]
     transcript = candidate.get("transcript_window") or clip.get("transcript", "") or ""
     hook = clip.get("hook_text") or candidate.get("reason") or ""
 
@@ -113,6 +184,7 @@ def build_package(
     caption, m_caption = _gen_caption(brand, transcript, hook)
     hashtags, m_tags = _gen_hashtags(brand, transcript)
     thumb_text, m_thumb = _gen_thumb_text(brand, title, hook)
+    platform_metadata = build_platform_metadata(brand, transcript, hook, title, caption, hashtags)
 
     package = {
         "brand": slug,
@@ -124,8 +196,10 @@ def build_package(
         "hashtags": hashtags,
         "thumbnail_text": thumb_text,
         "thumbnail_prompt": f"{brand['thumbnail_rules']} Text overlay: '{thumb_text}'.",
+        "thumbnail_variants": [],  # populated by the thumbnail stage (Phase 6)
+        "platform_metadata": platform_metadata,
         "hook_text": hook,
-        "publish_time": _next_window(brand.get("posting", {})),
+        "publish_time": _next_window({"timezone": "UTC", "windows": posting_windows}),
         "source_reference": clip.get("source_reference") or clip.get("campaign_id") or "",
         "clip_file_path": clip.get("storage_key") or clip.get("clip_path") or "",
         "brand_fit_score": route["score"],

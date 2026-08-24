@@ -8,6 +8,7 @@ never a hardcoded single model.
 """
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, asdict
 from typing import Any, Optional
 
@@ -110,7 +111,7 @@ def route_clip(candidate: dict) -> RouteResult:
             + weights.get("hook_style_match", 0.2) * hook_match
             + weights.get("visual_fit", 0.15) * visual_fit
             + weights.get("keyword_overlap", 0.15) * kw_overlap
-            + weights.get("past_performance", 0.1) * 0.5
+            + weights.get("past_performance", 0.1) * _past_performance(slug)
         )
         ch = bc.channel_for_brand(slug)
         results.append({
@@ -157,6 +158,28 @@ def _safe_load(slug: str):
         return bc.load_brand(slug)
     except Exception:
         return None
+
+
+def _past_performance(slug: str) -> float:
+    """Phase 14 feedback: derive a brand's historical performance from memory.
+
+    Reads LearningMemory.json brand rollups; returns 0.5 (neutral) when no data
+    or on any error. Never fabricates — only uses measured/accumulated signals.
+    """
+    try:
+        from pathlib import Path as _P
+        mem = _P(__file__).resolve().parent.parent / "LearningMemory.json"
+        if not mem.exists():
+            return 0.5
+        data = json.loads(mem.read_text(encoding="utf-8"))
+        roll = (data.get("brand_rollups") or {}).get(slug) or {}
+        # Prefer a normalized avg score if present, else neutral.
+        score = roll.get("avg_score")
+        if isinstance(score, (int, float)):
+            return float(score)
+    except Exception:
+        pass
+    return 0.5
 
 
 def route_clip_dict(candidate: dict) -> dict:
