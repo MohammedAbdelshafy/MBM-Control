@@ -6,7 +6,7 @@ Same input always yields the same output and the same ranking order.
 """
 from __future__ import annotations
 
-from typing import Iterable
+from collections.abc import Iterable
 
 from pain_to_offer.schema import CompanyEvidencePack, EvidenceStatus
 

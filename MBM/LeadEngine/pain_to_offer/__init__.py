@@ -12,6 +12,15 @@ Core invariants:
   - No supported pain evidence + personalization basis -> no EMAIL_READY.
   - Personal contacts never enter the outreach pipeline.
 """
+from pain_to_offer.gates import (
+    SuppressionList,
+    call_gate,
+    copy_safety,
+    email_gate,
+    offer_binding_gate,
+    pain_gate,
+    suppression_check,
+)
 from pain_to_offer.schema import (
     Claim,
     CompanyEvidencePack,
@@ -23,6 +32,8 @@ from pain_to_offer.schema import (
     PipelineState,
     SourceRef,
 )
+from pain_to_offer.scoring import pain_score, rank_packs
+from pain_to_offer.state_machine import ALLOWED_TRANSITIONS, validate_transition
 from pain_to_offer.validation import (
     contact_dedupe_key,
     is_plausible_email,
@@ -30,16 +41,33 @@ from pain_to_offer.validation import (
     normalize_phone,
     practice_dedupe_key,
 )
-from pain_to_offer.gates import (
-    call_gate,
-    copy_safety,
-    email_gate,
-    offer_binding_gate,
-    pain_gate,
-    suppression_check,
-    SuppressionList,
-)
-from pain_to_offer.state_machine import ALLOWED_TRANSITIONS, validate_transition
-from pain_to_offer.scoring import pain_score, rank_packs
+
+__all__ = [
+    "ALLOWED_TRANSITIONS",
+    "Claim",
+    "CompanyEvidencePack",
+    "ContactClass",
+    "ContactRecord",
+    "EvidenceStatus",
+    "GateResult",
+    "OfferBinding",
+    "PipelineState",
+    "SourceRef",
+    "SuppressionList",
+    "call_gate",
+    "contact_dedupe_key",
+    "copy_safety",
+    "email_gate",
+    "is_plausible_email",
+    "is_valid_us_phone",
+    "normalize_phone",
+    "offer_binding_gate",
+    "pain_gate",
+    "pain_score",
+    "practice_dedupe_key",
+    "rank_packs",
+    "suppression_check",
+    "validate_transition",
+]
 
 __version__ = "1.0.0"

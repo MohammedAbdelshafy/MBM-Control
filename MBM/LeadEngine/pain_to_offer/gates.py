@@ -12,8 +12,8 @@ Gate law (JARVIS contract):
 """
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import Iterable
 
 from pain_to_offer.schema import (
     Claim,
@@ -21,6 +21,7 @@ from pain_to_offer.schema import (
     ContactClass,
     ContactRecord,
     EvidenceStatus,
+    GateResult,
     OfferBinding,
 )
 from pain_to_offer.validation import (
@@ -100,10 +101,8 @@ def offer_binding_gate(
     )
 
 
-def pain_gate(pack: CompanyEvidencePack) -> "GateResultLike":
+def pain_gate(pack: CompanyEvidencePack) -> GateResult:
     """Eligible-for-scoring gate: targeting evidence alone never passes."""
-    from pain_to_offer.schema import GateResult
-
     reasons: list[str] = []
     if not pack.identity_verified():
         reasons.append("identity not verified")
@@ -127,9 +126,7 @@ def email_gate(
     pack: CompanyEvidencePack,
     contact: ContactRecord,
     suppression: SuppressionList,
-) -> "GateResultLike":
-    from pain_to_offer.schema import GateResult
-
+) -> GateResult:
     reasons: list[str] = []
 
     if not contact.contact_id or not contact.company_id:
@@ -166,9 +163,7 @@ def call_gate(
     pack: CompanyEvidencePack,
     contact: ContactRecord,
     suppression: SuppressionList,
-) -> "GateResultLike":
-    from pain_to_offer.schema import GateResult
-
+) -> GateResult:
     reasons: list[str] = []
 
     if not contact.company_id:

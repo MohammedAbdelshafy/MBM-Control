@@ -120,6 +120,7 @@
     "leads:prop": "cd MBM/LeadEngine && python -m property_intel.pipeline --source property_intel/samples/sample_auction_records.json",
     "leads:prop:live": "cd MBM/LeadEngine && python -m property_intel.pipeline --source property_intel/samples/sample_auction_records.json --verify-live --apply",
     "leads:prop:test": "cd MBM/LeadEngine && python -m pytest property_intel/tests -q",
+    "leads:p2o:test": "cd MBM/LeadEngine && python -m pytest pain_to_offer/tests -q",
     "leads:auction": "cd MBM/LeadEngine && python -m property_intel.auction_freshness",
     "leads:auction:live": "cd MBM/LeadEngine && python -m property_intel.auction_freshness --state TX --county Dallas --max-pages 2 --debug",
     "leads:biz": "cd MBM/LeadEngine && python -m property_intel.business_prospector",

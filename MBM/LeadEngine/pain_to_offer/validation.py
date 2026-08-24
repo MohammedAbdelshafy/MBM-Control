@@ -2,13 +2,12 @@
 from __future__ import annotations
 
 import re
-from typing import Optional
 
 _DIGITS_RE = re.compile(r"\d+")
 _EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$")
 
 
-def normalize_phone(raw: str) -> Optional[str]:
+def normalize_phone(raw: str) -> str | None:
     """Return 10-digit NANP string for US numbers, else None.
 
     Accepts +1 prefixed or bare 10-digit inputs. Rejects anything else

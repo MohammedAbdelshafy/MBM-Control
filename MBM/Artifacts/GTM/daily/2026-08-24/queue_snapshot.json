@@ -1,0 +1,1016 @@
+{
+  "generated_at": "2026-08-24T17:57:47.704943+00:00",
+  "filter": "callable=True AND not suppressed/DNC",
+  "sort": "SCORE then NEWEST-FIRST",
+  "total_callable": 1482,
+  "pages": [
+    [
+      {
+        "rank": 1,
+        "id": "NPI-1568872166",
+        "company": "ANDERSON BETHANY",
+        "phone": "+12164458000",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1568872166",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 2,
+        "id": "NPI-1558788125",
+        "company": "ALIM JUANITA",
+        "phone": "+12165927236",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1558788125",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 3,
+        "id": "NPI-1679523195",
+        "company": "ALBERT MICHELLE",
+        "phone": "+12166880901",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1679523195",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 4,
+        "id": "NPI-1861662207",
+        "company": "ADVANCED PHYSICAL THERAPY",
+        "phone": "+13032907407",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1861662207",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 5,
+        "id": "NPI-1831575398",
+        "company": "ALBERT CHRISTINA",
+        "phone": "+14057539064",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1831575398",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 6,
+        "id": "NPI-1063846699",
+        "company": "AKY MD, LLC",
+        "phone": "+14057577818",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1063846699",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 7,
+        "id": "NPI-1144593815",
+        "company": "16TH STREET COMMUNITY HEALTH CENTER INC.",
+        "phone": "+14148975407",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1144593815",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 8,
+        "id": "NPI-1083498455",
+        "company": "AMAYA LIZ",
+        "phone": "+14402607670",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1083498455",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 9,
+        "id": "NPI-1467298604",
+        "company": "AEGIS GROUP PRACTICE LLC",
+        "phone": "+14792016091",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1467298604",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 10,
+        "id": "NPI-1538396213",
+        "company": "AMMONS MATTHEW",
+        "phone": "+15406677076",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1538396213",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 11,
+        "id": "NPI-1467999557",
+        "company": "ALBERT FELICIA",
+        "phone": "+15673076008",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1467999557",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 12,
+        "id": "NPI-1508143306",
+        "company": "AKINS HEATHER",
+        "phone": "+16145795206",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1508143306",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 13,
+        "id": "NPI-1114104247",
+        "company": "AKIATAN MARIA",
+        "phone": "+16148641089",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1114104247",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 14,
+        "id": "NPI-1912547951",
+        "company": "AFFORDABLE THERAPY SERVICES LLC",
+        "phone": "+17029847356",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1912547951",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 15,
+        "id": "NPI-1578546172",
+        "company": "AGNONE MICHAEL",
+        "phone": "+17045124420",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1578546172",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 16,
+        "id": "NPI-1619111291",
+        "company": "AMIN BELA",
+        "phone": "+17572020825",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1619111291",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 17,
+        "id": "NPI-1972435360",
+        "company": "ANDERSON ALICIA",
+        "phone": "+17573024144",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1972435360",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 18,
+        "id": "NPI-1003897406",
+        "company": "ANDERSON JUDITH",
+        "phone": "+17574738016",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1003897406",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 19,
+        "id": "NPI-1477672004",
+        "company": "ANDERS MICHAEL",
+        "phone": "+17575540122",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1477672004",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 20,
+        "id": "NPI-1225283237",
+        "company": "ABCARE CLINICS & SERVICES, LTD",
+        "phone": "+17732555489",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1225283237",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 21,
+        "id": "NPI-1275883282",
+        "company": "7 ANGELS HOME HEALTH INC",
+        "phone": "+17738604823",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1275883282",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 22,
+        "id": "NPI-1831010701",
+        "company": "ALEXANDER PAIGE",
+        "phone": "+18049151910",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1831010701",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 23,
+        "id": "NPI-1215309570",
+        "company": "ALKOUM JENNIFER",
+        "phone": "+19167471754",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1215309570",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 24,
+        "id": "NPI-1720206378",
+        "company": "ALLEN MATTHEW",
+        "phone": "+19167845077",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1720206378",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 25,
+        "id": "NPI-1912699513",
+        "company": "ANGEL HANDS CHIROPRACTIC, PLLC",
+        "phone": "+19193419298",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1912699513",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      }
+    ],
+    [
+      {
+        "rank": 26,
+        "id": "NPI-1457508517",
+        "company": "ALBERTY JAMES",
+        "phone": "+12164007474",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1457508517",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 27,
+        "id": "NPI-1679885404",
+        "company": "ALLIED HEALTH & CHIROPRACTIC LLC",
+        "phone": "+12166859975",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1679885404",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 28,
+        "id": "NPI-1164506598",
+        "company": "BEER CHARLES",
+        "phone": "+12168499452",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1164506598",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 29,
+        "id": "NPI-1649568049",
+        "company": "ALLMAN EMILEE",
+        "phone": "+13175771990",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1649568049",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 30,
+        "id": "NPI-1982437588",
+        "company": "AMONETT CHRISTIAN",
+        "phone": "+13178501196",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1982437588",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 31,
+        "id": "NPI-1417670795",
+        "company": "ALLABEN HANNAH",
+        "phone": "+13179915710",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1417670795",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 32,
+        "id": "NPI-1619734696",
+        "company": "ANDERSON JOSH",
+        "phone": "+14026804231",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1619734696",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 33,
+        "id": "NPI-1033075957",
+        "company": "ACCIDENT CENTERS OF AUGUSTA",
+        "phone": "+16787891191",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1033075957",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 34,
+        "id": "NPI-1093037046",
+        "company": "415 MAIN LLC",
+        "phone": "+14056647622",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1093037046",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 35,
+        "id": "NPI-1437519428",
+        "company": "ADVANCED CHIROPRACTIC & HEALTH",
+        "phone": "+19184861490",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1437519428",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 36,
+        "id": "NPI-1093983108",
+        "company": "A TO Z MEDICAL CENTER INC",
+        "phone": "+14074892624",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1093983108",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 37,
+        "id": "NPI-1124116157",
+        "company": "BISESI DONALD",
+        "phone": "+14406650822",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1124116157",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 38,
+        "id": "NPI-1841375169",
+        "company": "BARNES-SCARANO CHRISTINE",
+        "phone": "+14407294219",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1841375169",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 39,
+        "id": "NPI-1346248184",
+        "company": "AHNEN MANFRED",
+        "phone": "+14807557777",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1346248184",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 40,
+        "id": "NPI-1386006187",
+        "company": "AK HEALTH CONNECTION LLC",
+        "phone": "+16155745075",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1386006187",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 41,
+        "id": "NPI-1184972820",
+        "company": "AFZAL KATHERINE",
+        "phone": "+16154630550",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1184972820",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 42,
+        "id": "NPI-1801283346",
+        "company": "AMEDI MORGAN",
+        "phone": "+16158891941",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1801283346",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 43,
+        "id": "NPI-1891893350",
+        "company": "AFOR JOSEPH",
+        "phone": "+17574565222",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1891893350",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 44,
+        "id": "NPI-1962640573",
+        "company": "AMARE MICHAEL",
+        "phone": "+17574739900",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1962640573",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 45,
+        "id": "NPI-1255621330",
+        "company": "AMONTE CHIROPRACTIC CLINIC",
+        "phone": "+17575156374",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1255621330",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 46,
+        "id": "NPI-1013254861",
+        "company": "ALCORN ANDREW",
+        "phone": "+17653373360",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1013254861",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 47,
+        "id": "NPI-1194307793",
+        "company": "ARONSON BROOKE",
+        "phone": "+17725791295",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1194307793",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 48,
+        "id": "NPI-1891120408",
+        "company": "ACTIVE WELLNESS LLC",
+        "phone": "+18132209113",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1891120408",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 49,
+        "id": "NPI-1164053153",
+        "company": "AGAPAY BYRON ETHAN",
+        "phone": "+18087812772",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1164053153",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 50,
+        "id": "NPI-1215970850",
+        "company": "BAST MICHAEL",
+        "phone": "+19013635088",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1215970850",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      }
+    ],
+    [
+      {
+        "rank": 51,
+        "id": "NPI-1437116951",
+        "company": "AMODEO RICHARD",
+        "phone": "+19013750900",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1437116951",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 52,
+        "id": "NPI-1831500826",
+        "company": "ATKINS ROBERT",
+        "phone": "+19015029320",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1831500826",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 53,
+        "id": "NPI-1801485883",
+        "company": "ACH LLC",
+        "phone": "+19012109816",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1801485883",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 54,
+        "id": "NPI-1336206820",
+        "company": "ARSTIKAITIS ALAN",
+        "phone": "+19017956363",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1336206820",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 55,
+        "id": "NPI-1407323082",
+        "company": "AHRENS MISTIE",
+        "phone": "+19133130971",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1407323082",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 56,
+        "id": "NPI-1750411708",
+        "company": "ALLEN EARNEST",
+        "phone": "+19163442016",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1750411708",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 57,
+        "id": "NPI-1023259900",
+        "company": "ASAHARA PAULINE",
+        "phone": "+19164550962",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1023259900",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 58,
+        "id": "NPI-1972013845",
+        "company": "ANDERS-COOK ALEXANDER",
+        "phone": "+19164801115",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1972013845",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 59,
+        "id": "NPI-1891875076",
+        "company": "ARMSTRONG KURT",
+        "phone": "+19164838441",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1891875076",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 60,
+        "id": "NPI-1932670007",
+        "company": "ALVAREZ CAICEDO LUIS",
+        "phone": "+19193256474",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1932670007",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 61,
+        "id": "NPI-1689991721",
+        "company": "26BLACKLLC",
+        "phone": "+19192385040",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1689991721",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 62,
+        "id": "NPI-1114536869",
+        "company": "ANDERSEN THOMAS",
+        "phone": "+19197818830",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1114536869",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 63,
+        "id": "NPI-1386352672",
+        "company": "100 CHIRO CHARLOTTE LLC",
+        "phone": "+13155258770",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1386352672",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 64,
+        "id": "NPI-1104401488",
+        "company": "BLOOM IDAHO LLC",
+        "phone": "+12088533000",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1104401488",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 65,
+        "id": "NPI-1023447943",
+        "company": "ADVANTAGE FAMILY CARE INC",
+        "phone": "+16159882005",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1023447943",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 66,
+        "id": "NPI-1780391235",
+        "company": "ADVANTAGE FAMILY CARE, INC.",
+        "phone": "+16158648709",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1780391235",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 67,
+        "id": "NPI-1891428595",
+        "company": "ADVANTAGE FAMILY CARE INC",
+        "phone": "+16159882004",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1891428595",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 68,
+        "id": "NPI-1952702276",
+        "company": "ANDALE HEALTHCARE, LLC",
+        "phone": "+14056022774",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1952702276",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 69,
+        "id": "NPI-1487674297",
+        "company": "MERCY HEALTH-ST RITAS MEDICAL CENTER LLC",
+        "phone": "+14199965119",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1487674297",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 70,
+        "id": "NPI-1578214037",
+        "company": "CUC HEALTH LLC",
+        "phone": "+14405547025",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1578214037",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 71,
+        "id": "NPI-1639947880",
+        "company": "ARLINGTON URGENT CARE INC",
+        "phone": "+16147386861",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1639947880",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 72,
+        "id": "NPI-1255137212",
+        "company": "ADVANTAGE FAMILY CARE INC",
+        "phone": "+16159882009",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1255137212",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 73,
+        "id": "NPI-1962556951",
+        "company": "HAASE GREGORY",
+        "phone": "+17574814088",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1962556951",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 74,
+        "id": "NPI-1609264001",
+        "company": "ALIVIO MEDICAL CENTER, INC.",
+        "phone": "+13123122719",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1609264001",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 75,
+        "id": "NPI-1558093740",
+        "company": "CUE HEALTH INC.",
+        "phone": "+12014199401",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1558093740",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      }
+    ],
+    [
+      {
+        "rank": 76,
+        "id": "NPI-1659089167",
+        "company": "CUE HEALTH CA, PC",
+        "phone": "+18588692072",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1659089167",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 77,
+        "id": "NPI-1386442036",
+        "company": "H.A.B.I.T.S 360, LLC",
+        "phone": "+19018785895",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1386442036",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 78,
+        "id": "NPI-1447894977",
+        "company": "ABSOLUTE MEDICAL",
+        "phone": "+19167271400",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1447894977",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 79,
+        "id": "NPI-1962736090",
+        "company": "ALI STARKES MEDICAL GROUP",
+        "phone": "+19165010728",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1962736090",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 80,
+        "id": "NPI-1558038521",
+        "company": "ALTA MIRA HEALTH INC",
+        "phone": "+19165159194",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1558038521",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 81,
+        "id": "NPI-1861543951",
+        "company": "CABAN OMAR",
+        "phone": "+19193733636",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1861543951",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 82,
+        "id": "NPI-1164797791",
+        "company": "ACUTE KIDS URGENT CARE OF MEDICAL CITY CHILDREN'S HOSPITAL PLLC",
+        "phone": "+19729068107",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1164797791",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 83,
+        "id": "NPI-1861274169",
+        "company": "AFTER HOURS URGENT CARE CENTER, PLLC",
+        "phone": "+18145982340",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1861274169",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 84,
+        "id": "NPI-1841049129",
+        "company": "CASHEW & BRINKLEY",
+        "phone": "+19843837693",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1841049129",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 85,
+        "id": "NPI-1598101750",
+        "company": "ABAROA-SALVATIERRA ANA",
+        "phone": "+12526331010",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1598101750",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 86,
+        "id": "NPI-1760438840",
+        "company": "1960 FAMILY PRACTICE PA",
+        "phone": "+12814537017",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1760438840",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 87,
+        "id": "NPI-1366600710",
+        "company": "ABDELQADER SAHAR",
+        "phone": "+13036493500",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1366600710",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 88,
+        "id": "NPI-1902194152",
+        "company": "ABELA VICTOR",
+        "phone": "+13038254646",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1902194152",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 89,
+        "id": "NPI-1104790294",
+        "company": "2ND HOME MEDICAL CENTER PLLC",
+        "phone": "+18102407859",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1104790294",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 90,
+        "id": "NPI-1053949024",
+        "company": "ABID QURRAT-UL-AIN",
+        "phone": "+13125633700",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1053949024",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 91,
+        "id": "NPI-1750346755",
+        "company": "ABONOUR RAFAT",
+        "phone": "+13172740843",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1750346755",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 92,
+        "id": "NPI-1780844506",
+        "company": "ABADA PAOLO",
+        "phone": "+13172944583",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1780844506",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 93,
+        "id": "NPI-1306861109",
+        "company": "ABDELRAHMAN EIMAN",
+        "phone": "+13176211006",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1306861109",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 94,
+        "id": "NPI-1427086974",
+        "company": "AASAR SAMI",
+        "phone": "+13176783900",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1427086974",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 95,
+        "id": "NPI-1043486343",
+        "company": "ABBASI FAHEEM",
+        "phone": "+13178877000",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1043486343",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 96,
+        "id": "NPI-1841614252",
+        "company": "ACHARYA SAURAV",
+        "phone": "+13179441000",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1841614252",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 97,
+        "id": "NPI-1821097148",
+        "company": "ABRAMSON STUART",
+        "phone": "+13179488644",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1821097148",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 98,
+        "id": "NPI-1922448141",
+        "company": "ABBOOD HAYDER",
+        "phone": "+13179628776",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1922448141",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 99,
+        "id": "NPI-1083060404",
+        "company": "ALDAMOUK AMER",
+        "phone": "+13307294298",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1083060404",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      },
+      {
+        "rank": 100,
+        "id": "NPI-1083317184",
+        "company": "ABRAHAM WAKEEM",
+        "phone": "+13367188383",
+        "segment": "HEALTHCARE_CLINIC",
+        "script_id": "SCRIPT-HEALTHCARE_CLINIC-NPI-1083317184",
+        "priority_score": 79.97,
+        "first_seen_date": "2026-08-24"
+      }
+    ]
+  ]
+}

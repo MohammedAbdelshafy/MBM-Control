@@ -1,5 +1,12 @@
 # DENTAL-MCR-001 — Missed Call Recovery
 
+> **STATUS: CANONICAL — LOCKED by JARVIS (2026-08-24).**
+> Principles frozen: ONE location · 30 days · callback-only · no primary-line
+> answering · human-confirmed booking · clinical/emergency/medication signals
+> escalate to humans · full interaction logging · success metric =
+> recovered-booking rate vs. practice's own baseline · NO fixed ROI promise.
+> Enforcement code: `MBM/LeadEngine/pain_to_offer/` (contract v1.0.0).
+>
 > Status: `OFFER_READY (template)` · Vertical: U.S. dental practices · Rail: Neteller
 > This is a canonical offer template. It binds to a specific practice ONLY after
 > per-company evidence exists. Do not send without a filled `company_id` + evidence pack.

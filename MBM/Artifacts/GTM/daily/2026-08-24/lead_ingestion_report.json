@@ -1,41 +1,43 @@
 {
-  "run_id": "daily-ingest-20260824T123907-3300",
+  "run_id": "daily-ingest-20260824T175732-3900",
   "run_date": "2026-08-24",
-  "mode": "dry_run",
-  "source": "npi_verified_callsheet.json@2026-08-23T11:55:59.239638+00:00",
-  "started_at": "2026-08-24T12:39:07.273563+00:00",
-  "completed_at": "2026-08-24T12:39:12.615189+00:00",
-  "raw_count": 2388,
-  "accepted_count": 0,
-  "new_count": 0,
-  "duplicate_count": 2306,
-  "suppressed_count": 21,
-  "rejected_count": 61,
+  "mode": "apply",
+  "source": "npi_verified_callsheet.json@2026-08-24T17:55:39.457983+00:00",
+  "started_at": "2026-08-24T17:57:32.306343+00:00",
+  "completed_at": "2026-08-24T17:58:16.264568+00:00",
+  "raw_count": 1415,
+  "accepted_count": 422,
+  "new_count": 422,
+  "duplicate_count": 894,
+  "suppressed_count": 65,
+  "rejected_count": 34,
   "needs_review_count": 0,
-  "canonical_revision": 36,
-  "canonical_revision_before": 36,
-  "canonical_count": 4484,
-  "canonical_count_before": 4484,
-  "dataset_hash": "b353215d8652e0b74fbecaa50d794ef7f0506244d6babd4a612879faefbd4f53",
-  "dataset_hash_before": "b353215d8652e0b74fbecaa50d794ef7f0506244d6babd4a612879faefbd4f53",
+  "canonical_revision": 40,
+  "canonical_revision_before": 39,
+  "canonical_count": 4916,
+  "canonical_count_before": 4494,
+  "dataset_hash": "498245f92c64d679dfc1b294ef68ce44acb7411c4791875584dcaaf6b88352de",
+  "dataset_hash_before": "a85c6cfbe390d96e7fa3a573657aac54b1ecdfc88af202fbba5c535c2ce21b29",
   "script_coverage": 100.0,
   "segment_coverage": 100.0,
   "live_verified": false,
-  "live_skipped": true,
-  "status": "QUARANTINED",
-  "write_performed": false,
+  "live_skipped": false,
+  "status": "FAILED",
+  "write_performed": true,
   "zero_yield_reason": "",
-  "errors": [],
+  "errors": [
+    "live_verification_failed: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+  ],
   "needs_review_ids": [],
   "sample_traces": [],
   "stages": {
     "source_fetch": {
       "completed": true,
-      "detail": "2388 rows from npi_verified_callsheet.json@2026-08-23T11:55:59.239638+00:00"
+      "detail": "1415 rows from npi_verified_callsheet.json@2026-08-24T17:55:39.457983+00:00"
     },
     "raw_ingest": {
       "completed": true,
-      "detail": "2385 structured candidates (3 malformed dropped)"
+      "detail": "1415 structured candidates (0 malformed dropped)"
     },
     "phone_identity_validation": {
       "completed": true,
@@ -51,15 +53,15 @@
     },
     "dedupe": {
       "completed": true,
-      "detail": "2306 duplicates (2190 enriched via history-preserving merge)"
+      "detail": "894 duplicates (805 enriched via history-preserving merge)"
     },
     "suppression_dnc_check": {
       "completed": true,
-      "detail": "21 suppressed/DNC (suppression index size 102)"
+      "detail": "65 suppressed/DNC (suppression index size 102)"
     },
     "classification": {
       "completed": true,
-      "detail": "0 NEEDS_REVIEW; segments=[]"
+      "detail": "0 NEEDS_REVIEW; segments=['HEALTHCARE_CLINIC']"
     },
     "script_assignment": {
       "completed": true,
@@ -67,26 +69,26 @@
     },
     "canonical_write": {
       "completed": true,
-      "detail": "dry-run: no write performed"
+      "detail": "422 new + 805 merged committed (total 4916)"
     },
     "revision_audit": {
       "completed": true,
-      "detail": "dry-run: no revision bump"
+      "detail": "revision 39 -> 40; audit=ok"
     },
     "queue_prioritization": {
       "completed": true,
-      "detail": "planned newest-first order (dry-run)"
+      "detail": "422 new leads promoted newest-first; call_now page=25"
     },
     "live_verification": {
-      "completed": true,
-      "detail": "dry-run: live release check deferred until --apply"
+      "completed": false,
+      "detail": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
     }
   },
-  "projected_count": 4484,
+  "projected_count": 4916,
   "live": {
-    "performed": false,
+    "performed": true,
     "ok": false,
-    "reason": ""
+    "reason": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
   },
   "acceptance_gate": {
     "source_fetch_succeeded": true,
@@ -98,14 +100,28 @@
     "classification_completed": true,
     "script_enrichment_completed": true,
     "canonical_db_write_succeeded": true,
-    "revision_incremented": false,
+    "revision_incremented": true,
     "audit_entry_recorded": true,
-    "accepted_gt_zero_or_documented": false,
+    "accepted_gt_zero_or_documented": true,
     "queue_refreshed": true,
     "newest_first_verified": true,
-    "live_dialer_updated": true
+    "live_dialer_updated": false
   },
   "runs": [
+    {
+      "run_id": "daily-ingest-20260824T123907-3300",
+      "status": "QUARANTINED",
+      "mode": "dry_run",
+      "raw": 2388,
+      "new": 0,
+      "duplicates": 2306,
+      "suppressed": 21,
+      "rejected": 61,
+      "needs_review": 0,
+      "write_performed": false,
+      "canonical_revision": 36,
+      "live_verified": false
+    },
     {
       "run_id": "daily-ingest-20260824T122801-9100",
       "status": "QUARANTINED",
@@ -121,27 +137,27 @@
       "live_verified": false
     },
     {
-      "run_id": "daily-ingest-20260824T123907-3300",
-      "status": "QUARANTINED",
-      "mode": "dry_run",
-      "raw": 2388,
-      "new": 0,
-      "duplicates": 2306,
-      "suppressed": 21,
-      "rejected": 61,
+      "run_id": "daily-ingest-20260824T175732-3900",
+      "status": "FAILED",
+      "mode": "apply",
+      "raw": 1415,
+      "new": 422,
+      "duplicates": 894,
+      "suppressed": 65,
+      "rejected": 34,
       "needs_review": 0,
-      "write_performed": false,
-      "canonical_revision": 36,
+      "write_performed": true,
+      "canonical_revision": 40,
       "live_verified": false
     }
   ],
   "day_totals": {
-    "raw": 4776,
-    "accepted": 0,
-    "new": 0,
-    "duplicates": 4612,
-    "suppressed": 42,
-    "rejected": 122,
+    "raw": 6191,
+    "accepted": 422,
+    "new": 422,
+    "duplicates": 5506,
+    "suppressed": 107,
+    "rejected": 156,
     "needs_review": 0
   }
 }

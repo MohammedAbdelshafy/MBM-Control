@@ -1,0 +1,87 @@
+{
+  "batch_id": "DENTAL-GOLD-001",
+  "terminal": "CONTACT VERIFICATION - RANKED CALL CANDIDATES",
+  "timestamp": "2026-08-24T18:10:00Z",
+  "export_rule": "Only CALL_READY records below may be exported to the dialer, and only after: (1) live suppression re-check at export time, (2) whop_governor human authorization (sensitive outbound class).",
+  "call_candidates": [
+    {
+      "rank": 1,
+      "company": "Star Sleep & Wellness (Sleep Dallas)",
+      "company_id": "DENTAL-GOLD-001-STARSLEEP",
+      "decision_maker": "Dr. Brady Kent Smith, DDS",
+      "decision_maker_role": "Owner / Founding Practitioner & Chief Medical Officer",
+      "phone": "+18444094657",
+      "verification": "CALL_READY (VERIFIED, confidence 0.97; site + 5 NPPES rows + fax cross-match)",
+      "pain_score": 85,
+      "pain_category": "patient_intake_triage_referral_coordination",
+      "offer": "OFF-STARSLEEP-001 - New-Patient Assessment Follow-Up Assistant (Dallas site pilot)",
+      "why_call": "Seven locations funnel all intake through one toll-free line and a manual 'patient success team' callback promise; a same-hour AI follow-up layer directly attacks their widest operational surface. Practice already digitized intake (online assessment, portal) => culturally ready.",
+      "call_opener": "Dr. Smith, your team promises patients contact 'shortly' after they complete your sleep assessment across seven locations - we built a system that makes that first touch happen in under five minutes and hands your staff a completed intake summary. Worth a 15-minute look at the Dallas site only?",
+      "source_summary": "sleepdallas.com (live fetch) + NPPES 1790101020/1376400721 (owner, DBA, addresses) + Healthgrades/VoyageDallas bios"
+    },
+    {
+      "rank": 2,
+      "company": "Fame Dental",
+      "company_id": "DENTAL-GOLD-001-FAME",
+      "decision_maker": "Dr. Amit Merchant, DMD, FAGD, FICD",
+      "decision_maker_role": "Founder / Managing Member / Dentist",
+      "phone": "+14692751054",
+      "verification": "CALL_READY (VERIFIED, confidence 0.95; official site + NPPES address/name corroboration)",
+      "pain_score": 82,
+      "pain_category": "missed_calls_reception_workload",
+      "offer": "OFF-FAME-001 - After-Hours Call Capture & Booking Assistant",
+      "why_call": "Open 63 hours/week including Sunday with a same-day emergency promise and call-first CTAs; after-hours is the highest-intent, least-covered window. Already uses Pearl AI and online booking => low adoption friction.",
+      "call_opener": "Dr. Merchant, you advertise same-day emergencies seven days a week - who answers the phone when the front desk goes home? We capture those callers and book them before your team arrives next morning. Can I show you on a 15-minute demo?",
+      "source_summary": "fame-dental.com (live fetch) + NPPES 1659138956 + Yelp/Facebook/CareCredit/Birdeye SERP corroboration"
+    },
+    {
+      "rank": 3,
+      "company": "Benham Orthodontics & Associates PA",
+      "company_id": "DENTAL-GOLD-001-BENHAM",
+      "decision_maker": "Dr. Adam W. Benham, DDS, MS",
+      "decision_maker_role": "Owner / Orthodontist",
+      "phone": "+12146188182",
+      "verification": "CALL_READY (VERIFIED, confidence 0.94; official site + three directories + NPPES addresses)",
+      "pain_score": 74,
+      "pain_category": "consult_conversion_follow_up",
+      "offer": "OFF-BENHAM-001 - Consult Follow-Up Completion Assistant",
+      "why_call": "Growth engine is complimentary consultations but offices close Fri-Sun while leads keep arriving; incomplete follow-up sequences waste acquisition spend already paid for.",
+      "call_opener": "Dr. Benham, your complimentary consults generate leads all weekend but your offices reopen Monday - what happens to the Friday-afternoon requests? We finish every follow-up sequence automatically. Open to seeing it on real leads?",
+      "source_summary": "benhamorthodontics.com + NPPES 1437908969 + Yelp/Nextdoor/BubbleLife"
+    },
+    {
+      "rank": 4,
+      "company": "Lone Star Dental Care",
+      "company_id": "DENTAL-GOLD-001-LONESTAR",
+      "decision_maker": "Dr. Afshin Vahadi, DDS",
+      "decision_maker_role": "Owner / President / Lead Dentist",
+      "phone": "+19723357100",
+      "verification": "CALL_READY (VERIFIED, confidence 0.97; site+registry identical number)",
+      "pain_score": 70,
+      "pain_category": "multilingual_communication_intake",
+      "offer": "OFF-LONESTAR-001 - Bilingual After-Hours Intake & Confirmation Assistant",
+      "why_call": "Advertises EN/ES service with evening/Saturday hours and phone-first booking; bilingual after-hours coverage is a concrete, articulable gap their own marketing creates expectations for.",
+      "call_opener": "Dr. Vahadi, your site tells Spanish-speaking families 'our office speaks English and Spanish' - but who answers in Spanish at 8pm or Sunday? We do, then hand your team a booked appointment next morning. Fifteen minutes to see it?",
+      "source_summary": "lonestardentalcare.com (live fetch) + NPPES 1619123536 (DBA + identical phone)"
+    },
+    {
+      "rank": 5,
+      "company": "Arnica Dental Care",
+      "company_id": "DENTAL-GOLD-001-ARNICA",
+      "decision_maker": "Dr. Anna Vasilev, DMD",
+      "decision_maker_role": "Owner / Solo Practitioner",
+      "phone": "+14694688269",
+      "verification": "CALL_READY (VERIFIED, confidence 0.93; official site anchored via NPPES DIRECT-endpoint domain + exact address)",
+      "pain_score": 62,
+      "pain_category": "treatment_plan_followup",
+      "offer": "OFF-ARNICA-001 - Treatment-Plan Readiness Follow-Up Assistant",
+      "why_call": "Solo cosmetic practitioner selling long-cycle elective plans has no admin slack for systematic follow-up; smallest-scope pilot in batch (25 plans) makes it a low-risk yes.",
+      "call_opener": "Dr. Vasilev, veneer and implant patients rarely say no - they go quiet between visits. What if every open plan got friendly check-ins and you walked into each callback already knowing their questions?",
+      "source_summary": "arnicadentalclinic.com (live fetch) + NPPES 1013674704"
+    }
+  ],
+  "not_exported": [
+    {"business": "Fame Dental legacy line +14697778977", "reason": "PENDING - absent from current official site"},
+    {"business": "Absolute Inwood Dentistry PLLC", "reason": "Benched prospect; verification PENDING; no gold-batch slot"}
+  ]
+}

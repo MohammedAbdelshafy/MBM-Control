@@ -181,13 +181,19 @@ class TestValidationAndDuplicates:
 
 class TestCopySafety:
     def test_leading_hypothesis_forces_hedge(self):
-        claim = Claim(claim="Your practice misses calls daily", status=EvidenceStatus.LEADING_HYPOTHESIS)
+        claim = Claim(
+            claim="Your practice misses calls daily",
+            status=EvidenceStatus.LEADING_HYPOTHESIS,
+        )
         allowed, text, _ = copy_safety(claim)
         assert not allowed
         assert text.startswith("Potential missed-call recovery opportunity")
 
     def test_proven_claim_allowed_verbatim(self):
-        claim = Claim(claim="Practice reported missed calls in Q2 audit", status=EvidenceStatus.PROVEN)
+        claim = Claim(
+            claim="Practice reported missed calls in Q2 audit",
+            status=EvidenceStatus.PROVEN,
+        )
         allowed, text, _ = copy_safety(claim)
         assert allowed and text == claim.claim
 
@@ -237,7 +243,8 @@ class TestStateTransitions:
             PipelineState.CONTACTED, PipelineState.RESPONDED, PipelineState.MEETING_BOOKED,
             PipelineState.PILOT, PipelineState.WON,
         ]
-        for cur, nxt in zip(path, path[1:]):
+        for i in range(1, len(path)):
+            cur, nxt = path[i - 1], path[i]
             assert validate_transition(cur, nxt).passed, f"{cur} -> {nxt}"
 
     def test_skip_states_illegal(self):

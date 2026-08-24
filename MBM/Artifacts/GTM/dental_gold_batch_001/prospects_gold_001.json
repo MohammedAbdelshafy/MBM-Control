@@ -1,0 +1,323 @@
+{
+  "batch_id": "DENTAL-GOLD-001",
+  "generated_by": "OX ALPHA 2 (prospect intelligence terminal)",
+  "timestamp": "2026-08-24T17:45:00Z",
+  "methodology": {
+    "anchor_source": "CMS NPPES NPI Registry API v2.1 (enumeration_type=NPI-2, taxonomy=Dentist, DFW cities)",
+    "corroboration_source": "Each practice's own official website (fetched live 2026-08-24); identity accepted ONLY on name+address and/or phone cross-match",
+    "discovery": "Brave Search SERPs + direct domain probing (parked/dead domains discarded)",
+    "fabrication_policy": "Zero synthesized fields. Every value traces to a cited URL or registry row. Legacy repo dental targets (Premier Smile Partners, Summit Dental Group) are known-fabricated and were NOT reused.",
+    "ambiguity_rule": "Conflicting ownership/address signals -> record downgraded to PENDING/CONFLICT, never asserted."
+  },
+  "prospects": [
+    {
+      "company_id": "DENTAL-GOLD-001-FAME",
+      "company_name": "Fame Dental (A2Z Family Dental, PLLC)",
+      "website": "https://fame-dental.com",
+      "city": "Frisco",
+      "state": "TX",
+      "business_phone": "+14692751054",
+      "business_email_if_public": "info@fame-dental.com",
+      "contact_page": "https://fame-dental.com (contact block in footer)",
+      "owner_or_decision_maker": "Dr. Amit Merchant, DMD, FAGD, FICD",
+      "decision_maker_role": "Founder / Managing Member / Dentist",
+      "decision_maker_confidence": "HIGH",
+      "decision_maker_evidence": [
+        "NPPES NPI 1659138956: authorized_official AMIT MERCHANT, title 'Managing Member/Dentist' (npiregistry.cms.hhs.gov API, pulled 2026-08-24)",
+        "fame-dental.com doctor bio page 'MEet Dr. Merchant' (fetched 2026-08-24)"
+      ],
+      "practice_type": "General + cosmetic dentistry, multi-specialty group (NPPES taxonomy_group 193200000X Multi-Specialty Group)",
+      "number_of_locations": 1,
+      "associate_signal": "STRONG - five named doctors on site (Merchant, Williams, Cheema, Morrison, Middleton) => owner-led group with associate dentists",
+      "technology_signal": "STRONG - fully digital/paperless office, 3D CBCT, iTero scanning, Pearl AI radiograph AI, FlexBook online scheduling, Zocdoc listing, Cherry BNPL",
+      "premium_signal": "MODERATE - comfort-first positioning (Netflix/Hulu/Beats headphones), $79/$49 new-patient specials, FAGD fellow lead dentist",
+      "staffing_signal": "MODERATE - careers page published; open 7 days/week implies multi-shift staffing",
+      "patient_volume_signal_if_public": "'Over 500 5-star reviews across multiple platforms' (site); Birdeye shows 619 reviews @4.9",
+      "evidence": [
+        "Site banner: 'Open 7 days a week: early morning, evening, weekend and same day availability' (fame-dental.com, fetched 2026-08-24)",
+        "Hours block: Mon-Fri 8AM-7PM (to 6PM Fri), Sat 9-4, Sun 12-4",
+        "'Same-day Emergencies ... $49 Emergency Exam' service cards",
+        "'Insurance Made Easy - We accept most major dental insurance plans and help patients maximize their benefits'",
+        "'We're an AI-powered Dental Office ... integrated Pearl AI'",
+        "'Over 500 5-Star Reviews Across Multiple Platforms' + dedicated Review Us flow (Google/Facebook/Yelp)",
+        "Address 360 Stonebrook Pkwy Ste 110 Frisco TX 75036 == NPPES LOCATION address exact match"
+      ],
+      "sources": [
+        "https://fame-dental.com (fetched 2026-08-24)",
+        "https://npiregistry.cms.hhs.gov/api/?version=2.1&number=1659138956-equivalent city pull (Frisco TX, 2026-08-24)",
+        "Brave SERP corroboration: yelp.com, facebook.com/FameDentalFrisco, carecredit.com doctor locator, birdeye.com (accessed 2026-08-24)"
+      ],
+      "pain_hypotheses": [
+        {
+          "pain_category": "missed_calls_reception_workload",
+          "statement": "Practice operates 63 open hours/week across 7 days and advertises same-day emergency slots while its primary conversion CTAs remain 'Book' and 'Call Now'. A plausible opportunity exists for after-hours/overflow call capture and automated booking support.",
+          "evidence": "Published hours (Mon-Sun incl. 8AM opens, 7PM closes), same-day emergency offer, dual call/book CTAs on every service card.",
+          "inference": "Extended-hours coverage strains front-desk staffing; some inbound calls outside peak coverage likely go unanswered. NO direct evidence of unanswered-call counts was found.",
+          "confidence": 0.65
+        },
+        {
+          "pain_category": "insurance_admin_workload",
+          "statement": "Public commitment to verifying/maximizing 'most major dental insurance plans' plus consumer financing (Cherry) suggests meaningful eligibility/benefits administrative load.",
+          "evidence": "'Insurance Made Easy' section; Cherry payment-plan integration; Zocdoc/CareCredit participation.",
+          "inference": "Benefits verification is staff-performed today. Volume unknown.",
+          "confidence": 0.55
+        }
+      ],
+      "missing_information": [
+        "No direct evidence of missed-call rate, no-show rate, or front-desk headcount",
+        "Insurance participation list not enumerated",
+        "Whether (469) 777-8977 legacy line still terminates at the practice"
+      ],
+      "suppression_check": "PASS - no record in mbm-dialer leads_database.json; no opt-out history found (checked 2026-08-24)"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-LONESTAR",
+      "company_name": "Lone Star Dental Care (Aesthetic Dentistry, PA)",
+      "website": "https://www.lonestardentalcare.com",
+      "city": "Frisco",
+      "state": "TX",
+      "business_phone": "+19723357100",
+      "business_email_if_public": "info@lonestardentalcare.com",
+      "contact_page": "https://www.lonestardentalcare.com#contact (footer location block)",
+      "owner_or_decision_maker": "Dr. Afshin Vahadi, DDS",
+      "decision_maker_role": "Owner / President / Lead Dentist",
+      "decision_maker_confidence": "HIGH",
+      "decision_maker_evidence": [
+        "NPPES NPI 1619123536: AESTHETIC DENTISTRY, PA DBA LONE STAR DENTAL CARE; authorized_official AFSHIN VAHADI DDS, title 'President', TX license 17001",
+        "Site copy: 'Experienced family dentists Afshin Vahadi, DDS, and Vafa Mirshams, DDS, head up a team'"
+      ],
+      "practice_type": "Established general + cosmetic + periodontal private practice",
+      "number_of_locations": 1,
+      "associate_signal": "MODERATE - two named dentists (Vahadi + Mirshams) plus hygiene/assistant team",
+      "technology_signal": "STRONG - X-Guide 3D, iTero Element, KaVo NOMAD Pro 2, LANAP/Periolase lasers, Solea laser, 3D printer, online bill pay, online booking button",
+      "premium_signal": "STRONG - All-on-4/X/6 full-arch implants, veneers, smile makeover, zirconium crowns, Pinhole Surgical Technique",
+      "staffing_signal": "WEAK-MODERATE - Thursday listed 'By appointments only' hints variable staffing; no hiring page found",
+      "patient_volume_signal_if_public": "Google reviews embedded on-site show steady cadence through 2024; one reviewer reports 10-year tenure, another drives '7 hours' for care",
+      "evidence": [
+        "Site footer: '11500 State Highway 121, Suite 210, Frisco, TX 75035 | 972-335-7100 | info@lonestardentalcare.com' (phone IDENTICAL to NPPES record)",
+        "'Our Office Speaks English and Spanish' banner",
+        "'Our office proudly accepts all dental PPO insurance plans'",
+        "Primary scheduling CTA remains 'Call us Now to Schedule an Appointment' alongside hours extending to 7PM Tue/Wed and Saturday mornings",
+        "Emergency Dentist service card with 'Contact Now' CTA"
+      ],
+      "address_note": "NPPES address (4500 Hillcrest Rd Ste 190, last_updated 2008) differs from current site address (1150 SH-121 Suite 210). Same city/ZIP; phone identical; relocation assessed as UNDOCUMENTED_NPPES_MOVE. Flagged, not hidden.",
+      "sources": [
+        "https://www.lonestardentalcare.com (fetched 2026-08-24)",
+        "NPPES API Frisco TX pull (2026-08-24), NPI 1619123536"
+      ],
+      "pain_hypotheses": [
+        {
+          "pain_category": "multilingual_communication_intake",
+          "statement": "Practice explicitly markets bilingual (English/Spanish) service; bilingual front-desk capacity is likely a constraint for after-hours and overflow patient communication.",
+          "evidence": "'Our Office Speaks English and Spanish' homepage banner; phone-first scheduling CTA.",
+          "inference": "Spanish-speaking patients depend on specific staff availability. No data on request volume was found.",
+          "confidence": 0.6
+        },
+        {
+          "pain_category": "insurance_admin_workload",
+          "statement": "'Accepts ALL dental PPO plans' maximizes patient access but concentrates eligibility/pre-auth administration on the front desk.",
+          "evidence": "Insurance Information section verbatim claim.",
+          "inference": "High variance payer mix => manual verification workload. Unquantified.",
+          "confidence": 0.5
+        },
+        {
+          "pain_category": "treatment_plan_followup",
+          "statement": "Premium elective menu (implants/full-arch/veneers) typically involves multi-visit high-value plans requiring persistent follow-up.",
+          "evidence": "Service catalog breadth only.",
+          "inference": "Follow-up burden plausible but unproven.",
+          "confidence": 0.4
+        }
+      ],
+      "missing_information": [
+        "Current NPPES address refresh",
+        "Second dentist Mirshams' role (partner vs associate)",
+        "Any published staffing/hiring activity"
+      ],
+      "suppression_check": "PASS (2026-08-24)"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-ARNICA",
+      "company_name": "Arnica Dental Care",
+      "website": "https://arnicadentalclinic.com",
+      "city": "Frisco",
+      "state": "TX",
+      "business_phone": "+14694688269",
+      "business_email_if_public": "contact@arnicadentalclinic.com (site 'Email Us' block)",
+      "contact_page": "https://arnicadentalclinic.com#get-in-touch",
+      "owner_or_decision_maker": "Dr. Anna Vasilev, DMD",
+      "decision_maker_role": "Owner / Solo Practitioner",
+      "decision_maker_confidence": "HIGH",
+      "decision_maker_evidence": [
+        "NPPES NPI 1013674704: ARNICA DENTAL CARE, authorized_official ANNA VASILEV DMD, title 'Owner'; DIRECT endpoint drvasilev@arnicadentalclinic.com",
+        "Site: 'Meet Dr. Vasilev of Arnica Dental Care' founder narrative"
+      ],
+      "practice_type": "Cosmetic + holistic-leaning general dentistry (veneers, Invisalign, implants, ozone therapy, same-day crowns)",
+      "number_of_locations": 1,
+      "associate_signal": "NONE_OBSERVED - solo provider model ('Providers' nav may list supporting clinicians; only Vasilev profiled)",
+      "technology_signal": "MODERATE-STRONG - CBCT, lasers, PRF, digital dentistry, same-day crown workflow, online booking button",
+      "premium_signal": "STRONG - Ivy-league-trained cosmetic dentist positioning, veneers/implants focus, boutique 'ambient environment' branding",
+      "staffing_signal": "WEAK - none published",
+      "patient_volume_signal_if_public": "Not published",
+      "evidence": [
+        "Site footer: '13024 Dallas Parkway, Building 100, Unit 120, Frisco, TX 75034 | Phone (Appointments) 469 468 8269 | Phone (General inquiries) 469 468 8269' == NPPES address exact match",
+        "'Accepted Insurances - View full list of companies' (long insurer grid rendered)",
+        "Service cards include Same Day Crowns, Dental Emergency, Ozone Therapy",
+        "Office hours Mon 9:30-16:00, Tue-Fri 9:00-17:30, closed weekends"
+      ],
+      "address_note": null,
+      "phone_note": "NPPES telephone 267-844-5555 (Philadelphia area code) does not appear anywhere on the live site; site publishes 469-468-8269 exclusively. Registry number classified STALE.",
+      "sources": [
+        "https://arnicadentalclinic.com (fetched 2026-08-24)",
+        "NPPES API Frisco TX pull (2026-08-24), NPI 1013674704"
+      ],
+      "pain_hypotheses": [
+        {
+          "pain_category": "treatment_plan_followup",
+          "statement": "Elective-heavy service mix (veneers, implants, smile design) creates naturally longer decision cycles; a plausible opportunity exists for structured treatment-plan follow-up communication.",
+          "evidence": "Premium elective catalog; single-provider schedule means limited slack for callback blocks.",
+          "inference": "Solo providers commonly defer non-clinical callbacks. No direct evidence of backlog found.",
+          "confidence": 0.45
+        },
+        {
+          "pain_category": "intake_scheduling",
+          "statement": "Single-line, single-front-desk operation with weekday-only hours concentrates scheduling and emergency triage on one team.",
+          "evidence": "One published phone line for BOTH appointments and general inquiries; closed Sat/Sun.",
+          "inference": "Coverage gaps outside business hours plausible.",
+          "confidence": 0.5
+        }
+      ],
+      "missing_information": [
+        "Team size beyond Dr. Vasilev",
+        "Review volume/ratings (not surfaced on-site)",
+        "Confirmation the NPPES-era 267 number is decommissioned"
+      ],
+      "suppression_check": "PASS (2026-08-24)"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-STARSLEEP",
+      "company_name": "Star Sleep & Wellness (DBA of Brady Dental Gruop of Texas PLLC; legacy brand Sleep Dallas / B Kent Smith DDS PA)",
+      "website": "https://sleepdallas.com",
+      "city": "Dallas (+ Denton, Frisco, Irving, Mansfield, McKinney, Pearland)",
+      "state": "TX",
+      "business_phone": "+18444094657",
+      "business_email_if_public": null,
+      "contact_page": "https://sleepdallas.com (per-location contact blocks + web form)",
+      "owner_or_decision_maker": "Dr. Brady Kent Smith, DDS",
+      "decision_maker_role": "Owner / Founding Practitioner & Chief Medical Officer",
+      "decision_maker_confidence": "HIGH",
+      "decision_maker_evidence": [
+        "NPPES NPI 1790101020 (B KENT SMITH DDS PA DBA SLEEP DALLAS): authorized_official B KENT SMITH DDS, title 'Owner', last_updated 2026-02-27",
+        "NPPES NPI 1376400721 (BRADY DENTAL GRUOP OF TEXAS PLLC DBA STAR SLEEP & WELLNESS): enumerated 2026-01-07, same 844 mainline + fax",
+        "Healthgrades/VoyageDallas profiles: 'Sleep Dallas' founding practitioner and chief medical officer",
+        "sleepdallas.com footer: '(c) 2026 Star Sleep & Wellness'"
+      ],
+      "practice_type": "Dental sleep medicine specialty group (sleep apnea, oral appliance therapy, DME/oral appliances, home sleep testing)",
+      "number_of_locations": 7,
+      "associate_signal": "STRONG - 'Meet Our Star Team' multi-provider roster across 7 sites",
+      "technology_signal": "STRONG - Patient Portal, online sleep assessment screener, Schedule Online, per-location review flows, dedicated telephony (toll-free mainline + fax infrastructure)",
+      "premium_signal": "MODERATE - cash-friendly alternative-therapy market (CPAP alternatives, Inspire workup), physician-referral channel",
+      "staffing_signal": "MODERATE - public Careers page; 'patient success team' named as a function",
+      "patient_volume_signal_if_public": "Not published; 7-site footprint implies multi-market volume",
+      "evidence": [
+        "sleepdallas.com header/footer repeat 844-409-4657 (== NPPES telephone on all rows) and fax (214) 614-4277 (== NPPES fax_number)",
+        "Location picker tabs: Dallas, Denton, Frisco, Irving, Mansfield, McKinney, Pearland (site) vs NPPES practiceLocations: McKinney, Denton, Dallas, Irving, Mansfield x2, Pearland, Arlington",
+        "Dallas page: 12770 Coit Road Suite 1200 == NPPES practice location exact match; Mon-Fri 8:30-17:00",
+        "'Prefer to speak with the Star Sleep & Wellness team before scheduling? Fill out the form below, and our patient success team will contact you shortly!'",
+        "Nav sections: 'Refer a Patient', 'Physician Referrals', 'Insurance & Payment', 'Careers', 'Take Our Assessment'"
+      ],
+      "location_discrepancy_note": "Registry includes Arlington (409 Central Park Dr) which is absent from site tabs; site shows Frisco tab (3800 Gaylord Pkwy = registry mailing/HQ). Count asserted conservatively as 7 sites; exact active roster requires human confirmation.",
+      "sources": [
+        "https://sleepdallas.com (fetched 2026-08-24)",
+        "NPPES API pulls (McKinney TX skip=10 and Frisco TX, 2026-08-24), NPIs 1790101020, 1376400721, 1679267702, 1821844721, 1205520343",
+        "Brave SERP corroboration: healthgrades.com, productivedentist.com podcast, voyagedallas.com (accessed 2026-08-24)"
+      ],
+      "pain_hypotheses": [
+        {
+          "pain_category": "patient_intake_triage_referral_coordination",
+          "statement": "A seven-site specialty group funnels all scheduling through one toll-free line plus web forms, and runs an explicit physician-referral desk plus a patient-success outbound-contact function. This creates a plausible opportunity for AI-assisted intake triage, referral packet handling, and structured assessment follow-up.",
+          "evidence": "Single mainline across all registry rows; 'our patient success team will contact you shortly' workflow; Refer-a-Patient nav; Insurance & Payment page; online assessment tool feeding consult scheduling.",
+          "inference": "Intake volume scales linearly with 7 sites while triage appears centralized; manual triage likely bottlenecks. No internal metrics were available.",
+          "confidence": 0.7
+        },
+        {
+          "pain_category": "insurance_admin_workload_medical_billing",
+          "statement": "Dental sleep medicine bills MEDICAL insurance (oral appliances as DME - registry taxonomy 332BC3200X confirms DME supply role), implying prior-authorization and eligibility complexity beyond typical dental admin.",
+          "evidence": "NPPES primary taxonomy Durable Medical Equipment & Medical Supplies, Customized Equipment; dedicated Insurance & Payment page.",
+          "inference": "Authorization workflows are specialist-heavy; automation headroom plausible but unverified.",
+          "confidence": 0.55
+        }
+      ],
+      "missing_information": [
+        "Exact currently-active location roster (Arlington vs Frisco ambiguity)",
+        "Referral volume per month",
+        "Patient-success-team size"
+      ],
+      "suppression_check": "PASS (2026-08-24)"
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-BENHAM",
+      "company_name": "Benham Orthodontics & Associates, PA",
+      "website": "https://benhamorthodontics.com",
+      "city": "Frisco + McKinney",
+      "state": "TX",
+      "business_phone": "+12146188182",
+      "business_email_if_public": "info@benhamorthodontics.com",
+      "contact_page": "https://benhamorthodontics.com/home/frisco-office-location + mckinney-office-location",
+      "owner_or_decision_maker": "Dr. Adam W. Benham, DDS, MS",
+      "decision_maker_role": "Owner / Orthodontist",
+      "decision_maker_confidence": "HIGH",
+      "decision_maker_evidence": [
+        "NPPES NPI 1437908969: BENHAM ORTHODONTICS & ASSOCIATES PA, authorized_official ADAM BENHAM DDS, title 'Owner', practiceLocations Frisco 4060 Legacy Dr Ste 303 + McKinney 5341 W University Dr Ste 200",
+        "benhamorthodontics.com 'Meet Dr. Adam W. Benham' page"
+      ],
+      "practice_type": "Orthodontic specialty group (children/teens/adults braces + Invisalign)",
+      "number_of_locations": 2,
+      "associate_signal": "WEAK-MODERATE - entity name 'Associates'; team page names long-tenured clinical staff; single orthodontist profiled",
+      "technology_signal": "MODERATE - modern site, emergency-care page, two-office coordination; no advanced hardware claims surfaced",
+      "premium_signal": "MODERATE - 'chic, friendly environment' positioning (Nextdoor), premier Invisalign provider framing",
+      "staffing_signal": "WEAK - none published",
+      "patient_volume_signal_if_public": "Facebook: 1,435 likes / 1,414 check-ins; Nextdoor 84 faves; Yelp 37 reviews",
+      "evidence": [
+        "Site + Yelp + Nextdoor + BubbleLife all publish (214) 618-8182 for both offices",
+        "Complimentary consultation offer (BubbleLife About + Nextdoor 'complimentary consultation')",
+        "Hours Mon-Thu 8-5, Fri-Sun closed (Yelp/BubbleLife)",
+        "NPPES practiceLocation McKinney == site McKinney office address exact match"
+      ],
+      "address_note": "MapQuest shows older 'Benham Orthodontics PA - CLOSED' at 5100 Eldorado Pkwy Ste 108 McKinney (former address). Current McKinney address per site+registry is 5341 W University Dr Ste 200. Assessed as RELOCATION artifact; practice ACTIVE.",
+      "entity_note": "A second registry entity 'BENHAM ORTHODONTICS' (NPI 1881451342, authorized_official JEREMY LUSTIG, Owner) shares the same street addresses - assessed as co-located business/management entity. Ownership of patient-facing brand attributed to Dr. Benham via site; flagged for human review.",
+      "sources": [
+        "https://search.brave.com SERP for benhamorthodontics.com pages (accessed 2026-08-24); site pages indexed: home, your-first-visit, meet-the-team, emergency-care, frisco/mckinney-office-location",
+        "NPPES API McKinney TX skip=10 pull (2026-08-24), NPIs 1437908969, 1881451342"
+      ],
+      "pain_hypotheses": [
+        {
+          "pain_category": "consult_conversion_follow_up",
+          "statement": "Free-consultation acquisition model means revenue depends on post-consult conversion; with Friday-Sunday closure, weekend-generated leads wait until Monday for human response.",
+          "evidence": "Complimentary consultation offers on multiple channels; office hours Mon-Thu 8-5; active social lead surfaces.",
+          "inference": "Lead-response latency outside 32 open hours plausible; no response-time data found.",
+          "confidence": 0.55
+        },
+        {
+          "pain_category": "appointment_lifecycle_reminders",
+          "statement": "Ortho care runs 18-24 month adjustment cycles across two offices, creating recurring reminder/reschedule load.",
+          "evidence": "Two-office pediatric+adult ortho model; emergency-care page implies unscheduled visit handling.",
+          "inference": "Standard ortho cadence assumption, not measured locally.",
+          "confidence": 0.5
+        }
+      ],
+      "missing_information": [
+        "Whether Lustig entity owns or merely hosts the practice (human review)",
+        "Consult volume/month",
+        "Current scheduling platform"
+      ],
+      "suppression_check": "PASS (2026-08-24)"
+    }
+  ],
+  "excluded_entities_log": [
+    {"entity": "ADVANT DENTAL PA (NPI 1700117728)", "reason": "REJECTED - MapQuest and Yelp both list practice CLOSED (accessed 2026-08-24); NPPES row stale-active"},
+    {"entity": "BRIDENT DENTAL ASSOCIATES PC (NPI 1891269775)", "reason": "EXCLUDED - corporate DSO structure (CA mailing HQ, enrollment coordinator signer); fails owner-led/private filter"},
+    {"entity": "A PROFESSIONAL DENTAL ORGANIZATION (NPIs 1881420677 et al.)", "reason": "EXCLUDED - management services organization (MSO) registering out-of-state practices; not an owner-led local practice"},
+    {"entity": "ABSOLUTE INWOOD DENTISTRY PLLC (NPI 1437674538)", "reason": "BENCHED PENDING - no discoverable official website; single-directory phone corroboration only; address entangled with B Kent Smith legacy row"},
+    {"entity": "famedental.com", "reason": "DISCARDED - parked/lander domain; official domain is fame-dental.com"}
+  ]
+}
