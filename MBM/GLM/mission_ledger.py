@@ -22,6 +22,10 @@ class MissionExecutionRecord(BaseModel):
     repo: str
     agent: str
     objective: str
+    exit_condition: str = ""
+    blocker: Optional[str] = None
+    revenue_impact: float = 0.0
+    deployment_status: str = "PENDING"
     files_changed: List[str] = Field(default_factory=list)
     tests_run: List[str] = Field(default_factory=list)
     test_result: str = "PASS"

@@ -66,7 +66,15 @@ from MBM.LeadEngine.lead_provenance import (
     build_provenance_fields,
     REQUIRED_PROVENANCE_FIELDS,
 )
-from MBM.LeadEngine.dialer_db_lock import DialerDatabaseLock, DIALER_DB_PATH
+from MBM.LeadEngine.dialer_gateway import commit_dialer_db
+from MBM.GLM.single_writer_lock import DialerSingleWriter
+from MBM.GLM.glm_integration_worker import get_glm_worker
+from MBM.GLM.script_intelligence import ScriptIntelligence
+from MBM.GLM.revenue_intelligence import RevenueIntelligence
+
+from MBM.LeadEngine.buyer_discovery_engine import BuyerDiscoveryEngine, SourceStatus as BuyerSourceStatus
+from MBM.LeadEngine.land_property_source import LandPropertySource, SourceStatus as LandSourceStatus
+from MBM.LeadEngine.buyer_matching_engine import BuyerMatchingEngine
 
 ARTIFACTS_DIR = ROOT_DIR / "MBM" / "Artifacts"
 DAILY_GTM_DIR = ARTIFACTS_DIR / "GTM" / "daily"
@@ -211,6 +219,9 @@ class DailyLeadFactory:
         self.conversation_engine = DynamicConversationEngine()
         self.offer_architect = OfferArchitect()
         self.provenance_gate = LeadProvenanceGate()
+        self.glm_worker = get_glm_worker()
+        self.script_engine = ScriptIntelligence()
+        self.revenue_engine = RevenueIntelligence()
         # Injectable snapshot reader (tests use a hermetic reader; production
         # reads the live dialer DB once per run under the single-writer lock).
         self._dialer_rows_reader = dialer_rows_reader or self._read_live_dialer_rows
@@ -218,8 +229,7 @@ class DailyLeadFactory:
 
     def _read_live_dialer_rows(self) -> List[Dict[str, Any]]:
         try:
-            with DialerDatabaseLock() as lock:
-                return lock.read()
+            return DialerSingleWriter().read_leads()
         except Exception:
             return []
 
@@ -428,15 +438,50 @@ class DailyLeadFactory:
     def _load_real_candidate_pool(self) -> List[Dict[str, Any]]:
         """
         Build the real candidate pool from verified real sources (cached per
-        process). Sources are loaded once and filtered through the provenance
-        gate. Sample fixtures and synthetic generators are explicitly excluded.
+        process). Applies the Buyer-First Land Matching logic.
         """
         if DailyLeadFactory._real_pool is not None:
             return DailyLeadFactory._real_pool
 
         pool: List[Dict[str, Any]] = []
+        
+        # 1. Discover Active Buyers
+        buyer_engine = BuyerDiscoveryEngine()
+        buyer_status, active_buyers = buyer_engine.discover_active_buyers()
+
+        # 2. Sourcing & Matching from County Records
+        land_source = LandPropertySource()
+        land_status, county_candidates = land_source.load_properties()
+        
+        matcher = BuyerMatchingEngine()
+        
+        matched_count = 0
+        for cand in county_candidates:
+            # Reformat county candidate slightly if needed for matching
+            cand["acreage"] = cand.get("acreage", 0.0)
+            
+            if buyer_status == BuyerSourceStatus.READY and active_buyers:
+                matches = matcher.match_property_to_buyers(cand, active_buyers)
+                if matches:
+                    # Top match drives the context
+                    best_match = matches[0]
+                    cand["buyer_match_score"] = best_match.match_score
+                    cand["buyer_demand"] = best_match.evidence
+                    cand["buyer_id"] = best_match.buyer_id
+                    matched_count += 1
+                else:
+                    cand["buyer_match_score"] = 0
+                    cand["buyer_demand"] = "No matching buyer found"
+            else:
+                cand["buyer_match_score"] = 0
+                cand["buyer_demand"] = "Unknown (Buyer source unavailable)"
+
+            pool.append(cand)
+                
+        print(f"[MATCH] Found {matched_count} properties matching active buyers out of {len(county_candidates)} county candidates.")
+
         pool += self._load_real_ai_buyers_from_npi()
-        pool += self._load_real_estate_sellers_from_county()
+        
         DailyLeadFactory._real_pool = pool
         return pool
 
@@ -510,79 +555,19 @@ class DailyLeadFactory:
         print(f"[OK] Loaded {len(out)} REAL NPI AI-buyer candidates.")
         return out
 
-    def _load_real_estate_sellers_from_county(self) -> List[Dict[str, Any]]:
-        """
-        Ingest real county-verified property owners (DCAD-style) as sellers.
-        ONLY authoritative county artifacts are accepted; sample fixtures and
-        auction.com scraper artifacts (blocked source) are rejected.
-        """
-        candidates: List[Dict[str, Any]] = []
-        property_artifacts = [
-            p
-            for p in ARTIFACTS_DIR.glob("property_*_verified.json")
-            if "fixture" not in p.name.lower()
-        ]
-        intel_artifacts = list(
-            (ROOT_DIR / "MBM" / "LeadEngine" / "property_intel" / "artifacts").glob("property_pipeline_*.json")
-        ) if (ROOT_DIR / "MBM" / "LeadEngine" / "property_intel" / "artifacts").exists() else []
 
-        for path in list(property_artifacts) + intel_artifacts:
-            try:
-                rows = json.loads(path.read_text(encoding="utf-8"))
-                if isinstance(rows, dict):
-                    rows = rows.get("leads") or rows.get("properties") or []
-            except Exception:
-                continue
-            for row in rows if isinstance(rows, list) else []:
-                # Never ingest sample fixtures
-                if str(row.get("source", "")) in {"sample-fixture", "fixture", "demo", "mock"}:
-                    continue
-                if not row.get("county_resolved") and not row.get("ownership_status") == "VERIFIED":
-                    continue
-                owner = str(row.get("owner_name", "")).strip()
-                addr = str(row.get("address", "")).strip()
-                parcel = str(row.get("parcel_id", "")).strip()
-                phone = str(row.get("phone") or row.get("verified_phone") or "").strip()
-                city = str(row.get("city", "")).strip()
-                state = str(row.get("state", "")).strip()
-                county_source = str(row.get("county_source_url") or row.get("ownership_source_url") or "").strip()
-                if not owner or not parcel or not addr:
-                    continue
-                provenance = build_provenance_fields(
-                    source=str(row.get("county_source") or row.get("ownership_source") or "County Appraisal District"),
-                    source_reference=county_source or f"parcel:{parcel}",
-                    source_type="county_record",
-                    verification_method="county_record",
-                    observed_at=str(row.get("source_date") or row.get("observed_at") or ""),
-                )
-                cand = {
-                    "id": f"SELLER-{parcel}",
-                    "company": addr,
-                    "decision_maker": owner,
-                    "role": "Property Owner",
-                    "industry": "Real Estate Sellers",
-                    "phone": phone,
-                    "email": "",
-                    "city": city,
-                    "state": state,
-                    "property_address": addr,
-                    "parcel_id": parcel,
-                    "why_this_company": f"County-verified property owner at {addr} (parcel {parcel}).",
-                    "source_class": "COUNTY_RECORD",
-                }
-                cand.update(provenance)
-                candidates.append(cand)
-        if candidates:
-            print(f"[OK] Loaded {len(candidates)} REAL county-verified seller candidates.")
-        return candidates
 
     def _score_and_enrich_lead(self, cand: Dict[str, Any], norm_phone: str, batch_date: str) -> Dict[str, Any]:
         """Apply OfferArchitect sales strategy, dynamic scripts, and Neteller links."""
         ind = cand.get("industry", "General Services")
         
-        # 100-point Intent Scoring
-        intent_score = 92.0 if any(k in cand.get("company", "").lower() for k in ["mechanical", "roofing", "electric", "dental", "law", "aesthetics", "civil"]) else 82.0
-        tier = "HOT" if intent_score >= 90.0 else "HIGH INTENT"
+        # 100-point Intent Scoring via GLM Revenue Intelligence
+        rev_data = self.revenue_engine.score_lead(cand)
+        intent_score = float(rev_data["score"])
+        tier = rev_data["tier"]
+        
+        # Dynamic Script via GLM Script Intelligence
+        script_strategy = self.script_engine.generate_script_strategy(cand)
 
         # Build Full Sales Strategy via OfferArchitect
         cand_for_architect = {
@@ -750,39 +735,39 @@ class DailyLeadFactory:
         deal_memory.save()
 
         # --- Dialer DB sync under the SINGLE-WRITER LOCK ---
-        with DialerDatabaseLock() as lock:
-            existing_leads = lock.read()
-            existing_lead_map: Dict[str, Dict[str, Any]] = {}
-            for el in existing_leads:
-                p = normalize_phone_digits(el.get("phone", ""))
-                el["new_today"] = False
-                el["freshness"] = "OLDER"
-                el["badge"] = ""
-                if "details" in el and isinstance(el["details"], dict):
-                    el["details"]["new_today"] = False
-                    el["details"]["freshness"] = "OLDER"
-                    el["details"]["badge"] = ""
-                if p:
-                    existing_lead_map[p] = el
+        existing_leads = DialerSingleWriter().read_leads()
+        existing_lead_map: Dict[str, Dict[str, Any]] = {}
+        for el in existing_leads:
+            p = normalize_phone_digits(el.get("phone", ""))
+            el["new_today"] = False
+            el["freshness"] = "OLDER"
+            el["badge"] = ""
+            if "details" in el and isinstance(el["details"], dict):
+                el["details"]["new_today"] = False
+                el["details"]["freshness"] = "OLDER"
+                el["details"]["badge"] = ""
+            if p:
+                existing_lead_map[p] = el
 
-            reconciled_new: List[Dict[str, Any]] = []
-            for nl in new_leads:
-                if not self.provenance_gate.evaluate(nl)["ok"]:
-                    print(f"[REJECT] Provenance gate blocked {nl.get('id')} from dialer DB.")
-                    continue
-                p = normalize_phone_digits(nl.get("phone", ""))
-                reconciled_new.append(nl)
-                if p in existing_lead_map:
-                    del existing_lead_map[p]
+        reconciled_new: List[Dict[str, Any]] = []
+        for nl in new_leads:
+            if not self.provenance_gate.evaluate(nl)["ok"]:
+                print(f"[REJECT] Provenance gate blocked {nl.get('id')} from dialer DB.")
+                continue
+            p = normalize_phone_digits(nl.get("phone", ""))
+            reconciled_new.append(nl)
+            if p in existing_lead_map:
+                del existing_lead_map[p]
 
-            combined_dialer = reconciled_new + list(existing_lead_map.values())
-            # Canonical single-writer commit: atomic, locked, audited, no-shrink.
-            total = lock.write(
-                combined_dialer,
-                author="DAILY_LEAD_FACTORY",
-                reason="daily_lead_factory_dialer_sync",
-                allow_shrink=False,
-            )
+        combined_dialer = reconciled_new + list(existing_lead_map.values())
+        # Canonical single-writer commit via dialer_gateway: atomic, locked, audited, no-shrink.
+        result = commit_dialer_db(
+            combined_dialer,
+            author="DAILY_LEAD_FACTORY",
+            reason="daily_lead_factory_dialer_sync",
+            allow_shrink=False,
+        )
+        total = result.get("final_count", len(combined_dialer))
         print(f"[OK] Ingested {len(reconciled_new)} real leads into Canonical Memory and Dialer Database (Total: {total}).")
         return total
 
