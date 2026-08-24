@@ -126,8 +126,12 @@ function ingestionEpoch(lead: DialerLead): number {
 }
 
 function canonicalDialerCompare(a: DialerLead, b: DialerLead): number {
-  const rankA = typeof (a as any).queue_rank === "number" ? (a as any).queue_rank : 999999;
-  const rankB = typeof (b as any).queue_rank === "number" ? (b as any).queue_rank : 999999;
+  const queueRank = (l: DialerLead): number => {
+    const r = (l as Record<string, unknown>).queue_rank;
+    return typeof r === "number" ? r : 999999;
+  };
+  const rankA = queueRank(a);
+  const rankB = queueRank(b);
   if (rankA !== rankB) return rankA - rankB;
 
   const prioA = a.priority_score ?? 0;
@@ -142,7 +146,6 @@ function canonicalDialerCompare(a: DialerLead, b: DialerLead): number {
   if (ingA !== ingB) return ingB - ingA; // newest FIRST
   return String(a.id || "").localeCompare(String(b.id || ""));
 }
-
 
 // new_today is DERIVED from ingestion metadata (same precedence as the engine),
 // never trusted from the persisted boolean alone (legacy rows carry stale flags).
@@ -231,7 +234,9 @@ function Dashboard() {
 
   const isSeller = (l: DialerLead) => {
     const v = (l.vertical || "").toLowerCase();
-    return v.includes("seller") || v.includes("real estate") || l.sales_lane === "REAL_ESTATE_WHOLESALE";
+    return (
+      v.includes("seller") || v.includes("real estate") || l.sales_lane === "REAL_ESTATE_WHOLESALE"
+    );
   };
 
   const isBuyer = (l: DialerLead) => {
@@ -289,9 +294,15 @@ function Dashboard() {
         if (activeLane === "CONTECH" && !isConTech(lead)) return false;
         if (activeLane === "DIGITAL" && !isDigital(lead)) return false;
         if (activeLane === "AI_BUYERS" && isSeller(lead)) return false;
-        if (activeLane === "HOT" && (!lead.intent_score || lead.intent_score < 80) && (!lead.priority_score || lead.priority_score < 85)) return false;
+        if (
+          activeLane === "HOT" &&
+          (!lead.intent_score || lead.intent_score < 80) &&
+          (!lead.priority_score || lead.priority_score < 85)
+        )
+          return false;
         if (activeLane === "FOLLOW_UPS" && !decisions[lead.id]?.followUp) return false;
-        if (activeLane === "MEETINGS" && decisions[lead.id]?.status !== "Meeting Booked") return false;
+        if (activeLane === "MEETINGS" && decisions[lead.id]?.status !== "Meeting Booked")
+          return false;
 
         // Vertical filter
         if (selectedVertical !== "ALL" && lead.vertical !== selectedVertical) return false;
@@ -315,8 +326,14 @@ function Dashboard() {
           if (canonical !== 0) return canonical;
           return (a.priority_rank || 9999) - (b.priority_rank || 9999);
         } else if (sortMode === "BEST_SCORE") {
-          const scoreA = a.priority_score || a.intent_score || (a.motivation_score ? a.motivation_score * 10 : 70);
-          const scoreB = b.priority_score || b.intent_score || (b.motivation_score ? b.motivation_score * 10 : 70);
+          const scoreA =
+            a.priority_score ||
+            a.intent_score ||
+            (a.motivation_score ? a.motivation_score * 10 : 70);
+          const scoreB =
+            b.priority_score ||
+            b.intent_score ||
+            (b.motivation_score ? b.motivation_score * 10 : 70);
           return scoreB - scoreA;
         } else if (sortMode === "CATEGORY") {
           const catA = a.vertical || "";
@@ -336,7 +353,7 @@ function Dashboard() {
   const safePage = Math.min(Math.max(1, currentPage), totalPages);
   const pagedLeads = useMemo(
     () => filteredAndRankedLeads.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
-    [filteredAndRankedLeads, safePage]
+    [filteredAndRankedLeads, safePage],
   );
 
   // Reset to page 1 whenever the filtered set or ordering changes so page 1
@@ -346,10 +363,13 @@ function Dashboard() {
   }, [activeLane, sortMode, selectedVertical, searchQuery]);
 
   // Keep selection inside the current page window when navigating pages.
+  // Intentionally NOT keyed on selectedLeadId: operator-driven selections outside
+  // the current page must survive; only page changes clamp the selection.
   useEffect(() => {
     if (pagedLeads.length > 0 && !pagedLeads.some((l) => l.id === selectedLeadId)) {
       setSelectedLeadId(pagedLeads[0].id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagedLeads]);
 
   const selectedLead = useMemo(() => {
@@ -368,8 +388,8 @@ function Dashboard() {
     };
     setDecisions((prev) => ({ ...prev, [selectedLead.id]: dec }));
 
-    // Send to backend if available
-    fetch("http://localhost:3005/api/decision", {
+    // Send to backend if available (same-origin follow-up API)
+    fetch("/api/decision", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -393,7 +413,7 @@ function Dashboard() {
           transcript: note,
           currentStage: status,
         }),
-      }).catch(err => console.error("AfterCall failed:", err));
+      }).catch((err) => console.error("AfterCall failed:", err));
     }
   };
 
@@ -403,7 +423,7 @@ function Dashboard() {
     setMeetingBookingStatus("Booking...");
 
     try {
-      const res = await fetch("http://localhost:3005/api/meeting", {
+      const res = await fetch("/api/meeting", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -450,11 +470,18 @@ function Dashboard() {
     const digitalCount = leads.filter(isDigital).length;
     const aiBuyersCount = leads.filter((l) => !isSeller(l)).length;
     const newTodayCount = leads.filter(isNewTodayLead).length;
-    const hotCount = leads.filter((l) => (l.intent_score && l.intent_score >= 80) || (l.priority_score && l.priority_score >= 85) || l.stage === "HOT_BUYER").length;
+    const hotCount = leads.filter(
+      (l) =>
+        (l.intent_score && l.intent_score >= 80) ||
+        (l.priority_score && l.priority_score >= 85) ||
+        l.stage === "HOT_BUYER",
+    ).length;
 
     const decList = Object.values(decisions);
     const callsPlaced = decList.length;
-    const connected = decList.filter((d) => !["Bad Number", "No Answer", "Busy"].includes(d.status)).length;
+    const connected = decList.filter(
+      (d) => !["Bad Number", "No Answer", "Busy"].includes(d.status),
+    ).length;
     const sellersWarmed = decList.filter((d) => d.status === "Seller Warmed").length;
     const aiBuyersWarmed = decList.filter((d) => d.status === "AI Buyer Warmed").length;
     const qualified = decList.filter((d) => d.status === "Qualified Opportunity").length;
@@ -462,7 +489,7 @@ function Dashboard() {
     const proposals = decList.filter((d) => d.status === "Proposal Sent").length;
     const deals = decList.filter((d) => d.status === "Deal Won").length;
 
-    const pipelineVal = (meetings * 8400) + (proposals * 4500) + (qualified * 2000);
+    const pipelineVal = meetings * 8400 + proposals * 4500 + qualified * 2000;
     const confirmedRev = deals * 4000;
 
     return {
@@ -516,7 +543,9 @@ function Dashboard() {
             </span>
             <span className="font-mono font-black text-sm uppercase tracking-wider text-slate-100 flex items-center gap-1.5">
               <span>🌙 TONIGHT</span>
-              <span className="text-[10px] text-cyan-400 font-normal">| GLOBAL REVENUE COCKPIT</span>
+              <span className="text-[10px] text-cyan-400 font-normal">
+                | GLOBAL REVENUE COCKPIT
+              </span>
             </span>
           </div>
         </div>
@@ -545,11 +574,15 @@ function Dashboard() {
           </div>
           <div className="flex items-center gap-1 bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/30">
             <span className="text-emerald-400 font-bold">PIPELINE:</span>
-            <span className="text-emerald-300 font-black">${counts.pipelineVal.toLocaleString()}</span>
+            <span className="text-emerald-300 font-black">
+              ${counts.pipelineVal.toLocaleString()}
+            </span>
           </div>
           <div className="flex items-center gap-1 bg-cyan-500/10 px-2.5 py-1 rounded border border-cyan-500/30">
             <span className="text-cyan-400 font-bold">REVENUE:</span>
-            <span className="text-cyan-300 font-black">${counts.confirmedRev.toLocaleString()}</span>
+            <span className="text-cyan-300 font-black">
+              ${counts.confirmedRev.toLocaleString()}
+            </span>
           </div>
 
           <div className="h-4 w-px bg-slate-800 hidden sm:block" />
@@ -570,16 +603,61 @@ function Dashboard() {
         <div className="flex items-center gap-1.5">
           {(
             [
-              { id: "NEW_TODAY", label: "🟢 NEW TODAY", count: counts.newTodayCount, tone: "text-emerald-400" },
-              { id: "SELLERS", label: "🏠 SELLERS", count: counts.sellersCount, tone: "text-amber-400" },
-              { id: "BUYERS", label: "💼 CASH BUYERS", count: counts.buyersCount, tone: "text-cyan-400" },
-              { id: "CLINICS", label: "🩺 CLINICS & HEALTH", count: counts.clinicsCount, tone: "text-emerald-400" },
-              { id: "CONTECH", label: "⚡ CONTECH & B2B", count: counts.contechCount, tone: "text-yellow-400" },
-              { id: "DIGITAL", label: "🌐 DIGITAL", count: counts.digitalCount, tone: "text-blue-400" },
+              {
+                id: "NEW_TODAY",
+                label: "🟢 NEW TODAY",
+                count: counts.newTodayCount,
+                tone: "text-emerald-400",
+              },
+              {
+                id: "SELLERS",
+                label: "🏠 SELLERS",
+                count: counts.sellersCount,
+                tone: "text-amber-400",
+              },
+              {
+                id: "BUYERS",
+                label: "💼 CASH BUYERS",
+                count: counts.buyersCount,
+                tone: "text-cyan-400",
+              },
+              {
+                id: "CLINICS",
+                label: "🩺 CLINICS & HEALTH",
+                count: counts.clinicsCount,
+                tone: "text-emerald-400",
+              },
+              {
+                id: "CONTECH",
+                label: "⚡ CONTECH & B2B",
+                count: counts.contechCount,
+                tone: "text-yellow-400",
+              },
+              {
+                id: "DIGITAL",
+                label: "🌐 DIGITAL",
+                count: counts.digitalCount,
+                tone: "text-blue-400",
+              },
               { id: "HOT", label: "🔥 HOT", count: counts.hotCount, tone: "text-rose-400" },
-              { id: "FOLLOW_UPS", label: "🔁 FOLLOW-UPS", count: Object.values(decisions).filter(d => d.followUp).length, tone: "text-amber-300" },
-              { id: "MEETINGS", label: "📅 MEETINGS", count: counts.meetings, tone: "text-cyan-400" },
-              { id: "ALL", label: "⭐ ALL LEADS", count: counts.totalLeads, tone: "text-slate-300" },
+              {
+                id: "FOLLOW_UPS",
+                label: "🔁 FOLLOW-UPS",
+                count: Object.values(decisions).filter((d) => d.followUp).length,
+                tone: "text-amber-300",
+              },
+              {
+                id: "MEETINGS",
+                label: "📅 MEETINGS",
+                count: counts.meetings,
+                tone: "text-cyan-400",
+              },
+              {
+                id: "ALL",
+                label: "⭐ ALL LEADS",
+                count: counts.totalLeads,
+                tone: "text-slate-300",
+              },
             ] as const
           ).map((tab) => (
             <button
@@ -592,7 +670,9 @@ function Dashboard() {
               }`}
             >
               <span>{tab.label}</span>
-              <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-slate-950/80 ${tab.tone}`}>
+              <span
+                className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-slate-950/80 ${tab.tone}`}
+              >
                 {tab.count}
               </span>
             </button>
@@ -689,7 +769,9 @@ function Dashboard() {
                 const isSel = lead.id === selectedLead?.id;
                 const dec = decisions[lead.id];
                 const isNew = isNewTodayLead(lead) || lead.freshness_stage === "NEWLY_VERIFIED";
-                const isCallNow = lead.queue_bucket === "FRESH_CALL_NOW" || (lead.priority_rank && lead.priority_rank <= 25);
+                const isCallNow =
+                  lead.queue_bucket === "FRESH_CALL_NOW" ||
+                  (lead.priority_rank && lead.priority_rank <= 25);
 
                 return (
                   <div
@@ -728,20 +810,28 @@ function Dashboard() {
                           </span>
                         ) : (
                           <span className="text-[9px] font-mono text-amber-400 font-bold">
-                            {lead.priority_score ? `${lead.priority_score} PTS` : (lead.intent_score ? `${lead.intent_score}% INTENT` : "READY")}
+                            {lead.priority_score
+                              ? `${lead.priority_score} PTS`
+                              : lead.intent_score
+                                ? `${lead.intent_score}% INTENT`
+                                : "READY"}
                           </span>
                         )}
                       </div>
                     </div>
 
-                    <div className="font-bold text-xs text-slate-100 truncate mb-0.5">{lead.company}</div>
+                    <div className="font-bold text-xs text-slate-100 truncate mb-0.5">
+                      {lead.company}
+                    </div>
                     <div className="text-[11px] text-slate-400 truncate mb-1">
                       {lead.contact} {lead.details?.Role ? `· ${lead.details.Role}` : ""}
                     </div>
 
                     <div className="flex items-center justify-between text-[10px] font-mono">
                       <span className="text-slate-500">{lead.phone}</span>
-                      <span className="text-slate-400 text-[9px] truncate max-w-[120px]">{lead.vertical}</span>
+                      <span className="text-slate-400 text-[9px] truncate max-w-[120px]">
+                        {lead.vertical}
+                      </span>
                     </div>
                   </div>
                 );
@@ -768,7 +858,11 @@ function Dashboard() {
 
                 <div className="flex flex-wrap items-center gap-1.5">
                   <button
-                    onClick={() => handleRecordDecision(isSeller(selectedLead) ? "Seller Warmed" : "AI Buyer Warmed")}
+                    onClick={() =>
+                      handleRecordDecision(
+                        isSeller(selectedLead) ? "Seller Warmed" : "AI Buyer Warmed",
+                      )
+                    }
                     className="px-3 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 rounded-lg text-xs transition-all"
                   >
                     🔥 WARM (W)
@@ -806,11 +900,15 @@ function Dashboard() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-1 text-slate-300">
                   <div>
                     <span className="text-slate-500 block text-[10px]">Confirmed Revenue:</span>
-                    <strong className="text-cyan-300 font-mono">${counts.confirmedRev.toLocaleString()}</strong>
+                    <strong className="text-cyan-300 font-mono">
+                      ${counts.confirmedRev.toLocaleString()}
+                    </strong>
                   </div>
                   <div>
                     <span className="text-slate-500 block text-[10px]">Active Pipeline:</span>
-                    <strong className="text-emerald-300 font-mono">${counts.pipelineVal.toLocaleString()}</strong>
+                    <strong className="text-emerald-300 font-mono">
+                      ${counts.pipelineVal.toLocaleString()}
+                    </strong>
                   </div>
                   <div>
                     <span className="text-slate-500 block text-[10px]">Warmed Leads:</span>
@@ -841,7 +939,10 @@ function Dashboard() {
               <span className="text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
                 📅 Schedule 15-Min Discovery Walkthrough
               </span>
-              <button onClick={() => setShowMeetingModal(false)} className="text-slate-400 hover:text-slate-200 text-sm">
+              <button
+                onClick={() => setShowMeetingModal(false)}
+                className="text-slate-400 hover:text-slate-200 text-sm"
+              >
                 ✕
               </button>
             </div>
