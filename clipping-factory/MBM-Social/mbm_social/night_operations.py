@@ -607,6 +607,54 @@ def mission_dead_letter_review() -> dict:
     return report
 
 
+def mission_revenue_analysis() -> dict:
+    """Phase 10 (M-023): aggregate economics from the content-rewards ledger.
+
+    Reads estimated/verified/actual rows (never invents them) and reports
+    revenue-per-1K/1M, cost-per-clip, profit and ROI so the nightly executive
+    report carries honest economics. Missing ledger -> zero report (no fake).
+    """
+    from . import content_rewards as cr
+    from . import revenue_attribution as ra
+
+    rows = []
+    try:
+        if cr.LEDGER_PATH.exists():
+            for line in cr.LEDGER_PATH.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    rows.append(json.loads(line))
+                except Exception:
+                    continue
+    except Exception:
+        rows = []
+
+    econ_rows = []
+    for r in rows:
+        verified = r.get("verified_views")
+        actual = r.get("actual_revenue_usd")
+        views = float(verified if verified is not None else r.get("estimated_views", 0) or 0)
+        cost = float(r.get("production_minutes", 0) or 0) * 0.10
+        if actual is not None:
+            econ_rows.append(ra.actual_clip(
+                r.get("asset_id", "x"), r.get("platform", "youtube"), views, cost, float(actual)))
+        else:
+            econ_rows.append(ra.estimate_clip(
+                r.get("asset_id", "x"), r.get("platform", "youtube"), views, cost, ra.RewardRateRegistry()))
+
+    profit = ra.campaign_profit(econ_rows)
+    report = {
+        "timestamp": datetime.now().isoformat(),
+        "ledger_rows": len(rows),
+        "campaign_profit": profit.__dict__ if hasattr(profit, "__dict__") else profit,
+        "status": "healthy" if profit.has_actual else "estimated_only",
+    }
+    _save_report(report, "revenue_analysis")
+    return report
+
+
 def run_all_missions() -> dict:
     """Run all night operations missions and compile executive report."""
     _log("NIGHT_OPS", "Starting night operations run...")
@@ -623,6 +671,7 @@ def run_all_missions() -> dict:
         ("queue_optimization", mission_queue_optimization),
         ("platform_health", mission_platform_health),
         ("dead_letter_review", mission_dead_letter_review),
+        ("revenue_analysis", mission_revenue_analysis),
         ("opportunity_scan", mission_opportunity_scan),
         ("repository_backup", mission_repository_backup),
         ("anty_shadowban_schedule", mission_anty_shadowban_schedule),

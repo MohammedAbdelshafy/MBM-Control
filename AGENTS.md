@@ -179,13 +179,24 @@ Each subsystem has a dedicated `.md` at its root:
 | `publish_package.py` | Build brand-aware title/desc/hashtags/thumb text |
 | `publisher.py` | Playwright YouTube Studio publisher |
 | `youtube_api_publisher.py` | YouTube Data API v3 publisher |
+| `candidate_pool.py` | Phase 1: large candidate pool (10/25/50/100/250) + 8-axis scoring + selection |
+| `video_editing.py` | Phase 2: ffmpeg reframe (9:16/16:9/1:1) + caption burn-in command builder |
+| `content_intelligence.py` | Phase 3: hook/title/desc/caption/hashtags/CTA via Model Registry |
+| `distribution_optimizer.py` | Phase 5: volume controls + performance auto-scaling + caps |
+| `routing_decision.py` | Phase 4: WHERE/WHEN/SHOULD/variant decision (reuses routing + platform_registry) |
+| `publishing.py` | Phase 6: resilient publish (retry/backoff/idempotency/DLQ) wrapper |
+| `revenue_attribution.py` | Phase 7: configurable RPM, ESTIMATED vs ACTUAL, ROI |
+| `observability.py` | Phase 11: metrics aggregator |
+| `learning_feedback.py` | Phase 8: Enterprise Memory learning loop wrapper |
+| `crayo_engine.py` | Canonical Crayo-class loop orchestrator (wires Phases 1–11) |
 
 ## Mission Registry
 
 | Mission | Status | Description |
 |---|---|---|
 | M-021 | COMPLETE | MBM Social Production Launch — multi-brand, autonomous runtime, learning engine, night ops |
-| M-022 | PLANNED | Production Activation — first real campaigns, OAuth setup, multi-platform publishing |
+| M-022 | COMPLETE | Production Revision — audit, P0 fixes, resilient runtime (event bus/checkpoint/circuit breaker/DLQ), honest platform matrix (YT supported; IG/TikTok manual; LI/X blocked), quality gates, client mode, websites, GitHub App, 21 hermetic tests. Blockers tracked as GitHub issues #10–#16 |
+| M-023 | COMPLETE | Crayo-Class Engine — candidate pool (10/25/50/100/250) + 8-axis scoring, auto-edit (ffmpeg reframe/captions), content intelligence, routing decision, distribution optimizer, resilient publishing (retry/idempotency/DLQ), revenue attribution (estimated vs actual), learning loop, observability, crayo_engine orchestrator. Reuses viral_intelligence/content_rewards/routing/learning_engine. 24 hermetic tests. Tracking #17, brief link #22, deferred #18–#22 |
 
 ## Server Scripts (Node.js)
 
