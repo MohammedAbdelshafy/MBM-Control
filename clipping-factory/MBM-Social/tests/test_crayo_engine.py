@@ -272,6 +272,9 @@ def test_routing_decision_blocked_manual(monkeypatch):
 def test_crayo_e2e_publishes_and_learns(tmp_path, monkeypatch):
     monkeypatch.setattr(ci.mr, "generate", lambda *a, **k: None)
     monkeypatch.setattr(ci.mr, "resolve", lambda *a, **k: None)
+    # prevent the learning loop from writing to the real LearningMemory.json
+    monkeypatch.setattr(lf.le, "record_campaign_result", lambda *a, **k: None)
+    monkeypatch.setattr(lf.le, "update_performance_from_analytics", lambda *a, **k: None)
     fake_dest = types.SimpleNamespace(channel="chan1", account_id="acct1")
     monkeypatch.setattr(rd.routing, "resolve_destination", lambda *a, **k: fake_dest)
 
