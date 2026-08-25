@@ -2,8 +2,14 @@ name: Agent Factory - Voice Agent Batch (Every 5 Min)
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # Every 5 minutes
-  workflow_dispatch:  # Allow manual trigger
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+# Prevent overlapping 5-minute cycles from creating duplicate agents or
+# racing the shared factory state.
+concurrency:
+  group: mbm-agent-factory-production
+  cancel-in-progress: false
 
 jobs:
   create-agent:
@@ -11,15 +17,23 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Assert checked-out revision
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          echo "Running factory revision: ${GITHUB_SHA}"
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
-        run: pip install requests python-dotenv
-      
+        run: pip install --disable-pip-version-check requests python-dotenv
+
       - name: Create voice agent batch
         env:
           RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
@@ -32,10 +46,13 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
       - name: Alert on agent factory failure
         uses: ./.github/actions/telegram-notify
         with:
-          message: "🛑 *BASE44 AGENT FACTORY* voice agent batch FAILED (5-min cycle broken)\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          message: "🛑 *BASE44 AGENT FACTORY* voice agent batch FAILED (5-min cycle broken)\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\nRevision: ${{ github.sha }}"
           telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
           vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
