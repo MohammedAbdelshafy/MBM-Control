@@ -110,3 +110,19 @@ NEXT SAFE ACTION: operator go-ahead on §7 items 1–3 (one non-destructive merg
 commit + push), then begin M1 S01 environment build.
 
 STOP POINT (Contec): PROVEN = `56790e3` on local `master`.
+
+---
+
+## ADDENDUM — RECONCILIATION EXECUTED (2026-08-26, operator-authorized)
+
+Operator selected: **Reconcile + push, then M1.**
+
+| Action | Result |
+|---|---|
+| `git fetch origin` + merge of `origin/master` into `master` | CLEAN (ort strategy, zero conflicts — sides were path-disjoint). Brought in `QA_REPORT.md`, `OX_ALPHA_TRUST_AND_3_TERMINAL_RULES.md`, agent-factory CI/code fixes |
+| Generation-A artifacts restored VERBATIM from `origin/contec/milestone-0-source-of-truth` @ `8afdeb8` | `IMPLEMENTATION_BLOCKER.md`, `MILESTONE_0_OX2_REPORT.md`, `QA_RELEASE_GATE.md`, `REPOSITORY_STRATEGY.md`, `SECURITY_GATE.md`, `tools/validate_contec_docs.py`. Branch itself left untouched on remote as permanent evidence |
+| `tools/validate_contec_docs.py` executed read-only | **FAILED (exit 1)** — asserts Generation-A conventions (`Last updated:` headers, `PENDING RESEARCH`/`PROPOSED`/`UNVERIFIED` markers) which the frozen Generation-C set intentionally superseded with ACCEPTED decisions. Recorded as DATA. Not patched to pass. Fate of validator (update to Gen-C assertions vs retire) deferred to M1 work items |
+| Canonical precedence | Generation C (frozen set incl. DECISION_LOG D-000..D-020) remains authoritative; Generation-A/B files kept as governance/evidence history. Any conflict resolves via DECISION_LOG first |
+| Unrelated uncommitted MBM/clipping ops work | Still untouched, still preserved |
+
+Push verification appended below after execution.
