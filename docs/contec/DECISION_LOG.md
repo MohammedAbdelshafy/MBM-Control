@@ -1,0 +1,35 @@
+# Contec ERP — DECISION_LOG (authoritative)
+
+Status legend: PROPOSED → ACCEPTED → SUPERSEDED(by).
+Rule: any deviation from an ACCEPTED decision requires a new entry BEFORE code.
+Terminal 1 (Chief Architect) owns this file. Date basis: 2026-08-25.
+
+| ID | Decision | Status | Context / Rationale | Consequences |
+|---|---|---|---|---|
+| D-000 | Documentation source of truth = `docs/contec/` (this folder); legacy `CONTEC_ERP_AGENT_MISSION.md` remains parent mission input, not architecture | ACCEPTED | Prevent contradictory docs (Phase 1 mandate) | Builders cite these files; conflicts resolved here first |
+| D-001 | Platform = **ERPNext v16 + Frappe + hrms (GPL-3), self-hosted via frappe_docker** | ACCEPTED | Only candidate meeting ALL of: open double-entry GL, built-in Project/Cost-Center dimensions, procurement+inventory+advances/expenses, granular roles/workflows, REST API, import tooling, official Docker, zero license cost. Evidence table: 03_ERP_PLATFORM_DECISION.md §2 | Odoo/Axelor/Dolibarr/Tryton/iDempiere/Flectra/OpenMercato/metasfresh/OFBiz rejected for stated reasons; runner-up exit strategy defined |
+| D-002 | Bake-off requirement satisfied by documented evidence review; hands-on install bake-off executes in M1 against ERPNext before customization begins | ACCEPTED | Mission demands practical proof; full multi-platform live bake-off cost-prohibitive pre-selection | If M1 reveals blocking defect → return to 03 §4 runner-up with written incident |
+| D-003 | ONE canonical dataset; Arabic/English are presentation layers (`*_en`,`*_ar` name fields + translations). No second DB, no data forks | ACCEPTED | R4; reporting integrity | 08_ARABIC_ENGLISH_SPEC.md binding |
+| D-004 | All Contec logic in custom app `contec`; ZERO edits to frappe/erpnext/hrms sources. Configure→Extend→Build order | ACCEPTED | Upgradeability (v16→v17 path must stay cheap) | PRs touching vendor dirs are rejected by default |
+| D-005 | Egyptian VAT/WHT implemented as `contec` FIXTURES (tax templates); rates placeholders until Chief Accountant confirms current law | ACCEPTED | Verified absence of `egypt` module in erpnext v16 regional tree | Rate change = config edit; legal confirmation recorded here before go-live |
+| D-006 | NO BOQ in V1 (no quantity engine, no BOQ progress certificates) | ACCEPTED | Parent mission exclusion | Progress billing modeled as plain Sales Invoices per contract |
+| D-007 | Role registry fixed to 8 business roles + System Manager (admin humans only); least privilege via DocType perms + User Permissions + Workflows | ACCEPTED | R2/R3; audit posture | Matrix in 06 §2 is testable contract |
+| D-008 | `System Manager` never assigned to business users; developer daily identity carries no financial submit rights | ACCEPTED | Separation of duties vs owner's team | Admin actions under named accounts, logged |
+| D-009 | Network exposure limited to 80/443; MariaDB/Redis compose-internal only | ACCEPTED | Security baseline | Violations block go-live gate |
+| D-010 | Attachment mandatory before submit when total ≥ EGP 1,000 on Expense Voucher/Purchase Invoice (fixture threshold) | ACCEPTED | Audit trail for high-volume receipts | Threshold adjustable via DECISION_LOG amendment |
+| D-011 | AI/OCR writes suggestions ONLY into draft fields; financial posting, approval, permission change, deletion, alteration of submitted docs, and tax submission are HARD-PROHIBITED to AI/API paths; server guard hook enforces (default flag OFF) | ACCEPTED | R8; human accountability | Every AI suggestion audited w/ provider+model+prompt-hash |
+| D-012 | ETA e-invoicing = separate validated phase AFTER V1 go-live; reference study of Odoo community `l10n_eg_edi_eta` allowed, no code dependency | ACCEPTED | Mandate timing uncertain; core scope discipline | Tracked post-V1 in 13_ROADMAP |
+| D-013 | Public access via domain + auto-HTTPS; Cloudflare Tunnel permitted as front door ONLY if no public IP; LAN degraded mode must work without tunnel | ACCEPTED | On-prem reality in Egypt | No hard provider dependency |
+| D-014 | Payment authorization thresholds: ≤50k EGP Accountant submits; >50k GM/Chief approves; PO >200k Owner countersigns; Journal Entry Chief-only always. Values are fixtures | ACCEPTED | Internal control design | Changes require owner sign-off logged here |
+| D-015 | Employee advances accounted as ASSET (per-employee child accounts under 1120 control), settled via Expense Claim link or cash-return JE | ACCEPTED | Matches Egyptian practice of سلف على العهدة | Outstanding advances report reconciles to control account |
+| D-016 | V1 posts EGP only; FX fields exist but unused | ACCEPTED | Simplifies close; FX deals rare now | Multi-currency activation = new decision |
+| D-017 | Monthly period close with Process Period Closing Voucher + frozen-date enforcement; unfreeze events logged/reviewed | ACCEPTED | Books integrity | Backdated posting blocked after freeze |
+| D-018 | Watch-list: Open Mercato (MIT framework, no ledger today), Axelor (AGPL stack worth re-eval if Arabic/Docker evidence appears), Odoo Enterprise (if budget ever approved) | ACCEPTED | Annual tech-review trigger | Re-evaluation ≠ migration without D-001 supersession |
+| D-019 | **ARCHITECTURE FREEZE.** Frozen principles: (1) ERPNext = accounting/ERP foundation; (2) Contec logic only in `contec` app; (3) vendor core edits PROHIBITED absent explicit OX Alpha exception; (4) Configure→Extend→Build; (5) no BOQ in V1; (6) one canonical dataset; (7) AR/EN are presentation layers; (8) EGP-only posting V1; (9) posted docs immutable; (10) corrections via reversal/cancel/correction workflow only; (11) no autonomous deletion; (12) AI/OCR produce suggestions/draft fields only; (13) human review precedes every financial posting; (14) AI may not post/approve/pay/delete/change permissions/alter submitted docs/submit taxes; (15) financial values carry source provenance; (16) unknown/conflicting/low-confidence data → NEEDS_REVIEW, never guessed; (17) backup invalid until restore-tested; (18) production NO-GO until all release gates pass | ACCEPTED 2026-08-25 | Handoff directive from owner; prevents redesign churn during implementation | Deviations require new DECISION_LOG entry BEFORE code; OX2 builds inside these rails or stops |
+| D-020 | Operating model: OX Alpha = Chief Architect + Orchestrator (owns DECISION_LOG, milestone APPROVED/REWORK/BLOCKED verdicts, escalation point); OX2 = sole implementation/deployment terminal; OX3 retired. Milestone reporting contract: WHAT CHANGED / TESTED / PASSED / FAILED / UNKNOWN / DEPLOYED | ACCEPTED 2026-08-25 | Governance clarity after three-agent registry change (commit 0e46bbe) | OX Alpha does not duplicate OX2 implementation work; M1 approval impossible until PLATFORM_BAKEOFF.md charter executed with evidence |
+
+## Amendment procedure
+
+1. Propose entry (ID next sequential) with context+evidence.
+2. Terminal 1 accepts/rejects; owner countersigns money-affecting changes (D-014 class).
+3. Superseded entries remain with pointer to successor. Never delete rows.
