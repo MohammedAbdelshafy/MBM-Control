@@ -10,14 +10,14 @@ Usage:
   python agent_factory.py --status
 """
 
+import argparse
 import json
 import os
+import random
 import sys
 import time
-import random
-import argparse
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 try:
     import requests
@@ -36,6 +36,7 @@ LOGS_DIR = ROOT / "MBM" / "LeadEngine" / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 AGENTS_FILE = LOGS_DIR / "factory_agents.json"
 DEPLOYED_FILE = LOGS_DIR / "deployed_agents.json"
+ATTEMPTS_FILE = LOGS_DIR / "factory_attempts.json"
 
 RETELL_API_KEY = os.getenv("RETELL_API_KEY")
 
@@ -119,20 +120,44 @@ NICHES = [
         "rate": 0.35,
         "tags": ["auto", "detailing", "services"]
     },
+    {
+        "name": "Moving Company",
+        "persona": "Organized moving coordinator",
+        "hook": "Hi! I'm calling about your upcoming move. Are you still planning to relocate?",
+        "qualify": ["When are you moving?", "What's the origin/destination?", "How many rooms?", "Any specialty items?"],
+        "close": "I'll prepare a custom quote. When can we do a virtual walkthrough?",
+        "rate": 0.40,
+        "tags": ["moving", "logistics", "services"]
+    },
 ]
 
 
-def load_deployed():
+def read_json(path, default):
     try:
-        if DEPLOYED_FILE.exists():
-            return json.loads(DEPLOYED_FILE.read_text(encoding="utf-8"))
+        if path.exists():
+            return json.loads(path.read_text(encoding="utf-8"))
     except Exception as e:
-        print(f"[!] Failed loading deployed agents: {e}")
-    return []
+        print(f"[!] Failed reading {path.name}: {e}")
+    return default
+
+
+def write_json(path, data):
+    path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+
+
+def load_deployed():
+    return read_json(DEPLOYED_FILE, [])
 
 
 def save_deployed(data):
-    DEPLOYED_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    write_json(DEPLOYED_FILE, data)
+
+
+def append_attempt(record):
+    attempts = read_json(ATTEMPTS_FILE, [])
+    attempts.append(record)
+    # Keep the local diagnostic ledger bounded.
+    write_json(ATTEMPTS_FILE, attempts[-250:])
 
 
 def get_next_niche():
@@ -146,6 +171,8 @@ def get_next_niche():
 
 def create_agent(niche):
     """Create a new Retell LLM and attach it to a voice agent."""
+    started_at = datetime.now().isoformat()
+    llm_id = None
     if not RETELL_API_KEY:
         print("[!] RETELL_API_KEY not set")
         return None
@@ -172,7 +199,6 @@ If they're BUSY: "I understand. When would be a better time for a quick 2-minute
 Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
 
     voice_id = random.choice(VOICE_IDS)
-
     llm_payload = {
         "model": "gemini-2.5-flash-lite",
         "general_prompt": prompt,
@@ -189,31 +215,28 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
         )
         if r.status_code not in (200, 201):
             print(f"  [-] LLM creation failed: {r.status_code} - {r.text[:500]}")
+            append_attempt({"niche": niche["name"], "status": "llm_failed", "http": r.status_code, "at": started_at})
             return None
         llm_id = r.json().get("llm_id")
         if not llm_id:
             print(f"  [-] LLM creation returned no llm_id: {r.text[:500]}")
+            append_attempt({"niche": niche["name"], "status": "llm_missing_id", "at": started_at})
             return None
         print(f"  [+] Created LLM: {llm_id}")
     except Exception as e:
         print(f"  [!] Error creating LLM: {e}")
+        append_attempt({"niche": niche["name"], "status": "llm_exception", "error": str(e)[:500], "at": started_at})
         return None
 
-    # Retell documents that the agent must attach a previously-created response
-    # engine. Give the control plane a small propagation window before attach.
+    # Retell may not expose the newly-created response engine immediately.
     time.sleep(5)
 
     agent_payload = {
         "agent_name": f"MBM-{niche['name'].replace(' ', '-')}-{datetime.now().strftime('%H%M%S')}",
         "voice_id": voice_id,
-        "response_engine": {
-            "type": "retell-llm",
-            "llm_id": llm_id,
-        },
+        "response_engine": {"type": "retell-llm", "llm_id": llm_id},
     }
 
-    last_status = None
-    last_body = ""
     for attempt in range(5):
         try:
             r = requests.post(
@@ -222,11 +245,13 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
                 json=agent_payload,
                 timeout=30,
             )
-            last_status = r.status_code
-            last_body = r.text
             if r.status_code in (200, 201):
                 data = r.json()
-                agent_id = data.get("agent_id", "unknown")
+                agent_id = data.get("agent_id")
+                if not agent_id:
+                    print(f"  [-] create-agent returned no agent_id: {r.text[:1000]}")
+                    append_attempt({"niche": niche["name"], "status": "agent_missing_id", "llm_id": llm_id, "at": started_at})
+                    return None
                 return {
                     "niche": niche["name"],
                     "agent_id": agent_id,
@@ -238,18 +263,21 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
                     "status": "deployed",
                 }
 
-            # Retry control-plane/transient failures. Do not hide deterministic
-            # validation/auth failures such as 400/401/422.
             if r.status_code in (404, 429, 500, 502, 503, 504) and attempt < 4:
                 wait = 5 * (attempt + 1)
-                print(
-                    f"  [~] Retell create-agent {r.status_code} "
-                    f"(attempt {attempt + 1}/5), retrying in {wait}s"
-                )
+                print(f"  [~] Retell create-agent {r.status_code} (attempt {attempt + 1}/5), retrying in {wait}s")
                 time.sleep(wait)
                 continue
 
             print(f"  [-] create-agent failed: {r.status_code} - {r.text[:1000]}")
+            append_attempt({
+                "niche": niche["name"],
+                "status": "agent_failed",
+                "http": r.status_code,
+                "llm_id": llm_id,
+                "at": started_at,
+                "body": r.text[:1000],
+            })
             return None
         except Exception as e:
             if attempt < 4:
@@ -258,9 +286,9 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
                 time.sleep(wait)
                 continue
             print(f"  [!] create-agent exhausted retries: {e}")
+            append_attempt({"niche": niche["name"], "status": "agent_exception", "llm_id": llm_id, "error": str(e)[:500], "at": started_at})
             return None
 
-    print(f"  [-] Failed after retries: {last_status} - {last_body[:1000]}")
     return None
 
 
@@ -275,6 +303,7 @@ def generate_one(niche=None):
         save_deployed(deployed)
         print(f"  [+] Deployed: {result['agent_id']} (${result['rate_per_min']}/min)")
         print(f"  [+] Total deployed: {len(deployed)}")
+        append_attempt({"niche": niche["name"], "status": "deployed", "agent_id": result["agent_id"], "llm_id": result["llm_id"], "at": result["deployed_at"]})
         return result
     return None
 
@@ -287,10 +316,8 @@ def run_loop():
     while True:
         result = generate_one()
         if result:
-            print("  Next agent in 15 minutes...\n")
             time.sleep(900)
         else:
-            print("  Retrying in 5 minutes...\n")
             time.sleep(300)
 
 
@@ -299,22 +326,12 @@ def show_status():
     if not deployed:
         print("[!] No agents deployed yet")
         return
-    print("\n" + "=" * 60)
-    print(f"  MBM DEPLOYED VOICE AGENTS ({len(deployed)} total)")
-    print("=" * 60 + "\n")
     total_rate = 0
     for i, agent in enumerate(deployed, 1):
-        print(f"  {i}. {agent['niche']}")
-        print(f"     ID: {agent['agent_id']}")
-        print(f"     Rate: ${agent['rate_per_min']}/min")
-        print(f"     Tags: {', '.join(agent['tags'])}")
-        print(f"     Deployed: {agent['deployed_at']}")
-        print()
+        print(f"{i}. {agent['niche']} | {agent['agent_id']} | ${agent['rate_per_min']}/min | {agent['deployed_at']}")
         total_rate += agent['rate_per_min']
-    print("=" * 60)
-    print(f"  Total agents: {len(deployed)}")
-    print(f"  Combined rate: ${total_rate:.2f}/min")
-    print(f"  Potential monthly: ${total_rate * 60 * 8 * 22:,.0f}")
+    print(f"Total agents: {len(deployed)}")
+    print(f"Combined rate: ${total_rate:.2f}/min")
 
 
 def main():
@@ -328,14 +345,10 @@ def main():
 
     if args.status:
         show_status()
-    elif args.loop:
-        run_loop()
-    elif args.deploy:
-        for _ in range(max(1, args.count)):
-            generate_one()
-    else:
-        for _ in range(max(1, args.count)):
-            generate_one()
+        return
+
+    for _ in range(max(1, args.count)):
+        generate_one()
 
 
 if __name__ == "__main__":
