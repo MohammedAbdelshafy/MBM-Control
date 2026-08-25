@@ -1,5 +1,8 @@
 # IMPLEMENTATION_BLOCKER.md — Contec ERP
 
+Status: ACTIVE — Milestone 1 blocked pending B1–B4 resolution
+Last updated: 2026-08-25
+
 ```
 status: blocked
 inputs: { directive: "Terminal 2 — Milestone 1 Foundation", repo: "MohammedAbdelshafy/base44-app@master" }
