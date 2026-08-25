@@ -8,6 +8,17 @@ Usage:
   python agent_factory.py --loop
   python agent_factory.py --deploy
   python agent_factory.py --status
+
+Reliability contract (incident run 32863390319):
+  - Retell returns a misleading generic HTTP 404 {"status":"error",
+    "message":"Not Found"} when create-agent references a NONEXISTENT
+    voice_id. It is NOT propagation delay: a valid voice attached to a
+    seconds-old llm_id succeeds immediately (verified live 2026-08-25).
+    => 404/4xx are PERMANENT errors: never retried; the just-created LLM
+       is deleted (provable ownership: we hold its id from our own 201).
+  - Only 429/5xx/network errors are retried (bounded, linear backoff).
+  - The process exits non-zero unless EVERY requested creation succeeds,
+    so CI cannot report a broken production cycle as green.
 """
 
 import argparse
@@ -16,7 +27,7 @@ import os
 import random
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 try:
@@ -40,7 +51,22 @@ ATTEMPTS_FILE = LOGS_DIR / "factory_attempts.json"
 
 RETELL_API_KEY = os.getenv("RETELL_API_KEY")
 
+RETELL_BASE = "https://api.retellai.com"
+REQUEST_TIMEOUT = 30
+AGENT_ATTEMPTS = 5
+# Production cadence of the scheduled workflow (agent-factory.yml */5 cron).
+CADENCE_SECONDS = 300
+
+MAX_LEDGER_RECORDS = 250
+
+
+class ConfigError(Exception):
+    """Fatal configuration problem: production must not silently continue."""
+
+
 # Keep this aligned with the last known-good production fix.
+# NOTE: validated against GET /list-voices at startup (validate_voice_pool);
+# entries absent from Retell are stripped before any create-agent call.
 VOICE_IDS = [
     "retell-Willa",
     "retell-Cimo",
@@ -132,6 +158,10 @@ NICHES = [
 ]
 
 
+def _ci_env(name):
+    return os.environ.get(name, "") or ""
+
+
 def read_json(path, default):
     try:
         if path.exists():
@@ -146,7 +176,10 @@ def write_json(path, data):
 
 
 def load_deployed():
-    return read_json(DEPLOYED_FILE, [])
+    # Tolerate corrupt/empty state: the factory treats this file as a local
+    # diagnostic record, never as a source of truth (runners are ephemeral).
+    data = read_json(DEPLOYED_FILE, [])
+    return data if isinstance(data, list) else []
 
 
 def save_deployed(data):
@@ -155,18 +188,88 @@ def save_deployed(data):
 
 def append_attempt(record):
     attempts = read_json(ATTEMPTS_FILE, [])
+    if not isinstance(attempts, list):
+        attempts = []
+    record.setdefault("sha", _ci_env("GITHUB_SHA"))
+    record.setdefault("run_id", _ci_env("GITHUB_RUN_ID"))
+    record.setdefault("attempt", _ci_env("GITHUB_RUN_ATTEMPT"))
     attempts.append(record)
     # Keep the local diagnostic ledger bounded.
-    write_json(ATTEMPTS_FILE, attempts[-250:])
+    write_json(ATTEMPTS_FILE, attempts[-MAX_LEDGER_RECORDS:])
 
 
-def get_next_niche():
-    deployed = load_deployed()
-    used = {a.get("niche") for a in deployed}
-    for niche in NICHES:
-        if niche["name"] not in used:
-            return niche
-    return random.choice(NICHES)
+def get_next_niche(offset=0):
+    """Deterministic per-window niche selection.
+
+    Keyed on (factory, UTC time slot) instead of ephemeral runner state, so
+    every run/replay of the same 5-minute window rotates through the same
+    niche sequence regardless of checkout freshness. Two agents requested in
+    one batch use consecutive slots (offset 0 and 1).
+    """
+    slot = int(time.time()) // CADENCE_SECONDS
+    return NICHES[(slot + offset) % len(NICHES)]
+
+
+def validate_voice_pool():
+    """Strip voice_ids Retell does not know about BEFORE creating anything.
+
+    Live evidence (2026-08-25): create-agent answers a nonexistent voice_id
+    with generic HTTP 404 {"status":"error","message":"Not Found"} — the exact
+    signature that broke the 2026-08-25 production batch. Validation here is
+    fail-safe: if the catalog cannot be fetched we keep the configured pool
+    (production continues; retries remain bounded), but if the pool ends up
+    empty we raise ConfigError because continuing would guarantee 404s.
+    """
+    headers = {"Authorization": f"Bearer {RETELL_API_KEY}"}
+    try:
+        r = requests.get(f"{RETELL_BASE}/list-voices", headers=headers, timeout=REQUEST_TIMEOUT)
+    except Exception as e:
+        print(f"[!] Voice catalog check skipped (network): {e}")
+        return []
+    if r.status_code != 200:
+        print(f"[!] Voice catalog check skipped (HTTP {r.status_code}); keeping configured voices")
+        return []
+
+    try:
+        known = {v.get("voice_id") for v in r.json()}
+    except Exception as e:
+        print(f"[!] Voice catalog unparseable ({e}); keeping configured voices")
+        return []
+
+    invalid = [v for v in VOICE_IDS if v not in known]
+    for v in invalid:
+        print(f"[!] Removing INVALID voice_id '{v}' (Retell /list-voices does not know it)")
+        append_attempt({"status": "invalid_voice_removed", "voice_id": v})
+    VOICE_IDS[:] = [v for v in VOICE_IDS if v in known]
+    if not VOICE_IDS:
+        raise ConfigError(
+            "All configured voice_ids are invalid per Retell /list-voices. "
+            "Fix VOICE_IDS in MBM/LeadEngine/agent_factory.py."
+        )
+    return invalid
+
+
+def cleanup_orphan_llm(llm_id, reason):
+    """Delete an LLM THIS process created (id captured from our own 201).
+
+    Never called with an id we did not receive ourselves. If deletion fails,
+    the id is quarantined in the attempt ledger so the resource stays
+    traceable instead of silently accumulating.
+    """
+    if not llm_id:
+        return False
+    headers = {"Authorization": f"Bearer {RETELL_API_KEY}"}
+    try:
+        r = requests.delete(f"{RETELL_BASE}/delete-retell-llm/{llm_id}", headers=headers, timeout=REQUEST_TIMEOUT)
+        if r.status_code in (200, 201, 204):
+            print(f"  [+] Orphan LLM cleaned up: {llm_id} ({reason})")
+            append_attempt({"status": "orphan_llm_deleted", "llm_id": llm_id, "reason": reason})
+            return True
+        print(f"  [!] Could not delete orphan LLM {llm_id}: HTTP {r.status_code}")
+    except Exception as e:
+        print(f"  [!] Could not delete orphan LLM {llm_id}: {e}")
+    append_attempt({"status": "orphan_llm_quarantined", "llm_id": llm_id, "reason": reason})
+    return False
 
 
 def create_agent(niche):
@@ -174,8 +277,7 @@ def create_agent(niche):
     started_at = datetime.now().isoformat()
     llm_id = None
     if not RETELL_API_KEY:
-        print("[!] RETELL_API_KEY not set")
-        return None
+        raise ConfigError("RETELL_API_KEY not set")
 
     headers = {
         "Authorization": f"Bearer {RETELL_API_KEY}",
@@ -208,19 +310,22 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
 
     try:
         r = requests.post(
-            "https://api.retellai.com/create-retell-llm",
+            f"{RETELL_BASE}/create-retell-llm",
             headers=headers,
             json=llm_payload,
-            timeout=30,
+            timeout=REQUEST_TIMEOUT,
         )
         if r.status_code not in (200, 201):
             print(f"  [-] LLM creation failed: {r.status_code} - {r.text[:500]}")
-            append_attempt({"niche": niche["name"], "status": "llm_failed", "http": r.status_code, "at": started_at})
+            append_attempt({"niche": niche["name"], "status": "llm_failed", "http": r.status_code, "at": started_at, "body": r.text[:500]})
             return None
-        llm_id = r.json().get("llm_id")
+        try:
+            llm_id = r.json().get("llm_id")
+        except Exception:
+            llm_id = None
         if not llm_id:
             print(f"  [-] LLM creation returned no llm_id: {r.text[:500]}")
-            append_attempt({"niche": niche["name"], "status": "llm_missing_id", "at": started_at})
+            append_attempt({"niche": niche["name"], "status": "llm_missing_id", "at": started_at, "body": r.text[:500]})
             return None
         print(f"  [+] Created LLM: {llm_id}")
     except Exception as e:
@@ -237,20 +342,27 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
         "response_engine": {"type": "retell-llm", "llm_id": llm_id},
     }
 
-    for attempt in range(5):
+    for attempt in range(AGENT_ATTEMPTS):
         try:
             r = requests.post(
-                "https://api.retellai.com/create-agent",
+                f"{RETELL_BASE}/create-agent",
                 headers=headers,
                 json=agent_payload,
-                timeout=30,
+                timeout=REQUEST_TIMEOUT,
             )
             if r.status_code in (200, 201):
-                data = r.json()
+                try:
+                    data = r.json()
+                except Exception:
+                    print(f"  [-] create-agent returned malformed JSON: {r.text[:1000]}")
+                    append_attempt({"niche": niche["name"], "status": "agent_malformed_response", "llm_id": llm_id, "at": started_at, "body": r.text[:1000]})
+                    cleanup_orphan_llm(llm_id, "malformed_create_agent_response")
+                    return None
                 agent_id = data.get("agent_id")
                 if not agent_id:
                     print(f"  [-] create-agent returned no agent_id: {r.text[:1000]}")
-                    append_attempt({"niche": niche["name"], "status": "agent_missing_id", "llm_id": llm_id, "at": started_at})
+                    append_attempt({"niche": niche["name"], "status": "agent_missing_id", "llm_id": llm_id, "at": started_at, "body": r.text[:1000]})
+                    cleanup_orphan_llm(llm_id, "missing_agent_id")
                     return None
                 return {
                     "niche": niche["name"],
@@ -263,38 +375,59 @@ Be natural, empathetic, and professional. Never be pushy. Log the outcome."""
                     "status": "deployed",
                 }
 
-            if r.status_code in (404, 429, 500, 502, 503, 504) and attempt < 4:
+            # Permanent client-side/reference failures: retrying can never
+            # succeed (404 on create-agent == unknown voice_id/llm reference;
+            # verified live 2026-08-25). Fail fast, keep evidence, clean up.
+            if r.status_code in (400, 401, 403, 404, 405, 422):
+                print(f"  [-] create-agent PERMANENT failure {r.status_code} "
+                      f"(voice_id={voice_id}, llm_id={llm_id}): {r.text[:500]}")
+                append_attempt({
+                    "niche": niche["name"],
+                    "status": "agent_failed_permanent",
+                    "http": r.status_code,
+                    "llm_id": llm_id,
+                    "voice_id": voice_id,
+                    "at": started_at,
+                    "body": r.text[:1000],
+                })
+                cleanup_orphan_llm(llm_id, f"permanent_http_{r.status_code}")
+                return None
+
+            if r.status_code in (429, 500, 502, 503, 504) and attempt < AGENT_ATTEMPTS - 1:
                 wait = 5 * (attempt + 1)
-                print(f"  [~] Retell create-agent {r.status_code} (attempt {attempt + 1}/5), retrying in {wait}s")
+                print(f"  [~] Retell create-agent transient {r.status_code} "
+                      f"(attempt {attempt + 1}/{AGENT_ATTEMPTS}), retrying in {wait}s")
                 time.sleep(wait)
                 continue
 
             print(f"  [-] create-agent failed: {r.status_code} - {r.text[:1000]}")
             append_attempt({
                 "niche": niche["name"],
-                "status": "agent_failed",
+                "status": "agent_failed_transient_exhausted" if r.status_code in (429, 500, 502, 503, 504) else "agent_failed",
                 "http": r.status_code,
                 "llm_id": llm_id,
                 "at": started_at,
                 "body": r.text[:1000],
             })
+            cleanup_orphan_llm(llm_id, f"http_{r.status_code}_after_retries")
             return None
         except Exception as e:
-            if attempt < 4:
+            if attempt < AGENT_ATTEMPTS - 1:
                 wait = 5 * (attempt + 1)
                 print(f"  [~] create-agent exception: {e}; retrying in {wait}s")
                 time.sleep(wait)
                 continue
             print(f"  [!] create-agent exhausted retries: {e}")
             append_attempt({"niche": niche["name"], "status": "agent_exception", "llm_id": llm_id, "error": str(e)[:500], "at": started_at})
+            cleanup_orphan_llm(llm_id, "exception_after_retries")
             return None
 
     return None
 
 
-def generate_one(niche=None):
+def generate_one(niche=None, offset=0):
     if niche is None:
-        niche = get_next_niche()
+        niche = get_next_niche(offset=offset)
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Creating agent for: {niche['name']}")
     result = create_agent(niche)
     if result:
@@ -334,22 +467,50 @@ def show_status():
     print(f"Combined rate: ${total_rate:.2f}/min")
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--once", action="store_true")
     parser.add_argument("--loop", action="store_true")
     parser.add_argument("--deploy", action="store_true")
     parser.add_argument("--status", action="store_true")
     parser.add_argument("--count", type=int, default=1)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.status:
         show_status()
-        return
+        return 0
 
-    for _ in range(max(1, args.count)):
-        generate_one()
+    if not RETELL_API_KEY:
+        print("[FATAL] RETELL_API_KEY not set; refusing to run a no-op batch")
+        return 2
+
+    try:
+        validate_voice_pool()
+    except ConfigError as e:
+        print(f"[FATAL] {e}")
+        return 2
+
+    made = 0
+    failed = 0
+    for i in range(max(1, args.count)):
+        try:
+            result = generate_one(offset=i)
+        except ConfigError as e:
+            print(f"[FATAL] {e}")
+            return 2
+        if result:
+            made += 1
+        else:
+            failed += 1
+
+    print(f"\nSUMMARY: made={made} failed={failed} requested={max(1, args.count)} "
+          f"revision={_ci_env('GITHUB_SHA') or 'local'} run={_ci_env('GITHUB_RUN_ID') or 'local'}")
+
+    # Strict gate: a partial or total batch failure must turn the workflow red
+    # so the Telegram alert fires. Silent-green degradation is how the
+    # 2026-08-25 incident stayed invisible until a manual inspection.
+    return 0 if failed == 0 else 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
