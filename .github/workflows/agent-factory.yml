@@ -2,8 +2,12 @@ name: Agent Factory - Voice Agent Batch (Every 5 Min)
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # Every 5 minutes
-  workflow_dispatch:  # Allow manual trigger
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: mbm-agent-factory-production
+  cancel-in-progress: false
 
 jobs:
   create-agent:
@@ -11,19 +15,41 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Assert checked-out revision
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          echo "Running factory revision: ${GITHUB_SHA}"
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
-        run: pip install requests python-dotenv
-      
+        run: pip install --disable-pip-version-check requests python-dotenv
+
+      - name: Preflight factory source
+        run: |
+          python -m py_compile MBM/LeadEngine/agent_factory.py
+          python MBM/LeadEngine/agent_factory.py --status || true
+
       - name: Create voice agent batch
         env:
           RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
         run: python MBM/LeadEngine/agent_factory.py --count 2
+
+      - name: Upload failure ledger
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-factory-ledger-${{ github.run_id }}
+          path: MBM/LeadEngine/logs/factory_attempts.json
+          if-no-files-found: ignore
+          retention-days: 14
 
   notify-failure:
     runs-on: ubuntu-latest
@@ -32,10 +58,13 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
       - name: Alert on agent factory failure
         uses: ./.github/actions/telegram-notify
         with:
-          message: "🛑 *BASE44 AGENT FACTORY* voice agent batch FAILED (5-min cycle broken)\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          message: "🛑 *BASE44 AGENT FACTORY* voice agent batch FAILED (5-min cycle broken)\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\nRevision: ${{ github.sha }}"
           telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
           vite_supabase_url: ${{ secrets.VITE_SUPABASE_URL }}
