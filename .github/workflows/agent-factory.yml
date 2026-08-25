@@ -5,8 +5,6 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
-# Prevent overlapping 5-minute cycles from creating duplicate agents or
-# racing the shared factory state.
 concurrency:
   group: mbm-agent-factory-production
   cancel-in-progress: false
@@ -34,10 +32,24 @@ jobs:
       - name: Install dependencies
         run: pip install --disable-pip-version-check requests python-dotenv
 
+      - name: Preflight factory source
+        run: |
+          python -m py_compile MBM/LeadEngine/agent_factory.py
+          python MBM/LeadEngine/agent_factory.py --status || true
+
       - name: Create voice agent batch
         env:
           RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
         run: python MBM/LeadEngine/agent_factory.py --count 2
+
+      - name: Upload failure ledger
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-factory-ledger-${{ github.run_id }}
+          path: MBM/LeadEngine/logs/factory_attempts.json
+          if-no-files-found: ignore
+          retention-days: 14
 
   notify-failure:
     runs-on: ubuntu-latest
