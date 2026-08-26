@@ -2,12 +2,20 @@
 Voice Agent Dispatch & Call Execution Engine
 Handles outbound automated calling campaigns, webhook lifecycle tracking,
 and sentiment/lead scoring for MBM Ops.
+
+ZERO-SIMULATION LAW (Phase 12 enforcement, 2026-08-26):
+This dispatcher NEVER fabricates outcomes. A dispatch record is QUEUED and
+carries NO outcome fields until a real telephony provider webhook delivers
+the actual call result. The former random fake-outcome generator (invented
+durations, sentiment scores, random appointment flags, "strong interest"
+summaries on calls that were never placed) has been removed as a production
+integrity violation. Any provider integration must populate outcomes
+exclusively from provider-delivered events carrying the provider call SID.
 """
 import os
 import sys
 import json
 import time
-import random
 import datetime
 from pathlib import Path
 
@@ -51,12 +59,10 @@ class VoiceAgentDispatchEngine:
                 "voice_id": campaign["voice_id"]
             },
             "status": "QUEUED",
-            "simulated_outcome": {
-                "duration_seconds": random.randint(45, 180),
-                "sentiment_score": round(random.uniform(0.7, 0.98), 2),
-                "appointment_booked": random.choice([True, False]),
-                "summary": f"Lead expressed strong interest in {campaign['script']}. Follow-up scheduled."
-            }
+            # Zero-simulation: outcomes arrive ONLY via provider webhook
+            # carrying the real provider call SID. Until then this stays None.
+            "outcome": None,
+            "outcome_evidence": None,
         }
         return call_record
 

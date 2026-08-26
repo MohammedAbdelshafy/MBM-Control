@@ -1,0 +1,70 @@
+{
+  "total_dispatched": 3,
+  "campaign": "saas_agency_onboarding",
+  "successful_queues": 3,
+  "dispatches": [
+    {
+      "call_id": "CALL-20260731001005-8659",
+      "timestamp": "2026-07-31T00:10:05.520902",
+      "prospect": {
+        "name": "Alex Mercer",
+        "phone": "+1-202-555-0143"
+      },
+      "campaign": "saas_agency_onboarding",
+      "voice_agent": {
+        "provider": "synthflow",
+        "script": "Synthflow AI Agency Pitch",
+        "voice_id": "en-US-JennyNeural"
+      },
+      "status": "QUEUED",
+      "simulated_outcome": {
+        "duration_seconds": 88,
+        "sentiment_score": 0.88,
+        "appointment_booked": true,
+        "summary": "Lead expressed strong interest in Synthflow AI Agency Pitch. Follow-up scheduled."
+      }
+    },
+    {
+      "call_id": "CALL-20260731001005-3690",
+      "timestamp": "2026-07-31T00:10:05.637841",
+      "prospect": {
+        "name": "Sarah Connor",
+        "phone": "+1-415-555-0188"
+      },
+      "campaign": "saas_agency_onboarding",
+      "voice_agent": {
+        "provider": "synthflow",
+        "script": "Synthflow AI Agency Pitch",
+        "voice_id": "en-US-JennyNeural"
+      },
+      "status": "QUEUED",
+      "simulated_outcome": {
+        "duration_seconds": 85,
+        "sentiment_score": 0.71,
+        "appointment_booked": true,
+        "summary": "Lead expressed strong interest in Synthflow AI Agency Pitch. Follow-up scheduled."
+      }
+    },
+    {
+      "call_id": "CALL-20260731001005-2242",
+      "timestamp": "2026-07-31T00:10:05.738320",
+      "prospect": {
+        "name": "Marcus Vance",
+        "phone": "+1-312-555-0199"
+      },
+      "campaign": "saas_agency_onboarding",
+      "voice_agent": {
+        "provider": "synthflow",
+        "script": "Synthflow AI Agency Pitch",
+        "voice_id": "en-US-JennyNeural"
+      },
+      "status": "QUEUED",
+      "simulated_outcome": {
+        "duration_seconds": 51,
+        "sentiment_score": 0.91,
+        "appointment_booked": true,
+        "summary": "Lead expressed strong interest in Synthflow AI Agency Pitch. Follow-up scheduled."
+      }
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+﻿# Quarantined fabricated artifacts`nMoved here 2026-08-26 by Phase 12 fake-outcome elimination.`nThese files contain randomly-generated commercial outcomes (fake appointments, invented sentiment). They are NOT business records and must never feed reports or briefs.

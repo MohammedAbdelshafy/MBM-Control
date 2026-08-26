@@ -1,0 +1,27 @@
+{
+  "report": "revenue_scoreboard",
+  "date": "2026-08-26",
+  "generated_at": "2026-08-26T11:59:32.992088+00:00",
+  "law": "no_event = zero; every number traces to an event row or DB count",
+  "verified_prospects": 4938,
+  "call_ready": 1387,
+  "calls_attempted": 1,
+  "connections": 0,
+  "conversations": 0,
+  "wrong_numbers": 0,
+  "wrong_parties": 0,
+  "followups": 0,
+  "offers": 0,
+  "appointments": 0,
+  "checkout_clicks": 1,
+  "payments": 0,
+  "revenue_usd": 0.0,
+  "telephony_infra": {
+    "status": "BLOCKED_ACCOUNT_LEVEL",
+    "detail": "Twilio TRIAL: live_calls_unlocked=false; sole listed caller-id rejected as unverified on dial attempt (HTTP 400). Requires owner billing upgrade + number re-verification before any outbound sprint.",
+    "evidence": "preflight 2026-08-26 + TwilioRestException 400"
+  },
+  "event_store_counts": {
+    "outreach_events": 1
+  }
+}

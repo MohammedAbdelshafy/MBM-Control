@@ -87,6 +87,19 @@ def test_no_simulated_outcomes_in_production_runner():
     assert 'or "INTEREST_CONFIRMED"' not in src
 
 
+def test_no_fabricated_outcomes_in_voice_agent_dispatch():
+    """Phase 12 (2026-08-26): the voice dispatcher once generated random
+    appointment_booked / sentiment / 'strong interest' summaries on calls
+    that were never placed. It must stay fail-closed: QUEUED + no outcomes
+    until a real provider webhook delivers evidence."""
+    import re as _re
+    src = (LE / "voice_agent_dispatch.py").read_text(encoding="utf-8")
+    assert "simulated_outcome" not in src
+    assert not _re.search(r"random\.(choice|randint|uniform)\([^\n]*appointment", src)
+    assert "strong interest in" not in src
+    assert '"outcome": None' in src
+
+
 def test_batch_run_yields_zero_commercial_outcomes_without_events(tmp_path, monkeypatch):
     """A fresh environment with no events must produce zero meetings/proposals."""
     import gtm_production_runner as gpr
