@@ -42,3 +42,14 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # EXECUTION NOTE (2026-08-26): The sprint queue is armed and verified.
+    # REAL CALLS BLOCKED by telephony provider state (Phound: no endpoint/token;
+    # Twilio: TRIAL, live_calls=False). Resume with the exact command:
+    #
+    #   .venv\Scripts\python.exe MBM/Scripts/p1_sprint_queue.py
+    #
+    # Once PHOUND_CALL_ENDPOINT + PHOUND_API_TOKEN are set (or Twilio billing
+    # is upgraded), fire with:
+    #
+    #   npm run leads:dial -- --dry-run --limit 10     # verification run
+    #   npm run leads:dial:live -- --live --limit 10  # real bridge sprint
