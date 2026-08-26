@@ -339,7 +339,22 @@ def execute_phone_recovery_and_purge() -> Dict[str, Any]:
             if current_phone and issue_reason != "DUPLICATE_PHONE_NUMBER":
                 bad_numbers_suppression_set.add(current_phone)
         else:
-            # Lead is 100% clean and valid - ensure full provenance
+            # Lead is 100% clean and valid - ensure full provenance.
+            # IDENTITY-FIRST LAW: callable=True may ONLY be asserted when the
+            # canonical verification gate passes (phone consistency, name,
+            # identity). A phone-format pass alone is not call authorization.
+            from MBM.LeadEngine.dialer_verification_gate import check_lead
+
+            gate = check_lead(lead)
+            if not gate["passed"]:
+                lead["callable"] = False
+                lead["status"] = "VERIFICATION_REQUIRED"
+                lead["queue_bucket"] = "VERIFICATION_REQUIRED"
+                lead["blocked_reason"] = "GATE_FAIL:" + ",".join(gate["rejection_reasons"])
+                leads_removed_from_callable += 1
+                quarantined_leads.append(lead)
+                continue
+
             lead["callable"] = True
             lead["phone"] = current_phone
             lead["phone_verified"] = True
