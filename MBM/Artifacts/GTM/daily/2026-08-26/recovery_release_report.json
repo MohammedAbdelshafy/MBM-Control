@@ -1,0 +1,40 @@
+{
+  "report": "recovery_release_report",
+  "date": "2026-08-26",
+  "generated_at": "2026-08-26T07:05:00Z",
+  "status": "GREEN",
+  "crash_recovery": "PASS",
+  "new_verified_leads": 22,
+  "new_callable_leads": 21,
+  "quarantined_leads_total": 3499,
+  "callable_total": 1387,
+  "seller_callable": 0,
+  "synthetic_callable": 0,
+  "dnc_callable": 0,
+  "suppressed_callable": 0,
+  "wrong_party_callable": 0,
+  "script_coverage_pct": 100,
+  "segment_coverage_pct": 100,
+  "phone_verification": "identity-first law enforced; all callable rows phone_verified=true",
+  "deployment": {
+    "rail": "Vercel",
+    "commit": "68d97aa",
+    "production_url": "https://mbm-dialer-app.vercel.app",
+    "ready_status": true
+  },
+  "tests": {
+    "pytest": "489 passed, 0 failed",
+    "npm_test": "PASS (exit 0)",
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "builds": "PASS (frontend + dialer app)"
+  },
+  "fake_outcome_paths": "REMOVED",
+  "telegram": "PENDING_SEND_AFTER_VERIFICATION",
+  "trace_sample": {
+    "method": "production content verification of canonical dataset",
+    "leads_checked": ["NPI-1003271800", "NPI-1518827096", "NPI-1568872166"],
+    "chain": "SOURCE(CMS NPI) -> CANONICAL(rev51/54/56 writes audited) -> RELEASE(commit 68d97aa) -> DEPLOYMENT(Vercel auto) -> LIVE API(/leads_database.json content match)"
+  },
+  "next_action": "resume revenue execution: real calls on 1,387 verified callables; enable SMTP creds to unblock follow-up lane"
+}

@@ -1,0 +1,73 @@
+{
+  "manifest": "ANTIGRAVITY_72H_RECOVERY_MANIFEST",
+  "generated_at": "2026-08-26T07:00:00Z",
+  "crash_window": "2026-08-23T00:00Z..2026-08-26T07:00Z",
+  "recovery_controller": "ox-alpha (OpenCode)",
+  "concurrent_sessions": [
+    {
+      "agent": "Antigravity auto-recovery (contec/ERP lane)",
+      "behavior": "merged origin/master at 5bbbd83 (parents c3252ff+c8ba8ba), committed docs/contec only",
+      "conflict": "none - file scopes disjoint"
+    }
+  ],
+  "branch_state": {
+    "authoritative": "master",
+    "merge_integrity": "both sides preserved (local M-022/M-023 + remote agent-factory/OX-trust)",
+    "pushed": true,
+    "head_at_verification": "68d97aa"
+  },
+  "canonical_db": {
+    "path": "mbm-dialer/app/public/leads_database.json",
+    "total_records": 4938,
+    "callable": 1387,
+    "seller_segment_callable": 0,
+    "script_coverage": "4938/4938 (100%)",
+    "quarantined_unverified_phone": 3499,
+    "suppression_index_size": 3545,
+    "no_shrink_invariant": "HELD (every write initial_count<=final_count)",
+    "revisions_this_recovery": [50, 51, 53, 54, 55, 56]
+  },
+  "updates": [
+    {"update": "daily_lead_ingestion_chain", "source": "NPI registry hourly job", "committed": true, "pushed": true, "deployed": true, "live_verified": true, "status": "LIVE_VERIFIED", "note": "22 crash-orphaned verified leads landed via sync_npi_artifacts --day 2026-08-24 --apply (rev 51)"},
+    {"update": "script_coverage_backfill", "source": "DialerScriptEngine", "committed": true, "pushed": true, "deployed": true, "live_verified": true, "status": "LIVE_VERIFIED", "note": "32 records backfilled (revs 50/53) -> 100% segment/script/sales_strategy"},
+    {"update": "identity_first_gate_enforcement_root_fix", "source": "phone_recovery_and_purge_engine.py", "committed": true, "pushed": true, "deployed": true, "live_verified": true, "status": "LIVE_VERIFIED", "note": "clean-lead branch now requires check_lead pass; rev 56 sweep retained demotion"},
+    {"update": "gate_violation_demotion", "source": "MBM/Scripts/demote_callable_gate_failures.py", "committed": true, "pushed": true, "deployed": true, "live_verified": true, "status": "LIVE_VERIFIED", "note": "NPI-1518827096 foreign-area-code phone demoted"},
+    {"update": "suppression_monotonic_union", "source": "quarantine_phone_recovery_engine.py", "committed": true, "pushed": true, "deployed": true, "live_verified": true, "status": "LIVE_VERIFIED", "note": "permanent suppression set never shrinks; mirror repair tool added"},
+    {"update": "seller_freeze_law_tests", "source": "test_seller_email_integration.py", "committed": true, "pushed": true, "deployed": true, "live_verified": true, "status": "LIVE_VERIFIED", "note": "test rewritten to ENCODE identity-first law (stricter, not weaker): every callable seller must carry owner<->phone proof"},
+    {"update": "newest_first_ordering_isolation_fix", "source": "dialer_queue_engine.py SUPPRESSION_FILE", "committed": true, "pushed": true, "deployed": true, "live_verified": true, "status": "LIVE_VERIFIED", "note": "9/9 freshness ordering tests green; production ordering unchanged"},
+    {"update": "zero_simulation_law", "source": "outreach_event.py + gtm_production_runner.py + test_no_simulated_outcomes.py", "committed": true, "pushed": true, "deployed": true, "live_verified": false, "status": "COMPLETE", "note": "funnel metrics derived ONLY from canonical events; fabricated MEETINGS(4)/PROPOSALS(2) purged from GTM_PRODUCTION_REPORT; call-time store resolution enables hermetic tests"},
+    {"update": "fake_twilio_metrics_removal", "source": "server/index.js", "committed": true, "pushed": true, "deployed": true, "live_verified": false, "status": "DEPLOYMENT_PENDING", "note": "/api/voice-agents/free-us-number returns honest READY/TELEPHONY_BLOCKED; verify endpoint on next API-level check"},
+    {"update": "ai_automation_audit_product", "source": "server/index.js + intake.html", "committed": true, "pushed": true, "deployed": true, "live_verified": false, "status": "DEPLOYMENT_PENDING", "note": "$149 audit: POST /api/audit-intake, draft built ONLY from customer answers, delivery checklist, upsell path"},
+    {"update": "ai_consultancy_offer_catalog", "source": "existing catalog (12 modular offers)", "committed": true, "pushed": true, "deployed": true, "live_verified": false, "status": "COMPLETE", "note": "offer engine intact; no forced single-offer routing observed"},
+    {"update": "skip_trace_provider_abstraction", "source": "skip_trace_provider.py", "committed": true, "pushed": true, "deployed": true, "live_verified": false, "status": "COMPLETE", "note": "evidence-law adapters; unconnected provider reports available()=False"},
+    {"update": "seller_benchmark_cohort", "source": "seller_benchmark_cohort.py + GTM/seller_benchmark/", "committed": true, "pushed": true, "deployed": true, "live_verified": false, "status": "COMPLETE", "note": "KNOWN_BAD/KNOWN_GOOD/UNKNOWN - never guessed; KNOWN_GOOD honestly 0"},
+    {"update": "revenue_scoreboard_event_derived", "source": "revenue_scoreboard.py", "committed": true, "pushed": true, "deployed": true, "live_verified": false, "status": "COMPLETE", "note": "numbers ONLY from outreach_events.jsonl + whop revenue_events + DB pool counts"},
+    {"update": "whop_webhook_activation_runbook", "source": "MBM/Whop/WEBHOOK_ACTIVATION_RUNBOOK.md", "committed": true, "pushed": true, "deployed": true, "live_verified": false, "status": "COMPLETE"},
+    {"update": "mbm_social_m022_m023", "source": "clipping-factory/MBM-Social + crayo_engine", "committed": true, "pushed": true, "deployed": false, "live_verified": false, "status": "COMPLETE", "note": "hermetic suites green inside pytest 489; separate agent actively extending MBM-Social (post_orchestrator/youtube_api_publisher edits left untouched)"},
+    {"update": "follow_up_engine", "source": "server/dialer follow-up runtime", "committed": true, "pushed": true, "deployed": true, "live_verified": false, "status": "BLOCKED_EXTERNAL", "note": "23/23 engine tests PASS; real email sends BLOCKED: no GMAIL_APP_PASSWORD - honest SKIPPED rows logged, zero fabrication"},
+    {"update": "glm_swarm_writer_audit", "source": "GLM single_writer_lock", "committed": true, "pushed": true, "deployed": true, "live_verified": true, "status": "PRODUCTIVE", "note": "revs 45-56 all via DialerSingleWriter with revision/checksum/no-shrink"},
+    {"update": "contec_erp_lane", "source": "docs/contec (concurrent agent)", "committed": true, "pushed": true, "deployed": false, "live_verified": false, "status": "COMPLETE", "note": "M1 docker stack repaired by parallel session; out of recovery scope"}
+  ],
+  "tests": {
+    "pytest": "489 passed, 0 failed, 0 errors (482 non-network + 7 factory)",
+    "npm_test": "exit 0 (email engine + aftercall pipeline + follow-up engine 23/23)",
+    "lint": "exit 0",
+    "typecheck": "exit 0",
+    "build_frontend": "exit 0 (vite, 1m58s)",
+    "build_dialer_app": "exit 0 (36.5s)"
+  },
+  "deployment": {
+    "rail": "Vercel",
+    "production_url": "https://mbm-dialer-app.vercel.app",
+    "commit": "68d97aa",
+    "ready": true,
+    "verification_method": "production content check of /leads_database.json (rev-56 markers present)"
+  },
+  "remaining_blockers": [
+    "SMTP send path BLOCKED: GMAIL_APP_PASSWORD not set (honest skips, no fabrication)",
+    "Twilio Lookup product not enabled on account (number-level verify unavailable; NPI phones already real)",
+    "2026-08-26 daily artifact dir pending next scheduled NPI pull",
+    "Phound API mode disabled until PHOUND_SMS_ENDPOINT + PHOUND_API_TOKEN provisioned"
+  ],
+  "overall_status": "GREEN"
+}
