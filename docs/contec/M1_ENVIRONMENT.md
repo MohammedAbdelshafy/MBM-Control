@@ -63,6 +63,34 @@ Platform bake-off = NOT STARTED (S01–S17: 0/17 executed)
 ERPNext functionality = UNTESTED — no claim made or implied by Docker health
 ```
 
+## ADDENDUM 2026-08-26 (later same day) — PRIOR ENVIRONMENT DISCOVERED AND RECOVERED
+
+The claim above that no ERPNext environment existed was **repo-true but host-false**:
+the daemon was down during initial inspection, so running containers/volumes were
+invisible. When the engine came up, a pre-existing stack auto-started. Corrected record:
+
+| Fact | Evidence |
+|---|---|
+| Crashed session built an ERPNext stack at 2026-08-25 18:21 local (AFTER the 14:41 doc freeze) | container `Created=2026-08-25T15:21Z` (=18:21+03); compose project `contec`, config `repos\base44-app\deployment\compose\docker-compose.yml` (separate checkout; compose edited as late as 23:20) |
+| Image | `frappe/erpnext:v16.32.3` stock official (4.03GB) — NOT a custom build |
+| Site | `contec.local` created OK (`contec-create-site-1 Exited(0)`); configurator Exited(0); persistence via named volumes SURVIVED crash+engine-restart |
+| Apps installed ON SITE | `['frappe','erpnext']` (bench console probe; Company DocType exists). HRMS/Contec never reached the env (`sites/apps.txt` has only frappe+erpnext) |
+| Defect found | `contec-backend-1` existed state=Created, never started → frontend nginx crash-loop ×1699 (`host not found in upstream backend:8000`) |
+| Recovery action taken | `docker start contec-backend-1` (minimal, reversible). Result: all 9 services Up; loop ended |
+| Verification | `GET :8080/api/method/ping` → 200 `pong`; POST `/api/method/login` → 200 Logged In (Administrator, creds from their .env used in-memory only, not stored/committed); `frappe.auth.get_logged_user` → Administrator |
+| Legacy preserved | Odoo-era experiment also present: `contec-odoo`+`contec-pg` Exited(255), volumes `contec_odoo_data` etc. — untouched, predates D-001 |
+| Disk | free fell 28.8→13.1GB when engine materialized pre-existing data (WSL vhdx growth), then STABLE across 4 samples (13.09–13.12). Threshold rule (<10GB report) armed for upcoming build |
+
+```
+status: success
+inputs: { trigger: "S01 directive", discovery: "prior contec stack" }
+outputs: { addendum: "this section" }
+errors: []
+next_action: "deterministic custom-image S01 build as SEPARATE project (contecm1, port 8081); old stack preserved as baseline evidence"
+owner: "system"
+timestamp: "2026-08-26T12:40:00+03:00"
+```
+
 ```
 status: success
 inputs: { directive: "docker-wsl diagnostic + environment record" }
