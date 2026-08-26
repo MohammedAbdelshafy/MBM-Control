@@ -784,6 +784,85 @@ app.patch('/api/orders/:id/pay', async (req, res) => {
   }
 });
 
+// ── $149 AI Automation Audit: intake → audit draft → delivery ──────────────
+
+const AUDIT_ORDERS_DIR = path.join(__dirname, '..', 'MBM', 'Whop', 'orders');
+
+app.post('/api/audit-intake', async (req, res) => {
+  try {
+    const b = req.body || {};
+    const required = ['business_name', 'contact_email', 'vertical', 'bottleneck'];
+    const missing = required.filter(k => !String(b[k] || '').trim());
+    if (missing.length) {
+      return res.status(400).json({ ok: false, error: `Missing required fields: ${missing.join(', ')}` });
+    }
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(b.contact_email));
+    if (!emailOk) return res.status(400).json({ ok: false, error: 'contact_email is not a valid address' });
+
+    const clean = s => String(s ?? '').slice(0, 2000);
+    const auditId = `AUDIT-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+    const dir = path.join(AUDIT_ORDERS_DIR, auditId);
+    fs.mkdirSync(dir, { recursive: true });
+
+    const intake = {
+      audit_id: auditId,
+      business_name: clean(b.business_name),
+      website: clean(b.website),
+      contact_email: clean(b.contact_email),
+      contact_phone: clean(b.contact_phone),
+      vertical: clean(b.vertical),
+      inbound_volume: clean(b.inbound_volume),
+      missed_share: clean(b.missed_share),
+      bottleneck: clean(b.bottleneck),
+      whop_order_ref: clean(b.whop_order),
+      submitted_at: b.submitted_at || new Date().toISOString(),
+      status: 'INTAKE_RECEIVED',
+    };
+    fs.writeFileSync(path.join(dir, 'intake.json'), JSON.stringify(intake, null, 2), 'utf8');
+
+    // Audit draft built ONLY from the customer's own answers + our standard
+    // methodology. No invented metrics about their business.
+    const draft = {
+      audit_id: auditId,
+      generated_at: new Date().toISOString(),
+      customer: intake,
+      workflow_map_skeleton: [
+        'Inbound capture (calls / forms / chats) — who/what receives them today',
+        'Response latency — time-to-first-touch per channel',
+        'Follow-up chain — attempts, cadence, ownership',
+        'Booking handoff — how a qualified lead reaches the calendar',
+        'Measurement — what is tracked vs. invisible today',
+      ],
+      automation_candidates: [
+        'Missed-Call Recovery: instant second attempt + SMS fallback on ring-outs',
+        'AI Lead Qualification: auto-qualify + route new inquiries',
+        'Follow-Up Engine: structured recontact until booked or closed',
+        'Reporting: weekly money-leak scorecard',
+      ],
+      roi_method: 'Estimates use ONLY the volumes you provided; we confirm against real call logs during the audit call.',
+      deliverables: ['workflow map', 'automation opportunity list', 'ROI estimate (customer-confirmed inputs)', 'prioritized 3-step plan', 'working demo of top fix'],
+      sla: '72 hours from intake',
+      upsell_path: 'Audit fee credited toward any implementation; recommended next: Missed-Call Recovery pilot.',
+    };
+    fs.writeFileSync(path.join(dir, 'audit_draft.json'), JSON.stringify(draft, null, 2), 'utf8');
+    fs.writeFileSync(path.join(dir, 'delivery_checklist.md'),
+      `# Delivery Checklist ${auditId}\n\n- [ ] Confirm payment evidence (Whop webhook event or order ref)\n- [ ] Discovery call scheduled\n- [ ] Workflow map filled from real systems\n- [ ] ROI model with customer inputs\n- [ ] 3-step plan delivered\n- [ ] Demo of top automation\n- [ ] Testimonial / case-study ask AFTER results\n`, 'utf8');
+
+    res.status(201).json({ ok: true, audit_id: auditId, status: 'INTAKE_RECEIVED' });
+  } catch (err) {
+    console.error('[audit-intake] failed:', err.message);
+    res.status(500).json({ ok: false, error: 'storage failed' });
+  }
+});
+
+app.get('/api/audit-intake/:auditId', (req, res) => {
+  const id = String(req.params.auditId || '');
+  if (!/^AUDIT-\d{8}-[A-F0-9]{6}$/.test(id)) return res.status(400).json({ ok: false, error: 'bad audit id' });
+  const p = path.join(AUDIT_ORDERS_DIR, id, 'intake.json');
+  if (!fs.existsSync(p)) return res.status(404).json({ ok: false, error: 'not found' });
+  res.json({ ok: true, intake: JSON.parse(fs.readFileSync(p, 'utf8')) });
+});
+
 // ── Lead Pipeline API (legacy) ──────────────────────────────
 
 app.get('/api/leads/stats', (req, res) => {
@@ -1252,40 +1331,55 @@ app.post('/api/instant-cash/marketing-agencies', (req, res) => {
   }
 });
 
-// GET /api/voice-agents/free-us-number — Get Assigned Free US Number & Minutes
+// GET /api/voice-agents/free-us-number — REAL bridge status (no invented balances)
 app.get('/api/voice-agents/free-us-number', (req, res) => {
+  const configured = Boolean((TWILIO_API_KEY_SID && TWILIO_API_KEY_SECRET) || (TWILIO_SID && TWILIO_TOKEN));
   res.json({
-    status: 'active',
-    us_phone_number: process.env.TWILIO_PHONE_NUMBER || '+1 (646) 846-8822',
-    formatted_number: '+1 (646) 846-8822',
-    country: 'United States (New York, NY)',
-    free_calling_minutes_remaining: 1000,
-    free_trial_credit_usd: 15.50,
+    status: configured ? 'READY' : 'TELEPHONY_BLOCKED',
+    provider: 'twilio',
+    caller_id: configured ? TWILIO_FROM : null,
     features: [
-      'Outbound US Cold Calling',
-      'International Calling Minutes',
-      'Inbound Call Forwarding',
-      'WebRTC Browser Dialer'
-    ]
+      'Outbound US calling via operator bridge',
+      'Inbound call forwarding',
+    ],
+    required_integration: configured ? '' : 'Set TWILIO_ACCOUNT_SID/TWILIO_AUTH_TOKEN (+ optional API key pair) to enable real dialing.',
   });
 });
 
-// POST /api/voice-agents/place-call — Initiate WebRTC Outbound Call
-app.post('/api/voice-agents/place-call', (req, res) => {
+// POST /api/voice-agents/place-call — REAL operator-bridge call (never fake-connected)
+app.post('/api/voice-agents/place-call', async (req, res) => {
+  const { to_number, prospect_name } = req.body || {};
+  if (!to_number || !/^\+\d{10,15}$/.test(String(to_number))) {
+    return res.status(400).json({ error: 'to_number must be E.164 (e.g. +12145550123)' });
+  }
+  if (!twilioClient) {
+    return res.status(423).json({
+      status: 'TELEPHONY_BLOCKED',
+      error: 'Twilio not configured — no call was placed and none is simulated.',
+      required_integration: 'Set TWILIO_ACCOUNT_SID/TWILIO_AUTH_TOKEN in env.',
+    });
+  }
   try {
-    const { to_number, prospect_name } = req.body;
+    const myPhone = process.env.USER_MOBILE_PHONE || process.env.OPERATOR_CELL;
+    if (!myPhone) {
+      return res.status(423).json({
+        status: 'TELEPHONY_BLOCKED',
+        error: 'USER_MOBILE_PHONE / OPERATOR_CELL not set for operator bridge.',
+      });
+    }
+    // Escape user text before TwiML interpolation.
+    const safeName = escapeXml(prospect_name || 'Prospect');
+    const twiml = `<Response><Say>Connecting your call to ${safeName}...</Say><Dial callerId="${TWILIO_FROM}">${to_number}</Dial></Response>`;
+    const call = await twilioClient.calls.create({ twiml, to: myPhone, from: TWILIO_FROM });
     res.status(201).json({
-      status: 'connected_webrtc',
-      call_id: `call-${Date.now()}`,
-      from: process.env.TWILIO_PHONE_NUMBER || '+1 (646) 846-8822',
-      to: to_number || '+12125555142',
-      white_label_portal_url: `https://agency.contech-ai.com/portal/${Date.now()}`,
-      setup_fee: "$1,500.00",
-      monthly_retainer: "$997.00/mo",
-      call_markup: "$0.50/min (Wholesale: $0.10/min)",
+      status: 'DISPATCHED_TO_OPERATOR_BRIDGE',
+      call_sid: call.sid,
+      from: TWILIO_FROM,
+      to: to_number,
+      note: 'Call rings the operator phone first. Outcome counts only after a human disposition is recorded via POST /api/dialer/disposition.',
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(502).json({ status: 'CALL_ERROR', error: err.message });
   }
 });
 

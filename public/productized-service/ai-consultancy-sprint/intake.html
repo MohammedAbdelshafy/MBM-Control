@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Automation Audit — Customer Intake</title>
+<style>
+  :root { --bg:#0b0f14; --card:#121821; --line:#1f2937; --text:#e5e7eb; --mut:#9ca3af; --acc:#22d3ee; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6;padding:40px 16px}
+  .wrap{max-width:720px;margin:0 auto}
+  h1{font-size:1.6rem;margin-bottom:4px}
+  .sub{color:var(--mut);margin-bottom:28px}
+  form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px}
+  label{display:block;font-size:.85rem;color:var(--mut);margin:14px 0 4px}
+  input,textarea,select{width:100%;background:#0b0f14;border:1px solid var(--line);border-radius:8px;color:var(--text);padding:10px 12px;font-size:.95rem}
+  textarea{min-height:90px;resize:vertical}
+  button{margin-top:20px;width:100%;background:var(--acc);border:none;color:#06121a;font-weight:700;font-size:1rem;padding:13px;border-radius:8px;cursor:pointer}
+  button:disabled{opacity:.5;cursor:wait}
+  .ok{display:none;background:#0f2a22;border:1px solid #14532d;border-radius:12px;padding:24px;margin-top:20px}
+  .ok h2{color:#4ade80;margin-bottom:8px}
+  .err{display:none;color:#f87171;margin-top:12px;font-size:.9rem}
+  .next{margin-top:14px;font-size:.9rem;color:var(--mut)}
+  .next a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>$149 AI Automation Audit — Intake</h1>
+  <p class="sub">Payment confirmed? Complete this 3-minute intake. Your audit work starts immediately and lands within 72 hours.</p>
+
+  <form id="intake">
+    <label for="business_name">Business name *</label>
+    <input id="business_name" required maxlength="120">
+
+    <label for="website">Website</label>
+    <input id="website" type="url" placeholder="https://">
+
+    <label for="contact_email">Best email for delivery *</label>
+    <input id="contact_email" type="email" required>
+
+    <label for="contact_phone">Business phone</label>
+    <input id="contact_phone" placeholder="+1...">
+
+    <label for="vertical">Industry *</label>
+    <select id="vertical" required>
+      <option value="">Select…</option>
+      <option>Dental / Medical practice</option>
+      <option>Home services / Contractor</option>
+      <option>Real estate / Property</option>
+      <option>Legal / Professional services</option>
+      <option>Medspa / Aesthetics</option>
+      <option>Other local service business</option>
+    </select>
+
+    <label for="inbound_volume">Roughly how many inbound calls/leads per week?</label>
+    <input id="inbound_volume" placeholder="e.g. 40 calls, 15 web forms">
+
+    <label for="missed_share">Of those, best guess: how many get missed or answered late?</label>
+    <input id="missed_share" placeholder="e.g. 10 after-hours, no callback process">
+
+    <label for="bottleneck">Where does follow-up break today? *</label>
+    <textarea id="bottleneck" required placeholder="Who calls back, when, using what — and where do leads fall through?"></textarea>
+
+    <label for="whop_order">Whop order reference (from your receipt email)</label>
+    <input id="whop_order" placeholder="e.g. order_xxx / membership ref">
+
+    <button type="submit" id="submitBtn">Submit intake → start my audit</button>
+    <div class="err" id="err"></div>
+  </form>
+
+  <div class="ok" id="ok">
+    <h2>Intake received — audit in progress</h2>
+    <p>Audit ID: <strong id="auditId"></strong></p>
+    <p>You'll get: workflow map → automation opportunities → ROI estimate → prioritized 3-step plan → working demo of your top fix, within 72 hours.</p>
+    <p class="next">While you wait: see how <a href="/productized-service/ai-consultancy-sprint/landing.html#engines">Missed-Call Recovery works</a>. Audit clients who proceed to implementation credit the $149 against setup.</p>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById('intake');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const err = document.getElementById('err');
+  err.style.display = 'none';
+  btn.disabled = true;
+  const payload = Object.fromEntries(new FormData(form).entries());
+  payload.submitted_at = new Date().toISOString();
+  try {
+    const res = await fetch('/api/audit-intake', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || 'Submission failed');
+    form.style.display = 'none';
+    document.getElementById('auditId').textContent = data.audit_id;
+    document.getElementById('ok').style.display = 'block';
+  } catch (ex) {
+    err.textContent = ex.message + ' — or email your answers directly.';
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
