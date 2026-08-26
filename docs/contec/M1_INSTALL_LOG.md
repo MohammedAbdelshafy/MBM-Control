@@ -10,8 +10,8 @@ output is not evidence.
 |---|---|---|
 | Host OS | Windows 11 (win32), PowerShell 5.1 | env |
 | Working copy | `C:\Users\omare\OneDrive\Desktop\AI` (OneDrive-synced path — flagged RISK for bind-mounts; sites/volumes MUST stay in Docker named volumes, never inside synced folders) | path |
-| Docker Desktop | installed, daemon was STOPPED at recovery; started 2026-08-26 ~00:4x | first `docker info` failed (npipe not found); after launch: READY |
-| Docker engine | server 29.6.1, WSL2 backend (`wsl --status`: default distro docker-desktop, v2) | command output |
+| Docker Desktop | installed, daemon was STOPPED at recovery; started 2026-08-26 ~00:4x; classified BLOCKER-B (engine down, Desktop up) → resolved by normal restart; full evidence in M1_ENVIRONMENT.md | first `docker info` failed (npipe not found); after launch: READY |
+| Docker engine | server 29.6.1, WSL2 backend (`wsl --status`: default distro docker-desktop, v2); smoke test `docker run --rm hello-world` PASS 2026-08-26 | command output |
 | Repo commit at env creation | `e132671` (= origin/master) | git |
 
 ## Vendor tooling pin
