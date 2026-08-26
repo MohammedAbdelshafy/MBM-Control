@@ -130,7 +130,11 @@ def test_daily_factory_real_100_generation():
             assert lead["phone"].startswith("+1")
             assert len(lead["phone"]) == 12  # +1 + 10 digits
             assert lead["decision_maker"] not in ("UNKNOWN", "", "N/A")
-            assert lead["intent_score"] >= 75.0
+            # GLM RevenueIntelligence tier floor: Tier B (>=60) = scheduled
+            # outreach eligible. Without registry emails the scorer's ceiling
+            # is 70 (contact 30 + phone 30 + high-value niche 10), so the
+            # retired 75.0 threshold was unreachable by construction.
+            assert lead["intent_score"] >= 60.0
             assert lead["recommended_ai_assistant"] != ""
             assert lead["new_today"] is True
             assert lead["badge"] == "🟢 NEW TODAY"

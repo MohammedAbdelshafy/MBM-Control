@@ -44,6 +44,7 @@ Queues (canonical buckets):
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from datetime import datetime, timezone, timedelta
@@ -60,7 +61,9 @@ from MBM.LeadEngine.dialer_verification_gate import (
     is_placeholder_identity,
 )
 
-SUPPRESSION_FILE = ROOT_DIR / "MBM" / "Artifacts" / "suppressed_bad_phones.json"
+# Honor the suite-wide isolation root (see tests/conftest.py) so test imports
+# never read production suppression state. Unset in production -> unchanged.
+SUPPRESSION_FILE = Path(os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts")) / "suppressed_bad_phones.json"
 
 # ── Canonical constants ────────────────────────────────────────────────────
 

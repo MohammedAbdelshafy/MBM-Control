@@ -1,12 +1,12 @@
 # QA-002 Production Verification Report
 
 ## Overview
-**Total Candidates Processed:** 40
-**Passed Verification:** 40
+**Total Candidates Processed:** 21
+**Passed Verification:** 21
 **Needs Review (Partial Verification):** 0
 **Failed Verification:** 0
 
-**Average Confidence of Passed/Review:** 93.0%
+**Average Confidence of Passed/Review:** 94.8%
 
 ## Granular Failures
 - **Duplicates Detected:** 0

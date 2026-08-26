@@ -561,8 +561,16 @@ class DailyLeadFactory:
         """Apply OfferArchitect sales strategy, dynamic scripts, and Neteller links."""
         ind = cand.get("industry", "General Services")
         
-        # 100-point Intent Scoring via GLM Revenue Intelligence
-        rev_data = self.revenue_engine.score_lead(cand)
+        # 100-point Intent Scoring via GLM Revenue Intelligence.
+        # Score on the ASSEMBLED contact: registry candidates key the person
+        # as `decision_maker` and may carry the phone only as `norm_phone`;
+        # an evidence-faithful score must credit both signals.
+        score_input = dict(cand)
+        if not str(score_input.get("contact") or "").strip():
+            score_input["contact"] = str(cand.get("decision_maker") or "").strip()
+        if not str(score_input.get("phone") or "").strip() and norm_phone:
+            score_input["phone"] = f"+1{norm_phone}"
+        rev_data = self.revenue_engine.score_lead(score_input)
         intent_score = float(rev_data["score"])
         tier = rev_data["tier"]
         

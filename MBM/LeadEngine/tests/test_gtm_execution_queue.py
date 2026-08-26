@@ -67,19 +67,30 @@ def test_export_queue_artifacts():
     assert "Action Packet" in md_content
 
 
-def test_controlled_production_runner_top10_batch():
-    """Verify execution of Top-10 batch, meeting brief creation, and metrics generation."""
+def test_controlled_production_runner_top10_batch(tmp_path, monkeypatch):
+    """Verify execution of Top-10 batch and ZERO-SIMULATION funnel metrics."""
+    # Hermetic event store: funnel metrics must be computed from events this
+    # test controls, never from production state.
+    from MBM.LeadEngine import outreach_event as oe
+    isolated_store = tmp_path / "outreach_events.jsonl"
+    monkeypatch.setattr(oe, "STORE", isolated_store)
+
     runner = GtmProductionRunner()
     metrics = runner.run_production_batch(batch_size=10, auto_approve=True)
 
     assert "funnel" in metrics
     assert "conversion_rates" in metrics
     assert "revenue" in metrics
+    assert metrics["metric_source"] == "canonical_outreach_events (zero-simulation)"
     assert metrics["funnel"]["approved"] == 10
-    assert metrics["funnel"]["meetings_booked"] > 0
-    assert metrics["revenue"]["pipeline_value_usd"] > 0.0
-    # Invariant: confirmed realized revenue is 0 until payment verified
+
+    # ZERO-SIMULATION LAW: commercial outcomes exist ONLY with canonical event
+    # evidence. An isolated run has no real appointments/payments by definition.
+    assert metrics["funnel"]["meetings_booked"] == 0
+    assert metrics["funnel"]["deals_won"] == 0
     assert metrics["revenue"]["confirmed_realized_usd"] == 0.0
+    # Pipeline claims require payment evidence (no invented pipeline value).
+    assert metrics["revenue"]["pipeline_value_usd"] == 0.0
 
     # Verify report written to disk
     assert PROD_REPORT_PATH.exists()

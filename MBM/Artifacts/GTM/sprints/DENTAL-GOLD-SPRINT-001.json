@@ -1,0 +1,386 @@
+{
+  "sprint_id": "DENTAL-GOLD-SPRINT-001",
+  "campaign_id": "CAMP-DENTAL-DFW-MCR-001",
+  "generated_at": "2026-08-25T15:27:58.900558+00:00",
+  "actor": "ox-alpha/opencode",
+  "rule": "ONLY active sales sprint until first payment; no queue expansion.",
+  "counts": {
+    "practices": 12,
+    "call_ready": 12
+  },
+  "offers_catalog_note": "PRIMARY=Missed-Call Recovery for every practice; SECONDARY varies by published-behavior evidence only. No pain claim without evidence.",
+  "practices": [
+    {
+      "company_id": "DENTAL-GOLD-001-STARSLEEP",
+      "practice": "Star Sleep & Wellness (legacy: Sleep Dallas)",
+      "phone": "+18444094657",
+      "phone_status": "VERIFIED",
+      "score": 52,
+      "rank": 1,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Intake triage and referral coordination concentrate at headquarters while demand scales across seven sites; plausible response-latency bottleneck",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-LEAD-QUALIFICATION",
+        "name": "AI Lead Qualification",
+        "promise": "New inquiries automatically qualified and routed before the front desk touches them."
+      },
+      "booking_route": "Schedule Online + Take Our Assessment flows on sleepdallas.com (deep-link URL not captured)",
+      "evidence_refs": [
+        "https://sleepdallas.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 1
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-CROSSTIMBERS",
+      "practice": "Cross Timbers Dental, PC",
+      "phone": "+19723558500",
+      "phone_status": "VERIFIED",
+      "score": 51,
+      "rank": 2,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Published workflow explicitly sends benefits questions and urgent bookings through phone staff; plausible front-desk load concentration",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-AI-RECEPTIONIST",
+        "name": "AI Receptionist",
+        "promise": "After-hours and overflow calls answered live, routed, and booked to the schedule."
+      },
+      "booking_route": "https://patientportal.carestack.com/?dn=ctd/#/online-appointments/select-reason",
+      "evidence_refs": [
+        "https://www.crosstimbersdental.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 2
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-FAME",
+      "practice": "Fame Dental (A2Z Family Dental, PLLC)",
+      "phone": "+14692751054",
+      "phone_status": "VERIFIED",
+      "score": 49,
+      "rank": 3,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "After-hours and peak-overlap inbound call volume plausibly exceeds single-front-desk capacity despite online booking options",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-AI-RECEPTIONIST",
+        "name": "AI Receptionist",
+        "promise": "After-hours and overflow calls answered live, routed, and booked to the schedule."
+      },
+      "booking_route": "FlexBook scheduling widget embedded (flexbook.me/famedental observed in search index); on-site Book buttons throughout",
+      "evidence_refs": [
+        "https://fame-dental.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 3
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-APIE",
+      "practice": "Associates in Periodontics, Implantology & Endodontics ('Associates in PIE')",
+      "phone": "+19725383700",
+      "phone_status": "VERIFIED",
+      "score": 46,
+      "rank": 4,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Specialty groups live on referral flow; referral acknowledgment speed and multi-site scheduling coordination are plausible friction points",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-AI-RECEPTIONIST",
+        "name": "AI Receptionist",
+        "promise": "After-hours and overflow calls answered live, routed, and booked to the schedule."
+      },
+      "booking_route": "New Patient Registration page + Schedule an Appointment flow on piedental.com",
+      "evidence_refs": [
+        "https://piedental.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 4
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-LONESTAR",
+      "practice": "Lone Star Dental Care (Aesthetic Dentistry, PA)",
+      "phone": "+19723357100",
+      "phone_status": "VERIFIED",
+      "score": 45,
+      "rank": 5,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Spanish-language after-hours intake and PPO verification workload concentrate on whichever bilingual staff member is present",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-AI-RECEPTIONIST",
+        "name": "AI Receptionist",
+        "promise": "After-hours and overflow calls answered live, routed, and booked to the schedule."
+      },
+      "booking_route": "On-site Book Online button",
+      "evidence_refs": [
+        "https://www.lonestardentalcare.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 5
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-CANYONCREEK",
+      "practice": "Canyon Creek Family Dentistry of Richardson (Canyon Creek Family Dentistry, P.A.)",
+      "phone": "+19726443800",
+      "phone_status": "VERIFIED",
+      "score": 43,
+      "rank": 6,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Call-dependent same-day/emergency booking concentrates on reception during open hours with zero published after-hours capture",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-AI-RECEPTIONIST",
+        "name": "AI Receptionist",
+        "promise": "After-hours and overflow calls answered live, routed, and booked to the schedule."
+      },
+      "booking_route": "Appointment-request flow; site instructs calling for same-day",
+      "evidence_refs": [
+        "https://canyoncreekfamilydentistry.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 6
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-BEARPED",
+      "practice": "Bear Pediatric Dentistry & Orthodontics (Bear Dental Corp)",
+      "phone": "+14695982327",
+      "phone_status": "VERIFIED",
+      "score": 41,
+      "rank": 7,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Single-line parent/referral traffic across two specialties creates plausible queueing at peak times; not measured",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-AI-RECEPTIONIST",
+        "name": "AI Receptionist",
+        "promise": "After-hours and overflow calls answered live, routed, and booked to the schedule."
+      },
+      "booking_route": "https://bearpd.com/request-an-appointment",
+      "evidence_refs": [
+        "https://bearpd.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 7
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-BENHAM",
+      "practice": "Benham Orthodontics & Associates, PA",
+      "phone": "+12146188182",
+      "phone_status": "VERIFIED",
+      "score": 41,
+      "rank": 8,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Weekend-generated consult requests wait up to 3 days for human response; follow-up sequence completion plausible gap",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-AI-RECEPTIONIST",
+        "name": "AI Receptionist",
+        "promise": "After-hours and overflow calls answered live, routed, and booked to the schedule."
+      },
+      "booking_route": "Request/appointment pages on site",
+      "evidence_refs": [
+        "https://benhamorthodontics.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 8
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-ALEXANDER",
+      "practice": "Alexander Cosmetic, Family & Implant Dentistry PLLC (co-branded 'Alexander & Song Dentistry' at same suite)",
+      "phone": "+19729392888",
+      "phone_status": "VERIFIED",
+      "score": 41,
+      "rank": 9,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Form-generated leads accumulate over the 3.5-day weekly closure; urgent-care callers outside hours have no published capture path",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-LEAD-QUALIFICATION",
+        "name": "AI Lead Qualification",
+        "promise": "New inquiries automatically qualified and routed before the front desk touches them."
+      },
+      "booking_route": "On-page Request an Appointment form (first/last/email/phone/patient-status/how-did-you-hear fields)",
+      "evidence_refs": [
+        "https://calexanderdds.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 9
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-ARNICA",
+      "practice": "Arnica Dental Care",
+      "phone": "+14694688269",
+      "phone_status": "VERIFIED",
+      "score": 36,
+      "rank": 10,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Solo operators commonly defer non-clinical callbacks; systematic follow-up cadence plausible gap",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-AI-RECEPTIONIST",
+        "name": "AI Receptionist",
+        "promise": "After-hours and overflow calls answered live, routed, and booked to the schedule."
+      },
+      "booking_route": "Book Appointment button (route URL unresolved)",
+      "evidence_refs": [
+        "https://arnicadentalclinic.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 10
+    },
+    {
+      "company_id": "DENTAL-GOLD-001-SMILESFAM",
+      "practice": "Smiles Family Dental (Angelie V. Zamora DDS)",
+      "phone": "+19723461100",
+      "phone_status": "VERIFIED",
+      "score": 32,
+      "rank": 11,
+      "pain_evidence_label": "LEADING_HYPOTHESIS (low depth)",
+      "pain_hypothesis": "Split-location call routing without unified triage creates plausible consistency gaps; evidence depth still shallow",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-AI-RECEPTIONIST",
+        "name": "AI Receptionist",
+        "promise": "After-hours and overflow calls answered live, routed, and booked to the schedule."
+      },
+      "booking_route": "Unresolved (site partially reviewed)",
+      "evidence_refs": [
+        "https://smilesfamilydental.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 11
+    },
+    {
+      "company_id": "DENTAL-GOLD-002-AOS",
+      "practice": "Advanced Orthodontic Studio",
+      "phone": "+12142727626",
+      "phone_status": "VERIFIED",
+      "score": 32,
+      "rank": 12,
+      "pain_evidence_label": "LEADING_HYPOTHESIS",
+      "pain_hypothesis": "Multi-market founder-led ortho group has plausible coordination/follow-up seams; evidence depth moderate-low",
+      "hedged_script_required": true,
+      "primary_offer": {
+        "sku": "AIS-MISSED-CALL-RECOVERY",
+        "name": "Missed-Call Recovery",
+        "promise": "Every call that rings out gets an instant callback/text within 60 seconds, qualification, and a booked slot request."
+      },
+      "secondary_offer": {
+        "sku": "AIS-AI-RECEPTIONIST",
+        "name": "AI Receptionist",
+        "promise": "After-hours and overflow calls answered live, routed, and booked to the schedule."
+      },
+      "booking_route": "'Dr. Navarro Remote' consult button (remote consult offering) (PROVEN feature)",
+      "evidence_refs": [
+        "https://advancedorthodonticstudio.com"
+      ],
+      "cta": {
+        "foot_in_door": "https://whop.com/checkout/plan_Sg0oIq3Tf4rlQ?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001",
+        "landing": "https://mbm-dialer-app.vercel.app/productized-service/ai-consultancy-sprint/landing.html#engines?utm_source=outreach&utm_medium=phone&utm_campaign=dental_sprint_001"
+      },
+      "next_action": "CALL_OPERATOR_BRIDGE -> record disposition",
+      "glm_priority": 12
+    }
+  ]
+}

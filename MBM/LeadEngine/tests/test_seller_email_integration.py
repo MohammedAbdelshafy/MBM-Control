@@ -24,11 +24,22 @@ if str(ROOT_DIR) not in sys.path:
 from MBM.LeadEngine.gtm.gmail_dispatcher import GmailDispatchAdapter
 from MBM.LeadEngine.seller_batch_runner import get_callable_sellers, get_next_seller
 from MBM.GLM.single_writer_lock import DialerSingleWriter
-from MBM.LeadEngine.dialer_priority_engine import DialerPriorityEngine
+from MBM.LeadEngine.dialer_priority_engine import (
+    DialerPriorityEngine,
+    has_verified_owner_and_phone,
+    is_real_estate_seller,
+)
 
 
 def test_dialer_top_positions_are_real_estate_sellers():
-    """Verify the top 155 queue positions in canonical dialer are real estate sellers."""
+    """IDENTITY-FIRST LAW (rev 44+): seller calling is FROZEN pending
+    owner<->phone identity evidence.
+
+    The seller cohort must remain in the canonical DB (no-shrink floor), but
+    ZERO sellers may be callable until each has verified owner-phone identity.
+    This is a strengthening of the original 155-callable expectation, which
+    predates the identity gate and allowed calling phones without proof that
+    they belong to the owner."""
     writer = DialerSingleWriter()
     leads = writer.read_leads()
     # The canonical DB GROWS daily (P0 ingestion adds verified leads). The
@@ -36,13 +47,43 @@ def test_dialer_top_positions_are_real_estate_sellers():
     # shrink, so assert a floor, not a frozen snapshot.
     assert len(leads) >= 1222, f"Canonical cohort shrunk below 1,222 (found {len(leads)})"
 
-    sellers = get_callable_sellers()
-    assert len(sellers) == 155, f"Expected 155 callable sellers, found {len(sellers)}"
+    seller_rows = [l for l in leads if is_real_estate_seller(l)]
+    assert len(seller_rows) >= 155, (
+        f"Seller cohort shrunk below 155 (found {len(seller_rows)})"
+    )
 
-    for idx, s in enumerate(sellers, start=1):
+    sellers = get_callable_sellers()
+
+    # IDENTITY-FIRST LAW (rev 44+): NO seller may be callable without
+    # verified owner<->phone evidence. The batch runner already gates on
+    # has_verified_owner_and_phone; assert it held for every returned row.
+    for s in sellers:
+        assert has_verified_owner_and_phone(s), (
+            f"{s.get('id')} callable WITHOUT owner<->phone evidence"
+        )
+
+    # Frozen seller lanes: distressed/motivated-seller cohort stays in the DB
+    # (no-shrink) and may only surface as callable WITH identity proof.
+    from MBM.LeadEngine.dialer_priority_engine import MOTIVATED_SELLER_SEGMENTS
+    callable_ids = {s.get("id") for s in sellers}
+    frozen_callable = [
+        l for l in seller_rows
+        if str(l.get("segment", "")).upper() in MOTIVATED_SELLER_SEGMENTS
+        and l.get("id") in callable_ids
+    ]
+    for l in frozen_callable:
+        assert has_verified_owner_and_phone(l), (
+            f"IDENTITY-FIRST VIOLATION: {l.get('id')} "
+            f"(segment={l.get('segment')}) callable without owner<->phone proof"
+        )
+
+    for s in sellers:
         assert s.get("is_real_estate") is True
         assert s.get("is_callable") is True
-        assert s.get("queue_rank") == idx
+    # Under the identity gate the callable set is a SUBSET of the cohort, so
+    # absolute rank contiguity no longer applies; priority ORDER must hold.
+    ranks = [s.get("queue_rank") for s in sellers]
+    assert ranks == sorted(ranks), f"callable sellers not in queue_rank order: {ranks}"
 
 
 def test_seller_without_email_is_not_fabricated():

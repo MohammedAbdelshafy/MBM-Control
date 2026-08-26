@@ -1,13 +1,14 @@
 """
 GTM CONTROLLED PRODUCTION RUNNER & CONVERSATION CAPTURE ENGINE
 =============================================================================
-Executes human-approved outbound actions, captures live structured conversation
-events, generates meeting briefs, tracks deal state, and feeds learning loops.
+Executes human-approved outbound actions and tracks deal state via REAL,
+canonical dispositions only (see outreach_event.py).
 
-Supported Interaction Outcomes:
-  CONTACT_ATTEMPTED, CONTACT_CONNECTED, IDENTITY_CONFIRMED, PAIN_CONFIRMED,
-  INTEREST_CONFIRMED, OBJECTION_RAISED, MEETING_REQUESTED, MEETING_BOOKED,
-  NOT_INTERESTED, NURTURE, WRONG_PERSON, WRONG_NUMBER
+ZERO-SIMULATION LAW:
+  Touches record PENDING_DISPOSITION. Commercial outcomes (connected /
+  qualified / meeting / proposal / payment) enter the funnel ONLY through
+  apply_disposition() with real telephony, human, or checkout evidence.
+  Index position may never determine an outcome.
 =============================================================================
 """
 
@@ -50,6 +51,15 @@ PROD_REPORT_PATH = ARTIFACTS_DIR / "GTM_PRODUCTION_REPORT.md"
 METRICS_JSON_PATH = ARTIFACTS_DIR / "gtm_production_metrics.json"
 
 
+def _revenue_events() -> List[Dict[str, Any]]:
+    """Load canonical outreach events that carry commercial dispositions."""
+    try:
+        from MBM.LeadEngine import outreach_event as oe
+        return [e for e in oe.load_events() if e.get("disposition") in oe.COMMERCIAL_EVENTS]
+    except Exception:
+        return []
+
+
 class GtmProductionRunner:
     """
     Executes controlled outbound actions for human-approved opportunities.
@@ -79,11 +89,15 @@ class GtmProductionRunner:
     def execute_opportunity_touch(
         self,
         opportunity: Dict[str, Any],
-        simulated_outcome: Optional[str] = None,
         operator_notes: str = "",
     ) -> Dict[str, Any]:
         """
         Execute an outbound touch on a single opportunity through the production gate.
+
+        ZERO-SIMULATION LAW: this method records that a touch ATTEMPT was made
+        (workflow state only). It NEVER assigns a commercial outcome. Outcomes
+        enter the system exclusively via apply_disposition() from real
+        human/telephony/checkout evidence recorded in the canonical event store.
         """
         entity_id = opportunity["id"]
         company = opportunity["company"]
@@ -118,44 +132,76 @@ class GtmProductionRunner:
             notes=operator_notes or f"Outbound {channel} touch initiated",
         ))
 
-        # Default realistic outcome progression
-        outcome = simulated_outcome or "INTEREST_CONFIRMED"
         execution_result = {
             "entity_id": entity_id,
             "company": company,
             "decision_maker": dm,
             "channel": channel,
             "action_executed": opportunity["action_packets"]["phone"]["opening"] if channel == "PHONE" else opportunity["action_packets"]["email"]["subject"],
-            "outcome": outcome,
+            "outcome": "PENDING_DISPOSITION",
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 
-        # Process conversation capture
-        if outcome in {"INTEREST_CONFIRMED", "PAIN_CONFIRMED"}:
-            sm.transition(GtmState.ENGAGED, reason="Buyer confirmed operational pain point")
-            self.attribution.record_touchpoint(Touchpoint(
-                entity_id=entity_id,
-                stage=RevenueStage.CONTACT_CONNECTED,
-                channel=channel,
-                agent="CONVERSATION_AGENT",
-                source=opportunity["evidence"]["source"],
-                notes="Decision maker confirmed pain and requested demo info",
-            ))
+        execution_result["final_state"] = sm.current_state.value
+        return execution_result
 
-        elif outcome == "MEETING_BOOKED":
-            sm.transition(GtmState.MEETING_BOOKED, reason="Google Meet demonstration scheduled")
+    def apply_disposition(
+        self,
+        opportunity: Dict[str, Any],
+        disposition: str,
+        evidence: Optional[Dict[str, Any]] = None,
+        actor: str = "human_operator",
+    ) -> Dict[str, Any]:
+        """
+        Apply a REAL disposition (from telephony bridge / human operator /
+        checkout webhook) to an opportunity's state machine.
+
+        The disposition must be a canonical value from outreach_event.py.
+        Simulated or index-derived outcomes are rejected at the model layer.
+        """
+        import outreach_event as oe
+
+        entity_id = opportunity["id"]
+        if disposition not in oe.ALLOWED_DISPOSITIONS:
+            raise ValueError(f"disposition '{disposition}' is not a canonical outcome")
+
+        # Persist to the canonical append-only store first.
+        ev = oe.record_event(oe.OutreachEvent(
+            event_id=oe.make_event_id(entity_id, disposition, datetime.now(timezone.utc).isoformat()),
+            lead_id=entity_id,
+            channel="phone" if opportunity.get("recommended_channel") == "PHONE" else "email",
+            timestamp=datetime.now(timezone.utc).isoformat(),
+            actor=actor,
+            disposition=disposition,
+            provider=evidence.get("provider", "") if evidence else "",
+            evidence=evidence or {},
+            source="gtm_production_runner.apply_disposition",
+        ))
+
+        if entity_id not in self.state_machines:
+            self.state_machines[entity_id] = GtmStateMachine(GtmState.QUALIFIED, entity_id=entity_id)
+        sm = self.state_machines[entity_id]
+
+        result: Dict[str, Any] = {
+            "entity_id": entity_id,
+            "company": opportunity["company"],
+            "disposition": disposition,
+            "event_id": ev.event_id,
+        }
+
+        if disposition == "APPOINTMENT_BOOKED":
+            sm.transition(GtmState.MEETING_BOOKED, reason="Real appointment booked with decision maker", actor=actor)
             self.attribution.record_touchpoint(Touchpoint(
                 entity_id=entity_id,
                 stage=RevenueStage.MEETING_BOOKED,
-                channel=channel,
-                agent="MEETING_AGENT",
-                source=opportunity["evidence"]["source"],
-                monetary_value=opportunity["monthly_retainer_usd"],
-                notes="Google Meet demo booked with authorized executive",
+                channel=ev.channel,
+                agent="HUMAN_OPERATOR",
+                source=(evidence or {}).get("provider", "human"),
+                monetary_value=opportunity.get("monthly_retainer_usd"),
+                notes=str((evidence or {}).get("notes", "")),
             ))
-            # Auto-generate Meeting Brief
             brief_path = self.generate_meeting_brief(opportunity)
-            execution_result["meeting_brief_generated"] = str(brief_path)
+            result["meeting_brief_generated"] = str(brief_path)
             self.learning.record_outcome(
                 entity_id=entity_id,
                 vertical=opportunity["industry"],
@@ -163,33 +209,43 @@ class GtmProductionRunner:
                 assistant_sku=opportunity["sku"],
                 outcome=OutcomeType.MEETING_BOOKED,
             )
-
-        elif outcome == "PROPOSAL_SENT":
-            sm.transition(GtmState.ENGAGED, reason="Buyer engaged during call")
-            sm.transition(GtmState.DISCOVERY_COMPLETE, reason="Executive discovery complete and scope confirmed")
-            sm.transition(GtmState.PROPOSAL, reason="Retainer proposal and Neteller link delivered")
+        elif disposition in ("CONNECTED_OWNER", "CONNECTED_DECISION_MAKER", "INTERESTED"):
+            sm.transition(GtmState.ENGAGED, reason=f"Real conversation: {disposition}", actor=actor)
+            self.attribution.record_touchpoint(Touchpoint(
+                entity_id=entity_id,
+                stage=RevenueStage.CONTACT_CONNECTED,
+                channel=ev.channel,
+                agent="HUMAN_OPERATOR",
+                source=(evidence or {}).get("provider", "human"),
+            ))
+        elif disposition == "QUALIFIED":
+            sm.transition(GtmState.ENGAGED, reason="Qualified via real conversation", actor=actor)
+        elif disposition == "OFFER_SENT":
+            sm.transition(GtmState.PROPOSAL, reason="Offer/proposal delivered to decision maker", actor=actor)
             self.attribution.record_touchpoint(Touchpoint(
                 entity_id=entity_id,
                 stage=RevenueStage.PROPOSAL_SENT,
-                channel=channel,
+                channel=ev.channel,
                 agent="DEAL_STRATEGIST",
-                source=opportunity["evidence"]["source"],
-                monetary_value=opportunity["monthly_retainer_usd"],
-                notes="Neteller checkout link sent for monthly retainer",
+                source=(evidence or {}).get("provider", "human"),
+                monetary_value=opportunity.get("monthly_retainer_usd"),
             ))
-
-        elif outcome in {"WRONG_PERSON", "WRONG_NUMBER"}:
-            sm.transition(GtmState.SUPPRESSED, reason=f"Lead suppressed due to {outcome}")
-            self.learning.record_outcome(
-                entity_id=entity_id,
-                vertical=opportunity["industry"],
-                pain_point=opportunity["pain"],
-                assistant_sku=opportunity["sku"],
-                outcome=OutcomeType.WRONG_PERSON if outcome == "WRONG_PERSON" else OutcomeType.WRONG_NUMBER,
-            )
-
-        elif outcome == "NOT_INTERESTED":
-            sm.transition(GtmState.NURTURE, reason="Lead placed in long-term nurture cadence")
+        elif disposition in ("WRONG_NUMBER", "WRONG_PARTY", "DISCONNECTED", "DO_NOT_CALL"):
+            sm.transition(GtmState.SUPPRESSED, reason=f"Suppressed: {disposition}", actor=actor)
+            outcome_map = {
+                "WRONG_PARTY": OutcomeType.WRONG_PERSON,
+                "WRONG_NUMBER": OutcomeType.WRONG_NUMBER,
+            }
+            if disposition in outcome_map:
+                self.learning.record_outcome(
+                    entity_id=entity_id,
+                    vertical=opportunity["industry"],
+                    pain_point=opportunity["pain"],
+                    assistant_sku=opportunity["sku"],
+                    outcome=outcome_map[disposition],
+                )
+        elif disposition == "NOT_INTERESTED":
+            sm.transition(GtmState.NURTURE, reason="Not interested — long-term nurture", actor=actor)
             self.learning.record_outcome(
                 entity_id=entity_id,
                 vertical=opportunity["industry"],
@@ -197,9 +253,11 @@ class GtmProductionRunner:
                 assistant_sku=opportunity["sku"],
                 outcome=OutcomeType.LOSS,
             )
+        # NO_ANSWER / VOICEMAIL / CALLBACK / CHECKOUT_CLICK / PAYMENT_RECEIVED etc.
+        # keep current state; they are recorded as events and counted by the scoreboard.
 
-        execution_result["final_state"] = sm.current_state.value
-        return execution_result
+        result["final_state"] = sm.current_state.value
+        return result
 
     def generate_meeting_brief(self, opportunity: Dict[str, Any]) -> Path:
         """Create structured, evidence-backed meeting brief markdown artifact."""
@@ -259,6 +317,9 @@ class GtmProductionRunner:
     def run_production_batch(self, batch_size: int = 10, auto_approve: bool = False) -> Dict[str, Any]:
         """
         Execute the initial production run on the Top-N highest-confidence opportunities.
+
+        ZERO-SIMULATION LAW: touches record PENDING_DISPOSITION only. Funnel
+        metrics are computed exclusively from canonical outreach events.
         """
         queue = self.load_queue(limit=batch_size * 2)
         top_candidates = queue[:batch_size]
@@ -268,21 +329,11 @@ class GtmProductionRunner:
             self.gate.batch_approve(ids, approved_by="production_commander")
 
         execution_results = []
-        for idx, opp in enumerate(top_candidates):
-            # Vary outcomes realistically across the batch for true funnel testing
-            if idx in {0, 1, 2, 3}:
-                sim_outcome = "MEETING_BOOKED"
-            elif idx in {4, 5, 6}:
-                sim_outcome = "INTEREST_CONFIRMED"
-            elif idx in {7, 8}:
-                sim_outcome = "PROPOSAL_SENT"
-            else:
-                sim_outcome = "NOT_INTERESTED"
-
-            res = self.execute_opportunity_touch(opp, simulated_outcome=sim_outcome)
+        for opp in top_candidates:
+            res = self.execute_opportunity_touch(opp)
             execution_results.append(res)
 
-        # Generate Master Production Report
+        # Generate Master Production Report (event-derived funnel)
         metrics = self.generate_production_report(queue, execution_results)
         return metrics
 
@@ -291,25 +342,27 @@ class GtmProductionRunner:
         full_queue: List[Dict[str, Any]],
         execution_results: List[Dict[str, Any]],
     ) -> Dict[str, Any]:
-        """Compute the full conversion funnel and export reporting artifacts."""
-        discovered_count = 121
+        """Compute the conversion funnel from REAL outreach events only."""
+        import outreach_event as oe
+
+        event_funnel = oe.funnel_counts(oe.load_events())
+        revenue_events = _revenue_events()
+        payments = [e for e in revenue_events if e.get("disposition") == "PAYMENT_RECEIVED"]
+        confirmed_rev = sum(float(e.get("amount_usd") or 0.0) for e in payments)
+
+        discovered_count = len(full_queue)
         verified_count = len(full_queue)
         hot_count = len([q for q in full_queue if q.get("intent_tier") == "HOT"])
         approved_count = len([r for r in execution_results if r.get("status") != "BLOCKED_BY_GATE"])
-        contacted_count = len(execution_results)
-        connected_count = len([r for r in execution_results if r.get("outcome") in {"INTEREST_CONFIRMED", "MEETING_BOOKED", "PROPOSAL_SENT"}])
-        qualified_count = connected_count
-        meetings_count = len([r for r in execution_results if r.get("outcome") == "MEETING_BOOKED"])
-        proposals_count = len([r for r in execution_results if r.get("outcome") == "PROPOSAL_SENT"])
-        won_count = 0  # No automated proposal-to-won jumping without Neteller tx
+        contacted_count = event_funnel["calls_attempted"]
+        connected_count = event_funnel["conversations"]
+        qualified_count = event_funnel["qualified"]
+        meetings_count = event_funnel["appointments"]
+        proposals_count = event_funnel["offers_sent"]
+        won_count = len(payments)
 
-        pipeline_val = sum(
-            float(r.get("monthly_retainer_usd", 2000.0))
-            for r in full_queue[:len(execution_results)]
-            if r.get("id") in [e.get("entity_id") for e in execution_results if e.get("outcome") in {"MEETING_BOOKED", "PROPOSAL_SENT"}]
-        )
-        expected_val = pipeline_val * 0.40
-        confirmed_rev = 0.0
+        pipeline_val = confirmed_rev  # pipeline claims require payment evidence
+        expected_val = 0.0
 
         metrics = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -337,11 +390,12 @@ class GtmProductionRunner:
                 "confirmed_realized_usd": confirmed_rev,
             },
             "quality_metrics": {
-                "wrong_person": 0,
-                "wrong_number": 0,
-                "suppressed": 0,
+                "wrong_person": event_funnel["wrong_parties"],
+                "wrong_number": event_funnel["wrong_numbers"],
+                "suppressed": event_funnel["do_not_call"],
                 "human_review_required": len([r for r in execution_results if r.get("status") == "BLOCKED_BY_GATE"]),
             },
+            "metric_source": "canonical_outreach_events (zero-simulation)",
             "execution_log": execution_results,
         }
 

@@ -1,7 +1,7 @@
 # REAL ESTATE SELLER OUTBOUND — BATCH 1 (TOP 10 SELLERS)
 
-**Generated:** 2026-08-23T13:14:43.734503+00:00
-**Total Callable Sellers in Queue:** 155
+**Generated:** 2026-08-26T00:14:53.886529+00:00
+**Total Callable Sellers in Queue:** 19
 **Strategy:** Direct property acquisition / Wholesale cash offer ladder.
 
 ---
@@ -17,7 +17,7 @@
 - **Lead ID:** `AI-BUYER-0AE85C32`
 - **Owner Name:** Travis Colvin
 - **Verified Phone:** `+12109945512`
-- **Priority Score:** `1078.5` (🔥 VERIFIED SELLER: AI CONSULTANCY)
+- **Priority Score:** `80` (🔥 VERIFIED SELLER: AI CONSULTANCY)
 - **Signal / Strategy:** AI_CONSULTANCY
 - **1-Click WhatsApp Opener:** [Open WhatsApp Chat](https://wa.me/2109945512?text=Hi%20Travis%20%E2%80%94%20reaching%20out%20regarding%20LoneStar%20Capital%20Asset%20Acquisitions%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F)
 - **Direct Call:** `tel:+12109945512`
@@ -38,7 +38,7 @@
 - **Lead ID:** `AI-BUYER-9A4B70F6`
 - **Owner Name:** Jason Miller
 - **Verified Phone:** `+15128830199`
-- **Priority Score:** `1075.0` (🔥 VERIFIED SELLER: AI CONSULTANCY)
+- **Priority Score:** `74` (🔥 VERIFIED SELLER: AI CONSULTANCY)
 - **Signal / Strategy:** AI_CONSULTANCY
 - **1-Click WhatsApp Opener:** [Open WhatsApp Chat](https://wa.me/5128830199?text=Hi%20Jason%20%E2%80%94%20reaching%20out%20regarding%20HarborStone%20Residential%20Property%20Management%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F)
 - **Direct Call:** `tel:+15128830199`
@@ -59,7 +59,7 @@
 - **Lead ID:** `RE-BUYER-137`
 - **Owner Name:** Brian Rodriguez
 - **Verified Phone:** `+16259691517`
-- **Priority Score:** `1074.75` (🔥 VERIFIED SELLER: SENIOR OWNER)
+- **Priority Score:** `74` (🔥 VERIFIED SELLER: SENIOR OWNER)
 - **Signal / Strategy:** SENIOR_OWNER
 - **1-Click WhatsApp Opener:** [Open WhatsApp Chat](https://wa.me/6259691517?text=Hi%20Brian%20%E2%80%94%20reaching%20out%20regarding%20Eagle%20Real%20Estate%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F)
 - **Direct Call:** `tel:+16259691517`
@@ -80,7 +80,7 @@
 - **Lead ID:** `RE-BUYER-138`
 - **Owner Name:** Jessica Brown
 - **Verified Phone:** `+18834133716`
-- **Priority Score:** `1074.75` (🔥 VERIFIED SELLER: SENIOR OWNER)
+- **Priority Score:** `74` (🔥 VERIFIED SELLER: SENIOR OWNER)
 - **Signal / Strategy:** SENIOR_OWNER
 - **1-Click WhatsApp Opener:** [Open WhatsApp Chat](https://wa.me/8834133716?text=Hi%20Jessica%20%E2%80%94%20reaching%20out%20regarding%20Elite%20Real%20Estate%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F)
 - **Direct Call:** `tel:+18834133716`
@@ -101,7 +101,7 @@
 - **Lead ID:** `RE-BUYER-139`
 - **Owner Name:** Christopher Garcia
 - **Verified Phone:** `+14232569786`
-- **Priority Score:** `1074.75` (🔥 VERIFIED SELLER: SENIOR OWNER)
+- **Priority Score:** `74` (🔥 VERIFIED SELLER: SENIOR OWNER)
 - **Signal / Strategy:** SENIOR_OWNER
 - **1-Click WhatsApp Opener:** [Open WhatsApp Chat](https://wa.me/4232569786?text=Hi%20Christopher%20%E2%80%94%20reaching%20out%20regarding%20Liberty%20Real%20Estate%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F)
 - **Direct Call:** `tel:+14232569786`
@@ -122,7 +122,7 @@
 - **Lead ID:** `RE-BUYER-140`
 - **Owner Name:** Brian Davis
 - **Verified Phone:** `+19363941489`
-- **Priority Score:** `1074.75` (🔥 VERIFIED SELLER: SENIOR OWNER)
+- **Priority Score:** `74` (🔥 VERIFIED SELLER: SENIOR OWNER)
 - **Signal / Strategy:** SENIOR_OWNER
 - **1-Click WhatsApp Opener:** [Open WhatsApp Chat](https://wa.me/9363941489?text=Hi%20Brian%20%E2%80%94%20reaching%20out%20regarding%20NextGen%20Real%20Estate%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F)
 - **Direct Call:** `tel:+19363941489`
@@ -143,7 +143,7 @@
 - **Lead ID:** `RE-BUYER-141`
 - **Owner Name:** David Miller
 - **Verified Phone:** `+13176756075`
-- **Priority Score:** `1074.75` (🔥 VERIFIED SELLER: SENIOR OWNER)
+- **Priority Score:** `74` (🔥 VERIFIED SELLER: SENIOR OWNER)
 - **Signal / Strategy:** SENIOR_OWNER
 - **1-Click WhatsApp Opener:** [Open WhatsApp Chat](https://wa.me/3176756075?text=Hi%20David%20%E2%80%94%20reaching%20out%20regarding%20Nova%20Real%20Estate%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F)
 - **Direct Call:** `tel:+13176756075`
@@ -164,7 +164,7 @@
 - **Lead ID:** `RE-BUYER-142`
 - **Owner Name:** John Jones
 - **Verified Phone:** `+18137782438`
-- **Priority Score:** `1074.75` (🔥 VERIFIED SELLER: SENIOR OWNER)
+- **Priority Score:** `74` (🔥 VERIFIED SELLER: SENIOR OWNER)
 - **Signal / Strategy:** SENIOR_OWNER
 - **1-Click WhatsApp Opener:** [Open WhatsApp Chat](https://wa.me/8137782438?text=Hi%20John%20%E2%80%94%20reaching%20out%20regarding%20Nova%20Real%20Estate%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F)
 - **Direct Call:** `tel:+18137782438`
@@ -185,7 +185,7 @@
 - **Lead ID:** `RE-BUYER-143`
 - **Owner Name:** Sarah Smith
 - **Verified Phone:** `+12515712720`
-- **Priority Score:** `1074.75` (🔥 VERIFIED SELLER: SENIOR OWNER)
+- **Priority Score:** `74` (🔥 VERIFIED SELLER: SENIOR OWNER)
 - **Signal / Strategy:** SENIOR_OWNER
 - **1-Click WhatsApp Opener:** [Open WhatsApp Chat](https://wa.me/2515712720?text=Hi%20Sarah%20%E2%80%94%20reaching%20out%20regarding%20Nova%20Real%20Estate%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F)
 - **Direct Call:** `tel:+12515712720`
@@ -206,7 +206,7 @@
 - **Lead ID:** `RE-BUYER-144`
 - **Owner Name:** James Martinez
 - **Verified Phone:** `+15377124346`
-- **Priority Score:** `1074.75` (🔥 VERIFIED SELLER: SENIOR OWNER)
+- **Priority Score:** `74` (🔥 VERIFIED SELLER: SENIOR OWNER)
 - **Signal / Strategy:** SENIOR_OWNER
 - **1-Click WhatsApp Opener:** [Open WhatsApp Chat](https://wa.me/5377124346?text=Hi%20James%20%E2%80%94%20reaching%20out%20regarding%20Pioneer%20Real%20Estate%20in%20TX.%20We%20are%20actively%20acquiring%20properties%20in%20your%20area%20for%20direct%20portfolio%20investment.%20If%20you%20received%20a%20fair%2C%20all-cash%2C%20as-is%20offer%20with%20zero%20closing%20costs%2C%20would%20you%20consider%20an%20offer%3F%20Do%20you%20have%202%20minutes%20to%20discuss%3F)
 - **Direct Call:** `tel:+15377124346`

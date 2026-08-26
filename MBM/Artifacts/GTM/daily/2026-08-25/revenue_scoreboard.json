@@ -1,0 +1,77 @@
+{
+  "date": "2026-08-25",
+  "status": "YELLOW",
+  "owner": "system",
+  "timestamp": "2026-08-25T16:29:29.098934+00:00",
+  "metric_source": "events_only (outreach_events.jsonl + revenue_events.jsonl)",
+  "verified_prospects": 4402,
+  "pool": {
+    "dialer_rows_total": 4916,
+    "npi_registry_sourced": 4402,
+    "phone_verified_rows": 4790,
+    "call_ready_dental": 12
+  },
+  "call_ready": 12,
+  "email_ready": 0,
+  "calls_attempted": 0,
+  "connected": 0,
+  "conversations": 0,
+  "wrong_numbers": 0,
+  "wrong_parties": 0,
+  "no_answers": 0,
+  "voicemails": 0,
+  "do_not_call": 0,
+  "callbacks": 0,
+  "qualified": 0,
+  "followups": 0,
+  "offers": 0,
+  "appointments": 0,
+  "checkout_clicks": 0,
+  "landing_cta_clicks": 0,
+  "payments": 0,
+  "refunds": 0,
+  "revenue": 0.0,
+  "pipeline_value": 0.0,
+  "pipeline_note": "pipeline_value counts PAID money only until a real CRM pipeline stage exists",
+  "telephony": {
+    "status": "READY",
+    "provider": "twilio",
+    "caller_id": "+16619909068",
+    "credentials_present": {
+      "TWILIO_ACCOUNT_SID": true,
+      "TWILIO_AUTH_TOKEN": true,
+      "TWILIO_PHONE_NUMBER": true
+    },
+    "required_integration": "",
+    "known_restriction": "Twilio account previously returned TRIAL restriction (verified_caller_ids only). Verify billing/upgrade before live dials."
+  },
+  "targets_2026_08_26": {
+    "real_calls": 10,
+    "conversations": 5,
+    "offers": 2,
+    "appointments": 1,
+    "payment_opportunities": 1
+  },
+  "inputs": {
+    "outreach_events_today": 0,
+    "outreach_events_lifetime": 1,
+    "revenue_events_today": 0
+  },
+  "lifetime_funnel": {
+    "calls_attempted": 1,
+    "connected": 0,
+    "conversations": 0,
+    "wrong_numbers": 0,
+    "wrong_parties": 0,
+    "no_answers": 1,
+    "voicemails": 0,
+    "do_not_call": 0,
+    "callbacks": 0,
+    "qualified": 0,
+    "appointments": 0,
+    "offers_sent": 0
+  },
+  "outputs": {},
+  "errors": [],
+  "next_action": "Dial the DENTAL-GOLD sprint queue live and record dispositions."
+}

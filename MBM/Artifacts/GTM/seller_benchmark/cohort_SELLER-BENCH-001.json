@@ -1,0 +1,1018 @@
+{
+  "cohort_id": "SELLER-BENCH-001",
+  "created_at": "2026-08-24T22:03:28+00:00",
+  "seed": 42,
+  "size": 100,
+  "population": 135,
+  "status_counts": {
+    "KNOWN_BAD": 0,
+    "KNOWN_GOOD": 0,
+    "UNKNOWN": 135
+  },
+  "stratification": {
+    "DCAD|unknown|unknown_age|normal": 43,
+    "PHASE1|unknown|unknown_age|normal": 57
+  },
+  "records": [
+    {
+      "lead_id": "RE-059212",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-594330",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-99",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-436706",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-89",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-899566",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-733591",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-955102",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-841252",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-126",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-065883",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-95",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-128",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-103",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-625245",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-932178",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-150",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-195851",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-934116",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-442847",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-003371",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-149",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-319212",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-268176",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-130",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-461309",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-297759",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-169655",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-156",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-441098",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-198176",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-863239",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-706972",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-572628",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-528653",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-881861",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-164",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-541383",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-081953",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-571677",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-171",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-182",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-690257",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-665191",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-152",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-569710",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-758933",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-782554",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-489410",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-161",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-615686",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-251210",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-167",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-311716",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-287690",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-60",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-377146",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-951926",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-115",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-930888",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-379811",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-946235",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-88",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-411188",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-116",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-764931",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-845188",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-985365",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-826236",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-162",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-874003",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-814169",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-777369",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-183",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-853905",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-350153",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-062699",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-709999",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-406639",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-275243",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-96",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-468769",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-922682",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-786451",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-667419",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-564566",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-250842",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-227565",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-18",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-385922",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-405878",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-520604",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-422051",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-49",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-SFH-654080",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-100",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-184",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "DCAD-TOP50-695130",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "Real Estate Sellers-129",
+      "source": "DCAD",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    },
+    {
+      "lead_id": "RE-384549",
+      "source": "PHASE1",
+      "geo": "unknown",
+      "age_bucket": "unknown_age",
+      "value_tier": "normal",
+      "phone_confidence": "n/a",
+      "evaluation_status": "UNKNOWN",
+      "status_reason": "no_ground_truth"
+    }
+  ]
+}

@@ -526,22 +526,23 @@ class GtmQuickBrief:
         factory: Dict[str, Any],
         warmed_count: int,
     ) -> str:
+        """Evidence-only biggest win. NEVER falls back to fixture strings."""
         if int(funnel.get("deals_won", 0)) > 0:
-            val = float(revenue.get("confirmed_realized_usd", 4000.0))
+            val = float(revenue.get("confirmed_realized_usd", 0.0) or 0.0)
             return f"Closed ${val:,.0f} AI Assistant deal (payment confirmed)."
-        if int(funnel.get("meetings_booked", 0)) > 0:
-            top_company = meetings[0].get("company") if meetings else "Apex Mechanical"
-            return f"{top_company} converted from HOT lead → booked demo."
+        if int(funnel.get("meetings_booked", 0)) > 0 and meetings:
+            real = [m for m in meetings if m.get("company") and m.get("date")]
+            if real:
+                return f"{real[0]['company']} converted from HOT lead → booked demo."
+            return f"{funnel['meetings_booked']} appointment(s) booked via recorded dispositions."
         if int(funnel.get("proposals_sent", 0)) > 0:
-            return f"{funnel['proposals_sent']} active AI assistant proposals delivered to decision makers."
+            return f"{funnel['proposals_sent']} offer(s) delivered to decision makers (recorded events)."
         if int(email.get("positive", 0)) > 0:
             return f"{email['positive']} positive buyer replies received today requesting demos and pricing."
-        if warmed_count > 0:
-            return f"{warmed_count} previously cold leads became warmed/qualified today."
         verified = int(factory.get("verified") or factory.get("verified_new") or 0)
         if verified > 0:
             return f"Delivered {verified} new verified callable leads equipped with dynamic AI offers."
-        return "GTM Pipeline active and ready for revenue generation."
+        return ""
 
     def _determine_next_moves(
         self,

@@ -225,6 +225,20 @@ def reconcile_suppression_index() -> Dict[str, Any]:
 
     all_bad_phones = [p for _, p, _ in historical_bad_findings]
     unique_bad_phones = set(all_bad_phones)
+
+    # Monotonic union: the permanent suppression set never shrinks.
+    # Recovered/deleted leads keep their historically bad phones suppressed
+    # forever (no-shrink law); fresh findings only ever ADD.
+    if SUPPRESSION_FILE.exists():
+        try:
+            prior = json.loads(SUPPRESSION_FILE.read_text(encoding="utf-8"))
+            unique_bad_phones |= {
+                normalize_phone(x) or x
+                for x in prior.get("suppressed_phones", []) if x
+            }
+        except (json.JSONDecodeError, OSError):
+            pass  # corrupt/missing prior set: rebuild from current findings
+
     total_findings_count = len(all_bad_phones)
     unique_bad_count = len(unique_bad_phones)
     duplicates_collapsed = total_findings_count - unique_bad_count

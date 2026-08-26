@@ -1,84 +1,110 @@
 """
-Free US Phone Number & Web Dialer Engine (Twilio / WebRTC)
-============================================================
-Mission: Provides a free virtual US phone number (+1 646-846-8822) with 1,000+
-free calling minutes using Twilio Trial / WebRTC SIP integration.
+US Outbound Dial Bridge (Twilio) — HONEST STATUS ONLY
+=====================================================
+ZERO-SIMULATION LAW:
+  This module places REAL calls via the Twilio SDK when credentials exist.
+  Without credentials it returns TELEPHONY_BLOCKED. It NEVER fabricates a
+  connected/minutes-used outcome, and never invents free-minute balances.
+
+Canonical dispositions belong in MBM/LeadEngine/outreach_event.py — a call
+placed here is only an ATTEMPT until a human records what actually happened
+on the bridge (see close_queue_dialer.py for the operator flow).
 """
 
 import os
-import sys
-import json
-import requests
 from pathlib import Path
 
 BASE_DIR = Path(__file__).parent.resolve()
 ROOT_DIR = BASE_DIR.parent.parent.resolve()
-LOGS_DIR = BASE_DIR / 'logs'
-LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv(ROOT_DIR / ".env")
+except ImportError:
+    pass
 
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "").strip()
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "").strip()
-TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+16619909068")
+TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "").strip()
 
 
-def get_free_us_number_status():
-    status = {
-        "status": "active",
-        "us_phone_number": TWILIO_PHONE_NUMBER,
-        "formatted_number": "+1 (661) 990-9068",
-        "country": "United States (California, US)",
-        "free_calling_minutes_remaining": 1000,
-        "free_trial_credit_usd": 15.50,
-        "features": [
-            "Outbound US Cold Calling",
-            "International Calling Minutes",
-            "Inbound Call Forwarding",
-            "WebRTC Browser Dialer"
-        ],
-        "web_dialer_url": "http://localhost:5173/voice-agents"
+def telephony_status() -> dict:
+    """Report REAL bridge configuration. No invented balances or minutes."""
+    configured = bool(TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN and TWILIO_PHONE_NUMBER)
+    return {
+        "status": "READY" if configured else "TELEPHONY_BLOCKED",
+        "provider": "twilio",
+        "caller_id": TWILIO_PHONE_NUMBER if configured else None,
+        "credentials_present": {
+            "TWILIO_ACCOUNT_SID": bool(TWILIO_ACCOUNT_SID),
+            "TWILIO_AUTH_TOKEN": bool(TWILIO_AUTH_TOKEN),
+            "TWILIO_PHONE_NUMBER": bool(TWILIO_PHONE_NUMBER),
+        },
+        "required_integration": (
+            "Set TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_PHONE_NUMBER "
+            "in .env (or use the close_queue_dialer.py operator bridge)."
+            if not configured else ""
+        ),
     }
 
-    log_file = LOGS_DIR / 'free_us_number_status.json'
-    with open(log_file, 'w', encoding='utf-8') as f:
-        json.dump(status, f, indent=2)
 
-    print(f"[FREE US DIALER] Assigned US Number: {TWILIO_PHONE_NUMBER} (1,000 Free Call Minutes Active)")
-    return status
+def place_outbound_call(to_number: str, prospect_name: str = "Prospect") -> dict:
+    """
+    Place ONE real outbound call. Returns the provider's actual result.
 
+    Never simulates. Without credentials -> {"status": "TELEPHONY_BLOCKED"}.
+    A dispatched call is still only an attempt until a human disposition
+    is recorded via outreach_event.record_event(...).
+    """
+    status = telephony_status()
+    if status["status"] != "READY":
+        return {
+            **status,
+            "to": to_number,
+            "prospect_name": prospect_name,
+            "call_placed": False,
+        }
 
-def place_outbound_call(to_number, prospect_name="Prospect"):
-    print(f"[FREE US DIALER] Initiating outbound call from {TWILIO_PHONE_NUMBER} to {prospect_name} ({to_number})...")
-
-    # Use twilio SDK if credentials exist, otherwise simulate WebRTC dial
     try:
         from twilio.rest import Client
-        sid = os.getenv("TWILIO_ACCOUNT_SID")
-        token = os.getenv("TWILIO_AUTH_TOKEN")
-        if sid and token and not sid.startswith("AC_demo"):
-            client = Client(sid, token)
-            call = client.calls.create(
-                to=to_number,
-                from_=TWILIO_PHONE_NUMBER,
-                url="http://demo.twilio.com/docs/voice.xml"
-            )
-            print(f"[FREE US DIALER] Live Call Dispatched! Call SID: {call.sid}")
-            return {"status": "dispatched", "call_sid": call.sid, "to": to_number}
+        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        # Operator-bridge pattern: ring our own console first so a human
+        # speaks; TwiML then dials the prospect with our caller ID.
+        my_phone = os.getenv("USER_MOBILE_PHONE") or os.getenv("OPERATOR_CELL") or ""
+        if not my_phone:
+            return {
+                **status,
+                "status": "TELEPHONY_BLOCKED",
+                "required_integration": "Set USER_MOBILE_PHONE / OPERATOR_CELL for the operator bridge.",
+                "to": to_number,
+                "prospect_name": prospect_name,
+                "call_placed": False,
+            }
+        twiml = (
+            f'<Response><Say>Connecting your call...</Say>'
+            f'<Dial callerId="{TWILIO_PHONE_NUMBER}">{to_number}</Dial></Response>'
+        )
+        call = client.calls.create(twiml=twiml, to=my_phone, from_=TWILIO_PHONE_NUMBER)
+        return {
+            **status,
+            "status": "DISPATCHED_TO_OPERATOR_BRIDGE",
+            "call_sid": call.sid,
+            "to": to_number,
+            "prospect_name": prospect_name,
+            "call_placed": True,
+            "note": "Outcome pending human disposition — not counted as contact.",
+        }
     except Exception as e:
-        print(f"[FREE US DIALER] Twilio notice: {e}")
-
-    simulated_call = {
-        "status": "connected_webrtc",
-        "call_id": f"call-{hash(to_number) % 100000}",
-        "from": TWILIO_PHONE_NUMBER,
-        "to": to_number,
-        "prospect_name": prospect_name,
-        "minutes_used": 2.5,
-        "minutes_remaining": 997.5
-    }
-    print(f"[FREE US DIALER] WebRTC Browser Call Connected to {prospect_name} ({to_number})")
-    return simulated_call
+        return {
+            **status,
+            "status": "CALL_ERROR",
+            "error": str(e)[:200],
+            "to": to_number,
+            "prospect_name": prospect_name,
+            "call_placed": False,
+        }
 
 
 if __name__ == "__main__":
-    get_free_us_number_status()
-    place_outbound_call("+12125555142", "Stephanie Jackson")
+    import json
+    print(json.dumps(telephony_status(), indent=2))

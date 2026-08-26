@@ -173,9 +173,23 @@ def test_bad_phone_rejection(temp_db):
     assert result["newly_added_callable"] == 0
 
 
-def test_suppressed_phone_index_rejection(temp_db):
-    """Test that numbers present in suppressed_bad_phones.json are rejected."""
-    # Phone '+12082078500' is known to be in suppressed_bad_phones.json
+def test_suppressed_phone_index_rejection(temp_db, monkeypatch):
+    """Test that numbers present in the suppression index are rejected.
+
+    Hermetic: seed the engine's in-memory index directly instead of relying
+    on production suppressed_bad_phones.json contents."""
+    from MBM.LeadEngine import dialer_queue_engine as dqe
+
+    def _norm(p):
+        digits = "".join(c for c in str(p or "") if c.isdigit())
+        if len(digits) == 11 and digits.startswith("1"):
+            digits = digits[1:]
+        return digits
+
+    monkeypatch.setattr(
+        dqe, "_SUPPRESSION_INDEX", {_norm("+12082078500")}
+    )
+
     suppressed_lead = {
         "id": "SUPP-LEAD-001",
         "full_name": "Suppressed Lead Owner",

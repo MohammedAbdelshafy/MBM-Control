@@ -44,3 +44,17 @@
 - **2026-08-24T19:47:08.574672**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-24.csv`
 
 - **2026-08-24T21:25:45.402333**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-24.csv`
+
+- **2026-08-25T01:24:42.681521**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-25.csv`
+
+- **2026-08-25T05:24:36.636166**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-25.csv`
+
+- **2026-08-25T09:24:36.267548**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-25.csv`
+
+- **2026-08-25T10:43:08.017317**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-25.csv`
+
+- **2026-08-25T13:24:35.163402**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-25.csv`
+
+- **2026-08-26T00:14:46.513523**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-26.csv`
+
+- **2026-08-26T05:31:51.056717**: `evidence-collector` fetched 100 records from Dallas Open Data API. Filters applied: High Weeds/Substandard/Vacant. Artifact: `C:\Users\omare\OneDrive\Desktop\AI\MBM\Artifacts\raw_leads_Dallas_311_2026-08-26.csv`
