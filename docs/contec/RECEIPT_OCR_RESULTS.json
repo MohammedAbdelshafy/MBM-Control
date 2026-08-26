@@ -9,7 +9,7 @@
         "VAT": "EXACT MATCH",
         "total": "EXACT MATCH",
         "payment_method": "EXACT MATCH",
-        "currency": "PARTIAL MATCH"
+        "currency": "EXACT MATCH"
       },
       "doc_002.png": {
         "vendor": "EXACT MATCH",
@@ -53,7 +53,7 @@
       },
       "doc_006.png": {
         "vendor": "EXACT MATCH",
-        "date": "PARTIAL MATCH",
+        "date": "EXACT MATCH",
         "document_number": "EXACT MATCH",
         "subtotal": "EXACT MATCH",
         "VAT": "EXACT MATCH",
@@ -62,7 +62,7 @@
         "currency": "EXACT MATCH"
       },
       "doc_007.png": {
-        "vendor": "EXACT MATCH",
+        "vendor": "PARTIAL MATCH",
         "date": "EXACT MATCH",
         "document_number": "EXACT MATCH",
         "subtotal": "EXACT MATCH",
@@ -79,7 +79,7 @@
         "VAT": "EXACT MATCH",
         "total": "EXACT MATCH",
         "payment_method": "EXACT MATCH",
-        "currency": "PARTIAL MATCH"
+        "currency": "EXACT MATCH"
       },
       "doc_009.png": {
         "vendor": "EXACT MATCH",
@@ -99,12 +99,12 @@
         "VAT": "EXACT MATCH",
         "total": "EXACT MATCH",
         "payment_method": "EXACT MATCH",
-        "currency": "PARTIAL MATCH"
+        "currency": "EXACT MATCH"
       },
       "doc_011.png": {
         "vendor": "EXACT MATCH",
         "date": "EXACT MATCH",
-        "document_number": "EXACT MATCH",
+        "document_number": "PARTIAL MATCH",
         "subtotal": "EXACT MATCH",
         "VAT": "EXACT MATCH",
         "total": "EXACT MATCH",
@@ -113,7 +113,7 @@
       },
       "doc_012.png": {
         "vendor": "EXACT MATCH",
-        "date": "EXACT MATCH",
+        "date": "PARTIAL MATCH",
         "document_number": "EXACT MATCH",
         "subtotal": "EXACT MATCH",
         "VAT": "EXACT MATCH",
@@ -192,19 +192,19 @@
         "currency": "EXACT MATCH"
       },
       "doc_020.png": {
-        "vendor": "EXACT MATCH",
+        "vendor": "PARTIAL MATCH",
         "date": "EXACT MATCH",
         "document_number": "EXACT MATCH",
         "subtotal": "EXACT MATCH",
-        "VAT": "EXACT MATCH",
+        "VAT": "PARTIAL MATCH",
         "total": "EXACT MATCH",
         "payment_method": "EXACT MATCH",
         "currency": "EXACT MATCH"
       },
       "doc_021.png": {
         "vendor": "EXACT MATCH",
-        "date": "EXACT MATCH",
-        "document_number": "EXACT MATCH",
+        "date": "PARTIAL MATCH",
+        "document_number": "PARTIAL MATCH",
         "subtotal": "EXACT MATCH",
         "VAT": "EXACT MATCH",
         "total": "EXACT MATCH",
@@ -214,7 +214,7 @@
       "doc_022.png": {
         "vendor": "EXACT MATCH",
         "date": "EXACT MATCH",
-        "document_number": "EXACT MATCH",
+        "document_number": "PARTIAL MATCH",
         "subtotal": "EXACT MATCH",
         "VAT": "EXACT MATCH",
         "total": "EXACT MATCH",
@@ -223,7 +223,7 @@
       },
       "doc_023.png": {
         "vendor": "EXACT MATCH",
-        "date": "EXACT MATCH",
+        "date": "PARTIAL MATCH",
         "document_number": "EXACT MATCH",
         "subtotal": "EXACT MATCH",
         "VAT": "EXACT MATCH",
@@ -253,17 +253,17 @@
       },
       "doc_026.png": {
         "vendor": "EXACT MATCH",
-        "date": "PARTIAL MATCH",
+        "date": "EXACT MATCH",
         "document_number": "EXACT MATCH",
         "subtotal": "EXACT MATCH",
         "VAT": "EXACT MATCH",
-        "total": "PARTIAL MATCH",
+        "total": "EXACT MATCH",
         "payment_method": "EXACT MATCH",
         "currency": "EXACT MATCH"
       },
       "doc_027.png": {
         "vendor": "EXACT MATCH",
-        "date": "EXACT MATCH",
+        "date": "PARTIAL MATCH",
         "document_number": "EXACT MATCH",
         "subtotal": "EXACT MATCH",
         "VAT": "EXACT MATCH",
@@ -276,7 +276,7 @@
         "date": "EXACT MATCH",
         "document_number": "EXACT MATCH",
         "subtotal": "EXACT MATCH",
-        "VAT": "PARTIAL MATCH",
+        "VAT": "EXACT MATCH",
         "total": "EXACT MATCH",
         "payment_method": "EXACT MATCH",
         "currency": "EXACT MATCH"
@@ -286,7 +286,7 @@
         "date": "EXACT MATCH",
         "document_number": "EXACT MATCH",
         "subtotal": "EXACT MATCH",
-        "VAT": "EXACT MATCH",
+        "VAT": "PARTIAL MATCH",
         "total": "EXACT MATCH",
         "payment_method": "EXACT MATCH",
         "currency": "EXACT MATCH"
@@ -299,7 +299,7 @@
         "VAT": "EXACT MATCH",
         "total": "EXACT MATCH",
         "payment_method": "EXACT MATCH",
-        "currency": "EXACT MATCH"
+        "currency": "PARTIAL MATCH"
       }
     },
     "tesseract": {
@@ -307,101 +307,101 @@
         "vendor": "MISSING",
         "date": "MISSING",
         "document_number": "MISSING",
-        "subtotal": "INCORRECT",
-        "VAT": "MISSING",
-        "total": "INCORRECT",
-        "payment_method": "INCORRECT",
-        "currency": "MISSING"
-      },
-      "doc_002.png": {
-        "vendor": "MISSING",
-        "date": "INCORRECT",
-        "document_number": "MISSING",
-        "subtotal": "INCORRECT",
-        "VAT": "MISSING",
-        "total": "MISSING",
-        "payment_method": "MISSING",
-        "currency": "INCORRECT"
-      },
-      "doc_003.png": {
-        "vendor": "MISSING",
-        "date": "MISSING",
-        "document_number": "MISSING",
-        "subtotal": "INCORRECT",
+        "subtotal": "MISSING",
         "VAT": "INCORRECT",
         "total": "MISSING",
         "payment_method": "MISSING",
         "currency": "MISSING"
       },
+      "doc_002.png": {
+        "vendor": "MISSING",
+        "date": "MISSING",
+        "document_number": "MISSING",
+        "subtotal": "MISSING",
+        "VAT": "MISSING",
+        "total": "INCORRECT",
+        "payment_method": "MISSING",
+        "currency": "MISSING"
+      },
+      "doc_003.png": {
+        "vendor": "MISSING",
+        "date": "MISSING",
+        "document_number": "INCORRECT",
+        "subtotal": "MISSING",
+        "VAT": "MISSING",
+        "total": "INCORRECT",
+        "payment_method": "MISSING",
+        "currency": "INCORRECT"
+      },
       "doc_004.png": {
         "vendor": "MISSING",
         "date": "MISSING",
         "document_number": "MISSING",
-        "subtotal": "INCORRECT",
-        "VAT": "MISSING",
+        "subtotal": "MISSING",
+        "VAT": "INCORRECT",
         "total": "MISSING",
         "payment_method": "MISSING",
         "currency": "MISSING"
       },
       "doc_005.png": {
         "vendor": "MISSING",
-        "date": "MISSING",
+        "date": "INCORRECT",
         "document_number": "INCORRECT",
-        "subtotal": "INCORRECT",
-        "VAT": "MISSING",
-        "total": "MISSING",
-        "payment_method": "INCORRECT",
+        "subtotal": "MISSING",
+        "VAT": "INCORRECT",
+        "total": "INCORRECT",
+        "payment_method": "MISSING",
         "currency": "INCORRECT"
       },
       "doc_006.png": {
         "vendor": "MISSING",
         "date": "MISSING",
-        "document_number": "INCORRECT",
+        "document_number": "MISSING",
         "subtotal": "MISSING",
-        "VAT": "INCORRECT",
+        "VAT": "MISSING",
         "total": "INCORRECT",
-        "payment_method": "MISSING",
-        "currency": "MISSING"
+        "payment_method": "INCORRECT",
+        "currency": "INCORRECT"
       },
       "doc_007.png": {
         "vendor": "MISSING",
         "date": "MISSING",
-        "document_number": "INCORRECT",
+        "document_number": "MISSING",
         "subtotal": "INCORRECT",
-        "VAT": "INCORRECT",
+        "VAT": "MISSING",
         "total": "MISSING",
-        "payment_method": "MISSING",
+        "payment_method": "INCORRECT",
         "currency": "MISSING"
       },
       "doc_008.png": {
         "vendor": "MISSING",
-        "date": "INCORRECT",
-        "document_number": "INCORRECT",
-        "subtotal": "MISSING",
-        "VAT": "INCORRECT",
+        "date": "MISSING",
+        "document_number": "MISSING",
+        "subtotal": "INCORRECT",
+        "VAT": "MISSING",
         "total": "MISSING",
         "payment_method": "MISSING",
         "currency": "MISSING"
       },
       "doc_009.png": {
-        "vendor": "MISSING",
-        "date": "INCORRECT",
-        "document_number": "INCORRECT",
-        "subtotal": "MISSING",
-        "VAT": "MISSING",
-        "total": "MISSING",
-        "payment_method": "MISSING",
-        "currency": "MISSING"
-      },
-      "doc_010.png": {
         "vendor": "INCORRECT",
         "date": "MISSING",
-        "document_number": "INCORRECT",
+        "document_number": "MISSING",
         "subtotal": "MISSING",
         "VAT": "MISSING",
         "total": "INCORRECT",
-        "payment_method": "MISSING",
-        "currency": "INCORRECT"
+        "payment_method": "INCORRECT",
+        "currency": "MISSING"
+      },
+      "doc_010.png": {
+        "vendor": "MISSING",
+        "date": "INCORRECT",
+        "document_number": "MISSING",
+        "subtotal": "MISSING",
+        "VAT": "INCORRECT",
+        "total": "MISSING",
+        "payment_method": "INCORRECT",
+        "currency": "MISSING"
       },
       "doc_011.png": {
         "vendor": "MISSING",
@@ -409,26 +409,26 @@
         "document_number": "MISSING",
         "subtotal": "MISSING",
         "VAT": "MISSING",
-        "total": "MISSING",
-        "payment_method": "MISSING",
-        "currency": "MISSING"
-      },
-      "doc_012.png": {
-        "vendor": "INCORRECT",
-        "date": "MISSING",
-        "document_number": "MISSING",
-        "subtotal": "MISSING",
-        "VAT": "MISSING",
-        "total": "MISSING",
+        "total": "INCORRECT",
         "payment_method": "MISSING",
         "currency": "INCORRECT"
       },
-      "doc_013.png": {
+      "doc_012.png": {
         "vendor": "MISSING",
         "date": "MISSING",
         "document_number": "MISSING",
-        "subtotal": "MISSING",
+        "subtotal": "INCORRECT",
         "VAT": "INCORRECT",
+        "total": "MISSING",
+        "payment_method": "INCORRECT",
+        "currency": "MISSING"
+      },
+      "doc_013.png": {
+        "vendor": "MISSING",
+        "date": "INCORRECT",
+        "document_number": "INCORRECT",
+        "subtotal": "INCORRECT",
+        "VAT": "MISSING",
         "total": "MISSING",
         "payment_method": "MISSING",
         "currency": "MISSING"
@@ -436,56 +436,56 @@
       "doc_014.png": {
         "vendor": "MISSING",
         "date": "MISSING",
-        "document_number": "MISSING",
-        "subtotal": "INCORRECT",
-        "VAT": "MISSING",
-        "total": "MISSING",
-        "payment_method": "MISSING",
+        "document_number": "INCORRECT",
+        "subtotal": "MISSING",
+        "VAT": "INCORRECT",
+        "total": "INCORRECT",
+        "payment_method": "INCORRECT",
         "currency": "MISSING"
       },
       "doc_015.png": {
+        "vendor": "MISSING",
+        "date": "INCORRECT",
+        "document_number": "INCORRECT",
+        "subtotal": "MISSING",
+        "VAT": "MISSING",
+        "total": "INCORRECT",
+        "payment_method": "MISSING",
+        "currency": "INCORRECT"
+      },
+      "doc_016.png": {
         "vendor": "MISSING",
         "date": "MISSING",
         "document_number": "MISSING",
         "subtotal": "MISSING",
         "VAT": "INCORRECT",
-        "total": "INCORRECT",
+        "total": "MISSING",
         "payment_method": "MISSING",
         "currency": "MISSING"
-      },
-      "doc_016.png": {
-        "vendor": "MISSING",
-        "date": "INCORRECT",
-        "document_number": "MISSING",
-        "subtotal": "INCORRECT",
-        "VAT": "MISSING",
-        "total": "INCORRECT",
-        "payment_method": "MISSING",
-        "currency": "INCORRECT"
       },
       "doc_017.png": {
         "vendor": "INCORRECT",
         "date": "MISSING",
-        "document_number": "MISSING",
-        "subtotal": "INCORRECT",
-        "VAT": "MISSING",
-        "total": "MISSING",
-        "payment_method": "MISSING",
-        "currency": "INCORRECT"
-      },
-      "doc_018.png": {
-        "vendor": "INCORRECT",
-        "date": "INCORRECT",
-        "document_number": "MISSING",
+        "document_number": "INCORRECT",
         "subtotal": "MISSING",
         "VAT": "MISSING",
         "total": "INCORRECT",
         "payment_method": "MISSING",
         "currency": "MISSING"
       },
-      "doc_019.png": {
+      "doc_018.png": {
         "vendor": "MISSING",
         "date": "MISSING",
+        "document_number": "INCORRECT",
+        "subtotal": "INCORRECT",
+        "VAT": "MISSING",
+        "total": "MISSING",
+        "payment_method": "MISSING",
+        "currency": "MISSING"
+      },
+      "doc_019.png": {
+        "vendor": "INCORRECT",
+        "date": "INCORRECT",
         "document_number": "MISSING",
         "subtotal": "MISSING",
         "VAT": "MISSING",
@@ -496,78 +496,78 @@
       "doc_020.png": {
         "vendor": "MISSING",
         "date": "MISSING",
-        "document_number": "INCORRECT",
+        "document_number": "MISSING",
         "subtotal": "MISSING",
-        "VAT": "MISSING",
-        "total": "INCORRECT",
+        "VAT": "INCORRECT",
+        "total": "MISSING",
         "payment_method": "MISSING",
         "currency": "MISSING"
       },
       "doc_021.png": {
-        "vendor": "MISSING",
+        "vendor": "INCORRECT",
         "date": "MISSING",
         "document_number": "MISSING",
-        "subtotal": "MISSING",
-        "VAT": "MISSING",
+        "subtotal": "INCORRECT",
+        "VAT": "INCORRECT",
         "total": "MISSING",
-        "payment_method": "MISSING",
-        "currency": "MISSING"
+        "payment_method": "INCORRECT",
+        "currency": "INCORRECT"
       },
       "doc_022.png": {
         "vendor": "MISSING",
         "date": "MISSING",
-        "document_number": "MISSING",
+        "document_number": "INCORRECT",
         "subtotal": "INCORRECT",
         "VAT": "MISSING",
         "total": "MISSING",
         "payment_method": "MISSING",
-        "currency": "MISSING"
+        "currency": "INCORRECT"
       },
       "doc_023.png": {
         "vendor": "MISSING",
         "date": "MISSING",
-        "document_number": "MISSING",
+        "document_number": "INCORRECT",
         "subtotal": "MISSING",
         "VAT": "MISSING",
-        "total": "INCORRECT",
-        "payment_method": "INCORRECT",
+        "total": "MISSING",
+        "payment_method": "MISSING",
         "currency": "MISSING"
       },
       "doc_024.png": {
-        "vendor": "MISSING",
-        "date": "INCORRECT",
-        "document_number": "MISSING",
-        "subtotal": "MISSING",
-        "VAT": "MISSING",
-        "total": "MISSING",
-        "payment_method": "MISSING",
-        "currency": "INCORRECT"
-      },
-      "doc_025.png": {
         "vendor": "INCORRECT",
         "date": "MISSING",
         "document_number": "MISSING",
-        "subtotal": "INCORRECT",
+        "subtotal": "MISSING",
         "VAT": "MISSING",
         "total": "MISSING",
         "payment_method": "MISSING",
         "currency": "MISSING"
       },
-      "doc_026.png": {
-        "vendor": "INCORRECT",
-        "date": "MISSING",
+      "doc_025.png": {
+        "vendor": "MISSING",
+        "date": "INCORRECT",
         "document_number": "MISSING",
-        "subtotal": "MISSING",
+        "subtotal": "INCORRECT",
         "VAT": "MISSING",
         "total": "MISSING",
         "payment_method": "INCORRECT",
         "currency": "INCORRECT"
       },
-      "doc_027.png": {
+      "doc_026.png": {
         "vendor": "MISSING",
         "date": "MISSING",
+        "document_number": "MISSING",
+        "subtotal": "MISSING",
+        "VAT": "INCORRECT",
+        "total": "MISSING",
+        "payment_method": "MISSING",
+        "currency": "MISSING"
+      },
+      "doc_027.png": {
+        "vendor": "INCORRECT",
+        "date": "INCORRECT",
         "document_number": "INCORRECT",
-        "subtotal": "INCORRECT",
+        "subtotal": "MISSING",
         "VAT": "MISSING",
         "total": "MISSING",
         "payment_method": "MISSING",
@@ -575,29 +575,29 @@
       },
       "doc_028.png": {
         "vendor": "MISSING",
-        "date": "INCORRECT",
-        "document_number": "INCORRECT",
+        "date": "MISSING",
+        "document_number": "MISSING",
         "subtotal": "MISSING",
         "VAT": "MISSING",
-        "total": "INCORRECT",
-        "payment_method": "INCORRECT",
+        "total": "MISSING",
+        "payment_method": "MISSING",
         "currency": "MISSING"
       },
       "doc_029.png": {
         "vendor": "MISSING",
         "date": "MISSING",
-        "document_number": "MISSING",
+        "document_number": "INCORRECT",
         "subtotal": "MISSING",
         "VAT": "MISSING",
-        "total": "INCORRECT",
+        "total": "MISSING",
         "payment_method": "MISSING",
         "currency": "MISSING"
       },
       "doc_030.png": {
         "vendor": "MISSING",
-        "date": "INCORRECT",
-        "document_number": "INCORRECT",
-        "subtotal": "MISSING",
+        "date": "MISSING",
+        "document_number": "MISSING",
+        "subtotal": "INCORRECT",
         "VAT": "MISSING",
         "total": "MISSING",
         "payment_method": "MISSING",
@@ -606,13 +606,13 @@
     },
     "paddleocr": {
       "doc_001.png": {
-        "vendor": "PARTIAL MATCH",
-        "date": "PARTIAL MATCH",
+        "vendor": "INCORRECT",
+        "date": "INCORRECT",
         "document_number": "INCORRECT",
-        "subtotal": "INCORRECT",
-        "VAT": "PARTIAL MATCH",
-        "total": "INCORRECT",
-        "payment_method": "INCORRECT",
+        "subtotal": "PARTIAL MATCH",
+        "VAT": "INCORRECT",
+        "total": "PARTIAL MATCH",
+        "payment_method": "PARTIAL MATCH",
         "currency": "PARTIAL MATCH"
       },
       "doc_002.png": {
@@ -620,66 +620,66 @@
         "date": "PARTIAL MATCH",
         "document_number": "INCORRECT",
         "subtotal": "PARTIAL MATCH",
-        "VAT": "PARTIAL MATCH",
+        "VAT": "INCORRECT",
         "total": "INCORRECT",
         "payment_method": "INCORRECT",
         "currency": "INCORRECT"
       },
       "doc_003.png": {
+        "vendor": "INCORRECT",
+        "date": "INCORRECT",
+        "document_number": "INCORRECT",
+        "subtotal": "INCORRECT",
+        "VAT": "PARTIAL MATCH",
+        "total": "INCORRECT",
+        "payment_method": "INCORRECT",
+        "currency": "INCORRECT"
+      },
+      "doc_004.png": {
         "vendor": "PARTIAL MATCH",
         "date": "PARTIAL MATCH",
-        "document_number": "PARTIAL MATCH",
+        "document_number": "INCORRECT",
+        "subtotal": "INCORRECT",
+        "VAT": "INCORRECT",
+        "total": "PARTIAL MATCH",
+        "payment_method": "INCORRECT",
+        "currency": "INCORRECT"
+      },
+      "doc_005.png": {
+        "vendor": "PARTIAL MATCH",
+        "date": "PARTIAL MATCH",
+        "document_number": "INCORRECT",
         "subtotal": "INCORRECT",
         "VAT": "PARTIAL MATCH",
         "total": "PARTIAL MATCH",
         "payment_method": "INCORRECT",
-        "currency": "PARTIAL MATCH"
+        "currency": "INCORRECT"
       },
-      "doc_004.png": {
+      "doc_006.png": {
         "vendor": "PARTIAL MATCH",
         "date": "INCORRECT",
         "document_number": "PARTIAL MATCH",
         "subtotal": "INCORRECT",
         "VAT": "PARTIAL MATCH",
-        "total": "PARTIAL MATCH",
-        "payment_method": "PARTIAL MATCH",
-        "currency": "PARTIAL MATCH"
-      },
-      "doc_005.png": {
-        "vendor": "INCORRECT",
-        "date": "PARTIAL MATCH",
-        "document_number": "INCORRECT",
-        "subtotal": "PARTIAL MATCH",
-        "VAT": "PARTIAL MATCH",
-        "total": "INCORRECT",
-        "payment_method": "PARTIAL MATCH",
-        "currency": "PARTIAL MATCH"
-      },
-      "doc_006.png": {
-        "vendor": "INCORRECT",
-        "date": "INCORRECT",
-        "document_number": "PARTIAL MATCH",
-        "subtotal": "INCORRECT",
-        "VAT": "INCORRECT",
         "total": "INCORRECT",
         "payment_method": "INCORRECT",
         "currency": "PARTIAL MATCH"
       },
       "doc_007.png": {
-        "vendor": "INCORRECT",
+        "vendor": "PARTIAL MATCH",
         "date": "INCORRECT",
         "document_number": "INCORRECT",
         "subtotal": "PARTIAL MATCH",
         "VAT": "PARTIAL MATCH",
-        "total": "INCORRECT",
+        "total": "PARTIAL MATCH",
         "payment_method": "INCORRECT",
         "currency": "PARTIAL MATCH"
       },
       "doc_008.png": {
-        "vendor": "PARTIAL MATCH",
-        "date": "PARTIAL MATCH",
+        "vendor": "INCORRECT",
+        "date": "INCORRECT",
         "document_number": "PARTIAL MATCH",
-        "subtotal": "PARTIAL MATCH",
+        "subtotal": "INCORRECT",
         "VAT": "PARTIAL MATCH",
         "total": "PARTIAL MATCH",
         "payment_method": "INCORRECT",
@@ -687,38 +687,38 @@
       },
       "doc_009.png": {
         "vendor": "PARTIAL MATCH",
-        "date": "INCORRECT",
+        "date": "PARTIAL MATCH",
         "document_number": "PARTIAL MATCH",
-        "subtotal": "INCORRECT",
+        "subtotal": "PARTIAL MATCH",
         "VAT": "INCORRECT",
+        "total": "INCORRECT",
+        "payment_method": "INCORRECT",
+        "currency": "PARTIAL MATCH"
+      },
+      "doc_010.png": {
+        "vendor": "PARTIAL MATCH",
+        "date": "INCORRECT",
+        "document_number": "INCORRECT",
+        "subtotal": "PARTIAL MATCH",
+        "VAT": "PARTIAL MATCH",
+        "total": "INCORRECT",
+        "payment_method": "INCORRECT",
+        "currency": "INCORRECT"
+      },
+      "doc_011.png": {
+        "vendor": "INCORRECT",
+        "date": "PARTIAL MATCH",
+        "document_number": "PARTIAL MATCH",
+        "subtotal": "PARTIAL MATCH",
+        "VAT": "PARTIAL MATCH",
         "total": "PARTIAL MATCH",
         "payment_method": "PARTIAL MATCH",
         "currency": "INCORRECT"
       },
-      "doc_010.png": {
+      "doc_012.png": {
         "vendor": "PARTIAL MATCH",
         "date": "PARTIAL MATCH",
         "document_number": "PARTIAL MATCH",
-        "subtotal": "INCORRECT",
-        "VAT": "PARTIAL MATCH",
-        "total": "PARTIAL MATCH",
-        "payment_method": "INCORRECT",
-        "currency": "PARTIAL MATCH"
-      },
-      "doc_011.png": {
-        "vendor": "PARTIAL MATCH",
-        "date": "INCORRECT",
-        "document_number": "INCORRECT",
-        "subtotal": "INCORRECT",
-        "VAT": "PARTIAL MATCH",
-        "total": "PARTIAL MATCH",
-        "payment_method": "INCORRECT",
-        "currency": "INCORRECT"
-      },
-      "doc_012.png": {
-        "vendor": "INCORRECT",
-        "date": "PARTIAL MATCH",
-        "document_number": "INCORRECT",
         "subtotal": "PARTIAL MATCH",
         "VAT": "PARTIAL MATCH",
         "total": "INCORRECT",
@@ -727,50 +727,50 @@
       },
       "doc_013.png": {
         "vendor": "PARTIAL MATCH",
-        "date": "PARTIAL MATCH",
+        "date": "INCORRECT",
+        "document_number": "PARTIAL MATCH",
+        "subtotal": "PARTIAL MATCH",
+        "VAT": "PARTIAL MATCH",
+        "total": "INCORRECT",
+        "payment_method": "PARTIAL MATCH",
+        "currency": "INCORRECT"
+      },
+      "doc_014.png": {
+        "vendor": "PARTIAL MATCH",
+        "date": "INCORRECT",
         "document_number": "PARTIAL MATCH",
         "subtotal": "INCORRECT",
         "VAT": "INCORRECT",
         "total": "INCORRECT",
-        "payment_method": "INCORRECT",
+        "payment_method": "PARTIAL MATCH",
         "currency": "INCORRECT"
       },
-      "doc_014.png": {
+      "doc_015.png": {
         "vendor": "INCORRECT",
         "date": "PARTIAL MATCH",
         "document_number": "INCORRECT",
         "subtotal": "PARTIAL MATCH",
         "VAT": "PARTIAL MATCH",
-        "total": "PARTIAL MATCH",
+        "total": "INCORRECT",
         "payment_method": "INCORRECT",
         "currency": "INCORRECT"
       },
-      "doc_015.png": {
-        "vendor": "PARTIAL MATCH",
-        "date": "INCORRECT",
-        "document_number": "PARTIAL MATCH",
+      "doc_016.png": {
+        "vendor": "INCORRECT",
+        "date": "PARTIAL MATCH",
+        "document_number": "INCORRECT",
         "subtotal": "PARTIAL MATCH",
-        "VAT": "PARTIAL MATCH",
+        "VAT": "INCORRECT",
         "total": "PARTIAL MATCH",
         "payment_method": "PARTIAL MATCH",
-        "currency": "PARTIAL MATCH"
-      },
-      "doc_016.png": {
-        "vendor": "PARTIAL MATCH",
-        "date": "INCORRECT",
-        "document_number": "PARTIAL MATCH",
-        "subtotal": "PARTIAL MATCH",
-        "VAT": "PARTIAL MATCH",
-        "total": "PARTIAL MATCH",
-        "payment_method": "INCORRECT",
         "currency": "PARTIAL MATCH"
       },
       "doc_017.png": {
         "vendor": "PARTIAL MATCH",
         "date": "PARTIAL MATCH",
-        "document_number": "PARTIAL MATCH",
+        "document_number": "INCORRECT",
         "subtotal": "INCORRECT",
-        "VAT": "PARTIAL MATCH",
+        "VAT": "INCORRECT",
         "total": "INCORRECT",
         "payment_method": "INCORRECT",
         "currency": "PARTIAL MATCH"
@@ -780,69 +780,69 @@
         "date": "PARTIAL MATCH",
         "document_number": "PARTIAL MATCH",
         "subtotal": "INCORRECT",
-        "VAT": "PARTIAL MATCH",
+        "VAT": "INCORRECT",
         "total": "PARTIAL MATCH",
         "payment_method": "INCORRECT",
-        "currency": "PARTIAL MATCH"
+        "currency": "INCORRECT"
       },
       "doc_019.png": {
-        "vendor": "INCORRECT",
+        "vendor": "PARTIAL MATCH",
         "date": "INCORRECT",
         "document_number": "INCORRECT",
         "subtotal": "PARTIAL MATCH",
-        "VAT": "INCORRECT",
+        "VAT": "PARTIAL MATCH",
         "total": "INCORRECT",
         "payment_method": "PARTIAL MATCH",
-        "currency": "INCORRECT"
+        "currency": "PARTIAL MATCH"
       },
       "doc_020.png": {
-        "vendor": "INCORRECT",
+        "vendor": "PARTIAL MATCH",
         "date": "INCORRECT",
         "document_number": "PARTIAL MATCH",
         "subtotal": "PARTIAL MATCH",
-        "VAT": "PARTIAL MATCH",
-        "total": "INCORRECT",
-        "payment_method": "INCORRECT",
+        "VAT": "INCORRECT",
+        "total": "PARTIAL MATCH",
+        "payment_method": "PARTIAL MATCH",
         "currency": "PARTIAL MATCH"
       },
       "doc_021.png": {
-        "vendor": "INCORRECT",
+        "vendor": "PARTIAL MATCH",
         "date": "INCORRECT",
-        "document_number": "PARTIAL MATCH",
+        "document_number": "INCORRECT",
         "subtotal": "PARTIAL MATCH",
         "VAT": "PARTIAL MATCH",
         "total": "INCORRECT",
         "payment_method": "INCORRECT",
-        "currency": "PARTIAL MATCH"
+        "currency": "INCORRECT"
       },
       "doc_022.png": {
         "vendor": "INCORRECT",
         "date": "INCORRECT",
         "document_number": "INCORRECT",
         "subtotal": "PARTIAL MATCH",
-        "VAT": "INCORRECT",
-        "total": "PARTIAL MATCH",
-        "payment_method": "PARTIAL MATCH",
+        "VAT": "PARTIAL MATCH",
+        "total": "INCORRECT",
+        "payment_method": "INCORRECT",
         "currency": "PARTIAL MATCH"
       },
       "doc_023.png": {
-        "vendor": "PARTIAL MATCH",
+        "vendor": "INCORRECT",
+        "date": "INCORRECT",
+        "document_number": "PARTIAL MATCH",
+        "subtotal": "INCORRECT",
+        "VAT": "PARTIAL MATCH",
+        "total": "INCORRECT",
+        "payment_method": "PARTIAL MATCH",
+        "currency": "PARTIAL MATCH"
+      },
+      "doc_024.png": {
+        "vendor": "INCORRECT",
         "date": "INCORRECT",
         "document_number": "INCORRECT",
         "subtotal": "PARTIAL MATCH",
         "VAT": "PARTIAL MATCH",
         "total": "PARTIAL MATCH",
         "payment_method": "INCORRECT",
-        "currency": "INCORRECT"
-      },
-      "doc_024.png": {
-        "vendor": "PARTIAL MATCH",
-        "date": "INCORRECT",
-        "document_number": "INCORRECT",
-        "subtotal": "PARTIAL MATCH",
-        "VAT": "PARTIAL MATCH",
-        "total": "PARTIAL MATCH",
-        "payment_method": "PARTIAL MATCH",
         "currency": "INCORRECT"
       },
       "doc_025.png": {
@@ -852,7 +852,7 @@
         "subtotal": "PARTIAL MATCH",
         "VAT": "PARTIAL MATCH",
         "total": "INCORRECT",
-        "payment_method": "INCORRECT",
+        "payment_method": "PARTIAL MATCH",
         "currency": "INCORRECT"
       },
       "doc_026.png": {
@@ -861,9 +861,9 @@
         "document_number": "PARTIAL MATCH",
         "subtotal": "INCORRECT",
         "VAT": "PARTIAL MATCH",
-        "total": "PARTIAL MATCH",
+        "total": "INCORRECT",
         "payment_method": "PARTIAL MATCH",
-        "currency": "PARTIAL MATCH"
+        "currency": "INCORRECT"
       },
       "doc_027.png": {
         "vendor": "INCORRECT",
@@ -871,39 +871,39 @@
         "document_number": "PARTIAL MATCH",
         "subtotal": "INCORRECT",
         "VAT": "INCORRECT",
-        "total": "PARTIAL MATCH",
-        "payment_method": "INCORRECT",
+        "total": "INCORRECT",
+        "payment_method": "PARTIAL MATCH",
         "currency": "INCORRECT"
       },
       "doc_028.png": {
         "vendor": "INCORRECT",
         "date": "INCORRECT",
-        "document_number": "PARTIAL MATCH",
+        "document_number": "INCORRECT",
         "subtotal": "PARTIAL MATCH",
-        "VAT": "PARTIAL MATCH",
+        "VAT": "INCORRECT",
         "total": "INCORRECT",
         "payment_method": "PARTIAL MATCH",
-        "currency": "INCORRECT"
+        "currency": "PARTIAL MATCH"
       },
       "doc_029.png": {
         "vendor": "PARTIAL MATCH",
-        "date": "PARTIAL MATCH",
-        "document_number": "INCORRECT",
-        "subtotal": "INCORRECT",
-        "VAT": "INCORRECT",
-        "total": "INCORRECT",
-        "payment_method": "INCORRECT",
-        "currency": "INCORRECT"
-      },
-      "doc_030.png": {
-        "vendor": "INCORRECT",
         "date": "INCORRECT",
-        "document_number": "INCORRECT",
+        "document_number": "PARTIAL MATCH",
         "subtotal": "INCORRECT",
         "VAT": "PARTIAL MATCH",
         "total": "INCORRECT",
         "payment_method": "PARTIAL MATCH",
         "currency": "PARTIAL MATCH"
+      },
+      "doc_030.png": {
+        "vendor": "INCORRECT",
+        "date": "PARTIAL MATCH",
+        "document_number": "INCORRECT",
+        "subtotal": "INCORRECT",
+        "VAT": "PARTIAL MATCH",
+        "total": "PARTIAL MATCH",
+        "payment_method": "INCORRECT",
+        "currency": "INCORRECT"
       }
     }
   },

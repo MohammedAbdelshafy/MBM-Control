@@ -11,13 +11,27 @@ Local, traditional open-source OCR engines (Tesseract, PaddleOCR) perform adequa
 
 **Any attempt to route raw OCR output directly to the General Ledger based on these engines is mathematically guaranteed to corrupt Contec's accounting.**
 
-## WINNER: Multimodal LLM (VLLM)
-**Recommendation:** Implement a provider-agnostic VLLM API (e.g., Gemini Flash, Claude Haiku, or a privately hosted equivalent) as the primary extraction engine.
-- **Why:** It natively understands unstructured Arabic/English context, dynamically corrects for noise/rotation without brittle pre-processing, and reliably outputs JSON.
+## CURRENT SYNTHETIC BENCHMARK WINNER: VLLM
+**STATUS: CANDIDATE ONLY — NOT PRODUCTION VERIFIED**
+
+**Recommendation:** Implement a provider-agnostic `DocumentExtractor` abstraction model (e.g., Gemini Flash, Claude Haiku, or a privately hosted equivalent) as the primary extraction engine for unstructured data.
+- **Why:** It natively understands unstructured Arabic/English context, dynamically corrects for noise/rotation without brittle pre-processing, and reliably outputs JSON on our synthetic tests.
 
 ## FALLBACK: invoice2data
-**Recommendation:** For known, high-volume digital vendor invoices (e.g., Sewedy Cables PDF invoices), bypass OCR entirely and use `invoice2data` for deterministic regex/template-based extraction.
+**Recommendation:** For known, high-volume digital vendor invoices (e.g., Sewedy Cables PDF invoices), bypass OCR entirely and use an `Invoice2DataAdapter` for deterministic regex/template-based extraction.
 - **Why:** 100% accuracy, zero cost, and immediate processing for structured digital PDFs.
+
+## MODEL AGNOSTIC DESIGN
+Contec MUST NOT hard-wire to a single AI provider. The system will use an abstraction `DocumentExtractor` with interchangeable adapters (`VLLMAdapter`, `Invoice2DataAdapter`, `OCRAdapter`, etc.). The accounting system is agnostic to the engine producing the suggestion.
+
+Each extraction result MUST record:
+- provider
+- model
+- version
+- timestamp
+- prompt/config hash where applicable
+- confidence
+- source document hash
 
 ## SPECIAL CASE: Unreadable Documents
 If a document is completely cropped, illegible, or contains conflicting handwritten totals, the extraction layer must confidently fail and mark the record `NEEDS_REVIEW`. No guesses are allowed.
@@ -27,7 +41,7 @@ If a document is completely cropped, illegible, or contains conflicting handwrit
 ## CONTEC RECOMMENDATION & ARCHITECTURE
 
 Contec will use a **Hybrid Strategy**: `invoice2data` for known PDFs + `VLLM Adapter` for unstructured photos/receipts. 
-We will NOT lock into a single AI provider; the adapter must interface through a standard protocol that can map to any model.
+**REAL-WORLD TEST: PENDING** (See `RECEIPT_OCR_REAL_WORLD_BENCHMARK.md`).
 
 ### The Mandatory Contec Receipt Inbox Pipeline
 

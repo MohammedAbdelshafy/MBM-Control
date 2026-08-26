@@ -73,8 +73,8 @@ def compute_hash(image_path):
         return hashlib.sha256(f.read()).hexdigest()
 
 def run_benchmark():
-    images_dir = "benchmark_data/images"
-    gt_dir = "benchmark_data/ground_truth"
+    images_dir = "docs/contec/benchmarks/receipt_ocr/data/images"
+    gt_dir = "docs/contec/benchmarks/receipt_ocr/data/ground_truth"
     
     results = {
         "gemini": {},

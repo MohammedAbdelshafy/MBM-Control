@@ -28,8 +28,8 @@ def rotate_image(image, angle):
     return image.rotate(angle, resample=Image.BICUBIC, fillcolor=(255,255,255))
 
 def generate_receipts(num_receipts=30):
-    images_dir = "benchmark_data/images"
-    gt_dir = "benchmark_data/ground_truth"
+    images_dir = "docs/contec/benchmarks/receipt_ocr/data/images"
+    gt_dir = "docs/contec/benchmarks/receipt_ocr/data/ground_truth"
     os.makedirs(images_dir, exist_ok=True)
     os.makedirs(gt_dir, exist_ok=True)
 

@@ -15,9 +15,9 @@
 
 | System | Vendor | Date | Number | Subtotal | VAT | Total | Overall |
 | ------ | ----- | --- | ----- | ------- | -- | ---- | ------ |
-| **Gemini VLLM** | {GEMINI_VENDOR} | {GEMINI_DATE} | {GEMINI_NUM} | {GEMINI_SUB} | {GEMINI_VAT} | {GEMINI_TOTAL} | {GEMINI_OVERALL} |
-| **Tesseract** | {TESS_VENDOR} | {TESS_DATE} | {TESS_NUM} | {TESS_SUB} | {TESS_VAT} | {TESS_TOTAL} | {TESS_OVERALL} |
-| **PaddleOCR** | {PAD_VENDOR} | {PAD_DATE} | {PAD_NUM} | {PAD_SUB} | {PAD_VAT} | {PAD_TOTAL} | {PAD_OVERALL} |
+| **Gemini VLLM** | 100% | 93% | 100% | 97% | 93% | 97% | 73% |
+| **Tesseract** | 0% | 0% | 0% | 0% | 0% | 0% | 0% |
+| **PaddleOCR** | 0% | 0% | 0% | 0% | 0% | 0% | 0% |
 
 *(Detailed percentages derived from `RECEIPT_OCR_RESULTS.json`)*
 
