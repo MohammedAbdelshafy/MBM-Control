@@ -1,0 +1,44 @@
+{
+  "name": "Property Sample",
+  "doctype": "DocType",
+  "module": "Contec",
+  "is_submittable": 0,
+  "track_changes": 1,
+  "autoname": "format:SMP-{YYYY}-{#####}",
+  "field_order": [
+    "agent_id", "listing_id", "listing_address", "source_url",
+    "generation_section", "provider", "model", "prompt",
+    "status_section", "generation_status", "qa_status", "delivery_status",
+    "outputs_section", "outputs_json", "source_images_json",
+    "provenance", "timestamp"
+  ],
+  "fields": [
+    {"fieldname": "agent_id", "fieldtype": "Link", "label": "Agent", "options": "Real Estate Agent", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "listing_id", "fieldtype": "Data", "label": "Listing ID", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "listing_address", "fieldtype": "Data", "label": "Listing Address"},
+    {"fieldname": "source_url", "fieldtype": "Data", "label": "Source URL", "options": "URL"},
+    {"fieldname": "generation_section", "fieldtype": "Section Break", "label": "Generation"},
+    {"fieldname": "provider", "fieldtype": "Data", "label": "Provider"},
+    {"fieldname": "model", "fieldtype": "Data", "label": "Model"},
+    {"fieldname": "prompt", "fieldtype": "Small Text", "label": "Generation Prompt"},
+    {"fieldname": "status_section", "fieldtype": "Section Break", "label": "Status"},
+    {"fieldname": "generation_status", "fieldtype": "Select", "label": "Generation Status", "default": "PENDING", "in_list_view": 1,
+     "options": "PENDING\nSUCCEEDED\nFAILED\nQA_FAILED\nSKIPPED_UNAVAILABLE\nBLOCKED"},
+    {"fieldname": "qa_status", "fieldtype": "Select", "label": "QA Status", "default": "NOT_RUN",
+     "options": "NOT_RUN\nPASS\nFAIL"},
+    {"fieldname": "delivery_status", "fieldtype": "Select", "label": "Delivery Status", "default": "NOT_DELIVERED",
+     "options": "NOT_DELIVERED\nREADY\nDELIVERED"},
+    {"fieldname": "outputs_section", "fieldtype": "Section Break", "label": "Outputs & Provenance"},
+    {"fieldname": "outputs_json", "fieldtype": "Code", "label": "Outputs (JSON)", "options": "JSON"},
+    {"fieldname": "source_images_json", "fieldtype": "Code", "label": "Source Images (JSON)", "options": "JSON"},
+    {"fieldname": "provenance", "fieldtype": "Code", "label": "Provenance", "options": "JSON"},
+    {"fieldname": "timestamp", "fieldtype": "Datetime", "label": "Generated At"}
+  ],
+  "permissions": [
+    {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1},
+    {"role": "Sales User", "read": 1, "write": 1, "create": 1}
+  ],
+  "links": [
+    {"group": "Agent", "link_doctype": "Real Estate Agent", "link_fieldname": "agent_id"}
+  ]
+}

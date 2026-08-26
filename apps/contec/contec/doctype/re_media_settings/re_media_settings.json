@@ -1,0 +1,31 @@
+{
+  "name": "RE Media Settings",
+  "doctype": "DocType",
+  "module": "Contec",
+  "issingle": 1,
+  "track_changes": 1,
+  "field_order": [
+    "generation_limits", "video_provider", "max_auto_samples_per_agent",
+    "auto_deliver_samples", "min_qualification_score",
+    "dialing_policy", "max_no_answer_retries", "no_answer_cooldown_hours",
+    "callback_min_gap_hours",
+    "pricing_section", "package_catalog"
+  ],
+  "fields": [
+    {"fieldname": "generation_limits", "fieldtype": "Section Break", "label": "Generation Limits"},
+    {"fieldname": "video_provider", "fieldtype": "Select", "label": "Video Provider",
+     "options": "null\nhiggsfield", "default": "null"},
+    {"fieldname": "max_auto_samples_per_agent", "fieldtype": "Int", "label": "Max Auto Samples / Agent", "default": "1"},
+    {"fieldname": "auto_deliver_samples", "fieldtype": "Check", "label": "Auto-Mark Samples Delivery-Ready", "default": "0"},
+    {"fieldname": "min_qualification_score", "fieldtype": "Int", "label": "Min Qualification Score", "default": "45"},
+    {"fieldname": "dialing_policy", "fieldtype": "Section Break", "label": "Dialing Policy"},
+    {"fieldname": "max_no_answer_retries", "fieldtype": "Int", "label": "Max No-Answer Retries", "default": "3"},
+    {"fieldname": "no_answer_cooldown_hours", "fieldtype": "Int", "label": "No-Answer Cooldown (h)", "default": "48"},
+    {"fieldname": "callback_min_gap_hours", "fieldtype": "Int", "label": "Callback Min Gap (h)", "default": "24"},
+    {"fieldname": "pricing_section", "fieldtype": "Section Break", "label": "Pricing (config - owner countersign required)"},
+    {"fieldname": "package_catalog", "fieldtype": "Code", "label": "Package Catalog (JSON)", "options": "JSON"}
+  ],
+  "permissions": [
+    {"role": "System Manager", "read": 1, "write": 1, "create": 1}
+  ]
+}

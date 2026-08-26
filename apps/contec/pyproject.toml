@@ -1,0 +1,9 @@
+[project]
+name = "contec"
+version = "0.1.0"
+description = "Contec custom Frappe app - construction ERP + Real Estate AI Media vertical"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

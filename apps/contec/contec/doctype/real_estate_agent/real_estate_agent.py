@@ -1,0 +1,3 @@
+﻿class RealEstateAgent(Document):
+    pass
+

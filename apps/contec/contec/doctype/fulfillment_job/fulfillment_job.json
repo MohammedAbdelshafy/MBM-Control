@@ -1,0 +1,42 @@
+{
+  "name": "Fulfillment Job",
+  "doctype": "DocType",
+  "module": "Contec",
+  "is_submittable": 0,
+  "track_changes": 1,
+  "autoname": "format:FUL-{YYYY}-{#####}",
+  "field_order": [
+    "customer", "agent_id", "listing_id", "listing_address",
+    "package_code", "quoted_price",
+    "production_section", "required_assets", "branding_json",
+    "output_formats", "assigned_workflow",
+    "qa_status", "status", "created_at", "due_at"
+  ],
+  "fields": [
+    {"fieldname": "customer", "fieldtype": "Data", "label": "Customer", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "agent_id", "fieldtype": "Link", "label": "Agent", "options": "Real Estate Agent"},
+    {"fieldname": "listing_id", "fieldtype": "Data", "label": "Listing ID"},
+    {"fieldname": "listing_address", "fieldtype": "Data", "label": "Listing Address", "in_list_view": 1},
+    {"fieldname": "package_code", "fieldtype": "Data", "label": "Package Code"},
+    {"fieldname": "quoted_price", "fieldtype": "Currency", "label": "Quoted Price"},
+    {"fieldname": "production_section", "fieldtype": "Section Break", "label": "Production"},
+    {"fieldname": "required_assets", "fieldtype": "Small Text", "label": "Required Assets"},
+    {"fieldname": "branding_json", "fieldtype": "Code", "label": "Branding (JSON)", "options": "JSON"},
+    {"fieldname": "output_formats", "fieldtype": "Small Text", "label": "Output Formats"},
+    {"fieldname": "assigned_workflow", "fieldtype": "Data", "label": "Assigned Workflow",
+     "default": "REAL_ESTATE_PROPERTY_VIDEO_FACTORY"},
+    {"fieldname": "qa_status", "fieldtype": "Select", "label": "QA Status", "default": "PENDING",
+     "options": "PENDING\nPASS\nFAIL"},
+    {"fieldname": "status", "fieldtype": "Select", "label": "Status", "default": "QUEUED", "in_list_view": 1,
+     "options": "QUEUED\nIN_PROGRESS\nREVISION\nDELIVERED\nCANCELLED"},
+    {"fieldname": "created_at", "fieldtype": "Datetime", "label": "Created At"},
+    {"fieldname": "due_at", "fieldtype": "Datetime", "label": "Delivery Deadline"}
+  ],
+  "permissions": [
+    {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1},
+    {"role": "Sales User", "read": 1}
+  ],
+  "links": [
+    {"group": "Agent", "link_doctype": "Real Estate Agent", "link_fieldname": "agent_id"}
+  ]
+}

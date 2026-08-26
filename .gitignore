@@ -1,5 +1,7 @@
 /*
 !/src/
+!/apps/
+!/apps/**
 !/base44/
 !/package.json
 !/package-lock.json

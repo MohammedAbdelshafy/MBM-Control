@@ -1,0 +1,3 @@
+﻿class FulfillmentJob(Document):
+    pass
+

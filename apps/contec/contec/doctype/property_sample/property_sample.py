@@ -1,0 +1,3 @@
+﻿class PropertySample(Document):
+    pass
+
