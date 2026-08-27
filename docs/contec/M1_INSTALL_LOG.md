@@ -36,17 +36,32 @@ output is not evidence.
 
 | Run | Command(s) | Result | Evidence |
 |---|---|---|---|
-| 1 | PENDING | NOT EXECUTED | — |
-| 2 | PENDING | NOT EXECUTED | — |
+| 1 | `docker build` (frappe_docker layered Containerfile, pinned apps.json, secret token) | **FAIL** | `bench init` → `yarn install` → ESOCKETTIMEDOUT on `ace-builds-1.31.2.tgz` (registry.yarnpkg.com) at ~917s. Build attempted 6 times total across sessions. All failed at identical yarn phase. Root cause: Docker Desktop WSL2 network proxy cannot sustain large yarn downloads. curl inside same container downloads the file in 17s. Full analysis: `M1_BUILD_BLOCKER.md` |
+| 2 | NOT EXECUTED (blocked by Run #1 failure) | BLOCKED | — |
 
 Scenarios S02–S17: 0 / 17 executed.
 
+## Build attempt summary (2026-08-26)
+
+| # | Method | Result | Failure |
+|---|---|---|---|
+| 1 | docker build (attached) | FAIL | yarn ESOCKETTIMEDOUT |
+| 2 | docker build (detached) | FAIL | Registry metadata TLS timeout |
+| 3 | docker build (retry batch ×4) | FAIL ×4 | Same yarn ESOCKETTIMEDOUT |
+| 4 | docker build (direct) | FAIL | yarn ESOCKETTIMEDOUT |
+| 5 | docker run + bench init (YARN_HTTP_TIMEOUT=300000) | FAIL | yarn Aborted |
+| 6 | docker run + manual yarn install | FAIL | Container died during install |
+
+Auth check: PASS (private repo token valid, public repos don't need auth).
+Config check: PASS (apps.json correct, Containerfile unmodified, stage images local).
+Network check: PASS for curl, FAIL for yarn inside Docker containers.
+
 ```
-status: in_progress
-inputs: { charter: "PLATFORM_BAKEOFF.md", pin: "frappe_docker@v3.2.2" }
-outputs: { log: "docs/contec/M1_INSTALL_LOG.md" }
-errors: []
-next_action: "decide hrms delivery path (custom image vs devcontainer), then execute S01 run #1 verbatim"
+status: blocked
+inputs: { charter: "PLATFORM_BAKEOFF.md", pin: "frappe_docker@v3.2.2", blocker: "NETWORK" }
+outputs: { log: "docs/contec/M1_INSTALL_LOG.md", blocker_doc: "docs/contec/M1_BUILD_BLOCKER.md" }
+errors: ["yarn ESOCKETTIMEDOUT inside Docker containers on this host — 6 attempts, all failed"]
+next_action: "resolve network blocker (different network / yarn offline mirror / cloud build), then retry S01"
 owner: "system"
-timestamp: "2026-08-26T01:05:00+03:00"
+timestamp: "2026-08-26T17:55:00+03:00"
 ```
