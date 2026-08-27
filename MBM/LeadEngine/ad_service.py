@@ -6,6 +6,7 @@ Engines remain pure/persistent-agnostic. This layer handles persistence.
 """
 
 from __future__ import annotations
+import json
 import logging
 import uuid
 from datetime import datetime, timezone, timedelta
@@ -293,8 +294,23 @@ class AdService:
 
     def create_follow_up(self, entity_id: str, entity_type: str, reason: str,
                          priority: int = 3, channel: str = "MANUAL",
-                         scheduled_at: Optional[str] = None, owner: str = "system") -> Dict[str, Any]:
-        """Create a follow-up task."""
+                         scheduled_at: Optional[str] = None, owner: str = "system",
+                         idempotency_key: str = "") -> Dict[str, Any]:
+        """Create a follow-up task. Blocks creation for DNC leads."""
+        # DNC gate: refuse to create follow-ups for DNC leads
+        from MBM.LeadEngine.ad_disposition import DispositionEngine
+        dispo_engine = DispositionEngine(self.repo)
+        if dispo_engine.is_lead_dnc(entity_id):
+            log.warning("Blocked follow-up creation for DNC lead %s", entity_id)
+            return {"ok": False, "error": f"Lead {entity_id} is DNC — follow-up blocked"}
+
+        # Idempotency check
+        if idempotency_key:
+            existing = self._find_follow_up_by_idempotency(idempotency_key)
+            if existing:
+                log.info("Idempotent follow-up %s already exists", idempotency_key)
+                return {"ok": True, "follow_up_id": existing.get("id"), "idempotent": True}
+
         data = {
             "id": str(uuid.uuid4()),
             "entity_id": entity_id,
@@ -306,11 +322,41 @@ class AdService:
             "scheduled_at": scheduled_at or (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
             "next_attempt": scheduled_at or (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
             "owner": owner,
+            "max_attempts": 3,
+            "cooldown_hours": 1,
+            "idempotency_key": idempotency_key or "",
+            "revision": 1,
         }
         persisted = self.repo.insert_follow_up(data)
         self.repo.log_event("followup_created", entity_id, entity_type,
-                           payload={"channel": channel, "reason": reason})
+                           payload={"channel": channel, "reason": reason,
+                                   "idempotency_key": idempotency_key})
         return persisted
+
+    def _find_follow_up_by_idempotency(self, key: str) -> Optional[Dict[str, Any]]:
+        """Find a follow-up by idempotency key."""
+        if not key:
+            return None
+        if self.repo._use_supabase():
+            try:
+                result = self.repo.client.table("follow_ups").select("*").eq(
+                    "idempotency_key", key
+                ).limit(1).execute()
+                return result.data[0] if result.data else None
+            except Exception:
+                return None
+        else:
+            from pathlib import Path
+            filepath = self.repo.storage_dir / "follow_ups.json"
+            if filepath.exists():
+                try:
+                    items = json.loads(filepath.read_text(encoding="utf-8"))
+                    for item in items:
+                        if item.get("idempotency_key") == key:
+                            return item
+                except Exception:
+                    pass
+            return None
 
     def get_pending_follow_ups(self, limit: int = 20) -> List[Dict[str, Any]]:
         """Get pending follow-ups."""

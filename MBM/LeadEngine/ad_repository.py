@@ -104,6 +104,53 @@ class AdRepository:
     def _use_supabase(self) -> bool:
         return self.client is not None
 
+    # ─── REVISION SUPPORT (Optimistic Concurrency) ─────────────────
+
+    def check_and_increment_revision(self, table: str, record_id: str,
+                                       expected_revision: int) -> bool:
+        """
+        Check that the current revision matches expected, then increment.
+        Returns True if successful, False if stale.
+        """
+        if self._use_supabase():
+            result = self.client.table(table).select("revision").eq("id", record_id).execute()
+            if not result.data:
+                return False
+            current = result.data[0].get("revision", 1)
+            if current != expected_revision:
+                log.warning("Stale write on %s %s: expected rev %d, got %d",
+                           table, record_id, expected_revision, current)
+                return False
+            self.client.table(table).update({
+                "revision": current + 1
+            }).eq("id", record_id).execute()
+            return True
+        else:
+            items = self._read_json(self.storage_dir / f"{table}.json")
+            for item in items:
+                if item.get("id") == record_id:
+                    current = item.get("revision", 1)
+                    if current != expected_revision:
+                        return False
+                    item["revision"] = current + 1
+                    self._write_json(self.storage_dir / f"{table}.json", items)
+                    return True
+            return False
+
+    def get_revision(self, table: str, record_id: str) -> Optional[int]:
+        """Get current revision of a record."""
+        if self._use_supabase():
+            result = self.client.table(table).select("revision").eq("id", record_id).execute()
+            if result.data:
+                return result.data[0].get("revision", 1)
+            return None
+        else:
+            items = self._read_json(self.storage_dir / f"{table}.json")
+            for item in items:
+                if item.get("id") == record_id:
+                    return item.get("revision", 1)
+            return None
+
     # ─── BUYER BUY BOX ────────────────────────────────────────────
 
     def upsert_buyer_buy_box(self, data: Dict[str, Any]) -> Dict[str, Any]:

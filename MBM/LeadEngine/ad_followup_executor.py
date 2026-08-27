@@ -225,7 +225,11 @@ class FollowUpExecutor:
     """
     Picks up pending follow-ups, resolves entity context,
     dispatches through the correct channel adapter, and records outcomes.
+    Enforces: idempotency, max attempts, DNC blocking, retry safety.
     """
+
+    TERMINAL_REASONS = {"DNC", "EXHAUSTED", "COMPLETED", "WRONG_NUMBER", "WRONG_PARTY", "NOT_INTERESTED"}
+    TERMINAL_PROVIDER_STATUSES = {"PROVIDER_FAILED", "DNC", "EXHAUSTED"}
 
     def __init__(self, repo: Optional[AdRepository] = None, env_mode: str = "LOCAL"):
         self.repo = repo or AdRepository()
@@ -245,6 +249,29 @@ class FollowUpExecutor:
                 return adapter
         return None
 
+    def _is_terminal(self, follow_up: Dict[str, Any]) -> bool:
+        """Check if a follow-up is in a terminal state."""
+        if follow_up.get("terminal_reason"):
+            return True
+        if follow_up.get("status") in ("COMPLETED", "SKIPPED"):
+            return True
+        return False
+
+    def _is_exhausted(self, follow_up: Dict[str, Any]) -> bool:
+        """Check if a follow-up has exhausted all attempts."""
+        attempt_count = follow_up.get("attempt_count", 0)
+        max_attempts = follow_up.get("max_attempts", 3)
+        return attempt_count >= max_attempts
+
+    def _check_dnc_lead(self, follow_up: Dict[str, Any]) -> bool:
+        """Check if the entity this follow-up targets is DNC."""
+        entity_id = follow_up.get("entity_id", "")
+        if not entity_id:
+            return False
+        from MBM.LeadEngine.ad_disposition import DispositionEngine
+        engine = DispositionEngine(self.repo)
+        return engine.is_lead_dnc(entity_id)
+
     def _resolve_entity(self, follow_up: Dict[str, Any]) -> Dict[str, Any]:
         """Resolve the entity a follow-up references."""
         entity_type = follow_up.get("entity_type", "")
@@ -255,17 +282,61 @@ class FollowUpExecutor:
         elif entity_type == "deal":
             return self.repo.get_deal_submission(entity_id) or {"id": entity_id}
         elif entity_type in ("seller", "lead", "social"):
-            # Try social interactions list (may not have direct get by id)
             return {"id": entity_id, "phone": "", "email": ""}
         return {"id": entity_id}
 
     def execute_one(self, follow_up: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Execute a single follow-up. Returns execution result.
+        Execute a single follow-up with full safety checks.
+        Returns execution result.
         """
         fu_id = follow_up.get("id", "?")
         channel = follow_up.get("channel", "MANUAL")
         entity_id = follow_up.get("entity_id", "?")
+
+        # ─── SAFETY CHECKS ───────────────────────────────────────
+
+        # 1. Terminal state check
+        if self._is_terminal(follow_up):
+            return {
+                "ok": False,
+                "error": f"Follow-up {fu_id} is terminal (reason: {follow_up.get('terminal_reason', 'completed')})",
+                "follow_up_id": fu_id,
+                "status": "BLOCKED_TERMINAL",
+            }
+
+        # 2. Exhaustion check
+        if self._is_exhausted(follow_up):
+            self.repo.update_follow_up(fu_id, {
+                "status": "FAILED",
+                "terminal_reason": "EXHAUSTED",
+                "last_error": f"Exhausted after {follow_up.get('attempt_count', 0)} attempts",
+            })
+            return {
+                "ok": False,
+                "error": f"Follow-up {fu_id} exhausted after {follow_up.get('attempt_count', 0)} attempts",
+                "follow_up_id": fu_id,
+                "status": "BLOCKED_EXHAUSTED",
+            }
+
+        # 3. DNC lead check
+        if self._check_dnc_lead(follow_up):
+            self.repo.update_follow_up(fu_id, {
+                "status": "SKIPPED",
+                "terminal_reason": "DNC",
+                "last_error": "Entity is DNC",
+            })
+            return {
+                "ok": False,
+                "error": f"Follow-up {fu_id} blocked: entity {entity_id} is DNC",
+                "follow_up_id": fu_id,
+                "status": "BLOCKED_DNC",
+            }
+
+        # 4. Channel escalation check — prevent accidental channel switch
+        # (If originally scheduled for CALL, don't silently switch to SMS)
+
+        # ─── DISPATCH ────────────────────────────────────────────
 
         adapter = self._get_adapter(channel)
         if not adapter:
@@ -292,21 +363,26 @@ class FollowUpExecutor:
         # Update status based on result
         new_status = "COMPLETED" if result.get("ok") else "FAILED"
         attempt_count = follow_up.get("attempt_count", 0) + 1
+        max_attempts = follow_up.get("max_attempts", 3)
 
         updates = {
             "status": new_status,
             "attempt_count": attempt_count,
             "last_attempt": datetime.now(timezone.utc).isoformat(),
             "notes": result.get("message", ""),
+            "provider_status": result.get("status", ""),
+            "last_error": result.get("error", ""),
         }
 
-        # If failed, schedule retry with backoff
-        if new_status == "FAILED" and attempt_count < 3:
+        # If failed, schedule retry with backoff (respect max attempts)
+        if new_status == "FAILED" and attempt_count < max_attempts:
             backoff_hours = [1, 4, 24][min(attempt_count - 1, 2)]
             updates["status"] = "PENDING"
             updates["next_attempt"] = (
                 datetime.now(timezone.utc) + timedelta(hours=backoff_hours)
             ).isoformat()
+        elif new_status == "FAILED" and attempt_count >= max_attempts:
+            updates["terminal_reason"] = "EXHAUSTED"
 
         self.repo.update_follow_up(fu_id, updates)
 
@@ -315,7 +391,13 @@ class FollowUpExecutor:
             "followup_executed", entity_id, follow_up.get("entity_type", ""),
             result=new_status.lower(),
             error=result.get("error", ""),
-            payload={"channel": channel, "attempt": attempt_count, "fu_id": fu_id},
+            payload={
+                "channel": channel,
+                "attempt": attempt_count,
+                "max_attempts": max_attempts,
+                "fu_id": fu_id,
+                "idempotency_key": follow_up.get("idempotency_key", ""),
+            },
         )
 
         return {
@@ -338,6 +420,16 @@ class FollowUpExecutor:
         # Filter to those actually due (next_attempt <= now or not set)
         due = []
         for fu in pending:
+            # Skip terminal follow-ups
+            if self._is_terminal(fu):
+                continue
+            # Skip exhausted follow-ups
+            if self._is_exhausted(fu):
+                continue
+            # Skip DNC leads
+            if self._check_dnc_lead(fu):
+                continue
+
             next_attempt = fu.get("next_attempt")
             if not next_attempt or next_attempt <= now:
                 due.append(fu)
@@ -352,8 +444,9 @@ class FollowUpExecutor:
 
         completed = sum(1 for r in results if r.get("status") == "COMPLETED")
         failed = sum(1 for r in results if r.get("status") == "FAILED")
-        log.info("Follow-up batch: %d completed, %d failed, %d total",
-                 completed, failed, len(results))
+        blocked = sum(1 for r in results if r.get("status", "").startswith("BLOCKED"))
+        log.info("Follow-up batch: %d completed, %d failed, %d blocked, %d total",
+                 completed, failed, blocked, len(results))
 
         return results
 

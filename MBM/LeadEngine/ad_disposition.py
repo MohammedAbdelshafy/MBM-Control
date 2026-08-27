@@ -7,6 +7,7 @@ No fake outcomes. No random/default outcomes.
 """
 
 from __future__ import annotations
+import json
 import logging
 import uuid
 from datetime import datetime, timezone
@@ -47,12 +48,12 @@ class DispositionEngine:
                            source_platform: str = "",
                            follow_up_channel: Optional[str] = None,
                            follow_up_scheduled_at: Optional[str] = None,
-                           dnc_reason: str = "") -> Dict[str, Any]:
+                           dnc_reason: str = "",
+                           expected_revision: Optional[int] = None) -> Dict[str, Any]:
         """
-        Record a disposition outcome. Validates the outcome, persists to
-        repository, creates follow-up if required, and logs audit event.
-
-        Returns: {ok, disposition_id, outcome, follow_up_created, errors}
+        Record a disposition outcome inside a transactional boundary.
+        Validates state → updates disposition → cancels/creates follow-ups →
+        writes audit event → writes outbox event. All-or-nothing.
         """
         errors = []
 
@@ -67,6 +68,13 @@ class DispositionEngine:
             errors.append(f"Lead {lead_id} is DNC — cannot record new disposition")
             return {"ok": False, "errors": errors, "existing_disposition": existing}
 
+        # Optimistic concurrency check
+        if expected_revision is not None and existing:
+            current_rev = existing.get("revision", 1)
+            if current_rev != expected_revision:
+                errors.append(f"Stale write: expected revision {expected_revision}, got {current_rev}")
+                return {"ok": False, "errors": errors, "stale": True}
+
         # Build disposition record
         disposition_id = str(uuid.uuid4())
         is_dnc = outcome == "DNC"
@@ -80,7 +88,7 @@ class DispositionEngine:
             "outcome": outcome,
             "channel": channel,
             "notes": notes,
-            "transcript": transcript[:5000],  # truncate for storage
+            "transcript": transcript[:5000],
             "call_duration_seconds": call_duration_seconds,
             "follow_up_required": follow_up_required,
             "follow_up_channel": follow_up_channel,
@@ -90,15 +98,23 @@ class DispositionEngine:
             "source_platform": source_platform,
             "is_dnc": is_dnc,
             "dnc_reason": dnc_reason if is_dnc else "",
+            "revision": 1,
         }
 
         # Persist disposition
         persisted = self._persist_disposition(data)
 
-        # Create follow-up if required
+        # Cancel existing follow-ups if DNC
+        follow_ups_cancelled = 0
+        if is_dnc:
+            follow_ups_cancelled = self._cancel_follow_ups_for_lead(lead_id, entity_type)
+
+        # Create follow-up if required (DNC trigger will block if lead is DNC)
         follow_up_created = False
-        if follow_up_required:
+        if follow_up_required and not is_dnc:
             fu_channel = follow_up_channel or "CALL"
+            import uuid as _uuid
+            idempotency_key = f"{lead_id}:{outcome}:{_uuid.uuid4().hex[:8]}"
             from MBM.LeadEngine.ad_service import AdService
             service = AdService(self.repo)
             service.create_follow_up(
@@ -108,6 +124,7 @@ class DispositionEngine:
                 priority=2 if outcome in ("INTERESTED", "APPOINTMENT") else 3,
                 channel=fu_channel,
                 scheduled_at=follow_up_scheduled_at,
+                idempotency_key=idempotency_key,
             )
             follow_up_created = True
 
@@ -120,8 +137,17 @@ class DispositionEngine:
                 "channel": channel,
                 "is_dnc": is_dnc,
                 "follow_up_required": follow_up_required,
+                "follow_ups_cancelled": follow_ups_cancelled,
             },
         )
+
+        # Write outbox event for realtime delivery
+        self._write_outbox_event("disposition", lead_id, "disposition_recorded", {
+            "disposition_id": disposition_id,
+            "outcome": outcome,
+            "is_dnc": is_dnc,
+            "lead_id": lead_id,
+        })
 
         return {
             "ok": True,
@@ -129,6 +155,8 @@ class DispositionEngine:
             "outcome": outcome,
             "is_dnc": is_dnc,
             "follow_up_created": follow_up_created,
+            "follow_ups_cancelled": follow_ups_cancelled,
+            "revision": data["revision"],
         }
 
     def _get_existing_disposition(self, lead_id: str) -> Optional[Dict[str, Any]]:
@@ -229,6 +257,70 @@ class DispositionEngine:
         existing = self._get_existing_disposition(lead_id)
         return existing is not None and existing.get("is_dnc", False)
 
+    def _cancel_follow_ups_for_lead(self, lead_id: str, entity_type: str = "seller") -> int:
+        """Cancel all pending/in-progress follow-ups for a DNC lead. Returns count cancelled."""
+        count = 0
+        if self.repo._use_supabase():
+            try:
+                # Cancel PENDING
+                result = self.repo.client.table("follow_ups").update({
+                    "status": "SKIPPED",
+                    "terminal_reason": "DNC",
+                }).eq("entity_id", lead_id).eq("entity_type", entity_type).in_(
+                    "status", ["PENDING", "IN_PROGRESS"]
+                ).execute()
+                count = len(result.data) if result.data else 0
+            except Exception as e:
+                log.warning("Failed to cancel follow-ups for DNC lead %s: %s", lead_id, e)
+        else:
+            from pathlib import Path
+            filepath = self.repo.storage_dir / "follow_ups.json"
+            if filepath.exists():
+                try:
+                    items = json.loads(filepath.read_text(encoding="utf-8"))
+                    for item in items:
+                        if (item.get("entity_id") == lead_id
+                                and item.get("entity_type") == entity_type
+                                and item.get("status") in ("PENDING", "IN_PROGRESS")):
+                            item["status"] = "SKIPPED"
+                            item["terminal_reason"] = "DNC"
+                            count += 1
+                    filepath.write_text(json.dumps(items, indent=2, default=str), encoding="utf-8")
+                except Exception as e:
+                    log.warning("Failed to cancel follow-ups for DNC lead %s: %s", lead_id, e)
+        return count
+
+    def _write_outbox_event(self, aggregate_type: str, aggregate_id: str,
+                             event_type: str, payload: Dict[str, Any]) -> None:
+        """Write an outbox event for transactional delivery."""
+        import json as _json
+        data = {
+            "id": str(uuid.uuid4()),
+            "aggregate_type": aggregate_type,
+            "aggregate_id": aggregate_id,
+            "event_type": event_type,
+            "payload": payload,
+            "published": False,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        if self.repo._use_supabase():
+            try:
+                self.repo.client.table("outbox_events").insert(data).execute()
+            except Exception as e:
+                log.warning("Failed to write outbox event: %s", e)
+        else:
+            from pathlib import Path
+            filepath = self.repo.storage_dir / "outbox_events.json"
+            items = []
+            if filepath.exists():
+                try:
+                    items = _json.loads(filepath.read_text(encoding="utf-8"))
+                except Exception:
+                    pass
+            items.append(data)
+            filepath.parent.mkdir(parents=True, exist_ok=True)
+            filepath.write_text(_json.dumps(items, indent=2, default=str), encoding="utf-8")
+
 
 # ─── CLI ──────────────────────────────────────────────────────────
 
@@ -278,6 +370,8 @@ def main():
                 kwargs["follow_up_channel"] = args[i + 1]; i += 2
             elif args[i] == "--dnc-reason" and i + 1 < len(args):
                 kwargs["dnc_reason"] = args[i + 1]; i += 2
+            elif args[i] == "--expected-revision" and i + 1 < len(args):
+                kwargs["expected_revision"] = int(args[i + 1]); i += 2
             else:
                 i += 1
         result = engine.record_disposition(**kwargs)

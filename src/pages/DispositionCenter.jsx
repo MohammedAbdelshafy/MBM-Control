@@ -1,13 +1,17 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   PhoneOff, PhoneCall, Voicemail, UserX,
   CalendarClock, Ban, CheckCircle, XCircle, Clock,
-  AlertTriangle
+  AlertTriangle, RefreshCw, Wifi, WifiOff
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { createClient } from '@supabase/supabase-js';
 
 const API = '/api';
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 const DISPOSITION_OUTCOMES = [
   { value: 'CONNECTED', label: 'Connected', icon: PhoneCall, color: 'emerald', description: 'Spoke with decision-maker' },
@@ -71,7 +75,7 @@ function DispositionButton({ outcome, selected, onSelect }) {
   );
 }
 
-function DispositionForm({ leadId, onSubmit, onCancel }) {
+function DispositionForm({ leadId, onSubmit, onCancel, currentRevision }) {
   const [outcome, setOutcome] = useState('');
   const [notes, setNotes] = useState('');
   const [followUpChannel, setFollowUpChannel] = useState('CALL');
@@ -97,11 +101,15 @@ function DispositionForm({ leadId, onSubmit, onCancel }) {
           notes,
           follow_up_channel: requiresFollowUp ? followUpChannel : undefined,
           dnc_reason: isDNC ? dnc_reason : undefined,
+          expected_revision: currentRevision,
         }),
       });
       const data = await res.json();
       if (data.ok) {
         toast.success(`Disposition recorded: ${outcome}`);
+        onSubmit(data);
+      } else if (data.stale) {
+        toast.error('Record was updated by another user. Refreshing...');
         onSubmit(data);
       } else {
         toast.error(data.errors?.join(', ') || 'Failed to record disposition');
@@ -192,12 +200,11 @@ export default function DispositionCenter() {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
+  const [realtimeStatus, setRealtimeStatus] = useState('disconnected');
+  const [lastEventId, setLastEventId] = useState(null);
+  const processedEvents = useRef(new Set());
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       const [sumRes, dispRes] = await Promise.all([
@@ -213,7 +220,71 @@ export default function DispositionCenter() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // Supabase Realtime subscription
+  useEffect(() => {
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      setRealtimeStatus('no_config');
+      return;
+    }
+
+    let supabase;
+    try {
+      supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (err) {
+      setRealtimeStatus('error');
+      return;
+    }
+
+    setRealtimeStatus('connecting');
+
+    const channel = supabase
+      .channel('disposition-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'disposition_outcomes' },
+        (payload) => {
+          const eventId = payload.event_id || payload.new?.id || `${Date.now()}`;
+          // Deduplicate events
+          if (processedEvents.current.has(eventId)) {
+            return;
+          }
+          processedEvents.current.add(eventId);
+
+          // Cap the dedup set
+          if (processedEvents.current.size > 500) {
+            const arr = Array.from(processedEvents.current);
+            processedEvents.current = new Set(arr.slice(-250));
+          }
+
+          setLastEventId(eventId);
+          // Refresh from server (source of truth)
+          loadData();
+          toast.info('Disposition updated');
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'follow_ups' },
+        () => {
+          // Follow-ups changed — could refresh follow-up data if needed
+        }
+      )
+      .subscribe((status) => {
+        setRealtimeStatus(status === 'SUBSCRIBED' ? 'connected' : status);
+      });
+
+    return () => {
+      if (supabase) {
+        supabase.removeChannel(channel);
+      }
+    };
+  }, [loadData]);
 
   const filteredDispositions = useMemo(() => {
     if (filter === 'ALL') return dispositions;
@@ -228,6 +299,23 @@ export default function DispositionCenter() {
     return counts;
   }, [dispositions]);
 
+  const handleFormSubmit = useCallback((data) => {
+    setShowForm(false);
+    loadData();
+  }, [loadData]);
+
+  const RealtimeIndicator = () => {
+    const isConnected = realtimeStatus === 'connected';
+    return (
+      <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs ${
+        isConnected ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
+      }`}>
+        {isConnected ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
+        {isConnected ? 'Live' : realtimeStatus === 'no_config' ? 'No Realtime' : 'Connecting...'}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-[#06080f] text-white p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -237,12 +325,21 @@ export default function DispositionCenter() {
             <h1 className="text-2xl font-bold text-white">Disposition Center</h1>
             <p className="text-white/40 text-sm mt-1">Record and track call outcomes</p>
           </div>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium transition-colors"
-          >
-            {showForm ? 'Close Form' : '+ Record Disposition'}
-          </button>
+          <div className="flex items-center gap-3">
+            <RealtimeIndicator />
+            <button
+              onClick={loadData}
+              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 hover:text-white/70 transition-colors"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium transition-colors"
+            >
+              {showForm ? 'Close Form' : '+ Record Disposition'}
+            </button>
+          </div>
         </div>
 
         {/* Summary Cards */}
@@ -281,7 +378,8 @@ export default function DispositionCenter() {
           {showForm && (
             <DispositionForm
               leadId={selectedLead}
-              onSubmit={() => { setShowForm(false); loadData(); }}
+              currentRevision={dispositions.find(d => d.lead_id === selectedLead)?.revision}
+              onSubmit={handleFormSubmit}
               onCancel={() => setShowForm(false)}
             />
           )}
@@ -335,6 +433,9 @@ export default function DispositionCenter() {
                       <span className={`text-sm font-medium ${colors.text}`}>{d.outcome}</span>
                       <span className="text-xs text-white/30">Lead: {d.lead_id}</span>
                       {d.is_dnc && <Ban className="w-3 h-3 text-red-400" />}
+                      {d.revision && (
+                        <span className="text-xs text-white/20">v{d.revision}</span>
+                      )}
                     </div>
                     {d.notes && <p className="text-xs text-white/40 mt-1">{d.notes}</p>}
                   </div>

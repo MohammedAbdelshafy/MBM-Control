@@ -173,12 +173,11 @@ router.get('/ad/disposition/recent', async (req, res) => {
 
 router.post('/ad/disposition', async (req, res) => {
   try {
-    const { lead_id, outcome, notes, follow_up_channel, dnc_reason } = req.body;
+    const { lead_id, outcome, notes, follow_up_channel, dnc_reason, expected_revision } = req.body;
     if (!lead_id || !outcome) {
       return res.status(400).json({ ok: false, errors: ['lead_id and outcome required'] });
     }
 
-    // Write disposition via Python
     const args = [
       '--record',
       '--lead-id', lead_id,
@@ -187,6 +186,7 @@ router.post('/ad/disposition', async (req, res) => {
     if (notes) args.push('--notes', notes);
     if (follow_up_channel) args.push('--follow-up-channel', follow_up_channel);
     if (dnc_reason) args.push('--dnc-reason', dnc_reason);
+    if (expected_revision != null) args.push('--expected-revision', String(expected_revision));
 
     const data = await runPythonDirect('MBM/LeadEngine/ad_disposition.py', args);
     res.json(data);
