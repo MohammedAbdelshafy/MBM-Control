@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import crypto from 'crypto';
 import fs from 'fs';
 import { createClient } from '@supabase/supabase-js';
@@ -13,6 +13,8 @@ import { patchLeads as gatewayPatchLeads } from './dialer/dialerDbGateway.js';
 import { compareDialerLeads } from './dialer/freshnessOrder.js';
 import aftercallRouter from './dialer/aftercallRouter.js';
 import emailApi from './dialer/emailApi.js';
+import adEngineRouter from './dialer/adEngineRouter.js';
+import { getProvider, normalizeEvent } from './dialer/telephonyProvider.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -38,7 +40,7 @@ const supabaseAdmin = process.env.SUPABASE_SERVICE_ROLE_KEY
   ? createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY)
   : null;
 
-// ── SECURITY: CORS allowlist + optional bearer-token auth ──────────────────
+// â”€â”€ SECURITY: CORS allowlist + optional bearer-token auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Never wildcard CORS: only the frontend origin(s) may call from a browser.
 // Requests without an Origin header (curl, server-to-server, CI) pass through.
 // Default allowlist covers the Vite dev server; extend via CORS_ORIGINS
@@ -65,13 +67,13 @@ app.use((req, res, next) => {
 // Optional API bearer token. When API_BEARER_TOKEN is set, PROTECTED_PREFIXES
 // require `Authorization: Bearer <token>` (constant-time compare). When unset
 // the server logs a loud warning and stays open so the dashboard keeps working
-// in local dev — set the token before exposing the server to a network.
+// in local dev â€” set the token before exposing the server to a network.
 const API_BEARER_TOKEN = process.env.API_BEARER_TOKEN || '';
 if (API_BEARER_TOKEN) {
-  console.log('[SECURITY] API_BEARER_TOKEN set — sensitive /api routes require Authorization: Bearer <token>');
+  console.log('[SECURITY] API_BEARER_TOKEN set â€” sensitive /api routes require Authorization: Bearer <token>');
 } else {
   console.warn('[SECURITY] WARNING: API_BEARER_TOKEN is NOT set. Sensitive /api routes '
-    + '(dialer PII, Twilio call endpoints, orders, payout, telegram-alert) are UNPROTECTED. '
+    + '(dialer PII, telephony call endpoints, orders, payout, telegram-alert) are UNPROTECTED. '
     + 'Set API_BEARER_TOKEN in env before exposing this server beyond localhost.');
 }
 
@@ -95,18 +97,19 @@ for (const prefix of PROTECTED_PREFIXES) {
   app.use(prefix, requireApiAuth);
 }
 
-// Whop webhook needs the RAW request body for HMAC signature verification —
+// Whop webhook needs the RAW request body for HMAC signature verification â€”
 // capture it before express.json() parses (and destroys) the stream.
 app.use('/api/webhook/whop', express.raw({ type: '*/*', limit: '1mb' }));
 app.use(express.json({ limit: '10mb' }));
 app.use('/api', aftercallRouter);
 app.use('/api', emailApi);
+app.use('/api', adEngineRouter);
 app.use('/videos', express.static(path.join(__dirname, '..', 'clipping-factory', 'MBM-Social', 'generated_videos')));
 app.use('/publish-queue', express.static(path.join(__dirname, '..', 'clipping-factory', 'MBM-Social', 'publish_queue', 'media')));
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
-// GET /api/videos — List all generated HD videos for instant web playback
+// GET /api/videos â€” List all generated HD videos for instant web playback
 app.get('/api/videos', (req, res) => {
   try {
     const videosDir = path.join(__dirname, '..', 'clipping-factory', 'MBM-Social', 'generated_videos');
@@ -218,7 +221,7 @@ app.post('/api/complete-signup', async (req, res) => {
       return res.json({ success: true, role: inv.intended_role, changed: true });
     }
 
-    // Self-signup without a role → assign 'customer'
+    // Self-signup without a role â†’ assign 'customer'
     const updateData = { role: 'customer' };
     if (building_id) updateData.building_id = building_id;
     await supabase.from('users').update(updateData).eq('id', user_id);
@@ -418,7 +421,7 @@ app.get('/api/email-queue-status', async (req, res) => {
   }
 });
 
-// ── Demo Campaign API ──────────────────────────────────────
+// â”€â”€ Demo Campaign API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 app.post('/api/demo/generate', async (req, res) => {
   try {
@@ -442,7 +445,7 @@ app.post('/api/demo/campaign', async (req, res) => {
   }
 });
 
-// ── Lead Pipeline API ───────────────────────────────────────
+// â”€â”€ Lead Pipeline API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 app.get('/api/leads/stats', (req, res) => {
   try {
@@ -497,7 +500,7 @@ app.post('/api/leads/pipeline/all', async (req, res) => {
   }
 });
 
-// ── Analytics API ──────────────────────────────────────────
+// â”€â”€ Analytics API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const ANALYTICS_LOG_FILE = path.join(__dirname, '..', 'MBM', 'Whop', 'analytics_log.json');
 const ANALYTICS_MAX_ENTRIES = 5000;
@@ -588,7 +591,7 @@ app.post('/api/analytics/track', (req, res) => {
   }
 });
 
-// ── Whop Webhook API ───────────────────────────────────────
+// â”€â”€ Whop Webhook API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const REVENUE_EVENTS_FILE = path.join(__dirname, '..', 'MBM', 'Whop', 'logs', 'revenue_events.jsonl');
 
@@ -677,7 +680,7 @@ app.post('/api/webhook/whop', (req, res) => {
   const sigBuf = Buffer.from(signature.replace(/^sha256=/, ''), 'utf8');
   const expBuf = Buffer.from(expected, 'utf8');
   if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
-    console.error('[Webhook] Invalid signature — request rejected');
+    console.error('[Webhook] Invalid signature â€” request rejected');
     return res.status(401).json({ error: 'Invalid signature' });
   }
 
@@ -720,7 +723,7 @@ app.post('/api/webhook/whop', (req, res) => {
   }
 });
 
-// ── Client Orders API ──────────────────────────────────────
+// â”€â”€ Client Orders API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 app.post('/api/orders', async (req, res) => {
   try {
@@ -784,7 +787,7 @@ app.patch('/api/orders/:id/pay', async (req, res) => {
   }
 });
 
-// ── $149 AI Automation Audit: intake → audit draft → delivery ──────────────
+// â”€â”€ $149 AI Automation Audit: intake â†’ audit draft â†’ delivery â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const AUDIT_ORDERS_DIR = path.join(__dirname, '..', 'MBM', 'Whop', 'orders');
 
@@ -827,11 +830,11 @@ app.post('/api/audit-intake', async (req, res) => {
       generated_at: new Date().toISOString(),
       customer: intake,
       workflow_map_skeleton: [
-        'Inbound capture (calls / forms / chats) — who/what receives them today',
-        'Response latency — time-to-first-touch per channel',
-        'Follow-up chain — attempts, cadence, ownership',
-        'Booking handoff — how a qualified lead reaches the calendar',
-        'Measurement — what is tracked vs. invisible today',
+        'Inbound capture (calls / forms / chats) â€” who/what receives them today',
+        'Response latency â€” time-to-first-touch per channel',
+        'Follow-up chain â€” attempts, cadence, ownership',
+        'Booking handoff â€” how a qualified lead reaches the calendar',
+        'Measurement â€” what is tracked vs. invisible today',
       ],
       automation_candidates: [
         'Missed-Call Recovery: instant second attempt + SMS fallback on ring-outs',
@@ -863,7 +866,7 @@ app.get('/api/audit-intake/:auditId', (req, res) => {
   res.json({ ok: true, intake: JSON.parse(fs.readFileSync(p, 'utf8')) });
 });
 
-// ── Lead Pipeline API (legacy) ──────────────────────────────
+// â”€â”€ Lead Pipeline API (legacy) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 app.get('/api/leads/stats', (req, res) => {
   res.json(loadStats());
@@ -874,7 +877,7 @@ app.get('/api/leads/whatsapp-report', (req, res) => {
   res.json(report);
 });
 
-// ── Demo Campaign API ──────────────────────────────────────
+// â”€â”€ Demo Campaign API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (supabaseAdmin) {
   cron.schedule('5 * * * *', async () => {
     console.log('[cron] Starting hourly demo campaign + email send...');
@@ -919,7 +922,7 @@ if (supabaseAdmin) {
   console.log('[cron] Legacy hourly email send scheduled (at :00 every hour)');
 }
 
-// HUNTER — Hourly revenue outreach (queues new targets to email_queue)
+// HUNTER â€” Hourly revenue outreach (queues new targets to email_queue)
 if (supabaseAdmin) {
   cron.schedule('30 * * * *', async () => {
     console.log('[cron] Starting HUNTER hourly outreach scan...');
@@ -939,7 +942,7 @@ if (supabaseAdmin) {
   console.log('[cron] HUNTER outreach scheduled (at :30 every hour)');
 }
 
-// ─── VOICE AGENTS STUDIO & CREATOR MONETIZATION API ───
+// â”€â”€â”€ VOICE AGENTS STUDIO & CREATOR MONETIZATION API â”€â”€â”€
 
 // In-memory fallback state for Voice Agents & Creator Wallet
 let inMemoryVoiceAgents = [
@@ -1007,7 +1010,7 @@ let creatorWallet = {
   ]
 };
 
-// GET /api/voice-agents — List all active voice agents
+// GET /api/voice-agents â€” List all active voice agents
 app.get('/api/voice-agents', async (req, res) => {
   try {
     if (supabase) {
@@ -1022,7 +1025,7 @@ app.get('/api/voice-agents', async (req, res) => {
   }
 });
 
-// POST /api/voice-agents — Create or update a voice agent
+// POST /api/voice-agents â€” Create or update a voice agent
 app.post('/api/voice-agents', async (req, res) => {
   try {
     const { title, description, persona, system_prompt, voice_provider, voice_id, rate_per_min, tags } = req.body;
@@ -1062,7 +1065,7 @@ app.post('/api/voice-agents', async (req, res) => {
   }
 });
 
-// POST /api/voice-agents/:id/simulate-call — Live call simulation & creator payout calculation
+// POST /api/voice-agents/:id/simulate-call â€” Live call simulation & creator payout calculation
 app.post('/api/voice-agents/:id/simulate-call', async (req, res) => {
   try {
     const { id } = req.params;
@@ -1125,12 +1128,12 @@ app.post('/api/voice-agents/:id/simulate-call', async (req, res) => {
   }
 });
 
-// GET /api/creator/wallet — Fetch creator wallet stats & payout ledger
+// GET /api/creator/wallet â€” Fetch creator wallet stats & payout ledger
 app.get('/api/creator/wallet', (req, res) => {
   res.json(creatorWallet);
 });
 
-// POST /api/creator/payout — Request payout cashout
+// POST /api/creator/payout â€” Request payout cashout
 app.post('/api/creator/payout', (req, res) => {
   const { amount, method } = req.body;
   const withdrawAmount = parseFloat(amount);
@@ -1173,7 +1176,7 @@ app.post('/api/creator/payout', (req, res) => {
 const inMemorySalesDeals = [];
 const inMemoryProposals = [];
 
-// POST /api/sales/assign-deal — Assigns high-ticket US deals to Sales Reps
+// POST /api/sales/assign-deal â€” Assigns high-ticket US deals to Sales Reps
 app.post('/api/sales/assign-deal', async (req, res) => {
   try {
     const { deal_id, address, price, expected_commission, rep_name, buyer_name } = req.body;
@@ -1195,12 +1198,12 @@ app.post('/api/sales/assign-deal', async (req, res) => {
   }
 });
 
-// GET /api/sales/deals — Returns assigned sales deals
+// GET /api/sales/deals â€” Returns assigned sales deals
 app.get('/api/sales/deals', (req, res) => {
   res.json(inMemorySalesDeals);
 });
 
-// POST /api/sales/proposals — Creates B2B Sales Proposal with Neteller checkout link
+// POST /api/sales/proposals â€” Creates B2B Sales Proposal with Neteller checkout link
 app.post('/api/sales/proposals', (req, res) => {
   try {
     const { buyer_name, lead_pack_title, price_usd, discount_applied } = req.body;
@@ -1222,7 +1225,7 @@ app.post('/api/sales/proposals', (req, res) => {
   }
 });
 
-// POST /api/sales/telegram-alert — Sends instant Telegram notification to Sales Chat
+// POST /api/sales/telegram-alert â€” Sends instant Telegram notification to Sales Chat
 app.post('/api/sales/telegram-alert', async (req, res) => {
   try {
     const { message } = req.body;
@@ -1246,7 +1249,7 @@ app.post('/api/sales/telegram-alert', async (req, res) => {
 
 // === INSTANT CASH AI SUITE ENDPOINTS ===
 
-// POST /api/instant-cash/clipping — On-demand AI Video Clipping job ($0.10/clip)
+// POST /api/instant-cash/clipping â€” On-demand AI Video Clipping job ($0.10/clip)
 app.post('/api/instant-cash/clipping', (req, res) => {
   try {
     const { youtube_url, style } = req.body;
@@ -1269,7 +1272,7 @@ app.post('/api/instant-cash/clipping', (req, res) => {
   }
 });
 
-// POST /api/instant-cash/ig-dm — Launch Instagram AI DM Hunter ($149/mo)
+// POST /api/instant-cash/ig-dm â€” Launch Instagram AI DM Hunter ($149/mo)
 app.post('/api/instant-cash/ig-dm', (req, res) => {
   try {
     const { target_niche, city } = req.body;
@@ -1289,7 +1292,7 @@ app.post('/api/instant-cash/ig-dm', (req, res) => {
   }
 });
 
-// POST /api/instant-cash/cold-calling — Launch Cold Calling Swarm ($0.50/call)
+// POST /api/instant-cash/cold-calling â€” Launch Cold Calling Swarm ($0.50/call)
 app.post('/api/instant-cash/cold-calling', (req, res) => {
   try {
     const { lead_count, script_type } = req.body;
@@ -1308,7 +1311,7 @@ app.post('/api/instant-cash/cold-calling', (req, res) => {
   }
 });
 
-// POST /api/instant-cash/marketing-agencies — Marketing Agencies White-Label AI Suite ($1,500 setup + $997/mo)
+// POST /api/instant-cash/marketing-agencies â€” Marketing Agencies White-Label AI Suite ($1,500 setup + $997/mo)
 app.post('/api/instant-cash/marketing-agencies', (req, res) => {
   try {
     const { agency_name, client_niche, seats } = req.body;
@@ -1331,59 +1334,48 @@ app.post('/api/instant-cash/marketing-agencies', (req, res) => {
   }
 });
 
-// GET /api/voice-agents/free-us-number — REAL bridge status (no invented balances)
-app.get('/api/voice-agents/free-us-number', (req, res) => {
-  const configured = Boolean((TWILIO_API_KEY_SID && TWILIO_API_KEY_SECRET) || (TWILIO_SID && TWILIO_TOKEN));
+// GET /api/voice-agents/free-us-number â€” REAL provider status (no invented balances)
+app.get('/api/voice-agents/free-us-number', async (req, res) => {
+  const health = await telephony.health();
   res.json({
-    status: configured ? 'READY' : 'TELEPHONY_BLOCKED',
-    provider: 'twilio',
-    caller_id: configured ? TWILIO_FROM : null,
+    status: health.ok ? 'READY' : 'TELEPHONY_BLOCKED',
+    telephony_provider: telephony.code,
+    mode: telephony.mode?.() || null,
+    reason: health.reason || null,
     features: [
-      'Outbound US calling via operator bridge',
-      'Inbound call forwarding',
+      'Outbound US calling via Phound (native handoff or API bridge)',
+      'Webhook-first real outcomes',
     ],
-    required_integration: configured ? '' : 'Set TWILIO_ACCOUNT_SID/TWILIO_AUTH_TOKEN (+ optional API key pair) to enable real dialing.',
+    required_integration: health.ok
+      ? ''
+      : 'Set PHOUND_ENABLED=true, PHOUND_CALL_ENDPOINT, PHOUND_API_TOKEN for API mode; native_app deep-link mode needs no credentials.',
   });
 });
 
-// POST /api/voice-agents/place-call — REAL operator-bridge call (never fake-connected)
+// POST /api/voice-agents/place-call â€” REAL Phound dispatch (never fake-connected)
 app.post('/api/voice-agents/place-call', async (req, res) => {
-  const { to_number, prospect_name } = req.body || {};
+  const { to_number, prospect_name, lead_id } = req.body || {};
   if (!to_number || !/^\+\d{10,15}$/.test(String(to_number))) {
     return res.status(400).json({ error: 'to_number must be E.164 (e.g. +12145550123)' });
   }
-  if (!twilioClient) {
-    return res.status(423).json({
-      status: 'TELEPHONY_BLOCKED',
-      error: 'Twilio not configured — no call was placed and none is simulated.',
-      required_integration: 'Set TWILIO_ACCOUNT_SID/TWILIO_AUTH_TOKEN in env.',
-    });
-  }
   try {
-    const myPhone = process.env.USER_MOBILE_PHONE || process.env.OPERATOR_CELL;
-    if (!myPhone) {
-      return res.status(423).json({
-        status: 'TELEPHONY_BLOCKED',
-        error: 'USER_MOBILE_PHONE / OPERATOR_CELL not set for operator bridge.',
-      });
+    const result = await telephony.start_call({ to_number, prospect_name, lead_id });
+    if (result.status === 'error') {
+      return res.status(502).json({ status: 'CALL_ERROR', error: result.error, http_status: result.http_status });
     }
-    // Escape user text before TwiML interpolation.
-    const safeName = escapeXml(prospect_name || 'Prospect');
-    const twiml = `<Response><Say>Connecting your call to ${safeName}...</Say><Dial callerId="${TWILIO_FROM}">${to_number}</Dial></Response>`;
-    const call = await twilioClient.calls.create({ twiml, to: myPhone, from: TWILIO_FROM });
     res.status(201).json({
-      status: 'DISPATCHED_TO_OPERATOR_BRIDGE',
-      call_sid: call.sid,
-      from: TWILIO_FROM,
-      to: to_number,
-      note: 'Call rings the operator phone first. Outcome counts only after a human disposition is recorded via POST /api/dialer/disposition.',
+      ...result,
+      note: 'Outcome counts only after POST /api/telephony/phound/webhook delivers a real event.',
     });
   } catch (err) {
+    if (err.code === 'TELEPHONY_BLOCKED') {
+      return res.status(423).json({ status: 'TELEPHONY_BLOCKED', error: err.message });
+    }
     res.status(502).json({ status: 'CALL_ERROR', error: err.message });
   }
 });
 
-// GET /api/instant-cash/upwork — Upwork High-Ticket AI Client Bounties & Proposals
+// GET /api/instant-cash/upwork â€” Upwork High-Ticket AI Client Bounties & Proposals
 app.get('/api/instant-cash/upwork', (req, res) => {
   try {
     const jobsPath = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'logs', 'upwork_active_jobs.json');
@@ -1410,31 +1402,32 @@ app.get('/api/instant-cash/upwork', (req, res) => {
   }
 });
 
-// ═══════════════════════════════════════════════════════════════════════
-// DIALER API — Real Twilio integration with bridge-to-phone support
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// DIALER API â€” Phound production telephony (webhook-first outcomes)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Twilio was REMOVED from the production call path (2026-08-26).
+// Legacy Twilio CLI tools live under MBM/LeadEngine labeled LEGACY.
 
-const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID;
-const TWILIO_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const TWILIO_API_KEY_SID = process.env.TWILIO_API_KEY_SID;
-const TWILIO_API_KEY_SECRET = process.env.TWILIO_API_KEY_SECRET;
-const TWILIO_FROM = process.env.TWILIO_PHONE_NUMBER || '+16619909068';
+const telephony = getProvider();
+console.log(`[DIALER] Telephony provider: ${telephony.code} (mode: ${telephony.mode?.() || 'n/a'})`);
 
-let twilioClient = null;
-try {
-  const twilio = await import('twilio');
-  if (TWILIO_API_KEY_SID && TWILIO_API_KEY_SECRET) {
-    twilioClient = twilio.default(TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET, { accountSid: TWILIO_SID });
-    console.log(`[DIALER] Twilio client initialized (API Key) — Number: ${TWILIO_FROM}`);
-  } else if (TWILIO_SID && TWILIO_TOKEN) {
-    twilioClient = twilio.default(TWILIO_SID, TWILIO_TOKEN);
-    console.log(`[DIALER] Twilio client initialized (Token) — Number: ${TWILIO_FROM}`);
-  } else {
-    console.log('[DIALER] Twilio credentials not set — dialer will run in demo mode');
+// Webhook-first outcome persistence: append canonical events to a JSONL log
+// (local dev). On serverless read-only FS this degrades to structured logs â€”
+// the event payload is always returned/acknowledged regardless.
+const TELEPHONY_EVENTS_LOG = path.join(__dirname, 'dialer', 'logs', 'phound_call_events.jsonl');
+function persistTelephonyEvent(event) {
+  const line = JSON.stringify(event) + '\n';
+  try {
+    fs.mkdirSync(path.dirname(TELEPHONY_EVENTS_LOG), { recursive: true });
+    fs.appendFileSync(TELEPHONY_EVENTS_LOG, line, 'utf8');
+    return 'file';
+  } catch {
+    console.log('[TELEPHONY_EVENT]', line.trim());
+    return 'log';
   }
-} catch (e) {
-  console.log(`[DIALER] Twilio init failed: ${e.message}`);
 }
+
+const _seenProviderEvents = new Set(); // idempotency within process lifetime
 
 // Pipeline CSV helper
 const PIPELINE_CSV = path.join(__dirname, '..', 'MBM', 'Pipeline', 'pipeline.csv');
@@ -1470,7 +1463,7 @@ function cleanPhone(phone) {
   return '';
 }
 
-// GET /api/dialer/leads — All pipeline leads with phone numbers
+// GET /api/dialer/leads â€” All pipeline leads with phone numbers
 app.get('/api/dialer/leads', (req, res) => {
   try {
     const leads = loadPipelineLeads();
@@ -1495,7 +1488,7 @@ app.get('/api/dialer/leads', (req, res) => {
   }
 });
 
-// GET /api/dialer/top50 — Top 50 calling list
+// GET /api/dialer/top50 â€” Top 50 calling list
 app.get('/api/dialer/top50', (req, res) => {
   try {
     const listFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'logs', 'us_50_calling_list.json');
@@ -1509,7 +1502,7 @@ app.get('/api/dialer/top50', (req, res) => {
   }
 });
 
-// GET /api/gtm/brief — GTM Daily Quick Brief (reads the Quick Brief Center artifacts).
+// GET /api/gtm/brief â€” GTM Daily Quick Brief (reads the Quick Brief Center artifacts).
 app.get('/api/gtm/brief', (req, res) => {
   try {
     const briefFile = path.join(__dirname, '..', 'MBM', 'Artifacts', 'GTM', 'daily', 'latest.json');
@@ -1523,7 +1516,7 @@ app.get('/api/gtm/brief', (req, res) => {
   }
 });
 
-// GET /api/gtm/top-actions — GTM Top-N next actions (execution queue).
+// GET /api/gtm/top-actions â€” GTM Top-N next actions (execution queue).
 app.get('/api/gtm/top-actions', (req, res) => {
   try {
     const limit = Math.min(25, parseInt(req.query.limit || '10', 10) || 10);
@@ -1547,7 +1540,7 @@ app.get('/api/gtm/top-actions', (req, res) => {
   }
 });
 
-// GET /api/dialer/re-queue — dialer queue (AutoDialer schema).
+// GET /api/dialer/re-queue â€” dialer queue (AutoDialer schema).
 // SINGLE source of truth is mbm-dialer/app/public/leads_database.json as
 // ordered by the backend engine (dialer_queue_engine.py). Legacy queue files
 // (real_estate_calling_queue.json / cold_calling_queue.json) are NOT read and
@@ -1598,7 +1591,7 @@ function transformReLead(lead, idx) {
     formatted_phone: phone,
     address: lead.address || lead.property_address || '',
     city: cityState,
-    property_type: `${lead.type || lead.vertical || 'Real Estate'} — ${lead.subtype || 'Contact'}`,
+    property_type: `${lead.type || lead.vertical || 'Real Estate'} â€” ${lead.subtype || 'Contact'}`,
     asking_price: askingPrice,
     est_commission: est ? `$${est}.00` : 'Unknown',
     distress_score: lead.priority_score || lead.distress_score || lead.distressScore || 'Unknown',
@@ -1624,7 +1617,7 @@ function transformReLead(lead, idx) {
     identity_property_confirmed: !!lead.identity_property_confirmed,
     identity_caller_name: lead.identity_caller_name || '',
     caller_identity_verified: !!lead.caller_identity_verified,
-    // Canonical ordering metadata — carried verbatim from the engine-stamped
+    // Canonical ordering metadata â€” carried verbatim from the engine-stamped
     // DB record so compareDialerLeads sorts on real values, not defaults.
     queue_bucket: lead.queue_bucket || '',
     freshness_stage: lead.freshness_stage || 'OLD',
@@ -1703,7 +1696,7 @@ app.get('/api/dialer/top50', (req, res) => {
   }
 });
 
-// POST /api/dialer/disposition — Save call disposition
+// POST /api/dialer/disposition â€” Save call disposition
 const dispositionsFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'logs', 'call_dispositions.json');
 app.post('/api/dialer/disposition', (req, res) => {
   try {
@@ -1732,7 +1725,7 @@ app.post('/api/dialer/disposition', (req, res) => {
   }
 });
 
-// GET /api/dialer/dispositions — Get all dispositions
+// GET /api/dialer/dispositions â€” Get all dispositions
 app.get('/api/dialer/dispositions', (req, res) => {
   try {
     if (fs.existsSync(dispositionsFile)) {
@@ -1745,7 +1738,7 @@ app.get('/api/dialer/dispositions', (req, res) => {
   }
 });
 
-// ── Owner Identity Verification Layer ────────────────────────────────
+// â”€â”€ Owner Identity Verification Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Separates DATABASE ownership verification from LIVE caller identity
 // confirmation. The DB proves the record; the call proves who answers.
 const identityResultsFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'logs', 'call_identity_results.json');
@@ -1772,7 +1765,7 @@ function getLeadIdentityState(leadId) {
   return '';
 }
 
-// POST /api/dialer/identity — Save a call-level identity result.
+// POST /api/dialer/identity â€” Save a call-level identity result.
 // Body: { lead_id, caller_name, relationship, property_confirmed,
 //         name_confirmed, wrong_number, do_not_call, disposition, notes }
 // Identity-state mapping mirrors owner_identity.py (Python is authoritative):
@@ -1804,7 +1797,7 @@ app.post('/api/dialer/identity', async (req, res) => {
       timestamp: new Date().toISOString(),
     };
 
-    // Map caller relationship → identity state (mirrors owner_identity.py).
+    // Map caller relationship â†’ identity state (mirrors owner_identity.py).
     let identity_state;
     if (entry.wrong_number) identity_state = 'WRONG_NUMBER';
     else if (entry.do_not_call) identity_state = 'DO_NOT_CALL';
@@ -1831,7 +1824,7 @@ app.post('/api/dialer/identity', async (req, res) => {
     fs.writeFileSync(identityResultsFile, JSON.stringify(results, null, 2));
 
     // Stamp identity onto the lead in leads_database.json (preserving all
-    // existing sales data — dispositions, notes, attempts, stage, source).
+    // existing sales data â€” dispositions, notes, attempts, stage, source).
     if (fs.existsSync(mbmDialerFile)) {
       try {
         const targetLead = (Array.isArray(data) ? data : (data.leads || [])).find((l) => String(l.id) === String(lead_id));
@@ -1862,7 +1855,7 @@ app.post('/api/dialer/identity', async (req, res) => {
   }
 });
 
-// GET /api/dialer/identity — All recorded identity results
+// GET /api/dialer/identity â€” All recorded identity results
 app.get('/api/dialer/identity', (req, res) => {
   try {
     if (fs.existsSync(identityResultsFile)) {
@@ -1875,7 +1868,7 @@ app.get('/api/dialer/identity', (req, res) => {
   }
 });
 
-// GET /api/dialer/tonight — Tonight's skip-traced call list
+// GET /api/dialer/tonight â€” Tonight's skip-traced call list
 app.get('/api/dialer/tonight', (req, res) => {
   try {
     const tonightFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'logs', 'tonight_10_call_list_skip_traced.json');
@@ -1889,296 +1882,152 @@ app.get('/api/dialer/tonight', (req, res) => {
   }
 });
 
-// POST /api/dialer/call — Place an outbound call (direct or bridge mode)
+// POST /api/dialer/call â€” Place an outbound call via Phound (webhook-first outcomes)
 app.post('/api/dialer/call', async (req, res) => {
   try {
-    const { to_number, prospect_name, bridge, my_phone, agent_type } = req.body;
+    const { to_number, prospect_name, lead_id } = req.body;
     if (!to_number) return res.status(400).json({ error: 'to_number is required' });
 
     const phone = cleanPhone(to_number);
-
-    if (!twilioClient) {
-      return res.json({
-        status: 'demo_mode',
-        message: 'Twilio not configured — add TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN to .env',
-        to: phone,
-        prospect_name: prospect_name || 'Prospect',
-      });
+    const result = await telephony.start_call({ to_number: phone, prospect_name, lead_id });
+    if (result.status === 'error') {
+      return res.status(502).json({ error: result.error, http_status: result.http_status });
     }
-
-    let twiml;
-    if (bridge && my_phone) {
-      // Bridge mode: call your phone first, then connect to prospect
-      // This bypasses Twilio trial restrictions since YOUR number is verified
-      const myClean = cleanPhone(my_phone);
-      twiml = `<Response><Say>Connecting you to ${escapeXml(prospect_name) || 'prospect'}...</Say><Dial callerId="${TWILIO_FROM}" timeout="30">${phone}</Dial></Response>`;
-
-      // First call YOUR phone with TwiML that dials the prospect
-      const call = await twilioClient.calls.create({
-        to: myClean,
-        from: TWILIO_FROM,
-        twiml: twiml,
-        timeout: 60,
-        record: true,
-      });
-
-      return res.json({
-        status: 'bridged',
-        call_sid: call.sid,
-        my_phone: myClean,
-        to: phone,
-        prospect_name: prospect_name || 'Prospect',
-        message: `Ringing your phone (${myClean}) — answer to connect to ${prospect_name}`,
-        timestamp: new Date().toISOString(),
-      });
-    } else {
-      // Direct mode: call the prospect directly
-      twiml = `<Response><Say>Hello, this is a call from MBM Property Solutions.</Say><Pause length="2"/></Response>`;
-
-      const call = await twilioClient.calls.create({
-        to: phone,
-        from: TWILIO_FROM,
-        twiml: twiml,
-        timeout: 30,
-        machine_detection: 'Enable',
-        machine_detection_timeout: 8,
-        record: true,
-      });
-
-      return res.json({
-        status: 'direct',
-        call_sid: call.sid,
-        to: phone,
-        prospect_name: prospect_name || 'Prospect',
-        message: `Calling ${prospect_name} at ${phone}...`,
-        timestamp: new Date().toISOString(),
-      });
-    }
-  } catch (err) {
-    const isTrialError = err.message && err.message.includes('unverified');
-    res.status(400).json({
-      error: err.message,
-      hint: isTrialError
-        ? 'Trial accounts can only call verified numbers. Use bridge mode: set bridge=true and my_phone=YOUR_NUMBER'
-        : undefined,
-    });
-  }
-});
-
-// POST /api/dialer/call-bridge — Bridge: calls your phone, then dials prospect when you answer
-app.post('/api/dialer/call-bridge', async (req, res) => {
-  try {
-    const { to_number, prospect_name, my_phone } = req.body;
-    if (!to_number) return res.status(400).json({ error: 'to_number is required' });
-    if (!my_phone) return res.status(400).json({ error: 'my_phone is required for bridge mode' });
-
-    if (!twilioClient) {
-      return res.json({
-        status: 'demo_mode',
-        message: 'Twilio not configured — add TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN to .env',
-        to: cleanPhone(to_number),
-        my_phone: cleanPhone(my_phone),
-      });
-    }
-
-    const phone = cleanPhone(to_number);
-    const myClean = cleanPhone(my_phone);
-
-    const twiml = `<Response><Say>Connecting you to ${escapeXml(prospect_name) || 'prospect'}...</Say><Dial callerId="${TWILIO_FROM}" timeout="30">${phone}</Dial></Response>`;
-
-    const call = await twilioClient.calls.create({
-      to: myClean,
-      from: TWILIO_FROM,
-      twiml: twiml,
-      timeout: 60,
-      record: true,
-    });
-
-    res.json({
-      status: 'ringing_your_phone',
-      call_sid: call.sid,
-      my_phone: myClean,
+    return res.json({
+      ...result,
       to: phone,
-      prospect_name: prospect_name || 'Prospect',
-      message: `Your phone (${myClean}) is ringing — answer to connect to ${prospect_name}`,
       timestamp: new Date().toISOString(),
     });
   } catch (err) {
+    if (err.code === 'TELEPHONY_BLOCKED') {
+      return res.status(423).json({ status: 'TELEPHONY_BLOCKED', error: err.message });
+    }
     res.status(400).json({ error: err.message });
   }
 });
 
-// GET /api/dialer/status — Twilio account status + verified numbers
+// POST /api/dialer/call-bridge â€” operator handoff via Phound (native deep-link)
+app.post('/api/dialer/call-bridge', async (req, res) => {
+  try {
+    const { to_number, prospect_name, lead_id } = req.body;
+    if (!to_number) return res.status(400).json({ error: 'to_number is required' });
+
+    const result = await telephony.start_call({
+      to_number: cleanPhone(to_number), prospect_name, lead_id,
+    });
+    if (result.status === 'error') {
+      return res.status(502).json({ error: result.error, http_status: result.http_status });
+    }
+    res.json({
+      ...result,
+      timestamp: new Date().toISOString(),
+      message: `Phound handoff ready for ${prospect_name || 'Prospect'} â€” outcome arrives via webhook.`,
+    });
+  } catch (err) {
+    if (err.code === 'TELEPHONY_BLOCKED') {
+      return res.status(423).json({ status: 'TELEPHONY_BLOCKED', error: err.message });
+    }
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// GET /api/dialer/status â€” production telephony provider health
 app.get('/api/dialer/status', async (req, res) => {
-  try {
-    if (!twilioClient) {
-      return res.json({
-        status: 'demo_mode',
-        message: 'Twilio not configured',
-        phone: TWILIO_FROM,
-        verified_numbers: [],
-      });
-    }
-
-    const account = await twilioClient.api.accounts(TWILIO_SID).fetch();
-    const callerIds = await twilioClient.outgoingCallerIds.list();
-    const verified = callerIds.map(c => ({
-      phone: c.phone_number,
-      friendly_name: c.friendly_name,
-    }));
-
-    res.json({
-      status: 'active',
-      account_name: account.friendly_name,
-      account_status: account.status,
-      phone: TWILIO_FROM,
-      is_trial: account.type === 'Trial',
-      verified_numbers: verified,
-      hint: verified.length === 0 && account.type === 'Trial'
-        ? 'Trial account with no verified numbers. Use bridge mode (my_phone param) to call leads.'
-        : undefined,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const health = await telephony.health();
+  res.json({
+    provider: telephony.code,
+    mode: telephony.mode?.() || null,
+    status: health.ok ? 'active' : 'blocked',
+    reason: health.reason || null,
+    http_status: health.http_status,
+    outcome_law: 'webhook-first; no event = UNKNOWN',
+  });
 });
 
-// POST /api/dialer/verify-number — Start verification for a phone number
+// POST /api/telephony/phound/webhook â€” THE only path real call outcomes enter
+app.post('/api/telephony/phound/webhook', (req, res) => {
+  const raw = req.body || {};
+  const event = normalizeEvent(raw, { provider: 'phound' });
+  const dedupeKey = event.provider_call_id
+    ? `${event.provider_call_id}:${event.status}`
+    : null;
+  if (dedupeKey && _seenProviderEvents.has(dedupeKey)) {
+    return res.json({ ok: true, duplicate: true, status: event.status });
+  }
+  if (dedupeKey) _seenProviderEvents.add(dedupeKey);
+
+  const sink = persistTelephonyEvent(event);
+  res.json({
+    ok: true,
+    duplicate: false,
+    stored: sink,
+    call_id: event.call_id,
+    provider_call_id: event.provider_call_id,
+    lead_id: event.lead_id,
+    status: event.status,
+  });
+});
+
+// POST /api/dialer/verify-number â€” NOT AVAILABLE on the production provider.
+// Phound manages caller identity inside its app; there is no Verify-style API.
 app.post('/api/dialer/verify-number', async (req, res) => {
-  try {
-    const { phone_number } = req.body;
-    if (!phone_number) return res.status(400).json({ error: 'phone_number is required' });
-
-    if (!twilioClient) {
-      return res.json({ status: 'demo_mode', message: 'Twilio not configured' });
-    }
-
-    const phone = cleanPhone(phone_number);
-    const verification = await twilioClient.verify.services
-      .list({ limit: 1 })
-      .then(services => {
-        if (services.length === 0) throw new Error('No Verify service found — create one at console.twilio.com');
-        return twilioClient.verify.services(services[0].sid).verifications.create({
-          to: phone,
-          channel: 'sms',
-        });
-      });
-
-    res.json({
-      status: 'verification_sent',
-      phone: phone,
-      message: `Verification SMS sent to ${phone} — check your phone and enter the code`,
-    });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+  const result = await telephony.verify_caller();
+  if (result.supported) return res.json(result);
+  res.status(501).json({
+    status: 'NOT_AVAILABLE_ON_PROVIDER',
+    telephony_provider: telephony.code,
+    message: 'Caller identity is managed in the Phound app. Verify your business number there; no code-based verification is exposed here.',
+  });
 });
 
-// POST /api/dialer/check-verification — Check verification code
+// POST /api/dialer/check-verification â€” NOT AVAILABLE on the production provider.
 app.post('/api/dialer/check-verification', async (req, res) => {
-  try {
-    const { phone_number, code } = req.body;
-    if (!phone_number || !code) return res.status(400).json({ error: 'phone_number and code are required' });
-
-    if (!twilioClient) {
-      return res.json({ status: 'demo_mode', message: 'Twilio not configured' });
-    }
-
-    const phone = cleanPhone(phone_number);
-    const check = await twilioClient.verify.services
-      .list({ limit: 1 })
-      .then(services => {
-        return twilioClient.verify.services(services[0].sid).verificationChecks.create({
-          to: phone,
-          code: code,
-        });
-      });
-
-    res.json({
-      status: check.status === 'approved' ? 'verified' : 'pending',
-      phone: phone,
-      message: check.status === 'approved'
-        ? `${phone} is now verified! You can call it directly.`
-        : 'Invalid code — try again',
-    });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+  res.status(501).json({
+    status: 'NOT_AVAILABLE_ON_PROVIDER',
+    telephony_provider: telephony.code,
+    message: 'Caller identity is managed in the Phound app.',
+  });
 });
 
-// POST /api/dialer/cold-call — One-click cold call from call list with auto-script
+// POST /api/dialer/cold-call â€” One-click cold call from call list with auto-script
 app.post('/api/dialer/cold-call', async (req, res) => {
   try {
     const { prospect_index, my_phone, bridge } = req.body;
 
     const tonightFile = path.join(__dirname, '..', 'MBM', 'LeadEngine', 'logs', 'tonight_10_call_list_skip_traced.json');
     if (!fs.existsSync(tonightFile)) {
-      return res.status(404).json({ error: 'No call list found — run skip tracer first' });
+      return res.status(404).json({ error: 'No call list found â€” run skip tracer first' });
     }
 
     const prospects = JSON.parse(fs.readFileSync(tonightFile, 'utf8'));
     const idx = prospect_index || 0;
     if (idx >= prospects.length) {
-      return res.status(400).json({ error: `Index ${idx} out of range — ${prospects.length} prospects available` });
+      return res.status(400).json({ error: `Index ${idx} out of range â€” ${prospects.length} prospects available` });
     }
 
     const prospect = prospects[idx];
     const phone = prospect.primary_phone_raw || cleanPhone(prospect.primary_phone);
 
-    if (!twilioClient) {
-      return res.json({
-        status: 'demo_mode',
-        prospect: prospect.prospect_name,
-        phone: phone,
-        script: prospect.friendly_script,
-        message: 'Twilio not configured — showing script for manual call',
-      });
-    }
-
-    const useBridge = bridge !== false; // Default to bridge for trial accounts
-    if (useBridge && my_phone) {
-      const myClean = cleanPhone(my_phone);
-      const twiml = `<Response><Say>Connecting you to ${prospect.prospect_name}...</Say><Dial callerId="${TWILIO_FROM}" timeout="30">${phone}</Dial></Response>`;
-
-      const call = await twilioClient.calls.create({
-        to: myClean,
-        from: TWILIO_FROM,
-        twiml: twiml,
-        timeout: 60,
-        record: true,
-      });
-
-      return res.json({
-        status: 'bridged',
-        call_sid: call.sid,
-        prospect: prospect,
-        my_phone: myClean,
-        message: `Your phone is ringing — answer to connect to ${prospect.prospect_name}`,
-      });
-    } else {
-      const twiml = `<Response><Say>Hello, this is a call from MBM Property Solutions.</Say><Pause length="2"/></Response>`;
-      const call = await twilioClient.calls.create({
-        to: phone,
-        from: TWILIO_FROM,
-        twiml: twiml,
-        timeout: 30,
-        machine_detection: 'Enable',
-        record: true,
-      });
-
-      return res.json({
-        status: 'direct',
-        call_sid: call.sid,
-        prospect: prospect,
-        message: `Calling ${prospect.prospect_name}...`,
-      });
-    }
-  } catch (err) {
-    const isTrialError = err.message && err.message.includes('unverified');
-    res.status(400).json({
-      error: err.message,
-      hint: isTrialError ? 'Use bridge mode with my_phone to bypass trial restrictions' : undefined,
+    const result = await telephony.start_call({
+      to_number: phone,
+      prospect_name: prospect.prospect_name,
+      lead_id: prospect.id || null,
     });
+    if (result.status === 'error') {
+      return res.status(502).json({ error: result.error, http_status: result.http_status, prospect });
+    }
+
+    return res.json({
+      ...result,
+      prospect,
+      script: prospect.friendly_script,
+      message: `Phound handoff ready for ${prospect.prospect_name} â€” outcome arrives via webhook.`,
+    });
+  } catch (err) {
+    if (err.code === 'TELEPHONY_BLOCKED') {
+      return res.status(423).json({ status: 'TELEPHONY_BLOCKED', error: err.message });
+    }
+    res.status(400).json({ error: err.message });
   }
 });
 
@@ -2191,7 +2040,7 @@ const NETELLER_PRICES = {
   ai_enterprise: 997,
 };
 
-// POST /api/checkout — create a 1-click Neteller checkout for a plan
+// POST /api/checkout â€” create a 1-click Neteller checkout for a plan
 app.post('/api/checkout', async (req, res) => {
   try {
     const { plan, email, name, company } = req.body || {};

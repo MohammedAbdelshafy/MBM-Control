@@ -51,6 +51,8 @@ const ShopifyStorefront = lazy(() => import('@/components/ShopifyStorefront'));
 const AgencyDashboard = lazy(() => import('@/pages/AgencyDashboard'));
 const MobileDialer = lazy(() => import('@/pages/MobileDialer'));
 const DigitalServicesLeads = lazy(() => import('@/pages/DigitalServicesLeads'));
+const DispositionCenter = lazy(() => import('@/pages/DispositionCenter'));
+const BuyerDemand = lazy(() => import('@/pages/BuyerDemand'));
 
 function PageLoader() {
   return <div className="flex items-center justify-center h-[50vh]"><div className="text-center"><div className="w-8 h-8 border-4 border-navy/20 border-t-navy rounded-full animate-spin mx-auto mb-3" /><p className="text-sm text-muted-foreground">Loading...</p></div></div>;
@@ -111,6 +113,8 @@ const AuthenticatedApp = () => {
         <Route path="/store" element={<ShopifyStorefront />} />
         <Route path="/storefront" element={<ShopifyStorefront />} />
         <Route path="/agency" element={<AgencyDashboard />} />
+        <Route path="/disposition" element={<DispositionCenter />} />
+        <Route path="/buyer-demand" element={<BuyerDemand />} />
 
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           <Route element={<AppLayout />}>
