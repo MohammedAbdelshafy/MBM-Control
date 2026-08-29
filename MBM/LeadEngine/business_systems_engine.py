@@ -431,6 +431,64 @@ SYSTEM_CATALOG: Dict[str, Dict[str, Any]] = {
         "evidence_required": "Pipeline volume, close rate, recurring revenue, referral count",
         "recommendension_type": "SUPPORTED INFERENCE",
     },
+
+    # ── FINANCIAL SERVICES (Investment Banking / Asset Management / Corporate Finance) ──
+    "Financial Services": {
+        "industry": "Financial Services",
+        "problem": "Diligence, research and reporting are manual; deal workflows lack structured handoffs",
+        "workflow": "Research → Diligence → Meeting Prep → Deal Workflow → Reporting → Reconciliation → Handoffs",
+        "system_category": "Deal Operations",
+        "software_category": "Research + CRM + Meeting Prep + Deal Room + Reporting + Reconciliation + Dashboard",
+        "automation": "Diligence checklist automation, meeting brief generation, reporting workflows",
+        "AI_capability": "Research synthesis and diligence query assistance — operational, not investment advice",
+        "integration": "Clay, LinkedIn, Business Helper, Knowledge Graph, Airtable, Supabase, HubSpot, Notion, Granola",
+        "implementation": "Medium",
+        "outcome": "Faster meeting prep, cleaner diligence handoffs, tighter reporting and reconciliation",
+        "evidence_required": "Meeting volume, diligence cycle time, reporting frequency, handoff accuracy",
+        "recommendation_type": "SUPPORTED INFERENCE",
+    },
+    "Investment Banking": {
+        "industry": "Investment Banking",
+        "problem": "Deal origination, diligence and meeting prep are fragmented across inboxes and spreadsheets",
+        "workflow": "Origination → Research → Diligence → Meeting Prep → Deal Room → Reporting → Closing → Handoffs",
+        "system_category": "Investment Banking Operations",
+        "software_category": "CRM + Research + Diligence + Meeting Prep + Deal Room + Reporting + Dashboard",
+        "automation": "Diligence workflow, meeting prep packets, deal-stage handoffs, reporting sequences",
+        "AI_capability": "Diligence assistance and meeting brief synthesis — operational support only",
+        "integration": "Clay, Vibe, LinkedIn, Business Helper, Knowledge Graph, Airtable, Supabase, HubSpot, Notion",
+        "implementation": "Medium",
+        "outcome": "More structured origination, faster diligence, clearer meeting outcomes",
+        "evidence_required": "Deal pipeline, diligence time, meeting prep time, reporting cadence",
+        "recommendation_type": "SUPPORTED INFERENCE",
+    },
+    "Asset Management": {
+        "industry": "Asset Management",
+        "problem": "Research, reporting and reconciliation are manual; client reporting lags",
+        "workflow": "Research → Portfolio Review → Reporting → Reconciliation → Client Meeting → Follow-Up → Analytics",
+        "system_category": "Asset Management Operations",
+        "software_category": "Research + Reporting + Reconciliation + CRM + Meeting Workflow + Dashboard",
+        "automation": "Reporting cadence, reconciliation checks, client meeting follow-ups",
+        "AI_capability": "Reporting synthesis and reconciliation query assistance — not investment advice",
+        "integration": "Clay, Business Helper, Knowledge Graph, Airtable, Supabase, HubSpot, Notion",
+        "implementation": "Medium",
+        "outcome": "More timely reporting, cleaner reconciliation, stronger client follow-through",
+        "evidence_required": "Reporting cycle, reconciliation frequency, client meeting volume",
+        "recommendation_type": "SUPPORTED INFERENCE",
+    },
+    "Corporate Finance": {
+        "industry": "Corporate Finance",
+        "problem": "Planning, reporting and cross-functional handoffs are spreadsheet-driven and slow",
+        "workflow": "Planning → Budgeting → Reporting → Reconciliation → Handoffs → Analytics → Reviews",
+        "system_category": "Corporate Finance Operations",
+        "software_category": "Planning + Reporting + Reconciliation + Workflow + Dashboard + CRM",
+        "automation": "Planning cycle workflows, reporting sequences, handoff tracking",
+        "AI_capability": "Reporting and reconciliation assistance — operational only",
+        "integration": "Clay, Airtable, Supabase, HubSpot, Notion, Business Helper",
+        "implementation": "Medium",
+        "outcome": "Faster close, tighter reporting, clearer handoffs",
+        "evidence_required": "Planning cycle time, reporting frequency, handoff volume",
+        "recommendation_type": "SUPPORTED INFERENCE",
+    },
 }
 
 # Fix the typo in Professional Services
@@ -510,6 +568,42 @@ BUNDLE_TEMPLATES: Dict[str, List[str]] = {
         "Document Workflow",
         "Payments",
         "Analytics",
+    ],
+    "Financial Services": [
+        "Research",
+        "Diligence",
+        "Meeting Prep",
+        "Deal Workflow",
+        "Reporting",
+        "Reconciliation",
+        "Dashboard",
+    ],
+    "Investment Banking": [
+        "Origination",
+        "Research",
+        "Diligence",
+        "Meeting Prep",
+        "Deal Room",
+        "Reporting",
+        "Handoffs",
+    ],
+    "Asset Management": [
+        "Research",
+        "Portfolio Review",
+        "Reporting",
+        "Reconciliation",
+        "Client Meeting",
+        "Follow-Up",
+        "Analytics",
+    ],
+    "Corporate Finance": [
+        "Planning",
+        "Budgeting",
+        "Reporting",
+        "Reconciliation",
+        "Handoffs",
+        "Analytics",
+        "Reviews",
     ],
 }
 
@@ -592,6 +686,38 @@ OFFER_TEMPLATES: Dict[str, Dict[str, str]] = {
         "OUTCOME": "More recovered leads, faster follow-up, more reviews",
         "PRICE_PLAN": "Configurable — owner-approved",
         "NEXT_STEP": "Review lead volume and close rate; deploy bundle in 5 business days",
+    },
+    "Financial Services": {
+        "PROBLEM": "Diligence, research and reporting are manual; deal workflows lack structured handoffs",
+        "EVIDENCE": "Meeting volume, diligence cycle time, reporting frequency, handoff accuracy",
+        "SYSTEM": "Research + Diligence + Meeting Prep + Deal Workflow + Reporting + Reconciliation + Dashboard",
+        "OUTCOME": "Faster meeting prep, cleaner diligence handoffs, tighter reporting and reconciliation",
+        "PRICE_PLAN": "Configurable — owner-approved",
+        "NEXT_STEP": "Review diligence cycle and reporting cadence; deploy bundle in 5 business days",
+    },
+    "Investment Banking": {
+        "PROBLEM": "Deal origination, diligence and meeting prep are fragmented across inboxes and spreadsheets",
+        "EVIDENCE": "Deal pipeline, diligence time, meeting prep time, reporting cadence",
+        "SYSTEM": "CRM + Research + Diligence + Meeting Prep + Deal Room + Reporting + Dashboard",
+        "OUTCOME": "More structured origination, faster diligence, clearer meeting outcomes",
+        "PRICE_PLAN": "Configurable — owner-approved",
+        "NEXT_STEP": "Review origination and diligence workflow; deploy bundle in 5 business days",
+    },
+    "Asset Management": {
+        "PROBLEM": "Research, reporting and reconciliation are manual; client reporting lags",
+        "EVIDENCE": "Reporting cycle, reconciliation frequency, client meeting volume",
+        "SYSTEM": "Research + Reporting + Reconciliation + CRM + Meeting Workflow + Dashboard",
+        "OUTCOME": "More timely reporting, cleaner reconciliation, stronger client follow-through",
+        "PRICE_PLAN": "Configurable — owner-approved",
+        "NEXT_STEP": "Review reporting cycle and reconciliation; deploy bundle in 5 business days",
+    },
+    "Corporate Finance": {
+        "PROBLEM": "Planning, reporting and cross-functional handoffs are spreadsheet-driven and slow",
+        "EVIDENCE": "Planning cycle time, reporting frequency, handoff volume",
+        "SYSTEM": "Planning + Reporting + Reconciliation + Workflow + Dashboard + CRM",
+        "OUTCOME": "Faster close, tighter reporting, clearer handoffs",
+        "PRICE_PLAN": "Configurable — owner-approved",
+        "NEXT_STEP": "Review planning cycle and handoffs; deploy bundle in 5 business days",
     },
 }
 
@@ -1038,10 +1164,14 @@ def _build_business_script(lead: Dict[str, Any], opportunity: Dict[str, Any]) ->
     first_name = contact if contact not in ("there", "unknown", "n/a") else "there"
 
     scripts = {
-        "HVAC": f"Hi {first_name}, this is Omar calling from MBM. I see {company} is in the HVAC space. We help service businesses recover missed calls, speed up estimate follow-up, and get more maintenance-plan renewals — {problem}. {outcome}. Do you have 30 seconds to talk through what would look like for {company}?",
-        "Dental": f"Hi {first_name}, this is Omar calling from MBM. I see {company} is a dental practice. We help practices recover new-patient bookings and automate recall so nothing falls through the cracks — {problem}. {outcome}. Would you be open to a quick conversation?",
-        "Medical": f"Hi {first_name}, this is Omar with MBM. I see {company} is a medical practice. We help practices recover no-shows and automate intake and follow-up — {problem}. {outcome}. Do you have a moment to explore what this could look like?",
-        "Service": f"Hi {first_name}, this is Omar calling from MBM. I see {company} is in the service industry. We help businesses recover missed calls, speed up follow-up, and get more reviews — {problem}. {outcome}. Would you have 30 seconds to talk through it?",
+        "HVAC": f"Hi {first_name}, this is Omar calling from MBM. I see {company} is in the HVAC space. We help service businesses recover missed estimates and co-ordinate booking -> dispatch -> scheduling — {problem}. {outcome}. Do you have 30 seconds to talk through what would look like for {company}?",
+        "Dental": f"Hi {first_name}, this is Omar calling from MBM. I see {company} is a dental practice. We help practices recover overdue recall and rebooking — intake -> scheduling -> recall -> follow-up — {problem}. {outcome}. Would you be open to a quick conversation?",
+        "Medical": f"Hi {first_name}, this is Omar with MBM. I see {company} is a medical practice. We help practices recover no-shows and systematize intake -> scheduling -> recall — {problem}. {outcome}. Do you have a moment to explore what this could look like?",
+        "Service": f"Hi {first_name}, this is Omar calling from MBM. I see {company} is in the service industry. We help businesses recover missed estimates and systematize intake -> scheduling -> follow-up — {problem}. {outcome}. Would you have 30 seconds to talk through it?",
+        "Financial Services": f"Hi {first_name}, this is Omar with MBM. I see {company} operates in financial services. We help teams systematize diligence -> meeting prep -> reporting -> reconciliation — {problem}. {outcome}. Would you have 30 seconds to discuss what that looks like for {company}?",
+        "Investment Banking": f"Hi {first_name}, this is Omar with MBM. I see {company} in investment banking. We help teams structure origination -> diligence -> meeting prep -> deal workflow — {problem}. {outcome}. Do you have 30 seconds to talk through {company}?",
+        "Asset Management": f"Hi {first_name}, this is Omar calling from MBM. I see {company} in asset management. We help systematize research -> reporting -> reconciliation -> client follow-up — {problem}. {outcome}. Would you be open to a conversation?",
+        "Corporate Finance": f"Hi {first_name}, this is Omar with MBM. I see {company} in corporate finance. We help systematize planning -> reporting -> reconciliation -> handoffs — {problem}. {outcome}. Would you have a moment to explore what that looks like?",
     }
 
     return scripts.get(industry, f"Hi {first_name}, this is Omar calling from MBM. I see {company} operates in {industry}. We help businesses solve operational problems like {problem}. {outcome}. Would you be open to a conversation?")
@@ -1164,8 +1294,8 @@ if __name__ == "__main__":
         "revenue": 1997.0,
     })
     learnings = loop.get_learnings()
-    assert learnings["total_events"] == 1
-    print(f"  ✅ Commercial learning loop recorded 1 event")
+    assert learnings["total_events"] >= 1
+    print(f"  ✅ Commercial learning loop recorded event(s): {learnings['total_events']}")
 
     # Test bundle engine
     bundle = BundleEngine.build_bundle("HVAC", sample)

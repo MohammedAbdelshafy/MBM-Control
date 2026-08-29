@@ -234,15 +234,15 @@ class DialerScriptEngine:
     def _build_contractor_playbook(
         cls, segment: str, first_name: str, company: str, city: str, lead: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Builds tailored ConTech & trade contractor AI ops pitch."""
-        opening = f"Hi {first_name}, Mohammed calling from MBM Automation. I know you're busy running jobs at {company}, so I'll be brief. We build 24/7 AI estimating and emergency dispatch assistants specifically for commercial contractors in {city}. Do you have 60 seconds?"
-        checkout_link = neteller_link(2497.0, f"Contractor AI Takeoff & Dispatch Retainer - {company}")
+        """Builds tailored ConTech trade contractor operational workflow pitch — estimate recovery, dispatch, scheduling."""
+        opening = f"Hi {first_name}, Mohammed calling from MBM. I know you're busy running jobs at {company}, so I'll be brief. We help contractors recover missed estimates and co-ordinate booking → dispatch → scheduling in {city}. Do you have 60 seconds?"
+        checkout_link = neteller_link(2497.0, f"Contractor Estimate Recovery & Dispatch Workflow - {company}")
 
         call_script = (
             f"{opening}\n\n"
-            f"1. PAIN: Most contractors we work with tell us they lose 2-3 big bids a month simply because estimating takeoffs take too long, or after-hours emergency calls go to voicemail. Is that a bottleneck for {company} right now?\n\n"
-            f"2. SOLUTION: We build an automated CAD-to-BOQ Takeoff engine and 24/7 AI Dispatcher that answers emergency calls on the 1st ring and schedules field techs.\n\n"
-            f"3. NEXT STEP: I'd like to show you a 10-minute live demonstration customized with your trade specs. Are you around tomorrow morning at 10 AM or afternoon at 2 PM?\n\n"
+            f"1. PAIN: Most contractors we work with tell us they lose 2-3 big bids a month because estimating and follow-up are manual, or after-hours calls go to voicemail. Is estimate recovery or dispatch a bottleneck for {company} right now?\n\n"
+            f"2. SOLUTION: We implement an estimate recovery + booking / dispatch → scheduling workflow that tracks estimates, co-ordinates tech dispatch and surfaces follow-up — reporting included.\n\n"
+            f"3. NEXT STEP: I'd like to show you a 10-minute workflow review customized for your trade in {city}. Are you around tomorrow 10 AM or 2 PM?\n\n"
             f"4. POLITE EXIT: Appreciate your time {first_name}, keep building great work!"
         )
 
@@ -323,37 +323,37 @@ class DialerScriptEngine:
     def _build_healthcare_playbook(
         cls, segment: str, first_name: str, company: str, city: str, lead: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Builds healthcare clinic 24/7 AI receptionist & patient recall playbook."""
-        opening = f"Hi {first_name}, this is Mohammed calling. I know you're focused on patient care at {company}, so I'll be very brief. We build 24/7 HIPAA-compliant AI voice receptionists that eliminate hold times and capture after-hours patient bookings in {city}. Do you have 30 seconds?"
-        checkout_link = neteller_link(1997.0, f"Healthcare Clinic AI Voice Retainer - {company}")
+        """Builds healthcare clinic operational workflow playbook — recall, rebooking, intake, scheduling, referral."""
+        opening = f"Hi {first_name}, this is Mohammed calling. I know you're focused on patient care at {company}, so I'll be very brief. We help practices recover missed recall and rebooking opportunities -- intake -> scheduling -> recall -> follow-up -- so overdue patients get booked without front-desk chasing, in {city}. Do you have 30 seconds?"
+        checkout_link = neteller_link(1997.0, f"Clinic Recall & Rebooking Workflow - {company}")
 
         call_script = (
             f"{opening}\n\n"
-            f"1. BOTTLENECK: Most practices lose 15-20% of new patient consults when lines are busy or during lunch and weekend hours. Our AI answers on the 1st ring and schedules directly into your calendar.\n\n"
-            f"2. BENEFIT: Your front-desk staff can focus 100% on in-office patients without phones ringing constantly.\n\n"
-            f"3. NEXT STEP: I'd love to give your office manager a 5-minute live audio demo over Zoom. Who is the best person to coordinate that with?\n\n"
+            f"1. BOTTLENECK: Most practices have 20-40% of hygiene patients overdue for recall not yet rebooked. Our recall & rebooking workflow surfaces the overdue list and fills the hygiene schedule without manual chasing.\n\n"
+            f"2. BENEFIT: Your front-desk staff can focus on in-office patients while recall and intake follow-up run through reporting.\n\n"
+            f"3. NEXT STEP: I'd love to show your office manager a 5-minute workflow review of the recall list. Who is the best person to coordinate that with?\n\n"
             f"4. POLITE EXIT: Thank you for your service to the community, have a wonderful day!"
         )
 
         return {
-            "sales_lane": "CLINICAL_AI_VOICE",
+            "sales_lane": "CLINICAL_RECALL_REBOOKING",
             "opening": opening,
-            "context_confirmation": f"Confirm clinic practice at {company}",
-            "open_to_selling": "Propose 24/7 HIPAA Voice Receptionist & Recall Swarm.",
-            "motivation_discovery": "Identify dropped calls and front-desk phone fatigue.",
-            "timing_discovery": "Live within 48 hours.",
-            "condition_discovery": "Evaluate EHR / PMS scheduling software.",
-            "price_expectation": "$1,997/mo retainer with zero contract lock-in.",
-            "next_step": "Coordinate 5-minute audio demo with Office Manager.",
+            "context_confirmation": f"Confirm clinic practice at {company} — intake & recall workflow",
+            "open_to_selling": "Propose Patient Recall & Rebooking System — intake -> scheduling -> recall -> follow-up with analytics.",
+            "motivation_discovery": "Identify overdue recall volume and front-desk follow-up load.",
+            "timing_discovery": "Workflow live within 5 business days, reporting weekly.",
+            "condition_discovery": "Evaluate PMS/EHR scheduling and recall list handling.",
+            "price_expectation": "$1,997/mo retainer with weekly reporting, zero contract lock-in.",
+            "next_step": "Coordinate 5-minute workflow review with Office Manager.",
             "objection_handlers": {
-                "NOT_INTERESTED": "Understood! Would you like me to email a 1-page summary of how other {city} clinics use this after-hours?",
-                "HIPAA_CONCERN": "All our voice pipelines use enterprise HIPAA-compliant BAA encryption with zero patient data storage.",
-                "ALREADY_HAVE_ANSWERING_SERVICE": "Human services often put patients on hold or take vague messages. Our AI books appointments directly into your schedule in under 60 seconds.",
+                "NOT_INTERESTED": "Understood! Would you like a 1-page recall workflow map for {city} clinics — intake->scheduling->recall — to review?",
+                "HIPAA_CONCERN": "All workflows run inside your existing HIPAA-aware PMS/EHR with audit logging and no external patient storage.",
+                "ALREADY_HAVE_ANSWERING_SERVICE": "Many practices still work recall manually — we automate the overdue list and rebooking so nothing falls through, with reporting.",
             },
             "polite_exit": f"Thank you {first_name}, have a great day caring for your patients!",
             "offer": {
-                "name": "HIPAA 24/7 AI Voice Receptionist & Recall Engine",
-                "tier": "CLINICAL_AI",
+                "name": "Patient Recall & Rebooking System",
+                "tier": "CLINICAL_WORKFLOW",
                 "estimated_deal_value_usd": 1997.0,
                 "neteller_checkout_link": checkout_link,
             },

@@ -179,25 +179,25 @@ export function MasterScript({ lead }: { lead: DialerLead }) {
       ? "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=5000.00&currency=USD&item=Wholesale+Assignment+Deposit"
       : "https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount=1997.00&currency=USD&item=AI+Assistant+Monthly+Retainer");
 
-  // Vertical-specific "WHAT WE CAN BUILD" matrix
+  // Vertical-specific "WHAT WE CAN BUILD" matrix — operational systems only, no generic AI receptionist pitch
   const getVerticalSolutions = () => {
     const v = (lead.vertical || "").toLowerCase();
     if (v.includes("dental")) {
       return {
         niche: "Dental & Orthodontics",
         solutions: [
-          { name: "24/7 AI Voice Receptionist", desc: "Answers emergency toothaches on 1st ring & schedules into Dentrix/Eaglesoft", price: "$1,997/mo" },
-          { name: "Automated Patient Recall Bot", desc: "Engages 6-month overdue hygiene patients via two-way conversational SMS", price: "$1,497/mo" },
-          { name: "Unscheduled Treatment Recovery", desc: "Follows up on presented crowns/implants to book treatment slots", price: "$1,997/mo" },
+          { name: "Automated Recall & Rebooking Workflow", desc: "Surfaces 6-month overdue hygiene and rebooks via intake → scheduling → recall → follow-up", price: "$1,997/mo" },
+          { name: "Unscheduled Treatment Follow-Up", desc: "Follows up on presented crowns/implants to recover treatment scheduling", price: "$1,997/mo" },
+          { name: "Referral & Scheduling Analytics", desc: "Tracks referral → scheduling → case acceptance with weekly reporting", price: "$1,497/mo" },
         ]
       };
     } else if (v.includes("hvac") || v.includes("mechanical")) {
       return {
         niche: "HVAC & Mechanical Contractors",
         solutions: [
-          { name: "24/7 Emergency Dispatch Agent", desc: "Triages heat/AC emergencies at 2 AM and alerts on-call techs via SMS", price: "$2,500/mo" },
-          { name: "ServiceTitan Lead Qualifier", desc: "Instant 15-second response to web form and Google LSA inquiries", price: "$1,997/mo" },
-          { name: "Seasonal Maintenance Recall Swarm", desc: "Books furnace/AC tune-ups across previous customer database", price: "$1,497/mo" },
+          { name: "Estimate Recovery & Follow-Up Workflow", desc: "Recovers unreturned estimates with structured follow-up and payment workflow", price: "$2,500/mo" },
+          { name: "Booking & Dispatch Workflow", desc: "Co-ordinates booking → dispatch → scheduling with route and capacity tracking", price: "$1,997/mo" },
+          { name: "Maintenance Renewal & Retention Workflow", desc: "Books furnace/AC tune-ups and tracks renewal reporting", price: "$1,497/mo" },
         ]
       };
     } else if (v.includes("construction") || v.includes("civil")) {
@@ -221,9 +221,9 @@ export function MasterScript({ lead }: { lead: DialerLead }) {
       return {
         niche: "Clinic & Healthcare Operations",
         solutions: [
-          { name: "24/7 HIPAA AI Voice Receptionist", desc: "Handles patient call overflow, insurance triage, and appointment booking", price: "$1,997/mo" },
-          { name: "Speed-to-Lead Follow-Up Engine", desc: "Engages web consults in <15 seconds to eliminate patient drop-off", price: "$1,497/mo" },
-          { name: "After-Hours Answering Failover", desc: "Guarantees zero dropped calls during peak surge and weekend hours", price: "$1,997/mo" },
+          { name: "Patient Recall & Rebooking System", desc: "Rebooks overdue recall via intake → scheduling → recall → analytics", price: "$1,997/mo" },
+          { name: "Referral & Intake Workflow", desc: "Tracks referral → intake → scheduling with follow-up reporting", price: "$1,497/mo" },
+          { name: "Patient Follow-Up & Payment Workflow", desc: "Manages treatment follow-up, payment workflow and retention reporting", price: "$1,997/mo" },
         ]
       };
     }
@@ -435,13 +435,13 @@ export function MasterScript({ lead }: { lead: DialerLead }) {
               </span>
             </div>
             <div className="flex items-start gap-1.5">
-              <strong className="text-indigo-300 shrink-0">AI Fit:</strong>
+              <strong className="text-indigo-300 shrink-0">Recommended System:</strong>
               <span className="text-emerald-300 font-semibold">
                 {lead.primary_offer ||
                   lead.ai_fit ||
                   lead.sales_strategy?.offer?.name ||
                   lead.details?.ai_fit ||
-                  "24/7 AI Receptionist & Voice Booking Agent"}
+                  "Recall & Rebooking + Intake & Scheduling Workflow"}
               </span>
             </div>
             <div className="flex items-start gap-1.5">
@@ -676,39 +676,39 @@ export function MasterScript({ lead }: { lead: DialerLead }) {
             <span className="text-[9px] text-emerald-400 font-mono">Land & Expand</span>
           </SectionHeader>
 
-          {/* Positioning */}
+          {/* Positioning — operational system, not generic AI */}
           <div className="p-3 bg-gradient-to-r from-indigo-950/60 to-purple-950/40 border border-indigo-500/30 rounded-xl">
             <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-wider block mb-1">
               Consultancy Positioning ("What Do You Do?"):
             </span>
             <p className="text-xs text-slate-200 leading-relaxed italic">
-              "We're an AI consultancy. We look at where a business is losing time or revenue — like missed after-hours calls or delayed patient intake — and build the automation directly into your existing software."
+              "We build operational workflows for practices — intake, scheduling, recall, rebooking and follow-up — directly into your existing software, so overdue patients get booked and staff time is recovered."
             </p>
           </div>
 
-          {/* Opening Hook */}
+          {/* Opening Hook — observation → discovery, not pitch */}
           <div className="p-3.5 bg-slate-900/80 border border-indigo-500/30 rounded-xl">
             <span className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest block mb-1">
               🎙 Opening Hook (Pattern Interrupt):
             </span>
             <p className="text-xs text-slate-200 leading-relaxed">
-              "Hey {lead.contact}, I know I'm calling out of the blue. I noticed you're managing operations at{" "}
-              <strong className="text-white font-semibold">{lead.company}</strong>. We build tailored AI assistants for practices in your area, and I was reaching out because most owners tell us after-hours inquiries and front-desk phone overload are costing them hours every week. Are you handling all incoming calls manually right now?"
+              "Hey {lead.contact}, I know I'm calling out of the blue. I was looking at{" "}
+              <strong className="text-white font-semibold">{lead.company}</strong> in your area and wanted to ask how you’re currently handling recall for patients overdue 6+ months — is that mostly manual today?"
             </p>
           </div>
 
           {/* Discovery Questions */}
           <div>
             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">
-              🧠 Diagnostic Discovery Questions (Click to Copy):
+              🧠 Diagnostic Discovery Questions — recall / rebooking / intake (Click to Copy):
             </div>
             <div className="space-y-1.5">
               {[
-                { id: "ai_q1", text: "What's the most repetitive manual process your front desk handles every single day?" },
-                { id: "ai_q2", text: "When a patient or client calls after 5 PM or on weekends, what happens to that call?" },
-                { id: "ai_q3", text: "Where do you feel your staff loses the most time during the week?" },
-                { id: "ai_q4", text: "If we deployed an AI assistant that answered every call in 2 rings and booked the appointment, how much time would that save you?" },
-                { id: "ai_q5", text: "If you could automate one single headache in your practice tomorrow, what would it be?" },
+                { id: "ai_q1", text: "How are you currently tracking patients overdue for recall — is there a list, and how often is it worked?" },
+                { id: "ai_q2", text: "What happens when a hygiene slot opens last-minute — how is it filled today?" },
+                { id: "ai_q3", text: "Where do you feel your front desk loses the most time — intake, scheduling, or follow-up?" },
+                { id: "ai_q4", text: "If recall rebooking happened without manual chasing, what would that save per week?" },
+                { id: "ai_q5", text: "If you could fix one intake or recall bottleneck tomorrow, which one would it be?" },
               ].map((q) => (
                 <button
                   key={q.id}
