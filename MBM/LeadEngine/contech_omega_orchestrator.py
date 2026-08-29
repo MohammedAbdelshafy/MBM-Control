@@ -15,7 +15,11 @@ sys.path.insert(0, str(ROOT_DIR / "clipping-factory" / "backend"))
 
 from app.core.llm_provider_adapters import LLMProviderAdapters
 from app.services.viral_content_intelligence_engine import ViralContentIntelligenceEngine
-from MBM.LeadEngine.omega_telephony_dialer_engine import OmegaTelephonyDialerEngine
+# LEGACY ARCHIVED: OmegaTelephonyDialerEngine fabricated random outcomes — not used by production Phound path
+try:
+    from MBM.LeadEngine.archive.omega_telephony_dialer_engine import OmegaTelephonyDialerEngine  # type: ignore
+except Exception:
+    OmegaTelephonyDialerEngine = None  # archived legacy — production uses PhoundTelephonyProvider
 from MBM.LeadEngine.global_lead_intelligence_engine import GlobalLeadIntelligenceEngine
 
 
@@ -31,7 +35,7 @@ class ConTechOmegaOrchestrator:
     def __init__(self):
         self.llm_adapters = LLMProviderAdapters()
         self.content_engine = ViralContentIntelligenceEngine()
-        self.dialer_engine = OmegaTelephonyDialerEngine(mode="predictive")
+        self.dialer_engine = OmegaTelephonyDialerEngine(mode="predictive") if OmegaTelephonyDialerEngine else None
         self.lead_engine = GlobalLeadIntelligenceEngine()
 
     def run_benchmark_and_audit(self) -> dict:
@@ -81,12 +85,15 @@ class ConTechOmegaOrchestrator:
         # 1. Execute Content Intelligence Pipeline
         content_res = self.content_engine.process_content_pipeline(stream_url, "real_estate_wholesaling")
 
-        # 2. Execute Predictive Dialer Campaign
-        test_leads = dial_leads or [
-            {"prospect_name": "Mark Johnson", "phone": "+1 (602) 555-1312"},
-            {"prospect_name": "Stephanie Williams", "phone": "+1 (212) 555-1734"}
-        ]
-        dialer_res = self.dialer_engine.execute_dialer_session(test_leads, mode="predictive")
+        # 2. Execute Predictive Dialer Campaign — LEGACY archived; production dialer is PhoundTelephonyProvider
+        if self.dialer_engine is None:
+            dialer_res = {"status": "ARCHIVED_LEGACY", "note": "Omega dialer archived 2026-08-29; use PhoundTelephonyProvider"}
+        else:
+            test_leads = dial_leads or [
+                {"prospect_name": "Mark Johnson", "phone": "+1 (602) 555-1312"},
+                {"prospect_name": "Stephanie Williams", "phone": "+1 (212) 555-1734"}
+            ]
+            dialer_res = self.dialer_engine.execute_dialer_session(test_leads, mode="predictive")
 
         # 3. LLM Completion via Adapters
         llm_res = self.llm_adapters.generate_completion("Draft follow-up deal email", provider="openai")

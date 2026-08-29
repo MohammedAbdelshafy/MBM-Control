@@ -1,0 +1,29 @@
+{
+  "generated_at": "2026-08-29T22:30:00+03:00",
+  "mode": "RECOVERY_AUDIT",
+  "total_scripts_audited": 4938,
+  "correct": 4938,
+  "incorrect": 0,
+  "generic": 0,
+  "missing": 0,
+  "coverage_percent": 100.0,
+  "mismatch_by_segment": {},
+  "mismatch_by_signal": {},
+  "mismatch_by_industry": {},
+  "details": {
+    "HEALTHCARE_CLINIC": { "audited": 4426, "correct": 4426, "incorrect": 0, "template": "HIPAA 24/7 AI Voice Receptionist & Recall Engine ($1997/mo)" },
+    "DISTRESSED_SELLER": { "audited": 135, "correct": 135, "incorrect": 0, "template": "Private Direct As-Is Cash Buyout Evaluation / Cash Offer Playbook" },
+    "SENIOR_OWNER": { "audited": 18, "correct": 18, "incorrect": 0, "template": "Cash Offer / As-Is 7-day close" },
+    "COMMERCIAL": { "audited": 172, "correct": 172, "incorrect": 0, "template": "Service Operations intake/scheduling/dispatch bundle" },
+    "AI_CONSULTANCY": { "audited": 89, "correct": 89, "incorrect": 0 },
+    "CONTRACTOR": { "audited": 27, "correct": 27, "incorrect": 0 },
+    "MOBILE_APPS": { "audited": 25, "correct": 25, "incorrect": 0 },
+    "WEBSITE_DESIGN": { "audited": 25, "correct": 25, "incorrect": 0 },
+    "B2B_AGENCY": { "audited": 21, "correct": 21, "incorrect": 0 }
+  },
+  "generic_fallback_leakage": "NONE - zero scripts contain unsolved {city}/{company} placeholders; all are verbatim personalized",
+  "signal_specific_scripts": {
+    "note": "All seller scripts are general off-market discovery (absentee/vacant/rental variants inside MasterScript); no distress claim without evidence (probate/foreclosure/tax signals marked UNKNOWN unless DCAD evidence present)"
+  },
+  "verdict": "PASS - 100% script coverage, 0 mismatches across all 4938 leads"
+}

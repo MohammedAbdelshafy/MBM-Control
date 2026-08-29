@@ -1,0 +1,736 @@
+{
+  "sellers": {
+    "count": 25,
+    "breakdown": {
+      "EXACT_MATCH": 25
+    },
+    "details": [
+      [
+        "Real Estate Sellers-60",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-61",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-71",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-88",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-89",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-91",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-92",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-95",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-96",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-99",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "VERIFIED-RE-1786700994-1",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-VERIF"
+      ],
+      [
+        "Real Estate Sellers-156",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-159",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-161",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-162",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-164",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-167",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-171",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-18",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-182",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-183",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-184",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-49",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-55",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ],
+      [
+        "Real Estate Sellers-100",
+        "real estate sellers",
+        "DISTRESSED_SELLER",
+        "EXACT_MATCH",
+        "SCRIPT-DISTRESSED_SELLER-Real "
+      ]
+    ]
+  },
+  "clinics": {
+    "count": 25,
+    "breakdown": {
+      "EXACT_MATCH": 25
+    },
+    "details": [
+      [
+        "NPI-1568872166",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1558788125",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1679523195",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1861662207",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1831575398",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1063846699",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1144593815",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1083498455",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1467298604",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1538396213",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1467999557",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1508143306",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1114104247",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1912547951",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1578546172",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1619111291",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1972435360",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1003897406",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1477672004",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1225283237",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1275883282",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1831010701",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1215309570",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1720206378",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ],
+      [
+        "NPI-1912699513",
+        "Medical Clinics & Urgent Care",
+        "HEALTHCARE_CLINIC",
+        "EXACT_MATCH",
+        "SCRIPT-HEALTHCARE_CLINIC-NPI-1"
+      ]
+    ]
+  },
+  "hvac": {
+    "count": 25,
+    "breakdown": {
+      "EXACT_MATCH": 1,
+      "ACCEPTABLE_MATCH": 24
+    },
+    "details": [
+      [
+        "AI-BUYER-F688EA9E",
+        "HVAC & Mechanical Contractors",
+        "CONTRACTOR",
+        "EXACT_MATCH",
+        "SCRIPT-CONTRACTOR-AI-BUYER-F68"
+      ],
+      [
+        "CON-TX-183B1B",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-183B1"
+      ],
+      [
+        "CON-TX-1AFCE8",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-1AFCE"
+      ],
+      [
+        "CON-TX-226025",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-22602"
+      ],
+      [
+        "CON-TX-250641",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-25064"
+      ],
+      [
+        "CON-TX-350CFC",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-350CF"
+      ],
+      [
+        "CON-TX-43FB30",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-43FB3"
+      ],
+      [
+        "CON-TX-45334C",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-45334"
+      ],
+      [
+        "CON-TX-5AD2E8",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-5AD2E"
+      ],
+      [
+        "CON-TX-6374B2",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-6374B"
+      ],
+      [
+        "CON-TX-74FB15",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-74FB1"
+      ],
+      [
+        "CON-TX-7B7F0F",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-7B7F0"
+      ],
+      [
+        "CON-TX-7ECF88",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-7ECF8"
+      ],
+      [
+        "CON-TX-88B18A",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-88B18"
+      ],
+      [
+        "CON-TX-919392",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-91939"
+      ],
+      [
+        "CON-TX-9F5D05",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-9F5D0"
+      ],
+      [
+        "CON-TX-A0E4E9",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-A0E4E"
+      ],
+      [
+        "CON-TX-A5C56E",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-A5C56"
+      ],
+      [
+        "CON-TX-A67782",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-A6778"
+      ],
+      [
+        "CON-TX-CEC443",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-CEC44"
+      ],
+      [
+        "CON-TX-D7BBDD",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-D7BBD"
+      ],
+      [
+        "CON-TX-D98F68",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-D98F6"
+      ],
+      [
+        "CON-TX-DA5BD1",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-DA5BD"
+      ],
+      [
+        "CON-TX-F18A04",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-F18A0"
+      ],
+      [
+        "CON-TX-F39237",
+        "Commercial Contractors & ConTech",
+        "CONTRACTOR",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-CONTRACTOR-CON-TX-F3923"
+      ]
+    ]
+  },
+  "agencies": {
+    "count": 25,
+    "breakdown": {
+      "ACCEPTABLE_MATCH": 21,
+      "EXACT_MATCH": 4
+    },
+    "details": [
+      [
+        "B2B-CA-1ED805",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-CA-1ED80"
+      ],
+      [
+        "B2B-CA-2B7809",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-CA-2B780"
+      ],
+      [
+        "B2B-CA-783E19",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-CA-783E1"
+      ],
+      [
+        "B2B-CO-63835F",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-CO-63835"
+      ],
+      [
+        "B2B-FL-B6FA51",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-FL-B6FA5"
+      ],
+      [
+        "B2B-IL-B75CA8",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-IL-B75CA"
+      ],
+      [
+        "B2B-TX-210E47",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-210E4"
+      ],
+      [
+        "B2B-TX-26CA7B",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-26CA7"
+      ],
+      [
+        "B2B-TX-285A47",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-285A4"
+      ],
+      [
+        "B2B-TX-326B3F",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-326B3"
+      ],
+      [
+        "B2B-TX-5B99CD",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-5B99C"
+      ],
+      [
+        "B2B-TX-74931F",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-74931"
+      ],
+      [
+        "B2B-TX-8057EE",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-8057E"
+      ],
+      [
+        "B2B-TX-A71F02",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-A71F0"
+      ],
+      [
+        "B2B-TX-BE133C",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-BE133"
+      ],
+      [
+        "B2B-TX-E4456A",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-E4456"
+      ],
+      [
+        "B2B-TX-EA37A4",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-EA37A"
+      ],
+      [
+        "B2B-TX-EAE21C",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-EAE21"
+      ],
+      [
+        "B2B-TX-FCF2AE",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-TX-FCF2A"
+      ],
+      [
+        "B2B-WA-50904A",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-B2B-WA-50904"
+      ],
+      [
+        "AI-BUYER-EAA8175A",
+        "Professional Services & B2B Agencies",
+        "B2B_AGENCY",
+        "ACCEPTABLE_MATCH",
+        "SCRIPT-B2B_AGENCY-AI-BUYER-EAA"
+      ],
+      [
+        "DS-04b001a2057812f735cbcab76fd44e11",
+        "Digital Services",
+        "AI_CONSULTANCY",
+        "EXACT_MATCH",
+        "SCRIPT-AI_CONSULTANCY-DS-04b00"
+      ],
+      [
+        "DS-118324209ffc61f83e661b922ddd9a95",
+        "Digital Services",
+        "AI_CONSULTANCY",
+        "EXACT_MATCH",
+        "SCRIPT-AI_CONSULTANCY-DS-11832"
+      ],
+      [
+        "DS-1820f20ee5932f2f54e446f1a06ce10f",
+        "Digital Services",
+        "AI_CONSULTANCY",
+        "EXACT_MATCH",
+        "SCRIPT-AI_CONSULTANCY-DS-1820f"
+      ],
+      [
+        "DS-18231a80883ac5572eb0049fe87bd4c2",
+        "Digital Services",
+        "AI_CONSULTANCY",
+        "EXACT_MATCH",
+        "SCRIPT-AI_CONSULTANCY-DS-18231"
+      ]
+    ]
+  }
+}

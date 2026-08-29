@@ -231,8 +231,41 @@ export function MasterScript({ lead }: { lead: DialerLead }) {
 
   const verticalSolutions = getVerticalSolutions();
 
+  // Detect provider conflict and missing property evidence for banner surfacing
+  const hasConflict = (() => {
+    const norm = (p: string) => p.replace(/\D/g, "").replace(/^1/, "");
+    const phones = [lead.phone, (lead as any).verified_phone, (lead as any).skip_trace_phone_alt].filter(Boolean).map((p) => norm(String(p)));
+    const distinct = new Set(phones.filter(Boolean));
+    return distinct.size > 1;
+  })();
+  const missingProperty = isSeller && !(lead as any).property_evidence && !lead.address && !(lead.details as any)?.Property_Address;
+  const hasPropertyMissing = isSeller && ((lead as any).property_evidence === "MISSING" || missingProperty);
+  const offMarketUnknown = isSeller && (lead as any).off_market_status === "UNKNOWN";
+
   return (
     <div className="space-y-6 text-sm font-sans">
+      {/* CONFLICT / PROPERTY WARNING BANNERS — surfaced from business_systems_engine CONFLICT logic */}
+      {hasConflict && (
+        <div className="p-3 bg-rose-950/40 border border-rose-500/40 rounded-xl text-xs">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-rose-400 font-mono font-bold uppercase tracking-widest">⚠️ CONFLICT — Providers Disagree</span>
+            <span className="text-[10px] font-mono text-rose-300 border border-rose-500/30 px-1.5 py-0.5 rounded">DO NOT PRESENT AS VERIFIED FACT</span>
+          </div>
+          <div className="text-rose-200">Independent sources report different phones for this lead. Resolve before dialing. BusinessSystemsEngine marks this as <span className="font-mono font-bold">CONFLICT</span>.</div>
+        </div>
+      )}
+      {hasPropertyMissing && (
+        <div className="p-3 bg-amber-950/30 border border-amber-500/30 rounded-xl text-xs">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-amber-400 font-mono font-bold uppercase tracking-widest">🏚 PROPERTY EVIDENCE MISSING</span>
+            <span className="text-[10px] font-mono text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded">UNKNOWN · NOT OFF_MARKET_CONFIRMED</span>
+          </div>
+          <div className="text-amber-200">No APN/address/property evidence on file. Listing status is <span className="font-mono">UNKNOWN</span> — never inferred as off-market. Seller queue requires PROPERTY+OWNER+PHONE evidence chain.</div>
+        </div>
+      )}
+      {offMarketUnknown && !hasPropertyMissing && (
+        <div className="p-2 bg-slate-800/50 border border-slate-700 rounded-lg text-[11px] font-mono text-slate-400">Listing status: <span className="text-amber-300">UNKNOWN</span> — not verified as off-market. No distress claim without signal evidence.</div>
+      )}
       {/* ─────────────────────────────────────────────────────────────
           1. DUAL-ENGINE INTELLIGENCE CARD (SELLER vs AI BUSINESS BUYER)
           ───────────────────────────────────────────────────────────── */}

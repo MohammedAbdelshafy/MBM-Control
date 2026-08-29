@@ -1,0 +1,16 @@
+[
+  {
+    "industry": "HVAC",
+    "problem": "Missed calls leak revenue",
+    "recommended_system": "Lead Capture + CRM + Dispatch",
+    "script": "Test script",
+    "offer": "Test offer",
+    "call_outcome": "CONNECTED",
+    "offer_acceptance": "accepted",
+    "appointment": true,
+    "checkout": true,
+    "payment": true,
+    "revenue": 1997.0,
+    "recorded_at": "2026-08-29T20:52:07.988730+00:00"
+  }
+]

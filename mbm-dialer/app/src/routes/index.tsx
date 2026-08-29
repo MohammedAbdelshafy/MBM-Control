@@ -840,58 +840,95 @@ function Dashboard() {
           </div>
         </aside>
 
-        {/* CENTER / RIGHT COLUMN: CALL COCKPIT & SCRIPT */}
+        {/* CENTER / RIGHT COLUMN: CALL COCKPIT — REQUIRED OPERATOR ORDER:
+            SUMMARY → EVIDENCE → VERIFIED CONTACT → PROPERTY/BUSINESS CONTEXT → OPPORTUNITY →
+            SCRIPT → OFFER → DIAL→PHOUND → AFTER CALL → FOLLOW-UP → NEXT ACTION
+            MasterScript contains 1-7; DIAL+AFTER_CALL+FOLLOW_UP must remain BELOW offer. */}
         <main className="flex flex-1 flex-col overflow-y-auto bg-slate-950/60 p-4 md:p-6">
           {selectedLead ? (
             <div className="max-w-4xl w-full mx-auto space-y-6">
-              {/* 1-Click Action Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-slate-900/90 border border-slate-800 rounded-xl shadow-md">
-                <div className="flex items-center gap-2">
-                  <a
-                    href={`tel:${selectedLead.phone}`}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-lg text-xs transition-all shadow-md"
-                  >
-                    <span>📞 DIAL</span>
-                    <span className="font-mono">{selectedLead.phone}</span>
-                  </a>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <button
-                    onClick={() =>
-                      handleRecordDecision(
-                        isSeller(selectedLead) ? "Seller Warmed" : "AI Buyer Warmed",
-                      )
-                    }
-                    className="px-3 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 rounded-lg text-xs transition-all"
-                  >
-                    🔥 WARM (W)
-                  </button>
-                  <button
-                    onClick={() => handleRecordDecision("Qualified Opportunity")}
-                    className="px-3 py-1.5 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 font-bold border border-indigo-500/40 rounded-lg text-xs transition-all"
-                  >
-                    ✅ QUALIFIED (Q)
-                  </button>
-                  <button
-                    onClick={() => setShowMeetingModal(true)}
-                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-lg text-xs transition-all shadow"
-                  >
-                    📅 BOOK MEETING (B)
-                  </button>
-                  <button
-                    onClick={() => handleRecordDecision("Wrong Person")}
-                    className="px-2.5 py-1.5 bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 font-bold border border-slate-700 rounded-lg text-xs transition-all"
-                  >
-                    🚫 WRONG PERSON
-                  </button>
-                </div>
-              </div>
-
-              {/* Master Script HUD Component */}
+              {/* 1-7: SUMMARY→OFFER — MasterScript HUD (contains verified contact, property/business, opportunity, script, offer) */}
               <MasterScript lead={selectedLead} />
 
-              {/* GTM Quick Brief Widget */}
+              {/* 8: DIAL → PHOUND — production telephony handoff (Phound native_app). NOT tel: fallback. */}
+              <section id="dial-phound" aria-label="Dial via Phound" className="p-4 bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-500/30 rounded-xl shadow-md">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-400">8 — DIAL → PHOUND</span>
+                  <span className="text-[10px] font-mono text-slate-500">
+                    {selectedLead.verification_status || "UNVERIFIED"} · {selectedLead.phone_verified ? "PHONE_VERIFIED" : "PHONE_UNVERIFIED"}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={() => {
+                      // Final eligibility check — mirrors dialer_queue_engine.get_callable_state + DNC/suppression gate
+                      const isCallable = selectedLead.callable !== false;
+                      const hasPhone = !!(selectedLead.phone && String(selectedLead.phone).trim());
+                      const isVerified = String(selectedLead.verification_status || "").toUpperCase().startsWith("VERIFIED");
+                      const isSuppressed = selectedLead.queue_bucket === "SUPPRESSED" || (selectedLead as any).suppression_reason;
+                      // Blocked if any gate fails — fail-closed, no fabricated CONNECTED
+                      if (!hasPhone) { alert("BLOCKED: Missing phone — cannot dial."); return; }
+                      if (!isVerified || !selectedLead.phone_verified) { alert("BLOCKED: Phone not VERIFIED — re-verify before dialing."); return; }
+                      if (isSuppressed || !isCallable) { alert("BLOCKED: Lead is SUPPRESSED/UNVERIFYABLE — DNC gate holds."); return; }
+                      // Production path: Phound native_app deep-link (operator's Phound business line)
+                      const phoundUrl = `https://web.phound.app/?phone=${encodeURIComponent(String(selectedLead.phone))}`;
+                      // Record CALL_OPENED (not CONNECTED) — outcome waits for webhook normalizeEvent
+                      fetch("/api/telephony/phound/webhook", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event: "CALL_OPENED", lead_id: selectedLead.id, phone: selectedLead.phone, provider: "phound", timestamp: new Date().toISOString() }) }).catch(() => {});
+                      window.open(phoundUrl, "_blank", "noopener,noreferrer");
+                    }}
+                    className="flex items-center gap-1.5 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-lg text-xs transition-all shadow-md"
+                  >
+                    <span>📞 DIAL → PHOUND</span>
+                    <span className="font-mono">{selectedLead.phone}</span>
+                  </button>
+                  <span className="text-[11px] text-slate-400">Opens Phound app with verified number. Outcome arrives ONLY via webhook.</span>
+                  <a href={`tel:${selectedLead.phone}`} className="text-[11px] text-slate-500 hover:text-slate-300 underline ml-auto" title="Local tel: fallback (not production path)">tel: fallback</a>
+                </div>
+                <div className="mt-2 text-[10px] font-mono text-slate-500">Webhook-first law: no CONNECTED/QUALIFIED recorded automatically. Human must disposition after call.</div>
+              </section>
+
+              {/* 9: AFTER CALL — disposition (must be BELOW DIAL). No automatic CONNECTED. */}
+              <section id="after-call" aria-label="After Call" className="p-4 bg-slate-900/90 border border-slate-800 rounded-xl shadow-md">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
+                  <span className="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400">9 — AFTER CALL</span>
+                  <span className="text-[10px] font-mono text-slate-500">Record human disposition only — never auto-CONNECTED</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {DECISION_GROUPS.flatMap((g) => g.items).slice(0, 12).map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleRecordDecision(item.id)}
+                      className="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-cyan-500/30 text-slate-200 font-bold rounded-lg text-xs transition-all text-left"
+                    >
+                      <span className="flex items-center gap-1.5"><span>{item.icon || "•"}</span>{item.id}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  <button onClick={() => handleRecordDecision(isSeller(selectedLead) ? "Seller Warmed" : "AI Buyer Warmed")} className="px-3 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 rounded-lg text-xs">🔥 WARM (W)</button>
+                  <button onClick={() => handleRecordDecision("Qualified Opportunity")} className="px-3 py-1.5 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 font-bold border border-indigo-500/40 rounded-lg text-xs">✅ QUALIFIED (Q)</button>
+                  <button onClick={() => setShowMeetingModal(true)} className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-lg text-xs shadow">📅 BOOK MEETING (B)</button>
+                  <button onClick={() => handleRecordDecision("Wrong Person")} className="px-2.5 py-1.5 bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 font-bold border border-slate-700 rounded-lg text-xs">🚫 WRONG PERSON</button>
+                </div>
+              </section>
+
+              {/* 10: FOLLOW-UP — must be BELOW after-call */}
+              <section id="follow-up" aria-label="Follow Up" className="p-4 bg-amber-950/20 border border-amber-500/20 rounded-xl">
+                <div className="flex items-center justify-between mb-2 pb-2 border-b border-amber-500/20">
+                  <span className="text-xs font-mono font-bold uppercase tracking-widest text-amber-400">10 — FOLLOW-UP</span>
+                  <span className="text-[10px] font-mono text-slate-500">Trigger: post-call disposition → idempotent follow-up task</span>
+                </div>
+                <div className="text-xs text-slate-300">Next action is created only after a human disposition (CALLBACK, VOICEMAIL, QUALIFIED, etc.). No auto follow-up without outcome.</div>
+                <div className="mt-2 text-[11px] font-mono text-amber-300/80">Idempotency: follow-up via AdService with lead_id + disposition + date key.</div>
+              </section>
+
+              {/* 11: NEXT ACTION — pipeline next step */}
+              <section id="next-action" aria-label="Next Action" className="p-3 bg-slate-900/60 border border-slate-800 rounded-lg text-xs">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 block mb-1">11 — NEXT ACTION</span>
+                <span className="text-cyan-300 font-medium">{selectedLead.recommended_next_action || (selectedLead as any).next_action || "Select next lead (N/↓) → Dial via Phound → Disposition → Follow-up"}</span>
+              </section>
+
+              {/* GTM Quick Brief Widget — below pipeline, not above */}
               <div className="p-4 bg-slate-900/60 border border-slate-800 rounded-xl space-y-2 text-xs">
                 <div className="flex items-center justify-between font-mono text-[10px] text-slate-400 uppercase tracking-widest pb-1 border-b border-slate-800">
                   <span className="text-cyan-400 font-bold">🚀 GTM REVENUE BRIEF</span>

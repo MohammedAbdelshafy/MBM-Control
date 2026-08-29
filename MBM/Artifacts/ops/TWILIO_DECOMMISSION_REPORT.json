@@ -1,0 +1,43 @@
+{
+  "report": "TWILIO_DECOMMISSION_REPORT",
+  "date": "2026-08-26",
+  "decision": "Twilio removed from the production telephony path; Phound is the single production provider (server/dialer/telephonyProvider.js).",
+  "production_changes": [
+    {"file": "server/index.js", "change": "Twilio client init + all call/status/verify endpoints rewired to TelephonyProvider (Phound); webhook route POST /api/telephony/phound/webhook added; zero twilio imports remain"},
+    {"file": "package.json", "change": "'twilio' dependency REMOVED from runtime deps"},
+    {"file": "server/dialer/telephonyProvider.js", "change": "NEW canonical interface + PhoundTelephonyProvider + webhook-first normalizeEvent + fail-closed UnconfiguredTelephonyProvider"}
+  ],
+  "legacy_labeled_non_production": [
+    "MBM/LeadEngine/close_queue_dialer.py",
+    "MBM/LeadEngine/free_us_phone_dialer.py",
+    "MBM/LeadEngine/power_dialer.py",
+    "MBM/LeadEngine/cold_calling_swarm_os.py",
+    "MBM/LeadEngine/call_bridge_to_phone.py",
+    "MBM/LeadEngine/interactive_caller.py",
+    "MBM/LeadEngine/bulk_verify_twilio.py",
+    "MBM/LeadEngine/twilio_client.py",
+    "MBM/Scripts/twilio_verify_unlock.py",
+    "MBM/Scripts/twilio_unlock_guide.py"
+  ],
+  "historical_provenance_kept": [
+    {"item": "outreach_events.jsonl rows with provider=twilio_bridge", "reason": "real historical events; provenance is never rewritten"},
+    {"item": ".env TWILIO_* keys", "reason": "unused by production runtime; left untouched to avoid breaking unrelated tooling"}
+  ],
+  "documentation_fixed": [
+    "server/index.js security comment: 'Twilio call endpoints' -> 'telephony call endpoints'"
+  ],
+  "phound_environment_required": {
+    "native_app_mode (works today, no credentials)": ["PHOUND_ENABLED=true (optional)"],
+    "api_mode (automated dispatch)": ["PHOUND_ENABLED=true", "PHOUND_CALL_ENDPOINT (HTTPS)", "PHOUND_API_TOKEN", "PHOUND_TIMEOUT_MS (optional)", "PHOUND_AUTH_HEADER (optional)"],
+    "webhooks": "configure in Phound console -> WEBHOOK_BASE_URL + /api/telephony/phound/webhook"
+  },
+  "current_config_status": {
+    "PHOUND_ENABLED": false,
+    "PHOUND_CALL_ENDPOINT": false,
+    "PHOUND_SMS_ENDPOINT": false,
+    "PHOUND_API_TOKEN": false,
+    "mode_effective": "native_app",
+    "verdict": "INTEGRATED but API dispatch blocked until owner provisions Phound endpoint+token"
+  },
+  "outcome_law": "No provider event => status UNKNOWN. Failure injection (timeout/401/429/5xx/duplicate/malformed) produces NO outcome."
+}

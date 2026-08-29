@@ -111,12 +111,11 @@ def run_monetization_loop():
     except Exception as e:
         _log(f"  └─ Voice Agency Enhancer notice: {e}")
 
-    # 7. Refresh Tonight's Skip-Traced Calling Sheet
-    _log("STEP 7: Refreshing Tonight's Top 10 Skip-Traced Real Estate Calling Sheet...")
+    # 7. Refresh Tonight's Skip-Traced Calling Sheet — LEGACY ARCHIVED 2026-08-29 (synthetic 555 generator, not canonical)
+    _log("STEP 7: Skip-Traced Calling Sheet — ARCHIVED (see MBM/LeadEngine/archive/) — no synthetic generation")
     try:
-        tonight_script = BASE_DIR / "tonight_10_call_list_skip_traced.py"
-        subprocess.run([sys.executable, str(tonight_script)], capture_output=True, text=True, timeout=120)
-        _log("  └─ Skip-Traced Calling Sheet refreshed successfully.")
+        # Legacy tonight_10_call_list_skip_traced.py archived: do not run synthetic generator
+        _log("  └─ Skip-Traced Calling Sheet skipped (legacy synthetic generator archived).")
     except Exception as e:
         _log(f"  └─ Skip-Traced Calling Sheet notice: {e}")
 
