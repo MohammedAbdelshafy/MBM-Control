@@ -120,6 +120,10 @@ def validate_artifacts(records: List[Dict[str, Any]], day: str) -> Dict[str, Any
             if not gate["phone_ok"]:
                 issues.append(f"bad_phone:{gate['phone_reason']}")
                 invalid_phone.append(rid)
+            if not gate["name_ok"]:
+                issues.append(f"bad_name:{gate['name_reason']}")
+            if not gate["verified_ok"]:
+                issues.append(f"verify_fail:{gate['verified_source']}")
             if is_placeholder_phone(phone_raw):
                 issues.append("placeholder_phone")
 
