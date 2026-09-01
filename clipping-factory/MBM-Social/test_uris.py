@@ -4,11 +4,11 @@ client_id = "708112125852-6c9bg1ddn88g3e3puaus8bi288upsr5l.apps.googleuserconten
 scope = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube"
 
 brands = {
-    "clippingfactorymbm": {"email": "abdelshafyclapps@gmail.com"},
-    "cutedosage": {"email": "moeaiagenticteamz@gmail.com"},
+    "clippingfactorymbm": {"email": "UNKNOWN - NOT YET CONFIRMED"},
+    "cutedosage": {"email": "moeaiagenicteamz@gmail.com"},
     "dontwatchthis": {"email": "abdelshafyplay@gmail.com"},
     "goalmachinez": {"email": "abdelshafyplays@gmail.com"},
-    "twistsrevealed": {"email": "bigmoeshafy@gmail.com"},
+    "twistsrevealed": {"email": "abdelshafyclapps@gmail.com"},
 }
 
 # Try different redirect URI options

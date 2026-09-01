@@ -4,10 +4,10 @@ Clipping Factory Master Campaign Manager — Ultra-Enhanced Hashtags & Brand Eng
 Enforces EXACT brand content matching and ULTRA-ENHANCED HASHTAG GAME for 100 Posts/Day:
 
 Brands & Enhanced Hashtags:
-  1. Twists Revealed (@TwistsRevealed / bigmoeshafy@gmail.com):
+  1. Twists Revealed (@TwistsRevealed / abdelshafyclapps@gmail.com):
      - Content: Action & Thriller Movie Summaries & Insane Plot Twists.
      - Enhanced Hashtags: #PlotTwist #MovieRecap #ActionMovies #Thriller #HollywoodEnding #USATrending #MovieClips #CinemaTok #MovieMindBlowing #Shorts #USA
-  2. Cute Dosage (@CuteDosage / moeaiagenticteamz@gmail.com):
+  2. Cute Dosage (@CuteDosage / moeaiagenicteamz@gmail.com):
      - Content: Cute Baby Videos, Adorable Moments, & Wholesome Family Clips.
      - Enhanced Hashtags: #CuteBabies #BabyMoments #Wholesome #CuteBabiesOfTikTok #BabyLaugh #USAFamily #AdorableBabies #Heartwarming #Shorts #USA
   3. Don't Watch This (@DONTWATCHTHIS1 / abdelshafyplay@gmail.com):
@@ -16,7 +16,7 @@ Brands & Enhanced Hashtags:
   4. Goal Machinez (@Goalmachinez / abdelshafyplays@gmail.com):
      - Content: High-Energy Football & Physics-Defying Soccer Goals.
      - Enhanced Hashtags: #Knuckleball #SoccerGoals #FootballHighlights #PhysicsDefying #GoalMachinez #RonaldoFreeKick #USASports #FutbolTok #Shorts #USA
-  5. Clipping Factory MBM (@ClippingFactoryMBM / abdelshafyclapps@gmail.com):
+  5. Clipping Factory MBM (@ClippingFactoryMBM / UNKNOWN - NOT YET CONFIRMED):
      - Content: AI Agent Swarms, Company Automation, & Video Clipping.
      - Enhanced Hashtags: #AIAgents #Automation #SaaS #BuildInPublic #AIStartups #SiliconValley #VideoClipping #TechTok #USATech #Shorts #USA
 
@@ -74,7 +74,7 @@ def get_ultra_enhanced_campaigns():
             "name": "Action & Thriller Movie Recaps",
             "brand": "twistsrevealed",
             "handle": "@TwistsRevealed",
-            "master_email": "bigmoeshafy@gmail.com",
+            "master_email": "abdelshafyclapps@gmail.com",
             "niche": "Action & Thriller Movie Summaries & Insane Plot Twists",
             "clip_source": "real_action_thriller_source.mp4",
             "target_region": "US",
@@ -91,7 +91,7 @@ def get_ultra_enhanced_campaigns():
             "name": "Cute Baby Videos & Heartwarming Moments",
             "brand": "cutedosage",
             "handle": "@CuteDosage",
-            "master_email": "moeaiagenticteamz@gmail.com",
+            "master_email": "moeaiagenicteamz@gmail.com",
             "niche": "Cute Baby Videos, Adorable Moments, & Wholesome Family Clips",
             "clip_source": "real_cute_baby_source.mp4",
             "target_region": "US",
@@ -142,7 +142,7 @@ def get_ultra_enhanced_campaigns():
             "name": "AI Agent Swarms & Video Clipping Automation",
             "brand": "clippingfactorymbm",
             "handle": "@ClippingFactoryMBM",
-            "master_email": "abdelshafyclapps@gmail.com",
+            "master_email": "UNKNOWN - NOT YET CONFIRMED",
             "niche": "AI Agent Swarms, Company Automation, & Video Clipping",
             "clip_source": "real_ai_agents_automation_source.mp4",
             "target_region": "US",

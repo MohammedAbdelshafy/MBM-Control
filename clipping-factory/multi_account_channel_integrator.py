@@ -4,11 +4,11 @@ Multi-Account Google Channel Integrator & Manager
 Integrates all 5 Google Accounts and YouTube Channels into the automated engine:
 
 Google Account Mapping:
-  1. bigmoeshafy@gmail.com          -> @TwistsRevealed (UCknUgK7LEQOoXk_44juSfzw)
-  2. moeaiagenticteamz@gmail.com     -> @CuteDosage (UCNnWrWmMuZDy4LSg95stEOQ)
+  1. abdelshafyclapps@gmail.com      -> @TwistsRevealed (UCknUgK7LEQOoXk_44juSfzw)
+  2. moeaiagenicteamz@gmail.com     -> @CuteDosage (UCNnWrWmMuZDy4LSg95stEOQ)
   3. abdelshafyplay@gmail.com        -> @DONTWATCHTHIS1 (UCZi1tOA71rDrin5DyNVNKOA)
   4. abdelshafyplays@gmail.com       -> @Goalmachinez (UCV3i2caQ-JXey0by8H1_5tg)
-  5. abdelshafyclapps@gmail.com      -> @ClippingFactoryMBM (UCSZ80c0lE5gqkkbfHKrGkGA)
+  5. UNKNOWN - NOT YET CONFIRMED     -> @ClippingFactoryMBM (UCSZ80c0lE5gqkkbfHKrGkGA)
 
 Features:
   - 1:1 Routing per Google Account / Mobile Phone Channel
@@ -62,7 +62,7 @@ ALL_GOOGLE_ACCOUNT_CHANNELS = [
         "display_name": "Twists Revealed",
         "youtube_handle": "@TwistsRevealed",
         "channel_id": "UCknUgK7LEQOoXk_44juSfzw",
-        "google_account_email": "bigmoeshafy@gmail.com",
+        "google_account_email": "abdelshafyclapps@gmail.com",
         "niche": "Action & Thriller Movie Summaries & Insane Plot Twists",
         "instagram": "@twistsrevealed_cinema",
         "tiktok": "@twistsrevealed_cinema"
@@ -72,7 +72,7 @@ ALL_GOOGLE_ACCOUNT_CHANNELS = [
         "display_name": "Cute Dosage",
         "youtube_handle": "@CuteDosage",
         "channel_id": "UCNnWrWmMuZDy4LSg95stEOQ",
-        "google_account_email": "moeaiagenticteamz@gmail.com",
+        "google_account_email": "moeaiagenicteamz@gmail.com",
         "niche": "Cute Baby Videos, Adorable Moments & Wholesome Clips",
         "instagram": "@cutedosage_official",
         "tiktok": "@cutedosage_official"
@@ -102,7 +102,7 @@ ALL_GOOGLE_ACCOUNT_CHANNELS = [
         "display_name": "ClippingFactoryMBM",
         "youtube_handle": "@ClippingFactoryMBM",
         "channel_id": "UCSZ80c0lE5gqkkbfHKrGkGA",
-        "google_account_email": "abdelshafyclapps@gmail.com",
+        "google_account_email": "UNKNOWN - NOT YET CONFIRMED",
         "niche": "AI Agent Swarms, Company Automation & Video Clipping",
         "instagram": "@clippingfactory_mbm",
         "tiktok": "@clippingfactory_mbm"

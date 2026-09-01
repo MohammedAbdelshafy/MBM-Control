@@ -1,0 +1,73 @@
+{
+  "schema_version": 2,
+  "updated": "2026-08-01",
+  "auth_model": "multi_gmail",
+  "auth_note": "Each channel has its own Google account. Session state and Playwright profile are per-channel. The capture script is: MBM-Social/scripts/capture_brand_youtube_session.py",
+  "channels": [
+    {
+      "brand": "dontwatchthis",
+      "display_name": "Don't Watch This",
+      "handle": "@DONTWATCHTHIS1",
+      "youtube_channel_id": "UCZi1tOA71rDrin5DyNVNKOA",
+      "owned_by": "abdelshafyplay@gmail.com",
+      "auth_method": "youtube_session",
+      "session_ref": "sessions/youtube_dontwatchthis.json",
+      "profile_dir": "youtube_profiles/dontwatchthis",
+      "active": true
+    },
+    {
+      "brand": "goalmachinez",
+      "display_name": "Goal Machinez",
+      "handle": "@Goalmachinez",
+      "youtube_channel_id": "UCV3i2caQ-JXey0by8H1_5tg",
+      "owned_by": "abdelshafyplays@gmail.com",
+      "auth_method": "youtube_session",
+      "session_ref": "sessions/youtube_goalmachinez.json",
+      "profile_dir": "youtube_profiles/goalmachinez",
+      "active": true
+    },
+    {
+      "brand": "cutedosage",
+      "display_name": "Cute Dosage",
+      "handle": "@CuteDosage",
+      "youtube_channel_id": "UCNnWrWmMuZDy4LSg95stEOQ",
+      "owned_by": "moeaiagenicteamz@gmail.com",
+      "auth_method": "youtube_session",
+
+      "session_ref": "sessions/youtube_cutedosage.json",
+      "profile_dir": "youtube_profiles/cutedosage",
+      "active": true
+    },
+    {
+      "brand": "clippingfactorymbm",
+      "display_name": "ClippingFactoryMBM",
+      "handle": "@ClippingFactoryMBM",
+      "youtube_channel_id": "UCSZ80c0lE5gqkkbfHKrGkGA",
+      "owned_by": "UNKNOWN - NOT YET CONFIRMED",
+      "auth_method": "youtube_session",
+      "session_ref": "sessions/youtube_clippingfactorymbm.json",
+      "profile_dir": "youtube_profiles/clippingfactorymbm",
+      "active": true
+    },
+    {
+      "brand": "twistsrevealed",
+      "display_name": "Twists Revealed",
+      "handle": "@TwistsRevealed",
+      "youtube_channel_id": "UCknUgK7LEQOoXk_44juSfzw",
+      "owned_by": "abdelshafyclapps@gmail.com",
+      "auth_method": "youtube_session",
+
+      "session_ref": "sessions/youtube_twistsrevealed.json",
+      "profile_dir": "youtube_profiles/twistsrevealed",
+      "active": true
+    }
+  ],
+  "add_channel_steps": [
+    "Run: python MBM-Social/scripts/capture_brand_youtube_session.py --brand <brand>",
+    "Log in with the Google account that owns the channel",
+    "Switch to the correct channel in YouTube Studio if prompted",
+    "Session + profile are saved automatically",
+    "Add a ChannelRegistry entry (this file)",
+    "Add the matching brand folder via gen_brand_configs.py"
+  ]
+}

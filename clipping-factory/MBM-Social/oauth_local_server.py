@@ -16,12 +16,13 @@ scope = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.c
 TOKENS_FILE = Path(__file__).resolve().parent / "youtube_tokens.json"
 
 brands = {
-    "clippingfactorymbm": {"email": "abdelshafyclapps@gmail.com", "channel_id": "UCSZ80c0lE5gqkkbfHKrGkGA"},
-    "cutedosage": {"email": "moeaiagenticteamz@gmail.com", "channel_id": "UCNnWrWmMuZDy4LSg95stEOQ"},
+    "clippingfactorymbm": {"email": "UNKNOWN - NOT YET CONFIRMED", "channel_id": "UCSZ80c0lE5gqkkbfHKrGkGA"},
+    "cutedosage": {"email": "moeaiagenicteamz@gmail.com", "channel_id": "UCNnWrWmMuZDy4LSg95stEOQ"},
     "dontwatchthis": {"email": "abdelshafyplay@gmail.com", "channel_id": "UCZi1tOA71rDrin5DyNVNKOA"},
     "goalmachinez": {"email": "abdelshafyplays@gmail.com", "channel_id": "UCV3i2caQ-JXey0by8H1_5tg"},
-    "twistsrevealed": {"email": "bigmoeshafy@gmail.com", "channel_id": "UCknUgK7LEQOoXk_44juSfzw"},
+    "twistsrevealed": {"email": "abdelshafyclapps@gmail.com", "channel_id": "UCknUgK7LEQOoXk_44juSfzw"},
 }
+
 
 auth_codes = {}
 server_shutdown = None

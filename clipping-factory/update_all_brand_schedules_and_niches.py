@@ -26,7 +26,7 @@ BRAND_SPECS = {
     "twistsrevealed": {
         "display_name": "Twists Revealed",
         "handle": "@TwistsRevealed",
-        "gmail_account": "bigmoeshafy@gmail.com",
+        "gmail_account": "abdelshafyclapps@gmail.com",
         "niche": "Action & Thriller Movie Summaries & Insane Plot Twists",
         "primary_category": "Entertainment",
         "theme": "Action & Thriller movie summaries, insane plot twists, suspense recaps",
@@ -40,7 +40,7 @@ BRAND_SPECS = {
     "cutedosage": {
         "display_name": "Cute Dosage",
         "handle": "@CuteDosage",
-        "gmail_account": "moeaiagenticteamz@gmail.com",
+        "gmail_account": "moeaiagenicteamz@gmail.com",
         "niche": "Cute Baby Videos, Adorable Moments, & Wholesome Family Clips",
         "primary_category": "Family & Pets",
         "theme": "Cute baby laughs, wholesome family moments, adorable baby clips",
@@ -82,7 +82,7 @@ BRAND_SPECS = {
     "clippingfactorymbm": {
         "display_name": "ClippingFactoryMBM",
         "handle": "@ClippingFactoryMBM",
-        "gmail_account": "abdelshafyclapps@gmail.com",
+        "gmail_account": "UNKNOWN - NOT YET CONFIRMED",
         "niche": "AI Agent Swarms, Company Automation, & Video Clipping",
         "primary_category": "Technology & Business",
         "theme": "AI agent swarms, SaaS company automation, high-speed video clipping",

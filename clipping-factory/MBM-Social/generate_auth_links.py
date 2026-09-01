@@ -5,12 +5,13 @@ scope = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.c
 redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
 
 brands = {
-    "clippingfactorymbm": "abdelshafyclapps@gmail.com",
-    "cutedosage": "moeaiagenticteamz@gmail.com",
+    "clippingfactorymbm": "UNKNOWN - NOT YET CONFIRMED",
+    "cutedosage": "moeaiagenicteamz@gmail.com",
     "dontwatchthis": "abdelshafyplay@gmail.com",
     "goalmachinez": "abdelshafyplays@gmail.com",
-    "twistsrevealed": "bigmoeshafy@gmail.com"
+    "twistsrevealed": "abdelshafyclapps@gmail.com"
 }
+
 
 print("=" * 80)
 print("YOUTUBE OAUTH AUTHORIZATION LINKS - One per brand")

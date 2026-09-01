@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "updated": "2026-09-01",
+  "description": "AUTHORITATIVE brand → Google account → YouTube channel mapping. Single source of truth. No secrets stored here (no refresh_token, access_token, client_secret, auth code). Token lives in youtube_tokens.json per brand key.",
+  "oauth_client_ref": "708112125852-6c9bg1ddn88g3e3puaus8bi288upsr5l.apps.googleusercontent.com (see YOUTUBE_CLIENT_SECRET env)",
+  "oauth_scopes": [
+    "https://www.googleapis.com/auth/youtube.upload",
+    "https://www.googleapis.com/auth/youtube.readonly"
+  ],
+  "token_location": "clipping-factory/MBM-Social/youtube_tokens.json",
+  "brands": {
+    "twistsrevealed": {
+      "display_name": "Twists Revealed",
+      "expected_google_account": "abdelshafyclapps@gmail.com",
+      "youtube_channel_id": "UCknUgK7LEQOoXk_44juSfzw",
+      "handle": "@TwistsRevealed",
+      "token_key": "twistsrevealed",
+      "status": "NEEDS_REAUTH - invalid_grant (last verify 2026-09-01)",
+      "registry_refs": ["ChannelRegistry.json:twistsrevealed", "BrandRegistry.json:twistsrevealed", "RoutingRegistry.json:yt_twistsrevealed"]
+    },
+    "goalmachinez": {
+      "display_name": "Goal Machinez",
+      "expected_google_account": "abdelshafyplays@gmail.com",
+      "youtube_channel_id": "UCV3i2caQ-JXey0by8H1_5tg",
+      "handle": "@Goalmachinez",
+      "token_key": "goalmachinez",
+      "status": "NEEDS_REAUTH - invalid_grant",
+      "registry_refs": ["ChannelRegistry.json:goalmachinez", "BrandRegistry.json:goalmachinez", "RoutingRegistry.json:yt_goalmachinez"]
+    },
+    "dontwatchthis": {
+      "display_name": "Don't Watch This",
+      "expected_google_account": "abdelshafyplay@gmail.com",
+      "youtube_channel_id": "UCZi1tOA71rDrin5DyNVNKOA",
+      "handle": "@DONTWATCHTHIS1",
+      "token_key": "dontwatchthis",
+      "status": "NEEDS_REAUTH - invalid_grant",
+      "registry_refs": ["ChannelRegistry.json:dontwatchthis", "BrandRegistry.json:dontwatchthis", "RoutingRegistry.json:yt_dontwatchthis"]
+    },
+    "cutedosage": {
+      "display_name": "Cute Dosage",
+      "expected_google_account": "moeaiagenicteamz@gmail.com",
+      "youtube_channel_id": "UCNnWrWmMuZDy4LSg95stEOQ",
+      "handle": "@CuteDosage",
+      "token_key": "cutedosage",
+      "status": "VALID - working credential DO NOT OVERWRITE (last_verified 2026-08-31)",
+      "registry_refs": ["ChannelRegistry.json:cutedosage", "BrandRegistry.json:cutedosage", "RoutingRegistry.json:yt_cutedosage"]
+    },
+    "clippingfactorymbm": {
+      "display_name": "ClippingFactoryMBM",
+      "expected_google_account": "UNKNOWN - NOT YET CONFIRMED",
+      "youtube_channel_id": "UCSZ80c0lE5gqkkbfHKrGkGA",
+      "handle": "@ClippingFactoryMBM",
+      "token_key": "clippingfactorymbm",
+      "status": "UNKNOWN - Google account NOT YET CONFIRMED. Token exists but ownership not confirmed; do not guess.",
+      "registry_refs": ["ChannelRegistry.json:clippingfactorymbm (UNKNOWN)", "BrandRegistry.json:clippingfactorymbm (UNKNOWN)", "RoutingRegistry.json:yt_clippingfactorymbm (UNKNOWN)"],
+      "channel_verified": "ID UCSZ80c0lE5gqkkbfHKrGkGA confirmed, handle @ClippingFactoryMBM confirmed"
+    }
+  },
+  "rules": {
+    "isolation": "Per-brand token isolation: each brand's refresh_token only overwrites its own key in youtube_tokens.json. Never clobber another brand's entry.",
+    "fresh_state": "Fresh OAuth state per attempt: state generated via PKCE challenge per attempt, rejected if mismatched (stale-state rejection).",
+    "pkce": "PKCE S256 enabled (code_verifier 32 bytes, code_challenge SHA256).",
+    "callback": "Safe callback: handles /favicon.ico, error param, missing code, stale state with explicit 400 and user guidance.",
+    "stale_rejection": "State mismatch → 400 with 'Authorization attempt expired or is no longer active. Please use the current authorization URL.'",
+    "invalid_grant": "Token revocation detected via invalid_grant error; classify and surface as INVALID_GRANT requiring founder re-auth.",
+    "invalid_scope": "Scope errors classified as INVALID_SCOPE; check SCOPES configuration.",
+    "wrong_channel": "If token owns channels not containing expected_channel_id, REJECT and do NOT save (never overwrite valid token with bad auth).",
+    "force_isolation": "--force affects ONLY the single requested brand (or each brand iteratively when --all). Never global wipe.",
+    "verify": "--verify audits every brand (BRANDS list) and reports MISSING/INVALID_GRANT/INVALID_SCOPE/WRONG_CHANNEL.",
+    "never_overwrite": "Never overwrite a valid token with a bad authentication: wrong-channel and exchange failures return False before _save_tokens.",
+    "fail_loud": "Wrong-brand publishing blocked loudly via brand_identity_resolver and hard channel routing (CHANNEL_IDENTITY_MISMATCH)."
+  }
+}

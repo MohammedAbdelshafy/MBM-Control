@@ -14,12 +14,13 @@ except ImportError:
 ROOT = Path(__file__).resolve().parent
 
 brands = {
-    "clippingfactorymbm": "abdelshafyclapps@gmail.com",
-    "cutedosage": "moeaiagenticteamz@gmail.com",
+    "clippingfactorymbm": "UNKNOWN - NOT YET CONFIRMED",
+    "cutedosage": "moeaiagenicteamz@gmail.com",
     "dontwatchthis": "abdelshafyplay@gmail.com",
     "goalmachinez": "abdelshafyplays@gmail.com",
-    "twistsrevealed": "bigmoeshafy@gmail.com",
+    "twistsrevealed": "abdelshafyclapps@gmail.com",
 }
+
 
 print("=" * 60)
 print("YOUTUBE LOGIN SETUP - All 5 Brands")

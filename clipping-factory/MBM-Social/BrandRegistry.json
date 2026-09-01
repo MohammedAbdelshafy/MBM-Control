@@ -6,9 +6,12 @@
     "dontwatchthis": {
       "display_name": "Don't Watch This",
       "handle": "@DONTWATCHTHIS1",
-      "youtube_channel_id": "UC_DONTWATCHTHIS1",
+      "youtube_channel_id": "UCZi1tOA71rDrin5DyNVNKOA",
       "theme": "dark stories, chilling truths, mystery, suspense",
-      "social_handles": {"instagram": "@dontwatchthis_mystery", "tiktok": "@dontwatchthis_mystery"},
+      "social_handles": {
+        "instagram": "@dontwatchthis_mystery",
+        "tiktok": "@dontwatchthis_mystery"
+      },
       "active": true,
       "config_path": "Brands/dontwatchthis/",
       "instagram_handle": "@dontwatchthis_mystery",
@@ -19,9 +22,12 @@
     "goalmachinez": {
       "display_name": "Goal Machinez",
       "handle": "@Goalmachinez",
-      "youtube_channel_id": "UC_Goalmachinez",
+      "youtube_channel_id": "UCV3i2caQ-JXey0by8H1_5tg",
       "theme": "football / soccer / sports highlights and commentary",
-      "social_handles": {"instagram": "@goalmachinez_fc", "tiktok": "@goalmachinez_fc"},
+      "social_handles": {
+        "instagram": "@goalmachinez_fc",
+        "tiktok": "@goalmachinez_fc"
+      },
       "active": true,
       "config_path": "Brands/goalmachinez/",
       "instagram_handle": "@goalmachinez_fc",
@@ -32,40 +38,50 @@
     "cutedosage": {
       "display_name": "Cute Dosage",
       "handle": "@CuteDosage",
-      "youtube_channel_id": "UC_CuteDosage",
+      "youtube_channel_id": "UCNnWrWmMuZDy4LSg95stEOQ",
       "theme": "cute, wholesome, family, pet, baby-style content",
-      "social_handles": {"instagram": "@cutedosage_official", "tiktok": "@cutedosage_official"},
+      "social_handles": {
+        "instagram": "@cutedosage_official",
+        "tiktok": "@cutedosage_official"
+      },
       "active": true,
       "config_path": "Brands/cutedosage/",
       "instagram_handle": "@cutedosage_official",
       "tiktok_handle": "@cutedosage_official",
-      "owner_email": "moeaiagenticteamz@gmail.com",
+      "owner_email": "moeaiagenicteamz@gmail.com",
       "multi_platform_active": true
+
     },
     "clippingfactorymbm": {
       "display_name": "ClippingFactoryMBM",
       "handle": "@ClippingFactoryMBM",
-      "youtube_channel_id": "UC_ClippingFactoryMBM",
+      "youtube_channel_id": "UCSZ80c0lE5gqkkbfHKrGkGA",
       "theme": "MBM operations, clipping factory, build-in-public, internal brand",
-      "social_handles": {"instagram": "@clippingfactory_mbm", "tiktok": "@clippingfactory_mbm"},
+      "social_handles": {
+        "instagram": "@clippingfactory_mbm",
+        "tiktok": "@clippingfactory_mbm"
+      },
       "active": true,
       "config_path": "Brands/clippingfactorymbm/",
       "instagram_handle": "@clippingfactory_mbm",
       "tiktok_handle": "@clippingfactory_mbm",
-      "owner_email": "abdelshafyclapps@gmail.com",
+      "owner_email": "UNKNOWN - NOT YET CONFIRMED",
       "multi_platform_active": true
     },
     "twistsrevealed": {
       "display_name": "Twists Revealed",
       "handle": "@TwistsRevealed",
-      "youtube_channel_id": "UC_TwistsRevealed",
+      "youtube_channel_id": "UCknUgK7LEQOoXk_44juSfzw",
       "theme": "plot twists, reveals, shocking stories, suspense",
-      "social_handles": {"instagram": "@twistsrevealed_cinema", "tiktok": "@twistsrevealed_cinema"},
+      "social_handles": {
+        "instagram": "@twistsrevealed_cinema",
+        "tiktok": "@twistsrevealed_cinema"
+      },
       "active": true,
       "config_path": "Brands/twistsrevealed/",
       "instagram_handle": "@twistsrevealed_cinema",
       "tiktok_handle": "@twistsrevealed_cinema",
-      "owner_email": "bigmoeshafy@gmail.com",
+      "owner_email": "abdelshafyclapps@gmail.com",
       "multi_platform_active": true
     }
   },

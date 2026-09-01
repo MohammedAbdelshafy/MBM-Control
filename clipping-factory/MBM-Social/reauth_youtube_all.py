@@ -31,13 +31,13 @@ BRANDS = {
     "clippingfactorymbm": {
         "display": "ClippingFactoryMBM",
         "handle": "@ClippingFactoryMBM",
-        "email": "abdelshafyclapps@gmail.com",
+        "email": "UNKNOWN - NOT YET CONFIRMED",
         "channel_id": "UCSZ80c0lE5gqkkbfHKrGkGA",
     },
     "cutedosage": {
         "display": "Cute Dosage",
         "handle": "@CuteDosage",
-        "email": "moeaiagenticteamz@gmail.com",
+        "email": "moeaiagenicteamz@gmail.com",
         "channel_id": "UCNnWrWmMuZDy4LSg95stEOQ",
     },
     "dontwatchthis": {
@@ -55,7 +55,7 @@ BRANDS = {
     "twistsrevealed": {
         "display": "Twists Revealed",
         "handle": "@TwistsRevealed",
-        "email": "bigmoeshafy@gmail.com",
+        "email": "abdelshafyclapps@gmail.com",
         "channel_id": "UCknUgK7LEQOoXk_44juSfzw",
     },
 }

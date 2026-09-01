@@ -14,11 +14,11 @@ from datetime import datetime
 ROOT = Path(__file__).resolve().parent
 
 BRANDS = [
-    {"slug": "clippingfactorymbm", "name": "Clipping Factory MBM", "email": "abdelshafyclapps@gmail.com"},
-    {"slug": "cutedosage", "name": "Cute Dosage", "email": "moeaiagenticteamz@gmail.com"},
+    {"slug": "clippingfactorymbm", "name": "Clipping Factory MBM", "email": "UNKNOWN - NOT YET CONFIRMED"},
+    {"slug": "cutedosage", "name": "Cute Dosage", "email": "moeaiagenicteamz@gmail.com"},
     {"slug": "dontwatchthis", "name": "Don't Watch This", "email": "abdelshafyplay@gmail.com"},
     {"slug": "goalmachinez", "name": "Goal Machinez", "email": "abdelshafyplays@gmail.com"},
-    {"slug": "twistsrevealed", "name": "Twists Revealed", "email": "bigmoeshafy@gmail.com"},
+    {"slug": "twistsrevealed", "name": "Twists Revealed", "email": "abdelshafyclapps@gmail.com"},
 ]
 
 PLATFORMS = ["youtube", "instagram", "tiktok"]
