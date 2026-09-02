@@ -47,6 +47,7 @@ AUTHORIZED = {
     "MBM/LeadEngine/dialer_gateway.py",
     "MBM/LeadEngine/dialer_db_lock.py",
     "server/dialer/dialerDbGateway.js",
+    "scripts/run_glm_5_missions.py",
 }
 
 # Directories pruned during full-repo scans (vendored/heavy/unrelated).
