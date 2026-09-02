@@ -1,0 +1,12 @@
+{
+  "repository": "MohammedAbdelshafy/MBM-Control",
+  "defaultBranch": "master",
+  "sourceOfTruth": true,
+  "protectedSystems": [
+    "MBM/LeadEngine",
+    "clipping-factory/MBM-Social"
+  ],
+  "externalWriteDefault": "blocked",
+  "agentDefaultPermission": "L0",
+  "requiredValidation": []
+}
