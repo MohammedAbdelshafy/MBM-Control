@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Phone, PhoneOff, PhoneCall, User, MapPin, CheckCircle, XCircle,
   Building, ExternalLink, Zap, ChevronRight, CalendarClock,
-  Search, Copy, Target, MessageSquare, ShieldCheck
+  Search, Copy, Target, MessageSquare, ShieldCheck,
+  Activity
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -109,6 +110,11 @@ export default function AutoDialer() {
   const [notes, setNotes] = useState('');
   const [callbackTime, setCallbackTime] = useState('');
   const [activeScriptTab, setActiveScriptTab] = useState('core');
+  
+  // New States:
+  const [providerStatus, setProviderStatus] = useState(null);
+  const [dialerMode, setDialerMode] = useState('assisted'); // 'manual', 'assisted', 'auto', 'android_sim'
+
   const timerRef = useRef(null);
   // ── Owner Identity Verification (call-level) ────────────────────────
   const [identityName, setIdentityName] = useState('');
@@ -123,8 +129,21 @@ export default function AutoDialer() {
   const [topActions, setTopActions] = useState([]);
   const [briefLoading, setBriefLoading] = useState(true);
 
-  useEffect(() => { fetchLeads(); loadDispositions(); }, []);
+  useEffect(() => { fetchLeads(); loadDispositions(); fetchProviderStatus(); }, []);
   useEffect(() => { fetchGtmBrief(); }, []);
+
+  async function fetchProviderStatus() {
+    try {
+      const res = await fetch(`${API}/dialer/status`);
+      const data = await res.json();
+      setProviderStatus(data);
+      if (data.mode === 'native_app' && dialerMode === 'auto') {
+        setDialerMode('assisted'); // Fallback if API mode isn't active
+      }
+    } catch (err) {
+      console.error('Provider status fetch failed:', err);
+    }
+  }
 
   async function fetchGtmBrief() {
     try {
@@ -145,6 +164,7 @@ export default function AutoDialer() {
     if (action?.phone) window.open(`tel:${action.phone}`, '_self');
     if (action?.company) { setQuery(action.company); toast.info(`Queue filtered for: ${action.company}`); }
   }
+  
   useEffect(() => {
     if (callState === 'connected' || callState === 'ringing') timerRef.current = setInterval(() => setCallTimer((v) => v + 1), 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
@@ -190,15 +210,41 @@ export default function AutoDialer() {
   const playbook = currentLead ? buildPlaybook(currentLead) : null;
 
   async function startCall(lead) {
-    if (!myPhone.trim()) { toast.error('Enter your phone number first'); return; }
+    if (dialerMode === 'assisted' && !myPhone.trim()) { toast.error('Enter your phone number first'); return; }
     setCurrentLead(lead); setCallState('ringing'); setCallTimer(0);
+
+    if (dialerMode === 'android_sim') {
+      window.location.href = `tel:${lead.phone_number || lead.formatted_phone}`;
+      toast.success(`Handoff to mobile dialer for ${lead.prospect_name}`);
+      setCallState('connected'); 
+      return;
+    }
+
+    if (dialerMode === 'manual') {
+      toast.success(`Manual dialing ${lead.prospect_name}`);
+      setCallState('connected');
+      return;
+    }
+
     try {
-      const res = await fetch(`${API}/dialer/call-bridge`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ to_number: lead.phone_number, prospect_name: lead.prospect_name, my_phone: myPhone }) });
+      const endpoint = dialerMode === 'auto' ? '/dialer/call' : '/dialer/call-bridge';
+      const body = {
+        to_number: lead.phone_number || lead.formatted_phone,
+        prospect_name: lead.prospect_name,
+        lead_id: lead.id,
+        ...(endpoint === '/dialer/call-bridge' ? { my_phone: myPhone } : {})
+      };
+
+      const res = await fetch(`${API}${endpoint}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const data = await res.json();
-      if (['ringing_your_phone', 'bridged', 'connected'].includes(data.status)) { toast.success(`Bridge started for ${lead.prospect_name}`); setCallState('connected'); }
-      else if (data.status === 'demo_mode') { toast.info('Demo mode: no live Twilio call was created'); setCallState('connected'); }
+      
+      if (['ringing_your_phone', 'bridged', 'connected'].includes(data.status)) { toast.success(`Call started for ${lead.prospect_name}`); setCallState('connected'); }
+      else if (data.status === 'demo_mode') { toast.info('Demo mode: no live call was created'); setCallState('connected'); }
       else throw new Error(data.error || 'Call failed');
-    } catch (err) { toast.error(err.message || 'Could not place call'); setCallState('idle'); setCurrentLead(null); }
+    } catch (err) { 
+      toast.error(err.message || 'Could not place call'); 
+      setCallState('idle'); setCurrentLead(null); 
+    }
   }
 
   function endCall() { if (timerRef.current) clearInterval(timerRef.current); setCallState('ended'); setNotes(''); setCallbackTime(''); setShowDisposition(true); }
@@ -268,7 +314,11 @@ export default function AutoDialer() {
     setIdentityWrongNumber(false); setIdentityDnc(false);
   }
 
-  function nextLead() { setShowDisposition(false); setShowClosedResources(false); setCallState('idle'); setCallTimer(0); setCurrentLead(null); setNotes(''); setCallbackTime(''); resetIdentity(); }
+  function nextLead() { 
+    setShowDisposition(false); setShowClosedResources(false); setCallState('idle'); setCallTimer(0); setCurrentLead(null); setNotes(''); setCallbackTime(''); resetIdentity(); 
+  }
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
@@ -320,9 +370,69 @@ export default function AutoDialer() {
           )}
         </section>
 
-        <section className="grid lg:grid-cols-[1.5fr_1fr] gap-4">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"><div className="flex items-center gap-2 mb-3"><Zap className="w-4 h-4 text-emerald-300" /><h2 className="font-semibold">Bridge setup</h2></div><div className="flex flex-col md:flex-row gap-3"><input type="tel" value={myPhone} onChange={(e) => setMyPhone(e.target.value)} placeholder="Your phone: +1 555 123 4567" className="flex-1 bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500/50" /><div className="flex items-center text-xs text-slate-400 px-2"><ShieldCheck className="w-4 h-4 text-emerald-300 mr-2" />Twilio bridge mode</div></div></div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"><div className="flex items-center gap-2 mb-3"><Target className="w-4 h-4 text-sky-300" /><h2 className="font-semibold">Queue controls</h2></div><div className="flex gap-2"><div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, city, address..." className="w-full bg-slate-950/80 border border-white/10 rounded-xl pl-9 pr-3 py-3 text-sm outline-none" /></div><select value={marketFilter} onChange={(e) => setMarketFilter(e.target.value)} className="bg-slate-950 border border-white/10 rounded-xl px-3 py-3 text-sm"><option value="all">All markets</option>{markets.map((market) => <option key={market} value={market}>{market}</option>)}</select></div></div>
+        <section className="grid lg:grid-cols-3 gap-4">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+            <div className="flex items-center gap-2 mb-3"><Activity className="w-4 h-4 text-emerald-300" /><h2 className="font-semibold">Provider Status</h2></div>
+            {providerStatus ? (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-400">Provider</span>
+                  <span className="text-sm font-semibold capitalize text-emerald-300">{providerStatus.provider}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-400">Mode</span>
+                  <span className="flex items-center gap-2 text-sm font-semibold">
+                    {providerStatus.mode === 'native_app' ? 'Native App' : 'API'}
+                    {providerStatus.mode === 'dry_run' && <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold tracking-widest border border-amber-400/30">DRY RUN</span>}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-400">Health</span>
+                  {providerStatus.status === 'unknown_provider_state' ? <span className="text-xs px-2 py-1 bg-amber-500/20 text-amber-300 border border-amber-400/30 rounded-full font-bold">Reconciliation required</span> : providerStatus.status === 'active' ? <span className="text-xs px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded-full">Healthy</span> : <span className="text-xs px-2 py-1 bg-red-500/20 text-red-300 rounded-full">Blocked</span>}
+                </div>
+                {providerStatus.reason && <div className="text-[10px] text-red-400">{providerStatus.reason}</div>}
+              </div>
+            ) : (
+              <div className="text-xs text-slate-500">Loading status...</div>
+            )}
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+            <div className="flex items-center gap-2 mb-3"><Zap className="w-4 h-4 text-emerald-300" /><h2 className="font-semibold">Dialer Mode</h2></div>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              {['manual', 'assisted', 'auto', 'android_sim'].map(mode => (
+                <button 
+                  key={mode} 
+                  disabled={mode === 'auto' && providerStatus?.mode !== 'api'}
+                  onClick={() => setDialerMode(mode)} 
+                  className={`text-[11px] px-2 py-2 rounded-lg border text-center ${dialerMode === mode ? 'border-emerald-400/40 bg-emerald-500/15 text-emerald-200' : 'border-white/10 bg-white/5 text-slate-300 disabled:opacity-40'}`}
+                >
+                  {mode === 'android_sim' ? 'Android / SIM' : mode.charAt(0).toUpperCase() + mode.slice(1)}
+                </button>
+              ))}
+            </div>
+            {dialerMode === 'assisted' && (
+              <input type="tel" value={myPhone} onChange={(e) => setMyPhone(e.target.value)} placeholder="Your phone: +1 555..." className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-emerald-500/50" />
+            )}
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+            <div className="flex items-center gap-2 mb-3"><Target className="w-4 h-4 text-sky-300" /><h2 className="font-semibold">Queue & Auto-Dial</h2></div>
+            <div className="flex gap-2 mb-4">
+              <div className="relative flex-1"><Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search..." className="w-full bg-slate-950/80 border border-white/10 rounded-xl pl-8 pr-2 py-2 text-xs outline-none" /></div>
+              <select value={marketFilter} onChange={(e) => setMarketFilter(e.target.value)} className="w-24 bg-slate-950 border border-white/10 rounded-xl px-2 py-2 text-xs"><option value="all">All</option>{markets.map((market) => <option key={market} value={market}>{market}</option>)}</select>
+            </div>
+            {dialerMode === 'auto' && (
+              <div className="rounded-xl border border-amber-400/20 bg-amber-500/10 p-3 mt-3">
+                <div className="flex items-center gap-2 text-amber-300 font-semibold text-sm mb-1">
+                  <ShieldCheck className="w-4 h-4" /> Not Supported
+                </div>
+                <p className="text-[11px] text-amber-200/80 leading-relaxed">
+                  The backend API contract currently dictates pacing. The client cannot independently assert start/stop intervals or hijack the dialing queue. Use <strong>Assisted</strong> mode or implement pacing controls in the backend.
+                </p>
+              </div>
+            )}
+          </div>
         </section>
 
         <AnimatePresence>{currentLead && (callState === 'ringing' || callState === 'connected') && playbook && <motion.section initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="rounded-3xl border border-emerald-400/20 bg-gradient-to-br from-emerald-500/10 via-slate-900 to-slate-900 p-5 md:p-6 shadow-2xl">
