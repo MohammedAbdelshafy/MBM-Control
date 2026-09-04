@@ -15,6 +15,7 @@ import aftercallRouter from './dialer/aftercallRouter.js';
 import emailApi from './dialer/emailApi.js';
 import adEngineRouter from './dialer/adEngineRouter.js';
 import { getProvider, normalizeEvent } from './dialer/telephonyProvider.js';
+import { runAutodial } from './dialer/phoundAutodialBridge.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -1943,6 +1944,22 @@ app.get('/api/dialer/status', async (req, res) => {
     outcome_law: 'webhook-first; no event = UNKNOWN',
   });
 });
+
+// Auto-Dial HTTP control surface — thin adapters over the Python state
+// machine (MBM/LeadEngine/phound_auto_dialer.py, PR #46). No queue logic
+// lives here; every handler delegates to runAutodial and returns its
+// envelope. Lifecycle event ingestion stays webhook-only (below); no event
+// endpoint is exposed here by design.
+app.get('/api/dialer/autodial/status', async (req, res) => {
+  const { httpStatus, body } = await runAutodial('status');
+  res.status(httpStatus).json(body);
+});
+for (const op of ['start', 'pause', 'resume', 'stop', 'reconcile']) {
+  app.post(`/api/dialer/autodial/${op}`, async (req, res) => {
+    const { httpStatus, body } = await runAutodial(op, req.body || {});
+    res.status(httpStatus).json(body);
+  });
+}
 
 // POST /api/telephony/phound/webhook â€” THE only path real call outcomes enter
 app.post('/api/telephony/phound/webhook', (req, res) => {
