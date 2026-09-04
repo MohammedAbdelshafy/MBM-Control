@@ -165,3 +165,66 @@ DRY_RUN verified end-to-end (29,561 ingested → 4,892 gated → callable queue;
 zero real calls, zero real SMS). Live placement is impossible until
 credentials + `PHOUND_AUTODIAL_APPROVED=1` are set in the runtime
 environment (never in source).
+
+## 10. HTTP control surface (follow-up; thin adapters, no second state machine)
+
+Implementation: `server/dialer/phoundAutodialBridge.js` (`buildArgs` /
+`runAutodial`, pure delegation) wired in `server/index.js`. Every handler
+spawns the CLI above and returns its verdict verbatim. No queue, pacing,
+cooldown, cap, lock, or retry logic exists in JavaScript. Lifecycle event
+ingestion is DELIBERATELY NOT exposed here — it stays webhook-only
+(`POST /api/telephony/phound/webhook`).
+
+Base: `/api/dialer/autodial` (chosen to avoid collision with the existing
+`GET /api/dialer/status` telephony-health route).
+
+| Method + path | Backend op | Body | Success |
+|---|---|---|---|
+| `GET /status` | `--status` | — | `200 {ok, op, durationMs, backend}` |
+| `POST /start` | run queue | below | `200 {ok, op, durationMs, dryRun, backend, [blocked, blockedReason, fallback], [reconciliationRequired, hint]}` |
+| `POST /pause` | `--pause` | — | `200 {ok, op, durationMs, backend}` |
+| `POST /resume` | `--resume` | — | same |
+| `POST /stop` | `--stop` | — | same |
+| `POST /reconcile` | `--reconcile` | — | `200 {…, backend: {reconciled, flagged}}` |
+
+`POST /start` body (all optional; unknown scalar fields ignored only if
+harmless — credential-shaped fields are rejected):
+
+```json
+{"mode": "ASSISTED", "limit": 10, "vertical": "Clinics",
+ "statusFilter": "QUEUED_FOR_AI_AGENT", "maxInFlight": 1,
+ "pacingSeconds": 30, "cooldownSeconds": 3600,
+ "dailyCap": 100, "sessionCap": 50, "live": false}
+```
+
+- `mode` ∈ `MANUAL|ASSISTED|AUTO_DIAL|ANDROID_SIM_ASSISTED` (default `ASSISTED`).
+- Bounds: `limit` 1–100, `maxInFlight` 1–5, `pacingSeconds` 0–600,
+  `cooldownSeconds` 0–86400, `dailyCap` 1–1000, `sessionCap` 1–200,
+  `vertical`/`statusFilter` ≤ 64 chars. Violations → `400 {ok:false, op, error}`.
+- `live: true` (boolean ONLY) maps to `--apply`; anything else → `--dry-run`.
+  Live still requires the backend's own persona + `PHOUND_AUTODIAL_APPROVED=1`
+  + API-health gates — the HTTP layer cannot waive them.
+- `personaUid|persona_uid|PHOUND_TOKEN|token|personas|sbc|env` in body →
+  `400` naming the field only (value never logged or echoed).
+
+Envelope semantics for Antigravity:
+
+- `backend` = backend JSON verbatim (§4 `queue_qa`, §5 run/state shapes).
+- Missing approval/health → HTTP `200` with `blocked: true`,
+  `blockedReason`, `fallback` (usually `"ASSISTED"`). Render degraded
+  Assisted/Manual; this is NOT an error.
+- Any `unknown_provider_state` in outcomes → `reconciliationRequired: true`
+  + `hint` ("…Never redial an uncertain call."). Render **Reconciliation
+  required**; offer `POST /reconcile` only — no retry button.
+- Backend non-zero exit → `502 {ok:false, error, detail(redacted)}`;
+  spawn timeout → `504 {ok:false, retrySafe:false, hint}` (state uncertain:
+  query status, then reconcile; never blind-retry).
+- `stderr` excerpts are token/Bearer/`TOKEN=`-redacted and truncated.
+
+Verified 2026-09-04 (real spawn, real leads DB, zero live flags):
+`GET /status` → 200; `POST /start {ASSISTED, limit 2}` → 4,953 ingested →
+4,867 gated → 2 `dry_run_simulated`; `POST /start {AUTO_DIAL}` without
+approval → `blocked: true`. `leads_database.json` untouched.
+
+Runtime config (server env only, never client): `DIALER_PYTHON` (default
+`python`), `DIALER_BRIDGE_TIMEOUT_MS` (default 30s controls / 180s start).
