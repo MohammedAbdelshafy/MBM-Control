@@ -33,17 +33,15 @@ class FakeOrchestrator:
         raise AssertionError("queue should be supplied by the test")
 
 
-def make_engine(tmp_path, queue):
+def make_engine(queue):
     engine = ExecutionEngine.__new__(ExecutionEngine)
     engine.orchestrator = FakeOrchestrator()
     engine.ledger = FakeLedger()
-    queue_path = tmp_path / "GLM_TOP25_MISSIONS.json"
-    queue_path.write_text(json.dumps(queue), encoding="utf-8")
-    engine._test_queue_path = queue_path
+    engine._test_queue = queue
     return engine
 
 
-def test_execute_next_mission_does_not_claim_success_without_adapter(tmp_path, monkeypatch):
+def test_execute_next_mission_does_not_claim_success_without_adapter(monkeypatch):
     queue = [
         {
             "mission_id": "GLM-TEST-001",
@@ -56,7 +54,7 @@ def test_execute_next_mission_does_not_claim_success_without_adapter(tmp_path, m
             "business_impact": 9.0,
         }
     ]
-    engine = make_engine(tmp_path, queue)
+    engine = make_engine(queue)
     monkeypatch.setattr(engine, "load_priority_queue", lambda: queue)
     monkeypatch.setattr("MBM.GLM.execution_engine.update_scoreboard", lambda: None)
 
