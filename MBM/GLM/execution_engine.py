@@ -18,6 +18,7 @@ if str(ROOT_DIR) not in sys.path:
 from MBM.GLM.mission_ledger import get_mission_ledger, MissionExecutionRecord
 from MBM.GLM.orchestrator import get_orchestrator
 from MBM.GLM.scoreboard_updater import update_scoreboard
+from MBM.GLM.mission_router import MissionRouter, REVENUE_GATE_THRESHOLD
 
 TOP25_JSON_PATH = ROOT_DIR / "MBM" / "Artifacts" / "GLM_TOP25_MISSIONS.json"
 
@@ -57,6 +58,18 @@ class ExecutionEngine:
 
         if not target_mission:
             print("No pending missions in the queue.")
+            return None
+
+        # Authoritative 5D Revenue Gate enforcement (score >= 70.0)
+        revenue_eval = MissionRouter.evaluate_revenue_gate(target_mission)
+        if not revenue_eval.passed:
+            blocker = (
+                f"Mission {target_mission['mission_id']} failed 5D Revenue Gate "
+                f"(score: {revenue_eval.total_score:.1f} < {REVENUE_GATE_THRESHOLD}). "
+                f"Verdict: {revenue_eval.verdict}. Cannot be routed for execution."
+            )
+            print(f"Mission {target_mission['mission_id']} REJECTED. {blocker}")
+            self._record_failure(target_mission, "REJECTED", blocker)
             return None
 
         print(f"Assigning Mission: {target_mission['mission_id']} - {target_mission['title']}")

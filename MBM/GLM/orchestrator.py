@@ -472,16 +472,18 @@ class GLMOrchestrator:
         md_lines = [
             "# 🏆 TOP 25 MBM ULTRA-GLM ENGINEERING MISSIONS",
             f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}  ",
-            "**Priority Formula:** $\\text{Priority} = \\text{Business Impact} \\times \\text{Revenue Impact} \\times \\text{Probability of Success} \\times \\text{Urgency}$",
+            "**Priority Formula:** $\\text{Priority} = \\text{Business Impact} \\times \\text{Revenue Impact} \\times \\text{Probability of Success} \\times \\text{Urgency}$  ",
+            "**5D Revenue Gate:** Authoritative Threshold $\\ge 70.0/100$ (Business Value /20, Revenue Potential /20, Customer Urgency /15, Implementation Fit /15, Reusability /10, Time To Value /10, Risk Reduction /10)",
             "",
             "---",
             "",
-            "| Rank | Priority Score | Mission ID | Mission Title | Target Subsystem | Assigned Role | Model Tier |",
-            "|---|---|---|---|---|---|---|",
+            "| Rank | Gate | Score | Verdict | Priority Score | Mission ID | Mission Title | Target Subsystem | Assigned Role | Model Tier |",
+            "|---|---|---|---|---|---|---|---|---|---|",
         ]
         for idx, m in enumerate(ranked_missions, 1):
+            gate_icon = "✅" if m.is_revenue_gate_passed else "❌"
             md_lines.append(
-                f"| **#{idx}** | **{m.priority_score}** | `{m.mission_id}` | **{m.title}** | `{m.target_repo}` | `{m.assigned_role.value}` | `{m.routing_tier.value}` |"
+                f"| **#{idx}** | {gate_icon} | **{m.revenue_gate_score}** | `{m.revenue_gate.verdict}` | **{m.priority_score}** | `{m.mission_id}` | **{m.title}** | `{m.target_repo}` | `{m.assigned_role.value}` | `{m.routing_tier.value}` |"
             )
 
         md_lines.extend([
@@ -498,6 +500,7 @@ class GLMOrchestrator:
                 f"- **Target Subsystem / Repo:** `{m.target_repo}`",
                 f"- **Assigned GLM Role:** `{m.assigned_role.value}`",
                 f"- **Model Routing Tier:** `{m.routing_tier.value}`",
+                f"- **5D Revenue Gate:** Score: **{m.revenue_gate_score}/100** | Verdict: `{m.revenue_gate.verdict}` (BV: {m.revenue_gate.business_value}, RP: {m.revenue_gate.revenue_potential}, CU: {m.revenue_gate.customer_urgency}, Fit: {m.revenue_gate.implementation_fit}, Reu: {m.revenue_gate.reusability}, TTV: {m.revenue_gate.time_to_value}, RR: {m.revenue_gate.risk_reduction})",
                 f"- **Priority Score:** **{m.priority_score}** (Business: {m.business_impact}, Revenue: {m.revenue_impact}, Prob: {m.probability_of_success}, Urgency: {m.urgency})",
                 f"- **Category:** `{m.category}`",
                 f"- **Problem Statement:** {m.problem_statement}",
