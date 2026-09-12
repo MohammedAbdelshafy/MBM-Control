@@ -75,6 +75,6 @@ def test_execute_next_mission_does_not_claim_success_without_adapter(monkeypatch
 def test_execution_engine_has_no_simulated_success_code():
     source = Path(__file__).resolve().parents[1].joinpath("execution_engine.py").read_text(encoding="utf-8")
     assert "time.sleep(2)" not in source
-    assert "revenue_impact"] * 1000" not in source
+    assert 'revenue_impact"] * 1000' not in source
     assert 'status="PRODUCTIVE"' not in source
     assert 'deployment_status="DEPLOYED"' not in source
