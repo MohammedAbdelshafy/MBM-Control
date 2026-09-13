@@ -38,7 +38,7 @@ UNDERWRITING = underwrite(arv=200000, repairs=30000, purchase_price=70000)
 
 def test_underwrite_calculates_mao_and_economic_gate():
     assert UNDERWRITING["mao"] == 110000
-    assert UNDERWRITING["gross_spread"] == 130000
+    assert UNDERWRITING["gross_spread"] == 100000
     assert UNDERWRITING["passes_economic_gate"] is True
     assert qualifies_for_human_review(UNDERWRITING, "ok", True) is True
 
