@@ -12,6 +12,13 @@ class SendState(str, Enum):
     HUMAN_REVIEW_BLOCKED = "HUMAN_REVIEW_BLOCKED"
 
 
+class BlockReason(str, Enum):
+    CONTACT_UNVERIFIED = "CONTACT_UNVERIFIED"
+    BUYER_MARKET_MISMATCH = "BUYER_MARKET_MISMATCH"
+    BUYER_MAX_PURCHASE_EXCEEDED = "BUYER_MAX_PURCHASE_EXCEEDED"
+    ECONOMIC_GATE_FAILED = "ECONOMIC_GATE_FAILED"
+
+
 def validate_evidence_status(status: str) -> str:
     value = str(status or "").strip().lower()
     if value not in VALID_STATUSES:
@@ -61,11 +68,21 @@ class OfferPacket:
     whatsapp_copy: str
     manual_call_payload: dict[str, Any]
     send_state: SendState = SendState.HUMAN_SEND_REQUIRED
+    blocked_reasons: list[BlockReason] = field(default_factory=list)
     source_provenance: list[dict[str, Any]] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         state = self.send_state if isinstance(self.send_state, SendState) else SendState(str(self.send_state))
+        reasons = [
+            value if isinstance(value, BlockReason) else BlockReason(str(value))
+            for value in self.blocked_reasons
+        ]
+        if state is SendState.HUMAN_SEND_REQUIRED and reasons:
+            raise ValueError("blocked_reasons must be empty when send_state is HUMAN_SEND_REQUIRED")
+        if state is SendState.HUMAN_REVIEW_BLOCKED and not reasons:
+            raise ValueError("blocked_reasons is required when send_state is HUMAN_REVIEW_BLOCKED")
         object.__setattr__(self, "send_state", state)
+        object.__setattr__(self, "blocked_reasons", reasons)
 
     @classmethod
     def from_mapping(cls, data: dict[str, Any]) -> "OfferPacket":
@@ -93,5 +110,6 @@ class OfferPacket:
             whatsapp_copy=str(data.get("whatsapp_copy") or ""),
             manual_call_payload=dict(data.get("manual_call_payload") or {}),
             send_state=SendState(str(data.get("send_state") or SendState.HUMAN_SEND_REQUIRED.value)),
+            blocked_reasons=[BlockReason(str(value)) for value in data.get("blocked_reasons") or []],
             source_provenance=list(data.get("source_provenance") or []),
         )
