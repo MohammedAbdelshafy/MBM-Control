@@ -76,6 +76,10 @@ from MBM.LeadEngine.buyer_discovery_engine import BuyerDiscoveryEngine, SourceSt
 from MBM.LeadEngine.land_property_source import LandPropertySource, SourceStatus as LandSourceStatus
 from MBM.LeadEngine.buyer_matching_engine import BuyerMatchingEngine
 
+from MBM.LeadEngine.dcad_owner_lookup import dcad_lookup, title_case_owner
+from MBM.LeadEngine.owner_identity import _has_authoritative_ownership_evidence
+from MBM.LeadEngine.free_skip_tracer import FreeSkipTracer
+
 ARTIFACTS_DIR = ROOT_DIR / "MBM" / "Artifacts"
 DAILY_GTM_DIR = ARTIFACTS_DIR / "GTM" / "daily"
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -293,6 +297,45 @@ class DailyLeadFactory:
             for cand in raw_candidates:
                 raw_phone = cand.get("phone", "")
                 norm_p = normalize_phone_digits(raw_phone)
+
+                # --- NEW ENRICHMENT INTEGRATION ---
+                # Gate 0.5: DCAD Owner Resolution (for properties lacking an owner)
+                if cand.get("industry") == "Real Estate Sellers" and not cand.get("decision_maker"):
+                    address = cand.get("property_address") or cand.get("address")
+                    if address:
+                        try:
+                            owner_data = dcad_lookup(address, retries=1)
+                            if owner_data and owner_data.get("owner_name"):
+                                cand["decision_maker"] = title_case_owner(owner_data["owner_name"])
+                                cand["role"] = "Property Owner"
+                                cand["source"] = "DCAD Registry (Verified)"
+                                cand["source_class"] = "COUNTY_RECORD"
+                        except Exception:
+                            pass # Fail safely, do not crash on provider error
+
+                # Gate 0.6: Authoritative Owner Identity Gate (reject tenants/occupants)
+                if not _has_authoritative_ownership_evidence(cand):
+                    report.rejected += 1
+                    continue
+
+                # Gate 0.7: Owner-Only Skip Trace (if phone/email missing)
+                if not raw_phone:
+                    try:
+                        tracer = FreeSkipTracer()
+                        tracer_res = tracer.find_contact(
+                            name=cand.get("decision_maker", ""),
+                            address=cand.get("property_address", ""),
+                            city=cand.get("city", "")
+                        )
+                        if tracer_res.get("phone"):
+                            cand["phone"] = tracer_res["phone"]
+                            raw_phone = cand["phone"]
+                            norm_p = normalize_phone_digits(raw_phone)
+                        if tracer_res.get("email"):
+                            cand["email"] = tracer_res["email"]
+                    except Exception:
+                        pass # Fail safely, do not fabricate fallback contacts
+                # --- END ENRICHMENT INTEGRATION ---
 
                 # Gate 0: PROVENANCE - a record may not enter production unless
                 # it carries real provenance and zero synthetic fingerprints.
