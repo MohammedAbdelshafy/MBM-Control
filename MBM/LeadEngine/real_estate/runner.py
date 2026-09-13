@@ -14,22 +14,14 @@ def run_file(path: str) -> dict[str, object]:
     raw = json.loads(Path(path).read_text(encoding="utf-8"))
     prop = PropertyEvidence(**raw["property"])
     buyer = BuyerEvidence(**raw["buyer"]) if raw.get("buyer") else None
+    underwriting_input = raw["underwriting"]
     uw = underwrite(
-        raw["underwriting"]["arv"],
-        raw["underwriting"]["repairs"],
-        raw["underwriting"]["purchase_price"],
+        underwriting_input["arv"], underwriting_input["repairs"], underwriting_input["purchase_price"],
+        target_margin=underwriting_input.get("target_margin", 0.70), spread_target=underwriting_input.get("spread_target", 15000.0),
     )
     packet = build_offer_packet(prop, raw["seller"], buyer, uw, raw["offer_price"])
     deal = to_canonical_deal(packet)
-    return {
-        "send_state": packet.send_state,
-        "email_copy": packet.email_copy,
-        "whatsapp_copy": packet.whatsapp_copy,
-        "manual_call_payload": packet.manual_call_payload,
-        "source_provenance": packet.source_provenance,
-        "underwriting": uw,
-        "canonical_deal": deal.to_dict(),
-    }
+    return {"send_state": packet.send_state, "blocked_reasons": packet.blocked_reasons, "email_copy": packet.email_copy, "whatsapp_copy": packet.whatsapp_copy, "manual_call_payload": packet.manual_call_payload, "source_provenance": packet.source_provenance, "underwriting": uw, "canonical_deal": deal.to_dict()}
 
 
 def main() -> int:
