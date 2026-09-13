@@ -104,7 +104,7 @@ jobs:
           reporter: github-check
           level: error
           fail_level: error
-          actionlint_flags: -ignore 'SC[0-9]+'
+          actionlint_flags: -ignore SC[0-9]+
 
   secret-scan:
     runs-on: ubuntu-latest
