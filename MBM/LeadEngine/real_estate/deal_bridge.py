@@ -24,7 +24,7 @@ def to_canonical_deal(packet: OfferPacket):
         primary_offer=f"${packet.offer_price:,.0f}",
         stage=DealStage.QUALIFIED if qualified else DealStage.DISQUALIFIED,
         outcome="PENDING" if qualified else "REJECTED",
-        reason="Evidence/contact gate passed" if qualified else "Evidence/contact gate failed",
+        reason=("Evidence/contact gate passed" if qualified else "; ".join(reason.value for reason in packet.blocked_reasons)),
         next_action="HUMAN_SEND" if qualified else "RESEARCH",
         evidence_provenance=packet.source_provenance,
     )
