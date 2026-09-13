@@ -38,7 +38,7 @@ UNDERWRITING = underwrite(arv=200000, repairs=30000, purchase_price=70000)
 
 def test_underwrite_calculates_mao_and_economic_gate():
     assert UNDERWRITING["mao"] == 110000
-    assert UNDERWRITING["gross_spread"] == 100000
+    assert UNDERWRITING["projected_profit"] == 100000
     assert UNDERWRITING["passes_economic_gate"] is True
     assert qualifies_for_human_review(UNDERWRITING, "ok", True) is True
 
@@ -46,6 +46,7 @@ def test_underwrite_calculates_mao_and_economic_gate():
 def test_build_offer_packet_is_manual_send_only():
     packet = build_offer_packet(PROPERTY, SELLER, BUYER, UNDERWRITING, 85000)
     assert packet.send_state == "HUMAN_SEND_REQUIRED"
+    assert packet.blocked_reasons == []
     assert "85,000" in packet.whatsapp_copy
     assert "85,000" in packet.email_copy
     assert packet.manual_call_payload["phone"] == "+12165550123"
