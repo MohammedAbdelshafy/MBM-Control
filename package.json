@@ -101,6 +101,7 @@
     "leads:sellers": "python MBM/LeadEngine/seller_skip_tracer.py",
     "leads:sellers:apply": "python MBM/LeadEngine/seller_skip_tracer.py --apply",
     "leads:gate:audit": "python MBM/LeadEngine/dialer_verification_gate.py --audit",
+    "leads:qualify": "python -m MBM.LeadEngine.qualification_runner",
     "leads:score": "python MBM/LeadEngine/lead_quality_scorer.py",
     "leads:score:apply": "python MBM/LeadEngine/lead_quality_scorer.py --apply",
     "leads:mb:refresh": "python MBM/LeadEngine/moneybeast_engine.py sellers-refresh",
