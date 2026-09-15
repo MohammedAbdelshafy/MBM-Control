@@ -5,12 +5,13 @@ import json
 import sys
 
 from .engine import DemandFactory
-from .models import DemandSignal, Opportunity
+from .models import ConvictionAssessment, DemandSignal, Opportunity
+from .quality import ProductQualityContract
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Evaluate an MBM demand opportunity safely.")
-    parser.add_argument("--file", help="JSON file containing {opportunity, signals}.")
+    parser.add_argument("--file", help="JSON file containing {opportunity, signals, conviction, quality}.")
     parser.add_argument("--armed", action="store_true", help="Mark the evaluation as armed; still proposal-only.")
     args = parser.parse_args()
 
@@ -22,7 +23,13 @@ def main() -> int:
             payload = json.load(handle)
         opportunity = Opportunity(**payload["opportunity"])
         signals = [DemandSignal(**item) for item in payload.get("signals", [])]
-        result = DemandFactory().evaluate(opportunity, signals, armed=args.armed)
+        factory = DemandFactory()
+        if "conviction" in payload or "quality" in payload:
+            conviction = ConvictionAssessment(**payload.get("conviction", {}))
+            quality = ProductQualityContract(**payload.get("quality", {}))
+            result = factory.evaluate_full(opportunity, signals, conviction, quality, armed=args.armed)
+        else:
+            result = factory.evaluate(opportunity, signals, armed=args.armed)
         print(json.dumps({
             "status": result.status,
             "opportunity": opportunity.to_dict(),
