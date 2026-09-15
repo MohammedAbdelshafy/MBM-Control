@@ -1,4 +1,4 @@
-from .engine import DemandFactory, FactoryResult
+from .engine import DemandFactory, FactoryResult, utc_now
 from .models import Decision, DemandSignal, OfferCandidate, Opportunity
 
 __all__ = [
@@ -8,4 +8,5 @@ __all__ = [
     "FactoryResult",
     "OfferCandidate",
     "Opportunity",
+    "utc_now",
 ]
