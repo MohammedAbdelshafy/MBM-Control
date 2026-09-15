@@ -1,0 +1,53 @@
+{
+  "opportunity": {
+    "opportunity_id": "opp-demo-001",
+    "problem": "construction estimating takes too long",
+    "buyer_segment": "small contractors",
+    "distributor_type": "industry creator",
+    "pain_intensity": 0.8,
+    "distribution_probability": 0.7,
+    "price_potential": 0.6,
+    "gross_margin": 0.9,
+    "repeat_potential": 0.6,
+    "expansion_potential": 0.8,
+    "production_cost": 0.15
+  },
+  "signals": [
+    {
+      "signal_id": "sig-demo-001",
+      "source": "community",
+      "problem": "construction estimating takes too long",
+      "evidence_level": "explicit_request",
+      "buyer_segment": "small contractors",
+      "recency_days": 2,
+      "engagement": 0.9,
+      "purchase_intent": 0.8,
+      "evidence": ["requested estimating template"],
+      "metadata": {"pain_intensity": 0.8, "audience_access": 0.8}
+    },
+    {
+      "signal_id": "sig-demo-002",
+      "source": "marketplace",
+      "problem": "construction estimating takes too long",
+      "evidence_level": "observed_purchase",
+      "buyer_segment": "small contractors",
+      "recency_days": 7,
+      "engagement": 0.8,
+      "purchase_intent": 0.9,
+      "evidence": ["adjacent estimating templates selling"],
+      "metadata": {"pain_intensity": 0.8, "audience_access": 0.7}
+    },
+    {
+      "signal_id": "sig-demo-003",
+      "source": "search",
+      "problem": "construction estimating takes too long",
+      "evidence_level": "repeated_signal",
+      "buyer_segment": "small contractors",
+      "recency_days": 5,
+      "engagement": 0.7,
+      "purchase_intent": 0.7,
+      "evidence": ["repeated queries for estimating spreadsheet"],
+      "metadata": {"pain_intensity": 0.7, "audience_access": 0.7}
+    }
+  ]
+}
