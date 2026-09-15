@@ -49,5 +49,27 @@
       "evidence": ["repeated queries for estimating spreadsheet"],
       "metadata": {"pain_intensity": 0.7, "audience_access": 0.7}
     }
-  ]
+  ],
+  "conviction": {
+    "relevance": 0.95,
+    "outcome_clarity": 0.95,
+    "proof": 0.85,
+    "risk_reduction": 0.80,
+    "purchase_friction": 0.90,
+    "creative_readiness": 0.85,
+    "personalization": 0.90,
+    "trust": 0.90,
+    "usage_readiness": 0.85,
+    "claim_integrity": 0.95
+  },
+  "quality": {
+    "outcome_statement": "Produce a verified estimating workflow in minutes.",
+    "proof_inventory": ["working demo", "observed purchase in adjacent market"],
+    "buyer_preview": "Three screenshots and a sample output are provided before purchase.",
+    "usage_path": ["download", "import", "run", "review"],
+    "objection_map": ["Will this fit my workflow?", "Can I see an example?"],
+    "limitations": ["Supplier prices still require review when no source exists."],
+    "qa_checks": ["sample input", "broken input", "export", "mobile preview"],
+    "claim_evidence_level": "observed_purchase"
+  }
 }
