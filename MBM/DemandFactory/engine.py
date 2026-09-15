@@ -104,11 +104,14 @@ class DemandFactory:
                 reasons=["claim_integrity_below_threshold"],
             )
 
-        if score < self.CONVICTION_THRESHOLD:
+        # A weak critical gate must never be averaged away by unrelated strong gates.
+        # The overall threshold still matters as a quality signal, but every dimension
+        # must clear the minimum gate before launch can proceed.
+        if failed or score < self.CONVICTION_THRESHOLD:
             priority = min(
                 failed,
                 key=lambda name: scores[name] if name in scores else 1.0,
-                default="relevance",
+                default=min(scores, key=scores.get) if scores else "relevance",
             )
             action_map = {
                 "relevance": "repair_offer",
@@ -122,13 +125,14 @@ class DemandFactory:
                 "usage_readiness": "qa_product",
                 "claim_integrity": "complete_proof",
             }
+            status = "blocked" if conviction.claim_integrity < self.GATE_THRESHOLD else "repair"
             return ConvictionGateResult(
-                status="repair",
+                status=status,
                 score=score,
                 passed_gates=passed,
                 failed_gates=failed,
                 next_action=action_map.get(priority, "repair_offer"),
-                reasons=[f"weak_gate:{priority}"],
+                reasons=[f"weak_gate:{priority}"] if failed else ["overall_conviction_below_threshold"],
             )
 
         return ConvictionGateResult(
@@ -177,7 +181,7 @@ class DemandFactory:
             )
             return FactoryResult("conviction_blocked", opportunity.opportunity_id, decision, {
                 **base.diagnostics,
-                "conviction": conviction_result.__dict__ if hasattr(conviction_result, "__dict__") else {
+                "conviction": {
                     "status": conviction_result.status,
                     "score": conviction_result.score,
                     "passed_gates": conviction_result.passed_gates,
