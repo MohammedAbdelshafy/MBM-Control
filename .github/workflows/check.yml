@@ -44,10 +44,26 @@ jobs:
         if: always()
         run: echo "## Typecheck ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
 
+  factory-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run autonomous factory tests
+        run: python -m unittest MBM.DemandFactory.test_engine MBM.DemandFactory.test_adapters -v
+      - name: Evaluate factory sample
+        run: python -m MBM.DemandFactory --file MBM/DemandFactory/sample_opportunity.json
+      - name: Summary
+        if: always()
+        run: echo "## DemandFactory ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
+
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [lint, typecheck]
+    needs: [lint, typecheck, factory-test]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -66,7 +82,7 @@ jobs:
         if: always()
         run: |
           echo "## Build ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "All checks: lint=${{ needs.lint.result }} typecheck=${{ needs.typecheck.result }} build=${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "All checks: lint=${{ needs.lint.result }} typecheck=${{ needs.typecheck.result }} factory=${{ needs.factory-test.result }} build=${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
 
   lint-fix:
     if: github.ref == 'refs/heads/master' && failure()
