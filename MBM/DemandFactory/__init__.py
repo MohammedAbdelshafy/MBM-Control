@@ -8,6 +8,7 @@ from .models import (
     Opportunity,
 )
 from .quality import ProductQualityContract, validate_quality_contract
+from .revenue_bridge import RevenueEvent, attribution_key, build_revenue_event
 
 __all__ = [
     "ConvictionAssessment",
@@ -19,6 +20,9 @@ __all__ = [
     "OfferCandidate",
     "Opportunity",
     "ProductQualityContract",
+    "RevenueEvent",
+    "attribution_key",
+    "build_revenue_event",
     "validate_quality_contract",
     "utc_now",
 ]
