@@ -30,6 +30,9 @@ ActionType = Literal[
     "research_buyer",
     "research_distributor",
     "draft_offer",
+    "repair_offer",
+    "complete_proof",
+    "complete_creative",
     "build_product",
     "qa_product",
     "launch_experiment",
@@ -134,6 +137,33 @@ class Opportunity:
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+@dataclass(slots=True)
+class ConvictionAssessment:
+    relevance: float = 0.0
+    outcome_clarity: float = 0.0
+    proof: float = 0.0
+    risk_reduction: float = 0.0
+    purchase_friction: float = 0.0
+    creative_readiness: float = 0.0
+    personalization: float = 0.0
+    trust: float = 0.0
+    usage_readiness: float = 0.0
+    claim_integrity: float = 0.0
+
+    def scores(self) -> dict[str, float]:
+        return asdict(self)
+
+
+@dataclass(slots=True)
+class ConvictionGateResult:
+    status: Literal["blocked", "repair", "ready"]
+    score: float
+    passed_gates: list[str] = field(default_factory=list)
+    failed_gates: list[str] = field(default_factory=list)
+    next_action: str = "validate_demand"
+    reasons: list[str] = field(default_factory=list)
 
 
 @dataclass(slots=True)
