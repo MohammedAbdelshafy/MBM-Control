@@ -4,7 +4,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from .models import Decision, DemandSignal, Opportunity
+from .models import ConvictionAssessment, ConvictionGateResult, Decision, DemandSignal, Opportunity
+from .quality import ProductQualityContract, validate_quality_contract
 
 
 @dataclass(slots=True)
@@ -25,6 +26,8 @@ class DemandFactory:
     MIN_EVIDENCE = 0.35
     MIN_CONFIDENCE = 0.40
     MIN_EXPECTED_VALUE = 0.25
+    CONVICTION_THRESHOLD = 0.72
+    GATE_THRESHOLD = 0.60
 
     def evaluate(
         self,
@@ -85,6 +88,122 @@ class DemandFactory:
         }.get(action, opportunity.state)
         return FactoryResult("action_ready", opportunity.opportunity_id, decision, {"score": score})
 
+    def assess_conviction(self, opportunity: Opportunity, conviction: ConvictionAssessment) -> ConvictionGateResult:
+        scores = conviction.scores()
+        passed = [name for name, value in scores.items() if value >= self.GATE_THRESHOLD]
+        failed = [name for name, value in scores.items() if value < self.GATE_THRESHOLD]
+        score = sum(scores.values()) / len(scores) if scores else 0.0
+
+        if conviction.claim_integrity < self.GATE_THRESHOLD:
+            return ConvictionGateResult(
+                status="blocked",
+                score=score,
+                passed_gates=passed,
+                failed_gates=failed,
+                next_action="complete_proof",
+                reasons=["claim_integrity_below_threshold"],
+            )
+
+        if score < self.CONVICTION_THRESHOLD:
+            priority = min(
+                failed,
+                key=lambda name: scores[name] if name in scores else 1.0,
+                default="relevance",
+            )
+            action_map = {
+                "relevance": "repair_offer",
+                "outcome_clarity": "repair_offer",
+                "proof": "complete_proof",
+                "risk_reduction": "repair_offer",
+                "purchase_friction": "repair_offer",
+                "creative_readiness": "complete_creative",
+                "personalization": "repair_offer",
+                "trust": "complete_proof",
+                "usage_readiness": "qa_product",
+                "claim_integrity": "complete_proof",
+            }
+            return ConvictionGateResult(
+                status="repair",
+                score=score,
+                passed_gates=passed,
+                failed_gates=failed,
+                next_action=action_map.get(priority, "repair_offer"),
+                reasons=[f"weak_gate:{priority}"],
+            )
+
+        return ConvictionGateResult(
+            status="ready",
+            score=score,
+            passed_gates=passed,
+            failed_gates=failed,
+            next_action="launch_experiment",
+            reasons=["all_critical_conviction_dimensions_passed"],
+        )
+
+    def evaluate_full(
+        self,
+        opportunity: Opportunity,
+        signals: list[DemandSignal],
+        conviction: ConvictionAssessment,
+        quality: ProductQualityContract,
+        *,
+        armed: bool = False,
+    ) -> FactoryResult:
+        base = self.evaluate(opportunity, signals, armed=armed)
+        if base.status in {"needs_validation", "test_first"}:
+            return base
+
+        quality_failures = validate_quality_contract(quality)
+        if quality_failures:
+            decision = self._decision(
+                opportunity,
+                "qa_product",
+                {"commercial_score": base.diagnostics["score"], "quality_failures": quality_failures},
+                "Commercial opportunity exists, but the product does not yet satisfy the quality contract.",
+                ["resolve every quality-contract failure", "re-run full evaluation"],
+                ["quality cannot be substantiated without unsupported claims"],
+            )
+            return FactoryResult("quality_blocked", opportunity.opportunity_id, decision, {**base.diagnostics, "quality_failures": quality_failures})
+
+        conviction_result = self.assess_conviction(opportunity, conviction)
+        if conviction_result.status != "ready":
+            decision = self._decision(
+                opportunity,
+                conviction_result.next_action,
+                {"commercial_score": base.diagnostics["score"], "conviction": conviction_result.score},
+                "Commercial gates passed, but consumer conviction still has repair work.",
+                [f"resolve {gate}" for gate in conviction_result.failed_gates],
+                ["do not launch while a critical conviction gate is below threshold"],
+            )
+            return FactoryResult("conviction_blocked", opportunity.opportunity_id, decision, {
+                **base.diagnostics,
+                "conviction": conviction_result.__dict__ if hasattr(conviction_result, "__dict__") else {
+                    "status": conviction_result.status,
+                    "score": conviction_result.score,
+                    "passed_gates": conviction_result.passed_gates,
+                    "failed_gates": conviction_result.failed_gates,
+                },
+            })
+
+        action = self._next_action_after_conviction(opportunity)
+        decision = self._decision(
+            opportunity,
+            action,
+            {"commercial_score": base.diagnostics["score"], "conviction": conviction_result.score},
+            "Evidence, economics, product quality, and consumer-conviction gates passed.",
+            ["launch a controlled experiment", "attribute every conversion", "feed outcomes back into scoring"],
+            ["negative unit economics", "quality regression", "meaningful traction absent after the test window"],
+        )
+        return FactoryResult("launch_ready", opportunity.opportunity_id, decision, {
+            **base.diagnostics,
+            "conviction": {
+                "status": conviction_result.status,
+                "score": conviction_result.score,
+                "passed_gates": conviction_result.passed_gates,
+                "failed_gates": conviction_result.failed_gates,
+            },
+        })
+
     def _hydrate_from_signals(self, opportunity: Opportunity, signals: list[DemandSignal]) -> None:
         if not signals:
             return
@@ -114,6 +233,12 @@ class DemandFactory:
             return "launch_experiment"
         if opportunity.metadata.get("prototype_exists"):
             return "qa_product"
+        return "build_product"
+
+    @staticmethod
+    def _next_action_after_conviction(opportunity: Opportunity) -> str:
+        if opportunity.metadata.get("product_exists"):
+            return "launch_experiment"
         return "build_product"
 
     @staticmethod
