@@ -1,0 +1,1 @@
+"""CONTEC OPPORTUNITY RADAR package."""
