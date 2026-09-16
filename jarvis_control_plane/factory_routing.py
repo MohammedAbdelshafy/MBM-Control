@@ -96,8 +96,10 @@ def route_capability(
     if decision.verdict is PolicyVerdict.REQUIRE_APPROVAL:
         if not isinstance(approval, dict) or approval.get("approved") is not True:
             raise PermissionError(f"approval required for {capability}: {decision.reason}")
-    # UNSAFE / BLOCKED capabilities never route to execution.
-    if spec.status in ("UNSAFE", "BLOCKED"):
+    # UNSAFE / BLOCKED / DEFERRED capabilities never route to execution.
+    # DEFERRED means no verified transport, credentials, or authorized source
+    # is observed here; routing to it would imply a working integration.
+    if spec.status in ("UNSAFE", "BLOCKED", "DEFERRED"):
         raise PermissionError(f"capability {capability} is {spec.status}: {spec.reason}")
     return spec, decision
 

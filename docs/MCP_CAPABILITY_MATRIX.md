@@ -36,6 +36,22 @@ Every capability tied to an observed tool. Unknown = DENY.
 | copy_generation | ecosystem | gemini_cli_adapter | STRATEGY, BUILD | CONTROLLED_WRITE | yes | external_llm_call | DEFERRED |
 | video_generation | ecosystem | higgsfield_adapter | BUILD | CONTROLLED_WRITE | yes | external_media_cost | DEFERRED |
 | company_enrichment | ecosystem | hubspot_adapter | RESEARCH | CONTROLLED_WRITE | yes | external_crm_write | DEFERRED |
+| market_research | gtm | slice_a.run_slice_a | DISCOVER, RESEARCH | READ_ONLY | no | none | INTEGRATED |
+| company_research | gtm | webfetch | RESEARCH | READ_ONLY | no | none | INTEGRATED |
+| prospect_discovery | gtm | fixtures_only | DISCOVER | READ_ONLY | no | none | DEFERRED |
+| lead_enrichment | gtm | fixtures_only | RESEARCH | READ_ONLY | no | none | DEFERRED |
+| lead_cleaning | gtm | run_cleaner | SCORE | SAFE_WRITE | no | scoped_artifact_write | INTEGRATED |
+| lead_qualification | gtm | production_gate.evaluate_gate | SCORE | READ_ONLY | no | none | INTEGRATED |
+| account_scoring | gtm | score_account | SCORE | READ_ONLY | no | none | INTEGRATED |
+| offer_matching | gtm | choose_revenue_route | STRATEGY | READ_ONLY | no | none | INTEGRATED |
+| message_generation | gtm | draft_outreach | STRATEGY, BUILD | SAFE_WRITE | no | draft_artifact | INTEGRATED |
+| outreach_drafting | gtm | crm_overlay_proposal | PACKAGE | CONTROLLED_WRITE | yes | proposal_artifact | INTEGRATED |
+| outreach_send | gtm | gmail_dispatcher | — | CONSEQUENTIAL_EXTERNAL_ACTION | yes | external_send | BLOCKED |
+| response_classification | gtm | response_classifier | MEASURE | READ_ONLY | no | none | INTEGRATED |
+| crm_update | gtm | crm_overlay_proposal | MEASURE, LEARN | CONTROLLED_WRITE | yes | proposal_only_no_mutation | INTEGRATED |
+| pipeline_management | gtm | GtmStateMachine.transition | MEASURE | CONTROLLED_WRITE | yes | in_memory_state | INTEGRATED |
+| sales_brief | gtm | build_sales_brief | STRATEGY | READ_ONLY | no | none | INTEGRATED |
+| gtm_analytics | gtm | scoreboard | MEASURE, LEARN | READ_ONLY | no | none | INTEGRATED |
 
 ## Policy mapping
 
@@ -47,12 +63,12 @@ Every capability tied to an observed tool. Unknown = DENY.
 ## Coverage
 
 - AVAILABLE: all rows above
-- INTEGRATED: 25 read/safe/controlled capabilities with hermetic tests
-- TESTED: 25 (see `jarvis_control_plane/tests/test_capability_factory.py` + control-plane suites)
-- BLOCKED: checkout_configuration (commercial commitment, human-controlled)
+- INTEGRATED: 38 read/safe/controlled capabilities with hermetic tests
+- TESTED: 38 (see `jarvis_control_plane/tests/test_capability_factory.py`, `MBM/LeadEngine/tests/test_gtm_factory_bridge.py` + control-plane suites)
+- BLOCKED: checkout_configuration (commercial commitment), outreach_send (external send; needs production-gate HUMAN_APPROVED + credentials)
 - UNSAFE: payout_execution (money movement, never auto-executed)
-- REDUNDANT: none (one canonical contract per function)
-- DEFERRED: copy_generation, video_generation, company_enrichment, agent_assembly (needs credentials/transport not observed here; stubs never route)
+- REDUNDANT: none (one canonical contract per function; GTM reuses factory/control-plane tools, no second registry)
+- DEFERRED: copy_generation, video_generation, company_enrichment, agent_assembly, prospect_discovery, lead_enrichment (needs credentials/transport/authorized source not observed here; stubs and fixtures never route — router denies DEFERRED)
 
 ## Go-live rule
 
