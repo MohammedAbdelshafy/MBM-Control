@@ -55,7 +55,7 @@ jobs:
       - name: Run autonomous factory tests
         run: python -m unittest MBM.DemandFactory.test_engine MBM.DemandFactory.test_adapters MBM.DemandFactory.revenue_bridge_test -v
       - name: Run factory gate suites
-        run: python -m pytest MBM/DemandFactory/tests/ MBM/ContecRadar/tests/test_slice_a.py MBM/Offers/tests/ jarvis_control_plane/tests/test_capability_factory.py -q
+        run: python -m unittest MBM.DemandFactory.tests.test_creator_gate MBM.DemandFactory.tests.test_lifecycle MBM.DemandFactory.tests.test_conviction MBM.DemandFactory.tests.test_factory_e2e MBM.DemandFactory.monetization_router_test MBM.ContecRadar.tests.test_slice_a MBM.Offers.tests.test_offer_schema jarvis_control_plane.tests.test_capability_factory -v
       - name: Evaluate factory sample
         run: python -m MBM.DemandFactory --file MBM/DemandFactory/sample_opportunity.json
       - name: Summary
