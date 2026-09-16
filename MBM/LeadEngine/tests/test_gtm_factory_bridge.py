@@ -288,5 +288,47 @@ class GtmRoutingTests(unittest.TestCase):
             self.assertIn(expected, caps)
 
 
+class SalesReplyTests(unittest.TestCase):
+    def test_all_nine_states(self):
+        cases = {
+            "Where do I pay? Let's do it": "READY_TO_BUY",
+            "Can we run a free sample first?": "ASKS_FOR_SAMPLE",
+            "Can I see a demo of the report?": "ASKS_FOR_DEMO",
+            "How much does it cost?": "PRICE_OBJECTION",
+            "Not now, revisit next quarter": "TIMING_OBJECTION",
+            "How does the dedupe work?": "NEEDS_INFO",
+            "Not interested, thanks": "NOT_INTERESTED",
+            "Wrong person, try sales ops": "WRONG_PERSON",
+            "This looks useful, let's talk": "INTERESTED",
+        }
+        for text, expected in cases.items():
+            with self.subTest(text=text):
+                result = GA.classify_sales_reply(text)
+                self.assertEqual(result["label"], expected)
+                self.assertTrue(result["required_action"])
+
+    def test_buy_beats_price_question(self):
+        result = GA.classify_sales_reply("Looks good, where do I pay and what does it cost?")
+        self.assertEqual(result["label"], "READY_TO_BUY")
+
+    def test_disinterest_beats_price(self):
+        result = GA.classify_sales_reply("Too expensive, not interested")
+        self.assertEqual(result["label"], "NOT_INTERESTED")
+
+    def test_opt_out_flagged(self):
+        result = GA.classify_sales_reply("Stop emailing me, unsubscribe")
+        self.assertEqual(result["label"], "NOT_INTERESTED")
+        self.assertIn("opt_out_language_present", result["reasons"])
+
+    def test_unknown_and_malformed(self):
+        self.assertEqual(GA.classify_sales_reply("ok")["label"], "UNKNOWN")
+        self.assertEqual(GA.classify_sales_reply("")["label"], "UNKNOWN")
+        self.assertEqual(GA.classify_sales_reply(None)["label"], "UNKNOWN")
+
+    def test_determinism(self):
+        text = "Send me the invoice"
+        self.assertEqual(GA.classify_sales_reply(text), GA.classify_sales_reply(text))
+
+
 if __name__ == "__main__":
     unittest.main()

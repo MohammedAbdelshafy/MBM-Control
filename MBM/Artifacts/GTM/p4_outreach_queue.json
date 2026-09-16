@@ -1,0 +1,382 @@
+{
+  "generated_by": "generate_p4_outreach.py (draft_outreach, banned-claim fail-closed)",
+  "draft_count": 25,
+  "sends_executed": 0,
+  "queue": [
+    {
+      "prospect_id": "P4-001",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for DispoBridge: saw your dispobridge.com operation (PROVEN: wholesale dispo ",
+        "body": "Hi there,\n\nNoticed DispoBridge may be dealing with saw your dispobridge.com operation (PROVEN: wholesale dispo platform by Bridgepoint Property Partners (site live, 2025-founded per own site). Buyer-network size per own site (u\u2026) hypothesis: hypothesis: runs 500+ investor outreach lists where duplicates and dead numbers waste dispo speed.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-001",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.7,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-002",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Cities Real Estate: saw your citiesrealestate.com operation (PROVEN: DFW brokera",
+        "body": "Hi there,\n\nNoticed Cities Real Estate may be dealing with saw your citiesrealestate.com operation (PROVEN: DFW brokerage running a verified investor list (21 yrs per own site, May-2026 article). List hygiene explicitly enforced per own pag\u2026) hypothesis: hypothesis: investor-list signups accumulate duplicates and fake contacts that must be scrubbed.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-002",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.7,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-003",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Wholesale Property TX: saw your wholesalepropertytx.com operation (PROVEN: Texas wh",
+        "body": "Hi there,\n\nNoticed Wholesale Property TX may be dealing with saw your wholesalepropertytx.com operation (PROVEN: Texas wholesale deal sourcer operating since 2018 per own site; buyer-list business model.\u2026) hypothesis: hypothesis: 1200+ investor list needs recurring dedupe and dead-number removal (own-site size claim unverified).\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-003",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.65,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-004",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for DFW Off Market Deals (Dallas Homes for Cash): saw your dallashomesforcash.com operation (PROVEN: DFW cash-",
+        "body": "Hi there,\n\nNoticed DFW Off Market Deals (Dallas Homes for Cash) may be dealing with saw your dallashomesforcash.com operation (PROVEN: DFW cash-buyer outfit publishing company line (469) 305-0988 and Dallas office address on own site. Number published, not dial-verif\u2026) hypothesis: hypothesis: VIP buyer intake forms collect duplicates and bad numbers before matching.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-004",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.7,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-005",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Deal Run: saw your dealrun.ai operation (PROVEN: investor-buyer identi",
+        "body": "Hi there,\n\nNoticed Deal Run may be dealing with saw your dealrun.ai operation (PROVEN: investor-buyer identification SaaS with Dallas deal data product (article dated 2026-03-15).\u2026) hypothesis: hypothesis:skip-trace outputs and investor contact exports need dedupe and fake-pattern screening.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-005",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.65,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-006",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Pearl Lemon Leads USA: saw your pearllemonleadsusa.com operation (PROVEN: Dallas B2",
+        "body": "Hi there,\n\nNoticed Pearl Lemon Leads USA may be dealing with saw your pearllemonleadsusa.com operation (PROVEN: Dallas B2B cold-calling agency (500-2000 calls/campaign per own site). High-volume dialing operation.\u2026) hypothesis: hypothesis: 500-2000-call campaigns burn rep time on bad numbers and duplicates.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-006",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.75,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-007",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Growth Rhino: saw your growthrhino.com operation (PROVEN: Dallas B2B appoi",
+        "body": "Hi there,\n\nNoticed Growth Rhino may be dealing with saw your growthrhino.com operation (PROVEN: Dallas B2B appointment-setting agency (micro-campaign model per own site).\u2026) hypothesis: hypothesis: small test-list campaigns fail when seed data contains dead contacts.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-007",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.7,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-008",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Wind River Marketing: saw your windrivermarketing.net operation (PROVEN: DFW B2B t",
+        "body": "Hi there,\n\nNoticed Wind River Marketing may be dealing with saw your windrivermarketing.net operation (PROVEN: DFW B2B telemarketing agency for commercial services (own site, Jun-2025 article).\u2026) hypothesis: hypothesis: commercial-service call lists decay fast across territories.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-008",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.7,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-009",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for L4RG: saw your l4rg.com operation (PROVEN: outsourced B2B business",
+        "body": "Hi there,\n\nNoticed L4RG may be dealing with saw your l4rg.com operation (PROVEN: outsourced B2B business-development firm, Dallas practice (20+ yrs per own site, Oct-2025 article).\u2026) hypothesis: hypothesis: multi-channel prospect data across LinkedIn/email/phone duplicates without dedupe keys.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-009",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.65,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-010",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for HANGAR49: saw your welcome.hangar49.com operation (PROVEN: B2B lead-ge",
+        "body": "Hi there,\n\nNoticed HANGAR49 may be dealing with saw your welcome.hangar49.com operation (PROVEN: B2B lead-gen agency publishing company line +1-347-518-4084 on own Dallas page. Number published, not dial-verified.\u2026) hypothesis: hypothesis: conversation-led outbound depends on contact accuracy for handoffs.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-010",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.65,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-011",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Blueprint Business Solutions: saw your blueprintbusinesssolutionscorp.com operation (PROVE",
+        "body": "Hi there,\n\nNoticed Blueprint Business Solutions may be dealing with saw your blueprintbusinesssolutionscorp.com operation (PROVEN: appointment-setting outsourcer publishing company email and phones on own Texas page (Feb-2026). Addresses published, not delivery-v\u2026) hypothesis: hypothesis: top-of-funnel identification passes unqualified rows into client calendars.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-011",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.7,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-012",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Salaria Sales: saw your salariasales.com operation (PROVEN: Texas B2B cold-",
+        "body": "Hi there,\n\nNoticed Salaria Sales may be dealing with saw your salariasales.com operation (PROVEN: Texas B2B cold-calling agency across tech/finance/healthcare/real-estate verticals (Feb-2025 article).\u2026) hypothesis: hypothesis: multi-vertical call data mixes formats and duplicates across campaigns.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-012",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.7,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-013",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for EBQ: saw your ebq.com operation (PROVEN: US-based appointment set",
+        "body": "Hi there,\n\nNoticed EBQ may be dealing with saw your ebq.com operation (PROVEN: US-based appointment setter (20+ yrs per own site) publishing Austin address, phone, and email (Mar-2026 article). Contacts publishe\u2026) hypothesis: hypothesis: 5-touch follow-up cadences waste attempts on dead records.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-013",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.7,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-014",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for MarknTech: saw your markntech.com operation (PROVEN: Texas LinkedIn lea",
+        "body": "Hi there,\n\nNoticed MarknTech may be dealing with saw your markntech.com operation (PROVEN: Texas LinkedIn lead-gen agency (180+ TX companies per own site, Dec-2025 article).\u2026) hypothesis: hypothesis: LinkedIn-sourced lists need phone/email verification before dialing.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-014",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.65,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-015",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Visionary Solutions Inc: saw your visionarysolutionsinc.com operation (PROVEN: Texas ",
+        "body": "Hi there,\n\nNoticed Visionary Solutions Inc may be dealing with saw your visionarysolutionsinc.com operation (PROVEN: Texas sales-outsourcing firm publishing phone and email on own site (May-2026 article). Contacts published, not delivery-verified.\u2026) hypothesis: hypothesis: rapid team expansion multiplies list-quality variance.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-015",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.65,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-016",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Lemnisca Growth: saw your lemniscategrowth.com operation (PROVEN: Dallas B2B ",
+        "body": "Hi there,\n\nNoticed Lemnisca Growth may be dealing with saw your lemniscategrowth.com operation (PROVEN: Dallas B2B lead-gen/ABM agency (cold email + LinkedIn + paid per own site).\u2026) hypothesis: hypothesis: multi-channel orchestration duplicates the same buyers across channels.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-016",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.6,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-017",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for DevCommX: saw your devcommx.com operation (PROVEN: Dallas appointment-",
+        "body": "Hi there,\n\nNoticed DevCommX may be dealing with saw your devcommx.com operation (PROVEN: Dallas appointment-setting infrastructure provider (Sales Navigator + intent stack per own site).\u2026) hypothesis: hypothesis: layered data stacks (Navigator/technographic/intent) overlap without dedupe.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-017",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.65,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-018",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for NATiVE Solar: saw your nativesolar.com operation (PROVEN: DFW solar+batter",
+        "body": "Hi there,\n\nNoticed NATiVE Solar may be dealing with saw your nativesolar.com operation (PROVEN: DFW solar+battery installer publishing email and phone on own DFW page (Jun-2025). Contacts published, not delivery-verified.\u2026) hypothesis: hypothesis: door-knock and web-lead lists mix service areas and duplicates.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-018",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.65,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-019",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Good Faith Energy: saw your goodfaithenergy.com operation (PROVEN: Addison TX s",
+        "body": "Hi there,\n\nNoticed Good Faith Energy may be dealing with saw your goodfaithenergy.com operation (PROVEN: Addison TX solar installer since 2014 publishing address, phone, and email on own site. Contacts published, not delivery-verified.\u2026) hypothesis: hypothesis: 770+ review-scale lead flow accumulates duplicates across DFW cities.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-019",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.65,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-020",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Solar SME: saw your solarsme.com operation (PROVEN: Texas solar install",
+        "body": "Hi there,\n\nNoticed Solar SME may be dealing with saw your solarsme.com operation (PROVEN: Texas solar installer (10+ yrs per own site) publishing Grand Prairie office, email, and phone. Contacts published, not delivery-ver\u2026) hypothesis: hypothesis: quote-request lists include renters and out-of-area records.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-020",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.6,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-021",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Longhorn Solar: saw your longhornsolar.com operation (PROVEN: Austin-founded",
+        "body": "Hi there,\n\nNoticed Longhorn Solar may be dealing with saw your longhornsolar.com operation (PROVEN: Austin-founded solar company (2009, 2300+ installs per own site) publishing Plano office contacts. Contacts published, not delivery-\u2026) hypothesis: hypothesis: multi-city operations duplicate households across metros.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-021",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.6,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-022",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for North Texas Solar: saw your northtexassolar.com operation (PROVEN: Fort Worth s",
+        "body": "Hi there,\n\nNoticed North Texas Solar may be dealing with saw your northtexassolar.com operation (PROVEN: Fort Worth solar installer (locally owned since 2015 per own site) publishing address, email, phone. Contacts published, not deliver\u2026) hypothesis: hypothesis: in-house crews idle when appointment lists contain bad numbers.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-022",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.6,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-023",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Thumann Insurance Agency: saw your thumanninsuranceagency.com operation (PROVEN: indep",
+        "body": "Hi there,\n\nNoticed Thumann Insurance Agency may be dealing with saw your thumanninsuranceagency.com operation (PROVEN: independent Dallas brokerage since 1996 across 80+ carriers per own site.\u2026) hypothesis: hypothesis: contractor and fleet prospect lists across DFW decay between renewals.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-023",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.6,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-024",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for RHSB: saw your rhsb.com operation (PROVEN: North Texas independent",
+        "body": "Hi there,\n\nNoticed RHSB may be dealing with saw your rhsb.com operation (PROVEN: North Texas independent broker (Assurex Global partner per own site) publishing Dallas/Fort Worth phones and email. Contacts publish\u2026) hypothesis: hypothesis: commercial book outreach hits stale decision-maker contacts.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-024",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.6,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    },
+    {
+      "prospect_id": "P4-025",
+      "channel": "EMAIL",
+      "message": {
+        "subject": "Idea for Presley Insurance Group: saw your presleyins.com operation (PROVEN: DFW independent a",
+        "body": "Hi there,\n\nNoticed Presley Insurance Group may be dealing with saw your presleyins.com operation (PROVEN: DFW independent agency (2017, $22M+ book per own site) publishing Dallas office address.\u2026) hypothesis: hypothesis: 6000-policy growth pace outruns list hygiene.\n\nRelevant proof: P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes\n\nOpen to a 10-minute look next week?\n\n-- MBM"
+      },
+      "evidence_used": [
+        "prospect:P4-025",
+        "p4-demo:11-row"
+      ],
+      "confidence": 0.6,
+      "approval_required": true,
+      "send_status": "DRAFT_ONLY"
+    }
+  ]
+}

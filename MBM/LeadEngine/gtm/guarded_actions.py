@@ -11,6 +11,10 @@ Every function is pure/deterministic (no network, no writes, no sends):
 - build_sales_brief ............ verified-fields-only call/account brief
 - dedupe_prospects ............. normalized identity dedupe (first wins)
 - crm_overlay_proposal ......... proposal-only CRM overlay (never mutates)
+- classify_sales_reply ......... sales-pipeline reply states for the P4 lane
+                                (READY_TO_BUY/ASKS_FOR_SAMPLE/ASKS_FOR_DEMO/
+                                PRICE_OBJECTION/TIMING_OBJECTION/NEEDS_INFO/
+                                NOT_INTERESTED/WRONG_PERSON/INTERESTED/UNKNOWN)
 
 There is deliberately NO send function. Outreach execution lives behind
 ProductionGate HUMAN_APPROVED + credentials, outside this module.
@@ -270,3 +274,78 @@ def crm_overlay_proposal(*, entity_id: str, stage: str,
         "executed": False,
         "execution": "requires_controlled_write_approval",
     }
+
+
+# --- sales reply handling (P4 lane states) --------------------------------------
+
+SalesReplyLabel = Literal[
+    "READY_TO_BUY",
+    "ASKS_FOR_SAMPLE",
+    "ASKS_FOR_DEMO",
+    "PRICE_OBJECTION",
+    "TIMING_OBJECTION",
+    "NEEDS_INFO",
+    "NOT_INTERESTED",
+    "WRONG_PERSON",
+    "INTERESTED",
+    "UNKNOWN",
+]
+
+# Order: buying intent first, then specific asks, then objections, then
+# disinterest, then info needs; UNKNOWN is the fail-closed fallback.
+_SALES_READY = re.compile(
+    r"ready to (buy|start|move forward)|let'?s do it|send (me )?(the )?(invoice|payment link|contract)|where do I (pay|sign)", re.I)
+_SALES_SAMPLE = re.compile(r"sample|trial|test (it|run)|free sample|\bpilot\b", re.I)
+_SALES_DEMO = re.compile(r"\bdemo\b|demonstration|show me|walk ?through|can I see", re.I)
+_SALES_PRICE = re.compile(r"price|cost|how much|expensive|cheaper|discount|budget", re.I)
+_SALES_TIMING = re.compile(r"not now|\blater\b|timing|next quarter|\bbusy\b|follow up|revisit", re.I)
+_SALES_WRONG = re.compile(r"wrong person|not (me|mine|my department)|forward to|right person|no longer (here|with)", re.I)
+_SALES_NO = re.compile(r"not interested|no thanks|\bpass\b|remove me|\bstop\b|unsub|no need|not a (good )?fit", re.I)
+_SALES_INFO = re.compile(r"\?|more (info|detail)|how does|what (do|does|is)|explain|tell me more", re.I)
+_SALES_YES = re.compile(r"\binterested\b|let'?s talk|\bbook\b|call me|send (more|info|details)", re.I)
+
+_SALES_NEXT_ACTION = {
+    "READY_TO_BUY": "open_customer_job_immediately",
+    "ASKS_FOR_SAMPLE": "offer_free_sample_run_then_paid_pilot",
+    "ASKS_FOR_DEMO": "send_demo_run_summary_then_book_call",
+    "PRICE_OBJECTION": "restate_499_scope_no_discount_without_approval",
+    "TIMING_OBJECTION": "nurture_with_permission_only",
+    "NEEDS_INFO": "answer_from_offer_doc_only",
+    "NOT_INTERESTED": "suppress_immediately_no_further_contact",
+    "WRONG_PERSON": "ask_for_referral_once_then_suppress_if_refused",
+    "INTERESTED": "route_to_sales_for_discovery_call",
+    "UNKNOWN": "human_review",
+}
+
+
+def classify_sales_reply(text: Any) -> dict[str, Any]:
+    """Classify one sales reply into P4 pipeline states. No sending."""
+    if not isinstance(text, str) or not text.strip():
+        return {"label": "UNKNOWN", "reasons": ["empty_or_non_string_input"],
+                "required_action": _SALES_NEXT_ACTION["UNKNOWN"]}
+    lowered = text.strip()
+    if _SALES_READY.search(lowered):
+        label = "READY_TO_BUY"
+    elif _SALES_SAMPLE.search(lowered):
+        label = "ASKS_FOR_SAMPLE"
+    elif _SALES_DEMO.search(lowered):
+        label = "ASKS_FOR_DEMO"
+    elif _SALES_NO.search(lowered):
+        label = "NOT_INTERESTED"
+    elif _SALES_WRONG.search(lowered):
+        label = "WRONG_PERSON"
+    elif _SALES_PRICE.search(lowered):
+        label = "PRICE_OBJECTION"
+    elif _SALES_TIMING.search(lowered):
+        label = "TIMING_OBJECTION"
+    elif _SALES_INFO.search(lowered):
+        label = "NEEDS_INFO"
+    elif _SALES_YES.search(lowered):
+        label = "INTERESTED"
+    else:
+        label = "UNKNOWN"
+    reasons = ["matched_" + label.lower()] if label != "UNKNOWN" else ["no_signal_matched"]
+    if label == "NOT_INTERESTED" and _UNSUBSCRIBE.search(lowered):
+        reasons.append("opt_out_language_present")
+    return {"label": label, "reasons": reasons,
+            "required_action": _SALES_NEXT_ACTION[label]}
