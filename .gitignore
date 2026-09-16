@@ -52,6 +52,8 @@
 !/.github/**
 !/clipping-factory/
 !/clipping-factory/**
+!/jarvis_control_plane/
+!/jarvis_control_plane/**
 !/MBM/
 !/MBM/**
 !/mbm-dialer/
