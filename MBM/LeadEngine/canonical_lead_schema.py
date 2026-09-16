@@ -190,3 +190,76 @@ class BuyerMatch:
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
+
+@dataclass
+class CanonicalCreator:
+    """Deterministic creator/partner entity."""
+    creator_id: str
+    platform: str
+    profile_url: str
+    audience_count: int = 0
+    audience_type: str = "UNKNOWN"
+    audience_snapshot_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    evidence_url: Optional[str] = None
+    evidence_source: Optional[str] = None
+    niche: str = "UNKNOWN"
+    contact_path: str = "UNKNOWN"
+    outreach_status: str = "PENDING_APPROVAL"
+    qualification_passed: bool = False
+    rejection_reason: Optional[str] = None
+
+    def validate_creator_gate(self) -> bool:
+        """Enforces hard deterministic business invariants for 20K+ creators."""
+        # 1. Missing evidence -> REJECT / FAIL_CLOSED
+        if not self.evidence_url or not str(self.evidence_url).strip():
+            self.qualification_passed = False
+            self.rejection_reason = "MISSING_EVIDENCE"
+            return False
+            
+        # 2. Audience threshold
+        try:
+            count = int(self.audience_count)
+        except (ValueError, TypeError):
+            self.qualification_passed = False
+            self.rejection_reason = "MALFORMED_AUDIENCE_COUNT"
+            return False
+            
+        if count < 20000:
+            self.qualification_passed = False
+            self.rejection_reason = "AUDIENCE_BELOW_THRESHOLD"
+            return False
+            
+        # 3. Invalid platform/profile contract -> REJECT / FAIL_CLOSED
+        if not self.platform or not self.profile_url or len(str(self.profile_url).strip()) < 5:
+            self.qualification_passed = False
+            self.rejection_reason = "INVALID_PLATFORM_CONTRACT"
+            return False
+
+        # 4. Stale evidence check (older than 30 days -> REJECT)
+        if self.audience_snapshot_at:
+            try:
+                # Handle isoformat with or without Z
+                ts = self.audience_snapshot_at.replace("Z", "+00:00")
+                snapshot_date = datetime.fromisoformat(ts)
+                if snapshot_date.tzinfo is None:
+                    snapshot_date = snapshot_date.replace(tzinfo=timezone.utc)
+                if (datetime.now(timezone.utc) - snapshot_date).days > 30:
+                    self.qualification_passed = False
+                    self.rejection_reason = "STALE_EVIDENCE"
+                    return False
+            except ValueError:
+                self.qualification_passed = False
+                self.rejection_reason = "MALFORMED_SNAPSHOT_DATE"
+                return False
+
+        # 5. Enforce that outreach remains human-approval gated by default
+        if self.outreach_status != "PENDING_APPROVAL":
+            self.outreach_status = "PENDING_APPROVAL"
+
+        self.qualification_passed = True
+        self.rejection_reason = None
+        return True
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+

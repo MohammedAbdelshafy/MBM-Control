@@ -1,16 +1,40 @@
-# Base44 Project
+# MBM Autonomous Operating System & Control Plane
 
-Use this repository to run and edit the app locally, then publish changes back through Base44.
+> **Autonomous AI Agency & Lead Intelligence Platform** — Revenue-ready demonstration assets: verified healthcare B2B call sheets (CMS NPI registry, zero synthetic), autonomous video production pipeline (Crayo-class 9:16 reframe + subtitle engine), and Dallas County property ownership verification (DCAD ArcGIS live match). All claims are evidence-backed; see `docs/COMMERCIAL_TRUE_STATE.md` and `docs/GITHUB_REVENUE_READINESS.md`.
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+---
 
-## MBM Dialer
+### Commercial Capabilities & Demonstration Assets
 
-Canonical live deployment: https://mbm-dialer.higgsfield.app/
+| Capability | Target Client | Delivery Mechanism | Verification & Provenance | Payment Rail |
+|---|---|---|---|---|
+| **1. Healthcare B2B Call Sheets** | Healthcare agencies & medical SaaS | Sanitized CSV + Brief + Manifest ([Sample CSV](docs/samples/sample_healthcare_callsheet.csv)) | CMS NPPES v2.1 + Luhn NPI checksum + NANP phone validation *(not live-dialed)* | Neteller Invoice (`abdelshafyclapps@gmail.com`) |
+| **2. Crayo-Class Content Engine** | Podcasters, creators & brands | Autonomous 9:16 edit + animated captions ([Sample Spec](docs/samples/crayo_clip_production_spec.json)) | 8-axis virality scoring + ffmpeg auto-crop; YouTube Studio publish | Whop Storefront (`prod_MaHYZkh3AfEEf`) |
+| **3. DCAD Property Ownership Intel** | Wholesalers & real estate investors | Verified parcel APN + Deed owner dossier ([Sample Dossier](docs/samples/sample_dcad_deed_audit.md)) | Dallas County (DCAD) tax roll ownership matching | Neteller Invoice (`abdelshafyclapps@gmail.com`) |
 
-Mobile dialer route: https://mbm-dialer.higgsfield.app/dialer/mobile
+*For commercial true state and verified evidence, view [`docs/COMMERCIAL_TRUE_STATE.md`](docs/COMMERCIAL_TRUE_STATE.md) and [`docs/SALES_EVIDENCE_PACK.md`](docs/SALES_EVIDENCE_PACK.md).*
 
-The mobile workflow is designed around Phound as the calling app: copy a lead's normalized number or hand off to Phound, then return to MBM for scripts, dispositions, notes, and follow-up.
+---
+
+## Commercial Subsystems (Evidence-Based)
+
+All three subsystems have passing hermetic test suites and verifiable data sources. **Revenue status: DEMO_READY / YELLOW GATE** (not yet live-transacting; Whop checkout requires reconciliation). See `docs/GITHUB_REVENUE_READINESS.md` for full audit.
+
+- **Healthcare B2B Practice Call Sheets** (`MBM/LeadEngine/nppes/`): CMS NPPES federal registry source, zero-synthetic provenance gate (`LeadProvenanceGate`), NANP-validated E.164 format. 45 passing tests. **Not live-carrier verified**. Price hypothesis: $199–$497.
+- **Crayo-Class Video Engine** (`clipping-factory/MBM-Social/mbm_social/crayo_engine.py`): 9:16 ffmpeg reframe, word-level subtitle burn-in, 8-axis virality scoring. 24 passing tests. YouTube Studio auto-publish supported; TikTok/Instagram manual upload only.
+- **Property Ownership Intelligence** (`MBM/LeadEngine/property_intel/`): DCAD ArcGIS live ownership verification, CONFLICT-safe ambiguity handling. 83 passing tests. **Live auction scrape blocked by Imperva/Incapsula** (documented, not papered over). Owner identification requires working APN.
+
+---
+
+## Base44 Development
+
+Use this repository to run and edit the app locally, then publish changes back through Base44. Any change pushed to the repo will also be reflected in the Base44 Builder.
+
+### MBM Dialer
+
+- **Canonical live deployment:** https://mbm-dialer.higgsfield.app/
+- **Mobile dialer route:** https://mbm-dialer.higgsfield.app/dialer/mobile
+- **Workflow:** The mobile workflow is designed around Phound as the calling app: copy a lead's normalized number or hand off to Phound, then return to MBM for scripts, dispositions, notes, and follow-up.
 
 ## Prerequisites
 

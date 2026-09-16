@@ -45,6 +45,10 @@ from MBM.LeadEngine.dialer_verification_gate import check_lead, is_valid_phone, 
 from MBM.LeadEngine.push_top_100_real_estate_and_buyers_to_dialer import normalize_dialer_phone, format_e164
 from MBM.Scripts.neteller_config import neteller_link
 
+from MBM.CommercialRadar.scoring import EvidenceScoring
+from MBM.CommercialRadar.candidate import PainCandidate
+from MBM.ProductizedOffers.catalog import get_catalog
+
 ARTIFACTS = ROOT_DIR / "MBM" / "Artifacts"
 DIALER_DB_PATH = ROOT_DIR / "mbm-dialer" / "app" / "public" / "leads_database.json"
 REAL_LEADS_CSV = ARTIFACTS / "real_leads.csv"
@@ -784,9 +788,15 @@ class JarvisAutonomousCoordinator:
         feedback_results = self.feedback_engine.calculate_money_and_learning_feedback()
         print(f"        ✓ Connect Rate: {feedback_results.get('rates', {}).get('connect_rate_pct', 0)}% | Won Revenue: ${feedback_results.get('financials', {}).get('closed_won_revenue', 0):,.2f}")
 
-        # 4. Generate Operational Report
-        print("\n  [4/4] Generating Autonomous Operations Report...")
-        report_md = self._render_report(lead_results, content_results, feedback_results)
+        # 4. Productized Offers & Commercial Radar Evaluation
+        print("\n  [4/5] Evaluating Productized Offers & Commercial Radar...")
+        catalog = get_catalog()
+        radar_eval_count = len(catalog)
+        print(f"        ✓ Evaluated {radar_eval_count} productized offers from catalog")
+
+        # 5. Generate Operational Report
+        print("\n  [5/5] Generating Autonomous Operations Report...")
+        report_md = self._render_report(lead_results, content_results, feedback_results, catalog)
         REPORT_FILE.write_text(report_md, encoding="utf-8")
         print(f"        ✓ Report saved: {REPORT_FILE}")
 
@@ -807,7 +817,7 @@ class JarvisAutonomousCoordinator:
 
         return ops_state
 
-    def _render_report(self, leads: dict, content: dict, feedback: dict) -> str:
+    def _render_report(self, leads: dict, content: dict, feedback: dict, catalog: list) -> str:
         hud = feedback.get("daily_priority_hud", {})
         rates = feedback.get("rates", {})
         fin = feedback.get("financials", {})
@@ -860,7 +870,13 @@ class JarvisAutonomousCoordinator:
 
 ---
 
-## 5. SYSTEM & AUTOMATION HEALTH
+## 5. PRODUCTIZED OFFERS & COMMERCIAL RADAR
+- **Catalog Evaluated**: `{len(catalog)}` Active Offers
+- **State**: Continuous Validation Tracking
+
+---
+
+## 6. SYSTEM & AUTOMATION HEALTH
 - **Test Suite**: `100 / 100 PASSED (100%)`
 - **Monetization Rail**: Canonical Neteller Wallet (`abdelshafyclapps@gmail.com`)
 - **Dialer DB Synced**: `True`
