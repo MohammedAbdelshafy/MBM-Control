@@ -47,6 +47,31 @@ class RevenueRouterTests(unittest.TestCase):
         )
         plan = build_monetization_plan(opportunity, product_name="AI Automation Sprint")
         route = choose_revenue_route(opportunity, plan)
+        # Canonical: service-shaped / price>=1000 routes to high_ticket_dfy
+        # (router.py). Previous assertion expected direct_sales, contradicting
+        # the test name, router docstring, and PR #57 rail list.
+        self.assertEqual(route.rail, "high_ticket_dfy")
+        self.assertEqual(route.next_action, "prepare_dfy_sales_offer")
+
+    def test_direct_sales_fallback(self):
+        # Non-service, low-price, no whop/shopify/affiliate → direct_sales.
+        opportunity = Opportunity(
+            opportunity_id="opp-direct",
+            problem="one-off cleanup",
+            buyer_segment="local shops",
+            distributor_type="direct",
+            price_potential=150,
+            metadata={
+                "launch_price": 150,
+                "buyer_outcome": "one-time cleanup",
+                "proof_assets": ["checklist"],
+                "delivery_assets": ["report.pdf"],
+                "checkout_rails": [],
+                "acquisition_channels": ["direct"],
+            },
+        )
+        plan = build_monetization_plan(opportunity, product_name="Cleanup Sprint")
+        route = choose_revenue_route(opportunity, plan)
         self.assertEqual(route.rail, "direct_sales")
         self.assertEqual(route.next_action, "prepare_direct_sales_pack")
 

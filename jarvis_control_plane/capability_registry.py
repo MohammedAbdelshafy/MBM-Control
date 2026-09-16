@@ -282,6 +282,72 @@ def build_capability_registry() -> list[CapabilitySpec]:
             factory_stages=["RESEARCH"],
             status="DEFERRED", reason="proposal-only HubSpot adapter; no credentials, no auto-mutation",
         ),
+        # CONVERGED (Phase 4): control-plane bus + factory-native deterministic gates.
+        # All observed with hermetic tests; no external side effects.
+        CapabilitySpec(
+            capability="dialer_eligibility", provider="control-plane", tool="dialer_eligibility_filter",
+            permission="READ_ONLY",
+            input_schema=_schema(["leads"], {"leads": "array"}),
+            output_schema=_schema([], {"eligible": "array"}),
+            side_effect="none", approval_required=False,
+            factory_stages=["SCORE", "QA"],
+            status="INTEGRATED", reason="jarvis_control_plane/capabilities.py wraps dialer_verification_gate; hermetic",
+        ),
+        CapabilitySpec(
+            capability="suppression_check", provider="control-plane", tool="suppression_check",
+            permission="READ_ONLY",
+            input_schema=_schema([], {"phone": "string", "email": "string"}),
+            output_schema=_schema([], {"suppressed": "string"}),
+            side_effect="none", approval_required=False,
+            factory_stages=["SCORE", "QA"],
+            status="INTEGRATED", reason="read-only DNC/suppression verdict; hermetic",
+        ),
+        CapabilitySpec(
+            capability="provider_status", provider="control-plane", tool="phound_status",
+            permission="READ_ONLY",
+            input_schema=_schema([], {}),
+            output_schema=_schema([], {"status": "string"}),
+            side_effect="none", approval_required=False,
+            factory_stages=["MEASURE"],
+            status="INTEGRATED", reason="UI-safe status, credentials redacted upstream",
+        ),
+        CapabilitySpec(
+            capability="browser_extract_allowlisted", provider="control-plane", tool="browser_navigate_extract",
+            permission="READ_ONLY",
+            input_schema=_schema(["url"], {"url": "string"}),
+            output_schema=_schema([], {"content": "string"}),
+            side_effect="none", approval_required=False,
+            rate_limit="allowlist_only_example_github_zillow",
+            factory_stages=["RESEARCH", "QA"],
+            status="INTEGRATED", reason="allowlisted read-only extraction; injection-guarded; hermetic via fetcher injection",
+        ),
+        CapabilitySpec(
+            capability="creator_evidence_gate", provider="factory", tool="creator_gate.evaluate_creator_evidence",
+            permission="READ_ONLY",
+            input_schema=_schema(["platform", "profile", "audience_count", "evidence_url", "timestamp"], {"platform": "string", "profile": "string", "audience_count": "string", "evidence_url": "string", "timestamp": "string"}),
+            output_schema=_schema([], {"status": "string"}),
+            side_effect="none", approval_required=False,
+            factory_stages=["SCORE", "STRATEGY"],
+            status="INTEGRATED", reason="MBM/DemandFactory/creator_gate.py; 20k deterministic; LeadEngine CanonicalCreator (30d) is stricter subset, bridged not duplicated",
+        ),
+        CapabilitySpec(
+            capability="offer_validation", provider="factory", tool="offer_schema.validate_offer",
+            permission="READ_ONLY",
+            input_schema=_schema(["offer_id"], {"offer_id": "string"}),
+            output_schema=_schema([], {"ready": "string"}),
+            side_effect="none", approval_required=False,
+            factory_stages=["STRATEGY", "QA"],
+            status="INTEGRATED", reason="MBM/Offers/offer_schema.py evidence-first; fabricated-claim gates",
+        ),
+        CapabilitySpec(
+            capability="radar_slice_a", provider="factory", tool="slice_a.run_slice_a",
+            permission="READ_ONLY",
+            input_schema=_schema(["signals"], {"signals": "array"}),
+            output_schema=_schema([], {"opportunities": "array"}),
+            side_effect="none", approval_required=False,
+            factory_stages=["DISCOVER", "RESEARCH", "SCORE"],
+            status="INTEGRATED", reason="MBM/ContecRadar/slice_a.py offline only; exclusions fail-closed",
+        ),
     ]
 
 
@@ -314,6 +380,9 @@ def coverage_report(registry: list[CapabilitySpec]) -> dict[str, list[str]]:
         "code_context_lookup", "version_control", "branch_isolation",
         "test_execution", "browser_testing", "storefront_lookup",
         "knowledge_graph", "workflow_execution",
+        "dialer_eligibility", "suppression_check", "provider_status",
+        "browser_extract_allowlisted", "creator_evidence_gate",
+        "offer_validation", "radar_slice_a",
     }
     report["TESTED"] = sorted(tested)
     return report

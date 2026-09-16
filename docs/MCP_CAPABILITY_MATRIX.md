@@ -18,6 +18,13 @@ Every capability tied to an observed tool. Unknown = DENY.
 | test_execution | local | bash | QA | SAFE_WRITE | no | local_process | INTEGRATED |
 | browser_testing | local | playwright_browser_snapshot | QA | READ_ONLY | no | none | INTEGRATED |
 | storefront_lookup | whop | whop-products_get | RESEARCH, MEASURE | READ_ONLY | no | none | INTEGRATED |
+| dialer_eligibility | control-plane | dialer_eligibility_filter | SCORE, QA | READ_ONLY | no | none | INTEGRATED |
+| suppression_check | control-plane | suppression_check | SCORE, QA | READ_ONLY | no | none | INTEGRATED |
+| provider_status | control-plane | phound_status | MEASURE | READ_ONLY | no | none | INTEGRATED |
+| browser_extract_allowlisted | control-plane | browser_navigate_extract | RESEARCH, QA | READ_ONLY | no | none | INTEGRATED |
+| creator_evidence_gate | factory | creator_gate.evaluate_creator_evidence | SCORE, STRATEGY | READ_ONLY | no | none | INTEGRATED |
+| offer_validation | factory | offer_schema.validate_offer | STRATEGY, QA | READ_ONLY | no | none | INTEGRATED |
+| radar_slice_a | factory | slice_a.run_slice_a | DISCOVER, RESEARCH, SCORE | READ_ONLY | no | none | INTEGRATED |
 | checkout_configuration | whop | whop-checkout-configurations_create | PACKAGE, RELEASE | CONSEQUENTIAL_EXTERNAL_ACTION | yes | commercial_commitment | BLOCKED |
 | payout_execution | whop | whop-payouts_create | — | CONSEQUENTIAL_EXTERNAL_ACTION | yes | money_movement | UNSAFE |
 | knowledge_graph | memory | memory_read_graph | RESEARCH, LEARN | READ_ONLY | no | none | INTEGRATED |
@@ -36,8 +43,8 @@ Every capability tied to an observed tool. Unknown = DENY.
 ## Coverage
 
 - AVAILABLE: all rows above
-- INTEGRATED: 15 read/safe/controlled capabilities with hermetic tests
-- TESTED: 15 (see `jarvis_control_plane/tests/test_capability_factory.py`)
+- INTEGRATED: 22 read/safe/controlled capabilities with hermetic tests
+- TESTED: 22 (see `jarvis_control_plane/tests/test_capability_factory.py` + control-plane suites)
 - BLOCKED: checkout_configuration (commercial commitment, human-controlled)
 - UNSAFE: payout_execution (money movement, never auto-executed)
 - REDUNDANT: none (one canonical contract per function)

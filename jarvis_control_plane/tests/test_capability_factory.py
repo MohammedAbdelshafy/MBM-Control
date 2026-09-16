@@ -201,5 +201,55 @@ class SecurityBoundaryTests(unittest.TestCase):
         self.assertEqual(redacted["query"], "hello")
 
 
+class ConvergenceTests(unittest.TestCase):
+    def test_converged_read_only_routes(self):
+        for cap, stage in [
+            ("dialer_eligibility", "SCORE"),
+            ("suppression_check", "QA"),
+            ("provider_status", "MEASURE"),
+            ("browser_extract_allowlisted", "RESEARCH"),
+            ("creator_evidence_gate", "SCORE"),
+            ("offer_validation", "QA"),
+            ("radar_slice_a", "DISCOVER"),
+        ]:
+            with self.subTest(cap=cap):
+                spec, _ = route_capability(cap, stage)
+                self.assertEqual(spec.status, "INTEGRATED")
+
+    def test_stub_adapters_stay_deferred(self):
+        # MBM/Scripts/adapters stubs (TODO/NotImplemented) must never route as integrated.
+        registry = {s.capability: s for s in build_capability_registry()}
+        for cap in ("copy_generation", "video_generation", "company_enrichment"):
+            self.assertEqual(registry[cap].status, "DEFERRED")
+
+    def test_canonical_creator_is_stricter_subset(self):
+        # LeadEngine CanonicalCreator (30d) passing implies factory gate (90d)
+        # freshness passes for the same timestamp; documents convergence.
+        from datetime import datetime, timedelta, timezone
+
+        from MBM.DemandFactory.creator_gate import evaluate_creator_evidence
+        from MBM.LeadEngine.canonical_lead_schema import CanonicalCreator
+
+        now = datetime(2026, 9, 10, 12, 0, 0, tzinfo=timezone.utc)
+        ts = (now - timedelta(days=10)).isoformat()
+        creator = CanonicalCreator(
+            creator_id="bridge-1", platform="youtube",
+            profile_url="https://youtube.com/@example", audience_count=25000,
+            evidence_url="https://youtube.com/@example/about",
+            audience_snapshot_at=ts,
+        )
+        self.assertTrue(creator.validate_creator_gate())
+        gate = evaluate_creator_evidence(
+            {
+                "platform": "youtube", "profile": "https://youtube.com/@example",
+                "audience_type": "subscribers", "audience_count": 25000,
+                "evidence_url": "https://youtube.com/@example/about",
+                "evidence_source": "channel page", "timestamp": ts,
+            },
+            now=now,
+        )
+        self.assertEqual(gate.status, "qualified")
+
+
 if __name__ == "__main__":
     unittest.main()
