@@ -29,19 +29,37 @@ PROOF = ("P4 demo: an 11-row sample classified into CALLABLE / NOT CALLABLE / "
          "DUPLICATE / SUPPRESSED with per-row reason codes")
 
 
+def _short(text: str, limit: int = 120) -> str:
+    """Word-boundary truncation (no mid-word cuts)."""
+    text = " ".join(str(text or "").split())
+    if len(text) <= limit:
+        return text
+    cut = text[:limit].rsplit(" ", 1)[0]
+    return cut + "..."
+
+
+def _pain_text(raw: str) -> str:
+    """Single hypothesis label (CSV values already carry one)."""
+    text = " ".join(str(raw or "").split())
+    if text.lower().startswith("hypothesis:"):
+        text = text[len("hypothesis:"):].strip()
+    return text
+
+
 def main() -> int:
     with open(CSV_PATH, encoding="utf-8-sig", newline="") as fh:
         rows = [r for r in csv.DictReader(fh) if (r.get("qualification_status") or "").strip() == "QUALIFIED"]
     queue = []
     for row in rows:
-        observation = f"saw your {row['website']} operation ({row['evidence'][:140]}…)"
-        pain = f"hypothesis: {row['pain_signal']}"
+        context = f"seen across operations like {row['website']} ({_short(row['evidence'])})."
+        pain = f"{_pain_text(row['pain_signal'])} -- my hypothesis, not your fact"
+        problem = f"{pain} (seen across operations like {row['website']}: {_short(row['evidence'])})"
         try:
             draft = draft_outreach(
                 prospect={"company": row["company"],
                           "contact_name": row["contact_name"]
                           if row["contact_name"] != "UNKNOWN" else "there"},
-                problem=f"{observation} {pain}",
+                problem=problem,
                 proof=PROOF,
                 evidence_ids=[f"prospect:{row['prospect_id']}", "p4-demo:11-row"],
             )

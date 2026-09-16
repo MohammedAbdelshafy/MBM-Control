@@ -13,7 +13,7 @@ Subject: `Idea for {company}: {observed pain}`
 > Noticed {company} may be dealing with {specific observation}.
 > {One-sentence pain hypothesis, labeled as our read, not their fact.}
 >
-> Relevant proof: P4 demo — an 11-row sample classified into
+> Relevant proof: P4 demo -- an 11-row sample classified into
 > CALLABLE / NOT CALLABLE / DUPLICATE / SUPPRESSED with per-row reason codes.
 >
 > Open to a 10-minute look next week?
@@ -23,14 +23,14 @@ Subject: `Idea for {company}: {observed pain}`
 Rules: verified observation only; hypothesis labeled; proof = demo only;
 CTA = 10-minute look (not a close).
 
-## 2. Follow-up #1 (3–5 business days, only if no reply and no opt-out)
-> Circling back once — happy to run a free 25-row sample of your list so you
+## 2. Follow-up #1 (3-5 business days, only if no reply and no opt-out)
+> Circling back once -- happy to run a free 25-row sample of your list so you
 > can see the classification before any $499 commitment. Worth it?
 
 Rules: free-sample offer max 25 rows (bounded, real capability); one follow-up only.
 
 ## 3. Follow-up #2 (final, 7+ days later; never after opt-out/refusal)
-> Last note from me — the sample offer stands if list hygiene becomes a
+> Last note from me -- the sample offer stands if list hygiene becomes a
 > priority later. Reply STOP any time to opt out.
 
 Rules: explicit opt-out instruction; after this, NURTURE only with permission.
