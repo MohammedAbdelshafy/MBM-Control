@@ -6,6 +6,8 @@ from uuid import uuid4
 
 from .models import ConvictionAssessment, ConvictionGateResult, Decision, DemandSignal, Opportunity
 from .quality import ProductQualityContract, validate_quality_contract
+from .compiler import ProductCompiler, ProductSpec, ValidationFailure
+from .adapters.builder import BuilderInterface
 
 
 @dataclass(slots=True)
@@ -265,6 +267,26 @@ class DemandFactory:
             kill_conditions=kill_conditions,
             owner="system",
         )
+
+    def execute_build(self, spec: ProductSpec, builder: BuilderInterface, *, dry_run: bool = True) -> dict:
+        """Runs the Product Compiler and executes the BuildPlan on the provided builder."""
+        compiler = ProductCompiler()
+        plan = compiler.compile(spec, dry_run=dry_run)
+        
+        if not builder.can_build(plan):
+            raise ValueError(f"Builder cannot execute plan {plan.plan_id}")
+            
+        try:
+            result = builder.execute(plan)
+            return {
+                "status": "success",
+                "plan_id": plan.plan_id,
+                "plan_hash": plan.plan_hash,
+                "result": result
+            }
+        except Exception as e:
+            builder.rollback(plan)
+            raise RuntimeError(f"Build failed, rollback executed. Error: {e}")
 
 
 def utc_now() -> str:
