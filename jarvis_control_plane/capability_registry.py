@@ -348,6 +348,43 @@ def build_capability_registry() -> list[CapabilitySpec]:
             factory_stages=["DISCOVER", "RESEARCH", "SCORE"],
             status="INTEGRATED", reason="MBM/ContecRadar/slice_a.py offline only; exclusions fail-closed",
         ),
+        # REVIVED ROUND 2: parallel-session modules, observed + tested.
+        CapabilitySpec(
+            capability="product_compile", provider="factory", tool="compiler.ProductCompiler.compile",
+            permission="READ_ONLY",
+            input_schema=_schema(["product_id"], {"product_id": "string"}),
+            output_schema=_schema([], {"plan_hash": "string"}),
+            side_effect="none", approval_required=False,
+            factory_stages=["BUILD", "QA"],
+            status="INTEGRATED", reason="MBM/DemandFactory/compiler.py deterministic plan + hash; dry_run default; unsafe perms denied",
+        ),
+        CapabilitySpec(
+            capability="pain_scoring", provider="factory", tool="EvidenceScoring.score_candidate",
+            permission="READ_ONLY",
+            input_schema=_schema(["candidate_id"], {"candidate_id": "string"}),
+            output_schema=_schema([], {"score": "string"}),
+            side_effect="none", approval_required=False,
+            factory_stages=["SCORE", "MEASURE", "LEARN"],
+            status="INTEGRATED", reason="MBM/CommercialRadar/scoring.py event-sourced decay + cap; ContecRadar kept for DISCOVER (distinct models)",
+        ),
+        CapabilitySpec(
+            capability="offer_catalog_lookup", provider="factory", tool="catalog.get_catalog",
+            permission="READ_ONLY",
+            input_schema=_schema([], {}),
+            output_schema=_schema([], {"offers": "array"}),
+            side_effect="none", approval_required=False,
+            factory_stages=["STRATEGY", "MEASURE"],
+            status="INTEGRATED", reason="MBM/ProductizedOffers/catalog.py read-only; entries must still pass offer_schema before release",
+        ),
+        CapabilitySpec(
+            capability="agent_assembly", provider="ecosystem", tool="OpenAIAgentAdapter.execute",
+            permission="CONTROLLED_WRITE",
+            input_schema=_schema(["plan_id"], {"plan_id": "string"}),
+            output_schema=_schema([], {"assets": "array"}),
+            side_effect="stub_only_no_external_call", approval_required=True,
+            factory_stages=["BUILD"],
+            status="DEFERRED", reason="hermetic stub today (stub_asset_for_*); live SDK wiring needs credentials + approval",
+        ),
     ]
 
 
@@ -383,6 +420,7 @@ def coverage_report(registry: list[CapabilitySpec]) -> dict[str, list[str]]:
         "dialer_eligibility", "suppression_check", "provider_status",
         "browser_extract_allowlisted", "creator_evidence_gate",
         "offer_validation", "radar_slice_a",
+        "product_compile", "pain_scoring", "offer_catalog_lookup",
     }
     report["TESTED"] = sorted(tested)
     return report

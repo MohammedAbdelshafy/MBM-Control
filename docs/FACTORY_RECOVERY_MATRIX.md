@@ -17,3 +17,14 @@
 
 Retired/deferred items remain DENY-by-default in routing. No duplicates created:
 CanonicalCreator and creator_gate are bridged by subset relation, not merged by force.
+
+## Round 2 (2026-09-16 hardening)
+
+| Capability | Location | Previous | New | Evidence |
+|---|---|---|---|---|
+| creator_qualification gate | MBM/LeadEngine/creator_qualification.py | Parallel impl outside registry | BRIDGED (3rd 30d gate, subset test) | stricter-subset test PASS |
+| ProductCompiler | MBM/DemandFactory/compiler.py | Unregistered | INTEGRATED product_compile | test_compiler PASS |
+| EvidenceScoring | MBM/CommercialRadar/scoring.py | Unregistered | INTEGRATED pain_scoring | test_commercial_radar PASS |
+| ProductizedOffers catalog | MBM/ProductizedOffers/catalog.py | Unregistered, unapproved | INTEGRATED read-only + schema-blocked proof | catalog test + schema-block test PASS |
+| OpenAIAgentAdapter | MBM/DemandFactory/adapters/openai_agent.py | Unregistered | DEFERRED (stub, no network) | code inspection + stub test PASS |
+| P4 offer | productized-service/p4-lead-cleaner | Quarantine-adjacent | GRADUATED to RELEASE-CANDIDATE (publish human-gated) | test_offer_graduation PASS (real 11-row demo run) |

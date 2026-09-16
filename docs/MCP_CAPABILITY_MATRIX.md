@@ -25,6 +25,10 @@ Every capability tied to an observed tool. Unknown = DENY.
 | creator_evidence_gate | factory | creator_gate.evaluate_creator_evidence | SCORE, STRATEGY | READ_ONLY | no | none | INTEGRATED |
 | offer_validation | factory | offer_schema.validate_offer | STRATEGY, QA | READ_ONLY | no | none | INTEGRATED |
 | radar_slice_a | factory | slice_a.run_slice_a | DISCOVER, RESEARCH, SCORE | READ_ONLY | no | none | INTEGRATED |
+| product_compile | factory | compiler.ProductCompiler.compile | BUILD, QA | READ_ONLY | no | none | INTEGRATED |
+| pain_scoring | factory | EvidenceScoring.score_candidate | SCORE, MEASURE, LEARN | READ_ONLY | no | none | INTEGRATED |
+| offer_catalog_lookup | factory | catalog.get_catalog | STRATEGY, MEASURE | READ_ONLY | no | none | INTEGRATED |
+| agent_assembly | ecosystem | OpenAIAgentAdapter.execute | BUILD | CONTROLLED_WRITE | yes | stub_only_no_external_call | DEFERRED |
 | checkout_configuration | whop | whop-checkout-configurations_create | PACKAGE, RELEASE | CONSEQUENTIAL_EXTERNAL_ACTION | yes | commercial_commitment | BLOCKED |
 | payout_execution | whop | whop-payouts_create | — | CONSEQUENTIAL_EXTERNAL_ACTION | yes | money_movement | UNSAFE |
 | knowledge_graph | memory | memory_read_graph | RESEARCH, LEARN | READ_ONLY | no | none | INTEGRATED |
@@ -43,12 +47,12 @@ Every capability tied to an observed tool. Unknown = DENY.
 ## Coverage
 
 - AVAILABLE: all rows above
-- INTEGRATED: 22 read/safe/controlled capabilities with hermetic tests
-- TESTED: 22 (see `jarvis_control_plane/tests/test_capability_factory.py` + control-plane suites)
+- INTEGRATED: 25 read/safe/controlled capabilities with hermetic tests
+- TESTED: 25 (see `jarvis_control_plane/tests/test_capability_factory.py` + control-plane suites)
 - BLOCKED: checkout_configuration (commercial commitment, human-controlled)
 - UNSAFE: payout_execution (money movement, never auto-executed)
 - REDUNDANT: none (one canonical contract per function)
-- DEFERRED: copy_generation, video_generation, company_enrichment (needs credentials/transport not observed here)
+- DEFERRED: copy_generation, video_generation, company_enrichment, agent_assembly (needs credentials/transport not observed here; stubs never route)
 
 ## Go-live rule
 

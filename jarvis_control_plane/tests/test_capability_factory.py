@@ -211,6 +211,9 @@ class ConvergenceTests(unittest.TestCase):
             ("creator_evidence_gate", "SCORE"),
             ("offer_validation", "QA"),
             ("radar_slice_a", "DISCOVER"),
+            ("product_compile", "BUILD"),
+            ("pain_scoring", "SCORE"),
+            ("offer_catalog_lookup", "STRATEGY"),
         ]:
             with self.subTest(cap=cap):
                 spec, _ = route_capability(cap, stage)
@@ -219,7 +222,7 @@ class ConvergenceTests(unittest.TestCase):
     def test_stub_adapters_stay_deferred(self):
         # MBM/Scripts/adapters stubs (TODO/NotImplemented) must never route as integrated.
         registry = {s.capability: s for s in build_capability_registry()}
-        for cap in ("copy_generation", "video_generation", "company_enrichment"):
+        for cap in ("copy_generation", "video_generation", "company_enrichment", "agent_assembly"):
             self.assertEqual(registry[cap].status, "DEFERRED")
 
     def test_canonical_creator_is_stricter_subset(self):
@@ -249,6 +252,55 @@ class ConvergenceTests(unittest.TestCase):
             now=now,
         )
         self.assertEqual(gate.status, "qualified")
+
+    def test_leadengine_qualify_creator_is_stricter_subset(self):
+        # Third gate (parallel session): 30d pass implies factory 90d pass.
+        from datetime import datetime, timedelta, timezone
+
+        from MBM.DemandFactory.creator_gate import evaluate_creator_evidence
+        from MBM.LeadEngine.creator_qualification import CreatorRecord, qualify_creator
+
+        now = datetime(2026, 9, 10, 12, 0, 0, tzinfo=timezone.utc)
+        ts = (now - timedelta(days=10)).isoformat()
+        record = CreatorRecord(
+            creator_id="bridge-2", platform="youtube",
+            profile_url="https://youtube.com/@example", audience_count=25000,
+            audience_type="subscribers", audience_snapshot_at=ts,
+            evidence_url="https://youtube.com/@example/about",
+            evidence_source="channel page", niche="ops", contact_path="email",
+            outreach_status="PENDING_APPROVAL", provenance_key="prov-key-1",
+        )
+        self.assertEqual(qualify_creator(record).state, "qualified")
+        gate = evaluate_creator_evidence(
+            {"platform": "youtube", "profile": "https://youtube.com/@example",
+             "audience_type": "subscribers", "audience_count": 25000,
+             "evidence_url": "https://youtube.com/@example/about",
+             "evidence_source": "channel page", "timestamp": ts},
+            now=now,
+        )
+        self.assertEqual(gate.status, "qualified")
+
+    def test_catalog_entries_require_schema_before_release(self):
+        # Catalog is read-only truth; entries are NOT auto-approved.
+        from MBM.Offers.offer_schema import validate_offer
+        from MBM.ProductizedOffers.catalog import get_catalog
+
+        catalog = get_catalog()
+        self.assertGreaterEqual(len(catalog), 1)
+        for entry in catalog:
+            failures = validate_offer({
+                "offer_id": entry.offer_id, "problem": entry.problem_trigger,
+                "buyer_segment": entry.target_market,
+                "promise": entry.promised_outcome, "format": "audit",
+                "price": entry.entry_offer_price,
+                "proof_assets": [entry.proof_asset], "evidence_ids": [],
+                "evidence_level": "hypothesis",
+                "limitations": ["pre-catalog entry: evidence not yet attached"],
+                "checkout_rail": "neteller",
+                "delivery_assets": list(entry.deliverables),
+                "claims_text": entry.promised_outcome,
+            })
+            self.assertIn("offer_missing_evidence", failures)
 
 
 if __name__ == "__main__":
