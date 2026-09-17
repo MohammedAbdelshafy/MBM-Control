@@ -60,6 +60,8 @@
 !/jarvis_control_plane/**
 !/Tests/
 !/Tests/**
+!/Schemas/
+!/Schemas/**
 mbm-dialer/**/node_modules/
 mbm-dialer/**/dist/
 mbm-dialer/**/.output/
