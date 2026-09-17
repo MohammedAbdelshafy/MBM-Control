@@ -1,0 +1,241 @@
+{
+  "$schema": "./ecosystem_capability_registry.json",
+  "version": "1.0.0",
+  "generated_at": "2026-09-17T14:30:00Z",
+  "providers": [
+    {
+      "provider_id": "anthropic",
+      "owner": "Anthropic",
+      "repository": "https://github.com/anthropics/anthropic-sdk-python",
+      "version": "0.28.0",
+      "commit_sha": "canonical-vendor-release",
+      "license": "MIT",
+      "capabilities": [
+        "model_provider",
+        "tool_calling",
+        "structured_output"
+      ],
+      "entry_points": [
+        "MBM/LeadEngine/model_provider.py"
+      ],
+      "adapter": "MBM/Scripts/adapters/anthropic_adapter.py",
+      "executor": "rest_api",
+      "permissions": [
+        "NETWORK_READ",
+        "AUTHENTICATED_ACCESS"
+      ],
+      "approval_required": false,
+      "security_class": "LOW",
+      "status": "VENDOR",
+      "integration_cost": "LOW",
+      "revenue_leverage": "HIGH",
+      "maintenance_confidence": "HIGH",
+      "scores": {
+        "capability_value": 18,
+        "revenue_leverage": 19,
+        "integration_leverage": 14,
+        "reliability": 14,
+        "ecosystem_maturity": 10,
+        "security_confidence": 9,
+        "maintenance_confidence": 5,
+        "license_fit": 5,
+        "total": 94.0
+      }
+    },
+    {
+      "provider_id": "groq",
+      "owner": "Groq Inc.",
+      "repository": "https://github.com/groq/groq-python",
+      "version": "0.9.0",
+      "commit_sha": "canonical-vendor-release",
+      "license": "Apache-2.0",
+      "capabilities": [
+        "model_provider",
+        "fast_inference",
+        "structured_output",
+        "tool_calling"
+      ],
+      "entry_points": [
+        "MBM/LeadEngine/model_provider.py"
+      ],
+      "adapter": "MBM/Scripts/adapters/groq_adapter.py",
+      "executor": "rest_api",
+      "permissions": [
+        "NETWORK_READ",
+        "AUTHENTICATED_ACCESS"
+      ],
+      "approval_required": false,
+      "security_class": "LOW",
+      "status": "VENDOR",
+      "integration_cost": "LOW",
+      "revenue_leverage": "HIGH",
+      "maintenance_confidence": "HIGH",
+      "scores": {
+        "capability_value": 18,
+        "revenue_leverage": 18,
+        "integration_leverage": 14,
+        "reliability": 14,
+        "ecosystem_maturity": 9,
+        "security_confidence": 9,
+        "maintenance_confidence": 5,
+        "license_fit": 5,
+        "total": 92.0
+      }
+    },
+    {
+      "provider_id": "gemini_cli",
+      "owner": "Google",
+      "repository": "https://github.com/google-gemini/gemini-cli",
+      "version": "1.0.0",
+      "commit_sha": "canonical-cli-release",
+      "license": "Apache-2.0",
+      "capabilities": [
+        "terminal_agent",
+        "coding_agent",
+        "tool_calling"
+      ],
+      "entry_points": [
+        "jarvis_control_plane/provider_router.py"
+      ],
+      "adapter": "MBM/Scripts/adapters/gemini_cli_adapter.py",
+      "executor": "subprocess",
+      "permissions": [
+        "CODE_EXECUTION",
+        "NETWORK_READ"
+      ],
+      "approval_required": false,
+      "security_class": "MEDIUM",
+      "status": "ADOPT",
+      "integration_cost": "LOW",
+      "revenue_leverage": "HIGH",
+      "maintenance_confidence": "HIGH",
+      "scores": {
+        "capability_value": 17,
+        "revenue_leverage": 17,
+        "integration_leverage": 13,
+        "reliability": 13,
+        "ecosystem_maturity": 9,
+        "security_confidence": 8,
+        "maintenance_confidence": 5,
+        "license_fit": 5,
+        "total": 87.0
+      }
+    },
+    {
+      "provider_id": "codex_cli",
+      "owner": "OpenAI",
+      "repository": "https://github.com/openai/codex",
+      "version": "0.8.0",
+      "commit_sha": "canonical-cli-release",
+      "license": "MIT",
+      "capabilities": [
+        "coding_agent",
+        "terminal_agent"
+      ],
+      "entry_points": [
+        "jarvis_control_plane/provider_router.py"
+      ],
+      "adapter": "MBM/Scripts/adapters/codex_adapter.py",
+      "executor": "subprocess",
+      "permissions": [
+        "CODE_EXECUTION",
+        "NETWORK_READ"
+      ],
+      "approval_required": false,
+      "security_class": "MEDIUM",
+      "status": "ADOPT",
+      "integration_cost": "LOW",
+      "revenue_leverage": "MEDIUM",
+      "maintenance_confidence": "HIGH",
+      "scores": {
+        "capability_value": 16,
+        "revenue_leverage": 15,
+        "integration_leverage": 13,
+        "reliability": 13,
+        "ecosystem_maturity": 8,
+        "security_confidence": 8,
+        "maintenance_confidence": 5,
+        "license_fit": 5,
+        "total": 83.0
+      }
+    },
+    {
+      "provider_id": "playwright",
+      "owner": "Microsoft",
+      "repository": "https://github.com/microsoft/playwright-python",
+      "version": "1.46.0",
+      "commit_sha": "canonical-vendor-release",
+      "license": "Apache-2.0",
+      "capabilities": [
+        "browser_navigation",
+        "browser_interaction",
+        "browser_testing"
+      ],
+      "entry_points": [
+        "jarvis_control_plane/tests/test_browser_automation.py"
+      ],
+      "adapter": "MBM/Scripts/adapters/playwright_adapter.py",
+      "executor": "subprocess",
+      "permissions": [
+        "BROWSER_NAVIGATE",
+        "BROWSER_INTERACT",
+        "NETWORK_READ"
+      ],
+      "approval_required": false,
+      "security_class": "MEDIUM",
+      "status": "ADOPT",
+      "integration_cost": "LOW",
+      "revenue_leverage": "HIGH",
+      "maintenance_confidence": "HIGH",
+      "scores": {
+        "capability_value": 19,
+        "revenue_leverage": 17,
+        "integration_leverage": 14,
+        "reliability": 14,
+        "ecosystem_maturity": 10,
+        "security_confidence": 9,
+        "maintenance_confidence": 5,
+        "license_fit": 5,
+        "total": 93.0
+      }
+    },
+    {
+      "provider_id": "firecrawl",
+      "owner": "MendableAI",
+      "repository": "https://github.com/mendableai/firecrawl",
+      "version": "1.0.0",
+      "commit_sha": "canonical-repo-release",
+      "license": "AGPL-3.0",
+      "capabilities": [
+        "web_extraction",
+        "web_crawling"
+      ],
+      "entry_points": [
+        "MBM/Scripts/adapters/firecrawl_adapter.py"
+      ],
+      "adapter": "MBM/Scripts/adapters/firecrawl_adapter.py",
+      "executor": "rest_api",
+      "permissions": [
+        "NETWORK_READ",
+        "AUTHENTICATED_ACCESS"
+      ],
+      "approval_required": true,
+      "security_class": "HIGH",
+      "status": "ADAPTER",
+      "integration_cost": "MEDIUM",
+      "revenue_leverage": "HIGH",
+      "maintenance_confidence": "MEDIUM",
+      "scores": {
+        "capability_value": 16,
+        "revenue_leverage": 16,
+        "integration_leverage": 11,
+        "reliability": 11,
+        "ecosystem_maturity": 7,
+        "security_confidence": 7,
+        "maintenance_confidence": 4,
+        "license_fit": 4,
+        "total": 76.0
+      }
+    }
+  ]
+}

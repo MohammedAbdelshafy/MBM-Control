@@ -1,0 +1,193 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JARVIS Ecosystem Capability Registry",
+  "description": "Schema for registering external AI providers, models, and tools (e.g. Gemini CLI, Playwright, Groq) as capabilities within JARVIS.",
+  "type": "object",
+  "properties": {
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "provider_id",
+          "owner",
+          "repository",
+          "version",
+          "commit_sha",
+          "capabilities",
+          "entry_points",
+          "adapter",
+          "executor",
+          "permissions",
+          "security_class",
+          "status"
+        ],
+        "properties": {
+          "provider_id": {
+            "type": "string",
+            "description": "Unique identifier for the provider (e.g., 'gemini_cli', 'playwright_mcp')"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "repository": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "commit_sha": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "coding_agent",
+                "web_search",
+                "filesystem",
+                "terminal_agent",
+                "mcp_server",
+                "model_provider",
+                "browser_navigation",
+                "browser_interaction",
+                "browser_testing",
+                "fast_inference",
+                "structured_output",
+                "tool_calling",
+                "sandboxed_execution",
+                "isolated_workspace",
+                "knowledge_graph",
+                "temporal_memory",
+                "web_extraction",
+                "web_crawling",
+                "deep_research",
+                "tool_registry",
+                "memory",
+                "episodic_memory",
+                "rag",
+                "document_intelligence",
+                "scheduler",
+                "multi_agent",
+                "agent_coordination",
+                "observability",
+                "tracing",
+                "evaluation",
+                "computer_use",
+                "workflow",
+                "webhook",
+                "integration",
+                "event_automation",
+                "mcp_client"
+              ]
+            }
+          },
+          "entry_points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "adapter": {
+            "type": "string",
+            "description": "Path to the JARVIS adapter (e.g., 'MBM/Scripts/adapters/gemini_cli_adapter.py')"
+          },
+          "executor": {
+            "type": "string",
+            "description": "How JARVIS invokes this (e.g., 'subprocess', 'mcp_stdio', 'mcp_sse', 'rest_api')"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "READ_ONLY",
+                "NETWORK_READ",
+                "BROWSER_NAVIGATE",
+                "BROWSER_INTERACT",
+                "AUTHENTICATED_ACCESS",
+                "FILE_WRITE",
+                "CODE_EXECUTION",
+                "EXTERNAL_WRITE",
+                "DESTRUCTIVE_ACTION"
+              ]
+            }
+          },
+          "approval_required": {
+            "type": "boolean",
+            "default": true
+          },
+          "security_class": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ]
+          },
+          "network_access": {
+            "type": "boolean",
+            "default": false
+          },
+          "filesystem_access": {
+            "type": "boolean",
+            "default": false
+          },
+          "subprocess_access": {
+            "type": "boolean",
+            "default": false
+          },
+          "credential_requirements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fallbacks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "health_check": {
+            "type": "string"
+          },
+          "qa_strategy": {
+            "type": "string"
+          },
+          "evidence_strategy": {
+            "type": "string"
+          },
+          "integration_cost": {
+            "type": "string",
+            "enum": ["LOW", "MEDIUM", "HIGH"]
+          },
+          "revenue_leverage": {
+            "type": "string",
+            "enum": ["LOW", "MEDIUM", "HIGH"]
+          },
+          "maintenance_confidence": {
+            "type": "string",
+            "enum": ["LOW", "MEDIUM", "HIGH"]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ADOPT",
+              "ADAPTER",
+              "VENDOR",
+              "REFERENCE",
+              "WATCH",
+              "REJECT"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

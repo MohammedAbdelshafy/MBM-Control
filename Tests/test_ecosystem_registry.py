@@ -72,3 +72,30 @@ def test_evidence_recorder():
     
     # Clean up test file
     path.unlink()
+
+
+def test_canonical_providers_snapshot_loaded():
+    """Verify load_registry loads canonical data from Schemas/ecosystem_providers.json."""
+    from jarvis_control_plane.provider_router import load_registry
+    providers = load_registry()
+    assert len(providers) >= 6
+    provider_ids = {p["provider_id"] for p in providers}
+    assert {"anthropic", "groq", "gemini_cli", "codex_cli", "playwright", "firecrawl"}.issubset(provider_ids)
+
+
+def test_canonical_provider_routing_resolves():
+    """Verify genuine capabilities resolve to RESOLVED (not UNCONFIGURED or fake VERIFIED)."""
+    res = resolve("code automation", ["coding_agent"])
+    assert res["status"] == "RESOLVED"
+    assert res["best_provider"]["provider_id"] in ("gemini_cli", "codex_cli")
+
+
+def test_canonical_firecrawl_approval_gating():
+    """Verify firecrawl requires explicit approval and blocks if missing."""
+    unapproved = resolve("scrape site", ["web_extraction"], approval_id=None)
+    assert unapproved["status"] == "BLOCKED"
+
+    approved = resolve("scrape site", ["web_extraction"], approval_id="operator_approved_001")
+    assert approved["status"] == "RESOLVED"
+    assert approved["best_provider"]["provider_id"] == "firecrawl"
+

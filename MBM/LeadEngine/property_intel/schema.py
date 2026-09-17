@@ -9,7 +9,27 @@ from __future__ import annotations
 import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
+from enum import Enum
 from typing import Any, Optional
+
+
+class PipelineState(str, Enum):
+    CALL_READY = "CALL_READY"
+    BLOCKED = "BLOCKED"
+    DNC = "DNC"
+    SUPPRESSED = "SUPPRESSED"
+    INVALID = "INVALID"
+    DUPLICATE = "DUPLICATE"
+    ERROR = "ERROR"
+
+
+class ComplianceDecision(str, Enum):
+    CALL_READY = "CALL_READY"
+    SUPPRESSED = "SUPPRESSED"
+    DNC = "DNC"
+    INVALID = "INVALID"
+    BLOCKED = "BLOCKED"
+
 
 ENTITY_MARKERS = (
     "LLC", "LP", "INC", "CORP", "TRUST", "GROUP", "PROPERTIES", "PROPERTY",
@@ -39,6 +59,17 @@ class SourceRef:
     def to_dict(self) -> dict:
         d = asdict(self)
         return d
+
+
+@dataclass
+class ListingHistory:
+    """Historical listing status events and verification provenance."""
+    source: str = ""
+    current_status: str = "UNKNOWN"
+    status_changes: list = field(default_factory=list)
+
+    def to_dict(self) -> dict:
+        return asdict(self)
 
 
 @dataclass
