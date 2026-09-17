@@ -9,7 +9,7 @@ import json
 import os
 from pathlib import Path
 
-from .policy import evaluate, PolicyVerdict
+from .policy import evaluate, PolicyVerdict, ActionClass
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "Schemas" / "ecosystem_capability_registry.json"
@@ -116,6 +116,8 @@ def resolve(mission_intent: str, required_capabilities: List[str], approval_id: 
     Resolve a mission to the best provider and fallback chain.
     """
     providers = load_registry()
+    if not providers:
+        return {"status": "UNCONFIGURED", "reason": "Provider registry data is absent or unconfigured."}
 
     # 1. Capability Filter
     eligible = []
@@ -137,9 +139,11 @@ def resolve(mission_intent: str, required_capabilities: List[str], approval_id: 
             continue
             
         # Check through policy gateway
+        approval_ctx = {"approved": True, "approver": approval_id} if approval_id else None
         decision = evaluate(
             f"ecosystem_provider_invocation:{p['provider_id']} for mission {mission_intent}",
-            approval=approval_id if p.get("approval_required") else "system_auto"
+            approval=approval_ctx,
+            action_class=ActionClass.EXTERNAL_SIDE_EFFECT if p.get("approval_required") else ActionClass.READ,
         )
         if decision.verdict == PolicyVerdict.ALLOW:
             secure_eligible.append(p)
@@ -148,33 +152,12 @@ def resolve(mission_intent: str, required_capabilities: List[str], approval_id: 
         return {"status": "BLOCKED", "reason": "Policy gateway blocked all eligible providers."}
 
     # 3. Provider Ranking
-    # Score based on revenue_leverage, integration_cost, maintenance_confidence
-    def score_provider(p: Dict[str, Any]) -> int:
-        score = 0
-        rev = p.get("revenue_leverage", "LOW")
-        cost = p.get("integration_cost", "HIGH")
-        maint = p.get("maintenance_confidence", "LOW")
-        
-        if rev == "HIGH": score += 30
-        elif rev == "MEDIUM": score += 20
-        elif rev == "LOW": score += 10
-        
-        if cost == "LOW": score += 30
-        elif cost == "MEDIUM": score += 20
-        elif cost == "HIGH": score += 10
-        
-        if maint == "HIGH": score += 30
-        elif maint == "MEDIUM": score += 20
-        elif maint == "LOW": score += 10
-        
-        return score
-
-    ranked = sorted(secure_eligible, key=score_provider, reverse=True)
+    ranked = sorted(secure_eligible, key=score_provider_100, reverse=True)
     best_provider = ranked[0]
     fallbacks = ranked[1:]
 
     return {
-        "status": "VERIFIED",
+        "status": "RESOLVED",
         "best_provider": best_provider,
         "fallbacks": fallbacks,
         "required_capabilities": required_capabilities
