@@ -32,7 +32,8 @@ def test_load_offer_reports_delivery_readiness_from_real_assets(tmp_path: Path) 
     offer.mkdir()
     (offer / "landing.html").write_text("<html>offer</html>", encoding="utf-8")
     (offer / "whop_manifest.json").write_text(
-        '{"offer":"AI Consultancy Sprint","items":{}}', encoding="utf-8"
+        '{"offer":"AI Consultancy Sprint","items":{"sprint_audit":{"amount":297,"checkout_url":"https://whop.com/checkout/plan_x"}}}',
+        encoding="utf-8"
     )
     (offer / "delivery").mkdir()
     (offer / "delivery" / "README.md").write_text("delivery", encoding="utf-8")
