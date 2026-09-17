@@ -1,0 +1,2 @@
+segment,service_area,buyer_type,source,observed_evidence,contact_method,verification_status,notes
+,[City/ZIP radius],[Buyer type],[Lead source],[Evidence],[Human-approved channel],UNVERIFIED,[Notes]
