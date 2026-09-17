@@ -15,9 +15,10 @@ class FirecrawlAdapter:
 
     ALLOWED_DOMAINS = ["example.com", "github.com", "zillow.com"]
 
-    def __init__(self, api_key: Optional[str] = None, base_url: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None, base_url: Optional[str] = None, timeout: float = 30.0):
         self.api_key = api_key
         self.base_url = base_url or "http://localhost:3002/v1"
+        self.timeout = timeout
 
     def scrape_url(self, url: str, approval: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         if not self.api_key:
@@ -26,10 +27,22 @@ class FirecrawlAdapter:
         self._verify_mcp_approval(host, approval=approval)
 
         headers = {"Authorization": f"Bearer {self.api_key}"}
-        response = requests.post(f"{self.base_url}/scrape", json={"url": url}, headers=headers)
+        try:
+            response = requests.post(
+                f"{self.base_url}/scrape",
+                json={"url": url},
+                headers=headers,
+                timeout=self.timeout
+            )
+        except requests.exceptions.Timeout as exc:
+            raise RuntimeError(f"Firecrawl scrape timed out after {self.timeout}s: {exc}") from exc
+        except requests.exceptions.RequestException as exc:
+            raise RuntimeError(f"Firecrawl connection error: {exc}") from exc
+
         if not response.ok:
             raise RuntimeError(f"Firecrawl scrape failed with HTTP {response.status_code}")
         return response.json()
+
 
     def _enforce_whitelist(self, url: str) -> str:
         if not isinstance(url, str) or not url:
