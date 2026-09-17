@@ -1,0 +1,38 @@
+name: Digital Product Factory
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "productized_service/**"
+      - "productized-service/**"
+      - ".github/workflows/digital-product-factory.yml"
+  pull_request:
+    branches: [master]
+    paths:
+      - "productized_service/**"
+      - "productized-service/**"
+      - ".github/workflows/digital-product-factory.yml"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install test runner
+        run: python -m pip install --upgrade pip pytest
+      - name: Compile factory
+        run: python -m py_compile productized_service/factory.py
+      - name: Run factory tests
+        run: python -m pytest productized-service/tests/test_digital_product_factory.py -q -p no:cacheprovider
+      - name: Build canonical audit pack
+        run: python -m productized_service.factory productized-service/ai-consultancy-sprint /tmp/ai-sprint-audit-pack
+      - name: Inspect generated pack
+        run: |
+          test -f /tmp/ai-sprint-audit-pack/catalog.json
+          test -f /tmp/ai-sprint-audit-pack/delivery/01_ai_growth_audit.md
+          test ! -e /tmp/ai-sprint-audit-pack/neteller_manifest.json
+          ! grep -R "wallet_email\|wallet_account" /tmp/ai-sprint-audit-pack/catalog.json
