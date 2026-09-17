@@ -44,3 +44,21 @@ def test_load_offer_reports_delivery_readiness_from_real_assets(tmp_path: Path) 
     assert data["delivery_ready"] is True
     assert data["payment_ready"] is True
     assert data["commercially_validated"] is False
+
+
+def test_canonical_ai_sprint_offer_has_a_customer_delivery_pack() -> None:
+    root = Path(__file__).resolve().parents[2]
+    offer = root / "productized-service" / "ai-consultancy-sprint"
+
+    data = load_offer(offer)
+
+    assert data["customer_ready"] is True
+    assert data["delivery_files"] == sorted(
+        [
+            "delivery/01_ai_growth_audit.md",
+            "delivery/02_five_sales_scripts.md",
+            "delivery/03_lead_map_template.csv",
+            "delivery/04_72h_implementation_plan.md",
+            "delivery/README.md",
+        ]
+    )
