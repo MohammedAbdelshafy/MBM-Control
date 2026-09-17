@@ -6,18 +6,13 @@ Private payment manifests and internal outreach assets never enter the pack.
 
 from __future__ import annotations
 
+import argparse
 import json
 import shutil
 from pathlib import Path
 from typing import Any
 
 PRIVATE_MANIFESTS = {"neteller_manifest.json"}
-EXCLUDED_NAMES = {
-    "neteller_manifest.json",
-    "outreach.md",
-    "outreach.txt",
-    "sales_packet.md",
-}
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -39,10 +34,7 @@ def _public_payment(whop: dict[str, Any]) -> dict[str, Any]:
                 for key in ("amount", "billing_type", "label", "checkout_url")
                 if key in item
             }
-    return {
-        "currency": whop.get("currency"),
-        "items": public_items,
-    }
+    return {"currency": whop.get("currency"), "items": public_items}
 
 
 def load_offer(offer_dir: Path) -> dict[str, Any]:
@@ -53,7 +45,6 @@ def load_offer(offer_dir: Path) -> dict[str, Any]:
     landing = offer_dir / "landing.html"
     whop = offer_dir / "whop_manifest.json"
     delivery = offer_dir / "delivery"
-
     whop_data: dict[str, Any] = _load_json(whop) if whop.exists() else {}
     items = whop_data.get("items", {})
     payment_ready = isinstance(items, dict) and any(
@@ -112,3 +103,17 @@ def build_customer_pack(offer_dir: Path, output_dir: Path) -> dict[str, Any]:
     )
     files.append("catalog.json")
     return {"offer": state["offer"], "files": files, "customer_ready": state["customer_ready"]}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Build a customer-safe MBM digital-product pack")
+    parser.add_argument("offer_dir", type=Path)
+    parser.add_argument("output_dir", type=Path)
+    args = parser.parse_args()
+    result = build_customer_pack(args.offer_dir, args.output_dir)
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
