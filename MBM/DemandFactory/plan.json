@@ -1,0 +1,29 @@
+{
+  "feature": "consumer-conviction-monetization-loop",
+  "goal": "Turn verified demand into a launchable offer and route it to an existing transaction rail.",
+  "stages": [
+    "discover_demand",
+    "validate_demand",
+    "score_opportunity",
+    "package_offer",
+    "build_product",
+    "qa_product",
+    "conviction_gate",
+    "select_revenue_rail",
+    "configure_checkout",
+    "launch_controlled_experiment",
+    "attribute_transaction",
+    "learn_and_rescore"
+  ],
+  "revenue_rails": ["whop", "shopify", "high_ticket_dfy", "affiliate", "direct_sales"],
+  "hard_gates": [
+    "claims_verified",
+    "proof_provenance",
+    "checkout_rail",
+    "delivery_assets",
+    "quality_contract",
+    "conviction_threshold"
+  ],
+  "side_effect_policy": "proposal_only_until_provider_specific_live_authorization",
+  "success_condition": "at_least_one_real_transaction_recorded_and_attributed"
+}

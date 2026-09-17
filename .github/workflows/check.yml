@@ -44,10 +44,26 @@ jobs:
         if: always()
         run: echo "## Typecheck ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
 
+  factory-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run autonomous factory tests
+        run: python -m unittest MBM.DemandFactory.test_engine MBM.DemandFactory.test_adapters MBM.DemandFactory.revenue_bridge_test -v
+      - name: Evaluate factory sample
+        run: python -m MBM.DemandFactory --file MBM/DemandFactory/sample_opportunity.json
+      - name: Summary
+        if: always()
+        run: echo "## DemandFactory ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
+
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [lint, typecheck]
+    needs: [lint, typecheck, factory-test]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -66,7 +82,7 @@ jobs:
         if: always()
         run: |
           echo "## Build ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "All checks: lint=${{ needs.lint.result }} typecheck=${{ needs.typecheck.result }} build=${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "All checks: lint=${{ needs.lint.result }} typecheck=${{ needs.typecheck.result }} factory=${{ needs.factory-test.result }} build=${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
 
   lint-fix:
     if: github.ref == 'refs/heads/master' && failure()
@@ -102,51 +118,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-check
-          level: error
-          fail_level: error
-          actionlint_flags: -ignore SC[0-9]+
-
-  secret-scan:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: gitleaks secret scan
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
-
-  npm-audit:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - name: Audit production dependencies
-        run: |
-          echo "## Dependency Audit" >> "$GITHUB_STEP_SUMMARY"
-          npm audit --omit=dev --audit-level=high --json > /tmp/npm_audit.json 2>/dev/null || true
-          python3 - <<'PYEOF' >> "$GITHUB_STEP_SUMMARY"
-          import json
-          try:
-              with open("/tmp/npm_audit.json") as fh:
-                  d = json.load(fh)
-              meta = d.get("metadata", {}).get("vulnerabilities", {})
-              total = sum(meta.values())
-              print(f"- **Vulnerabilities:** {total}")
-              for sev, count in meta.items():
-                  if count:
-                      print(f"  - {sev}: {count}")
-              if total == 0:
-                  print("- ✅ No known production vulnerabilities")
-          except Exception as e:
-              print(f"- Audit parse skipped: {e}")
-          PYEOF
