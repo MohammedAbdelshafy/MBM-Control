@@ -1,0 +1,6 @@
+# actionlint configuration
+# Ignore node runtime deprecation warning emitted on GitHub Actions runners targeting node24
+paths:
+  .github/workflows/**/*.{yml,yaml}:
+    ignore:
+      - 'runtime ".+" is deprecated in GitHub Actions'
