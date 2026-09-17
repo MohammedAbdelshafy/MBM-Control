@@ -28,11 +28,11 @@ class MissionExecutionRecord(BaseModel):
     deployment_status: str = "PENDING"
     files_changed: List[str] = Field(default_factory=list)
     tests_run: List[str] = Field(default_factory=list)
-    test_result: str = "PASS"
-    runtime_result: str = "VERIFIED"
+    test_result: str = "NOT_RUN"
+    runtime_result: str = "NOT_RUN"
     business_impact: str = ""
     commit_sha: Optional[str] = None
-    status: str = "COMPLETED"
+    status: str = "PLANNED"
     started_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     completed_at: Optional[str] = None
 

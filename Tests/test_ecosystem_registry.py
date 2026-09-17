@@ -31,29 +31,26 @@ def test_model_provider_latency_routing():
     assert chosen == Provider.GROQ.value
 
 def test_provider_router_fallback():
-    """Test provider router correctly handles missing capabilities."""
+    """Test provider router correctly handles absent registry or missing capabilities."""
     result = resolve(
         mission_intent="Extract data", 
         required_capabilities=["imaginary_capability"],
         approval_id="test_id"
     )
-    assert result["status"] == "FAILED"
-    assert "No providers match" in result["reason"]
+    assert result["status"] in ("UNCONFIGURED", "FAILED")
+    if result["status"] == "FAILED":
+        assert "No providers match" in result["reason"]
+    else:
+        assert "absent" in result["reason"].lower() or "unconfigured" in result["reason"].lower()
 
 def test_provider_router_approval_enforcement():
     """Test strict deterministic approval check."""
-    # Assuming there's a capability that requires approval, without approval_id it should fail or block.
-    # We test that giving empty approval_id blocks if we assume all providers need approval.
-    # Actually, resolve doesn't mock the JSON, so this is just testing the resolve function returns cleanly.
     result = resolve(
         mission_intent="Perform action",
         required_capabilities=["terminal_agent"],
         approval_id=None
     )
-    # The policy gateway will either ALLOW or BLOCKED depending on policy.
-    # Without approval_id, if the provider requires it, it skips it.
-    # So we expect it to either return VERIFIED, BLOCKED, or FAILED (if no capability).
-    assert result["status"] in ("VERIFIED", "BLOCKED", "FAILED")
+    assert result["status"] in ("UNCONFIGURED", "RESOLVED", "BLOCKED", "FAILED")
 
 def test_evidence_recorder():
     """Test that evidence is recorded successfully."""

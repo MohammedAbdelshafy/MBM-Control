@@ -60,7 +60,7 @@ class ExecutionEngine:
                     
         if not target_mission:
             print("No pending missions in the queue.")
-            return
+            return None
 
         print(f"Assigning Mission: {target_mission['mission_id']} - {target_mission['title']}")
         print(f"Role: {target_mission['assigned_role']} | Target: {target_mission['target_repo']}")
@@ -77,39 +77,15 @@ class ExecutionEngine:
         if not lock_acquired:
             print(f"Mission {target_mission['mission_id']} BLOCKED. Files locked by another agent.")
             self._record_failure(target_mission, "BLOCKED", "Files currently locked by another process.")
-            return
+            return None
 
-        print(f"Executing: {target_mission['recommended_fix']}")
-        
-        # SIMULATED EXECUTION FOR NOW
-        # In full production, this routes to actual python scripts or agents based on `assigned_role`
-        time.sleep(2)
-        
-        # Record Success
-        record = MissionExecutionRecord(
-            mission_id=target_mission["mission_id"],
-            repo=target_mission["target_repo"],
-            agent=target_mission["assigned_role"],
-            objective=target_mission["recommended_fix"],
-            exit_condition="Fix implemented and verified",
-            blocker=None,
-            revenue_impact=target_mission["revenue_impact"] * 1000, # Simulated value
-            deployment_status="DEPLOYED",
-            files_changed=target_mission["target_paths"],
-            tests_run=[f"pytest {p}" for p in target_mission["target_paths"] if "tests" in p],
-            test_result="PASS",
-            runtime_result="VERIFIED",
-            business_impact=str(target_mission["business_impact"]),
-            status="PRODUCTIVE"
-        )
-        
-        self.ledger.record_mission(record)
-        self.ledger.release_file_lock(target_mission["target_paths"])
-        print(f"Mission {target_mission['mission_id']} completed successfully.")
-        
-        # Update Scoreboard
-        update_scoreboard()
-        print("Scoreboard updated.")
+        blocker = "No concrete execution adapter is registered for this mission."
+        print(f"Mission {target_mission['mission_id']} BLOCKED. {blocker}")
+        try:
+            self._record_failure(target_mission, "BLOCKED", blocker)
+        finally:
+            self.ledger.release_file_lock(target_mission["target_paths"])
+        return None
 
     def _record_failure(self, mission: dict, status: str, blocker: str):
         record = MissionExecutionRecord(
@@ -117,11 +93,16 @@ class ExecutionEngine:
             repo=mission["target_repo"],
             agent=mission["assigned_role"],
             objective=mission["recommended_fix"],
-            exit_condition="Fix implemented and verified",
+            exit_condition="",
             blocker=blocker,
             revenue_impact=0.0,
-            deployment_status="FAILED",
-            status=status
+            deployment_status="NOT_DEPLOYED",
+            files_changed=[],
+            tests_run=[],
+            test_result="NOT_RUN",
+            runtime_result="NOT_RUN",
+            business_impact=str(mission.get("business_impact", "")),
+            status=status,
         )
         self.ledger.record_mission(record)
         update_scoreboard()
