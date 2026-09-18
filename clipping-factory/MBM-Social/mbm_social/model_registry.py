@@ -71,19 +71,28 @@ def _gpt_oss_configured() -> bool:
     return bool(GPT_OSS_BASE.strip())
 
 
-def resolve(task: str) -> str:
-    """Return the best available local model for a task, or raise."""
-    candidates = TASK_MODELS.get(task, [STRONGEST_REASONING])
+def _candidates(task: str) -> list[str]:
+    """Return ordered, locally usable candidates for a task."""
     available = _available()
-    for cand in candidates:
+    ordered = []
+    for cand in TASK_MODELS.get(task, [STRONGEST_REASONING]):
         if cand == GPT_OSS_MODEL and not _gpt_oss_configured():
             continue
         if cand in available or (cand == GPT_OSS_MODEL and _gpt_oss_configured()):
-            return cand
+            if cand not in ordered:
+                ordered.append(cand)
     for cand in ["qwen2.5-coder:14b", "qwen2.5-coder:7b"]:
-        if cand in available:
-            return cand
-    raise RuntimeError(f"No local model available for task '{task}'. Is Ollama running?")
+        if cand in available and cand not in ordered:
+            ordered.append(cand)
+    return ordered
+
+
+def resolve(task: str) -> str:
+    """Return the best locally usable model for a task, or raise."""
+    candidates = _candidates(task)
+    if not candidates:
+        raise RuntimeError(f"No local model available for task '{task}'. Is Ollama running?")
+    return candidates[0]
 
 
 def _ollama_generate(
@@ -144,16 +153,7 @@ def _gpt_oss_generate(
                if os.getenv("GPT_OSS_API_KEY") else {}),
         },
     )
-    with urllib.request.urlopen(req, timeout=180) as r:
-        data = json.load(r)
-    choices = data.get("choices") or []
-    if not choices:
-        return None
-    content = (choices[0].get("message") or {}).get("content")
-    return content.strip() if isinstance(content, str) and content.strip() else None
-
-
-def generate(
+    with urllib.request.urlopendef generate(
     prompt: str,
     task: str = "strategy",
     system: Optional[str] = None,
@@ -161,42 +161,48 @@ def generate(
     max_tokens: int = 800,
     transport=None,
 ) -> str:
-    """Generate text using configured local inference only.
+    """Generate using the ordered local candidates without fabricating output."""
+    candidates = _candidates(task)
+    if not candidates:
+        raise RuntimeError(f"No local model available for task '{task}'.")
 
-    Provider fallback is deterministic and never fabricates a response.
-    The transport hook is retained for hermetic tests.
-    """
-    model = resolve(task)
-    try:
-        if transport:
-            resp = transport(
-                model=model,
-                prompt=prompt,
-                system=system,
-                temperature=temperature,
-                max_tokens=max_tokens,
-            )
-        elif model == GPT_OSS_MODEL and _gpt_oss_configured():
-            resp = _gpt_oss_generate(
-                model=model,
-                prompt=prompt,
-                system=system,
-                temperature=temperature,
-                max_tokens=max_tokens,
-            )
-        else:
-            resp = _ollama_generate(
-                model=model,
-                prompt=prompt,
-                system=system,
-                temperature=temperature,
-                max_tokens=max_tokens,
-            )
-        if resp:
-            return resp
-    except Exception as e:
-        print(f"[model_registry] local generation failed for task '{task}': {e}")
-    raise RuntimeError(f"Generation failed for task '{task}' with model '{model}'.")
+    last_error: Optional[Exception] = None
+    for model in candidates:
+        try:
+            if transport:
+                resp = transport(
+                    model=model,
+                    prompt=prompt,
+                    system=system,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                )
+            elif model == GPT_OSS_MODEL and _gpt_oss_configured():
+                resp = _gpt_oss_generate(
+                    model=model,
+                    prompt=prompt,
+                    system=system,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                )
+            else:
+                resp = _ollama_generate(
+                    model=model,
+                    prompt=prompt,
+                    system=system,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                )
+            if resp:
+                return resp
+            last_error = RuntimeError("empty response")
+        except Exception as e:
+            last_error = e
+            print(f"[model_registry] generation failed for model '{model}', task '{task}': {e}")
+
+    raise RuntimeError(
+        f"All local generation paths failed for task '{task}'. Last error: {last_error}"
+    )
 
 
 def embed(text: str) -> list[float]:
