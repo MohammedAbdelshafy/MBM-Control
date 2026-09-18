@@ -150,3 +150,18 @@ jobs:
           except Exception as e:
               print(f"- Audit parse skipped: {e}")
           PYEOF
+
+
+  gpt-oss-hermetic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile GPT-OSS adapter and tests
+        run: |
+          python3 -m py_compile             clipping-factory/MBM-Social/mbm_social/model_registry.py             clipping-factory/MBM-Social/tests/test_gpt_oss_provider.py
+      - name: Verify GPT-OSS boundary markers
+        run: |
+          grep -q "GPT_OSS_BASE_URL" clipping-factory/MBM-Social/mbm_social/model_registry.py
+          grep -q "/v1/chat/completions" clipping-factory/MBM-Social/mbm_social/model_registry.py
+          grep -q "single-writer" clipping-factory/MBM-Social/GPT_OSS.md
