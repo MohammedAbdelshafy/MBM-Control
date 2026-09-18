@@ -1,43 +1,44 @@
 """
 Model registry + local LLM routing for MBM-Social.
 
-Routes every task to the strongest *available* local model. No task is
-hardcoded to a single model — routing is data-driven and falls back if a
-model is missing. All inference is local (Ollama); nothing leaves the machine.
+Routes tasks to the strongest *available* local model. Ollama remains the
+default transport. GPT-OSS can be exposed through an OpenAI-compatible local
+endpoint (for example Ollama or vLLM) and selected per task with environment
+configuration. No provider is granted mutation authority by this registry.
 """
 from __future__ import annotations
 
 import json
+import os
 import urllib.request
 from dataclasses import dataclass
 from typing import Optional
 
-OLLAMA_BASE = "http://localhost:11434"
+OLLAMA_BASE = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+GPT_OSS_BASE = os.getenv("GPT_OSS_BASE_URL", "")
+GPT_OSS_MODEL = os.getenv("GPT_OSS_MODEL", "gpt-oss:20b")
 
 
-# Task -> preferred model. Resolution checks availability and falls back.
-# NOTE: gemma4:latest currently returns HTTP 500 locally; qwen2.5-coder:7b is
-# the verified-working local generator. Keep gemma4 only as a last resort.
+# Task -> preferred models. Resolution checks availability and falls back.
 TASK_MODELS = {
-    "topic_classification": ["qwen2.5-coder:7b", "qwen2.5-coder:14b"],
-    "hook_scoring": ["qwen2.5-coder:7b"],
-    "title_generation": ["qwen2.5-coder:7b", "qwen2.5-coder:14b"],
-    "caption_generation": ["qwen2.5-coder:7b"],
-    "hashtag_generation": ["qwen2.5-coder:7b"],
-    "brand_fit_scoring": ["qwen2.5-coder:7b"],
-    "channel_selection": ["qwen2.5-coder:7b"],
-    "analytics_summary": ["qwen2.5-coder:7b", "qwen2.5-coder:14b"],
-    "experiment_recommendations": ["qwen2.5-coder:14b", "qwen2.5-coder:7b"],
-    "quality_review": ["qwen2.5-coder:14b", "qwen2.5-coder:7b"],
-    "thumbnail_text": ["qwen2.5-coder:7b"],
+    "topic_classification": ["qwen2.5-coder:7b", GPT_OSS_MODEL, "qwen2.5-coder:14b"],
+    "hook_scoring": [GPT_OSS_MODEL, "qwen2.5-coder:7b"],
+    "title_generation": ["qwen2.5-coder:7b", GPT_OSS_MODEL, "qwen2.5-coder:14b"],
+    "caption_generation": ["qwen2.5-coder:7b", GPT_OSS_MODEL],
+    "hashtag_generation": ["qwen2.5-coder:7b", GPT_OSS_MODEL],
+    "brand_fit_scoring": [GPT_OSS_MODEL, "qwen2.5-coder:7b"],
+    "channel_selection": [GPT_OSS_MODEL, "qwen2.5-coder:7b"],
+    "analytics_summary": [GPT_OSS_MODEL, "qwen2.5-coder:14b", "qwen2.5-coder:7b"],
+    "experiment_recommendations": [GPT_OSS_MODEL, "qwen2.5-coder:14b", "qwen2.5-coder:7b"],
+    "quality_review": [GPT_OSS_MODEL, "qwen2.5-coder:14b", "qwen2.5-coder:7b"],
+    "thumbnail_text": ["qwen2.5-coder:7b", GPT_OSS_MODEL],
     "vision_thumbnail": ["llava:7b"],
-    # Strongest local reasoning for campaign / cross-channel / strategy decisions.
-    "strategy": ["qwen2.5-coder:14b", "qwen2.5-coder:7b"],
+    "strategy": [GPT_OSS_MODEL, "qwen2.5-coder:14b", "qwen2.5-coder:7b"],
 }
 
 EMBED_MODEL = "nomic-embed-text:latest"
 VISION_MODEL = "llava:7b"
-STRONGEST_REASONING = "qwen2.5-coder:14b"
+STRONGEST_REASONING = GPT_OSS_MODEL
 
 
 @dataclass
@@ -51,7 +52,6 @@ def list_models() -> list[ModelInfo]:
         with urllib.request.urlopen(f"{OLLAMA_BASE}/api/tags", timeout=5) as r:
             data = json.load(r)
         names = {m["name"] for m in data.get("models", [])}
-        # normalise: "gemma4:latest" matches requested "gemma4:latest"
         return [ModelInfo(n, True) for n in names]
     except Exception:
         return []
@@ -67,14 +67,21 @@ def _available() -> set[str]:
     return _AVAIL
 
 
+def _gpt_oss_configured() -> bool:
+    return bool(GPT_OSS_BASE.strip())
+
+
 def resolve(task: str) -> str:
-    """Return the best available model for a task, or raise if none."""
-    for cand in TASK_MODELS.get(task, [STRONGEST_REASONING]):
-        if cand in _available():
+    """Return the best available local model for a task, or raise."""
+    candidates = TASK_MODELS.get(task, [STRONGEST_REASONING])
+    available = _available()
+    for cand in candidates:
+        if cand == GPT_OSS_MODEL and not _gpt_oss_configured():
+            continue
+        if cand in available or (cand == GPT_OSS_MODEL and _gpt_oss_configured()):
             return cand
-    # last resort: any reasoning-capable model
-    for cand in [STRONGEST_REASONING, "qwen2.5-coder:14b", "qwen2.5-coder:7b"]:
-        if cand in _available():
+    for cand in ["qwen2.5-coder:14b", "qwen2.5-coder:7b"]:
+        if cand in available:
             return cand
     raise RuntimeError(f"No local model available for task '{task}'. Is Ollama running?")
 
@@ -86,7 +93,6 @@ def _ollama_generate(
     temperature: float = 0.3,
     max_tokens: int = 800,
 ) -> Optional[str]:
-    """Call the Ollama /api/generate endpoint for a resolved local model."""
     payload = {
         "model": model,
         "prompt": prompt,
@@ -105,6 +111,48 @@ def _ollama_generate(
     return (data.get("response") or "").strip() or None
 
 
+def _gpt_oss_generate(
+    model: str,
+    prompt: str,
+    system: Optional[str] = None,
+    temperature: float = 0.3,
+    max_tokens: int = 800,
+) -> Optional[str]:
+    """Call an OpenAI-compatible local GPT-OSS endpoint.
+
+    This intentionally supports only the local endpoint configured by
+    GPT_OSS_BASE_URL. Authentication is optional and read from env.
+    """
+    base = GPT_OSS_BASE.rstrip("/")
+    if not base:
+        return None
+    body = {
+        "model": model,
+        "messages": [
+            *([{"role": "system", "content": system}] if system else []),
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+    }
+    req = urllib.request.Request(
+        f"{base}/v1/chat/completions",
+        data=json.dumps(body).encode(),
+        headers={
+            "Content-Type": "application/json",
+            **({"Authorization": f"Bearer {os.environ['GPT_OSS_API_KEY']}"}
+               if os.getenv("GPT_OSS_API_KEY") else {}),
+        },
+    )
+    with urllib.request.urlopen(req, timeout=180) as r:
+        data = json.load(r)
+    choices = data.get("choices") or []
+    if not choices:
+        return None
+    content = (choices[0].get("message") or {}).get("content")
+    return content.strip() if isinstance(content, str) and content.strip() else None
+
+
 def generate(
     prompt: str,
     task: str = "strategy",
@@ -113,39 +161,42 @@ def generate(
     max_tokens: int = 800,
     transport=None,
 ) -> str:
-    """Generate text. Local-first (Ollama), then backend AIService.complete().
+    """Generate text using configured local inference only.
 
-    `transport` is injectable for tests (defaults to Ollama /api/generate).
-    On total failure this raises RuntimeError — callers are expected to have
-    deterministic template fallbacks. It NEVER returns fabricated content.
+    Provider fallback is deterministic and never fabricates a response.
+    The transport hook is retained for hermetic tests.
     """
-    # 1) Local Ollama (preferred): uses the task-resolved model, honoring
-    #    temperature/max_tokens. Honors the module's local-only contract.
+    model = resolve(task)
     try:
-        model = resolve(task)
-        fn = transport or _ollama_generate
-        resp = fn(model=model, prompt=prompt, system=system, temperature=temperature, max_tokens=max_tokens)
+        if transport:
+            resp = transport(
+                model=model,
+                prompt=prompt,
+                system=system,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+        elif model == GPT_OSS_MODEL and _gpt_oss_configured():
+            resp = _gpt_oss_generate(
+                model=model,
+                prompt=prompt,
+                system=system,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+        else:
+            resp = _ollama_generate(
+                model=model,
+                prompt=prompt,
+                system=system,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
         if resp:
             return resp
     except Exception as e:
         print(f"[model_registry] local generation failed for task '{task}': {e}")
-
-    # 2) Backend fallback (Anthropic/Gemini/OpenAI) when available.
-    try:
-        import sys
-        from pathlib import Path
-        BACKEND = Path(__file__).resolve().parent.parent.parent / "backend"
-        if str(BACKEND) not in sys.path:
-            sys.path.insert(0, str(BACKEND))
-        from app.services.ai_service import AIService
-        ai = AIService()
-        resp = ai.complete(prompt=prompt, model=resolve(task), system=system, max_tokens=max_tokens, temperature=temperature)
-        if resp:
-            return resp
-    except Exception as e:
-        print(f"[model_registry] backend generation failed for task '{task}': {e}")
-
-    raise RuntimeError(f"All generation paths failed for task '{task}' (Ollama down and no backend provider).")
+    raise RuntimeError(f"Generation failed for task '{task}' with model '{model}'.")
 
 
 def embed(text: str) -> list[float]:
