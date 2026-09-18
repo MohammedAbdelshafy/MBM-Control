@@ -1,0 +1,25 @@
+{
+  "run_date": "2026-09-18",
+  "offers": [
+    {"offer":"Visual AI Evidence Engine pilot","status":"READY_TO_SELL","price_hypothesis":"fixed-scope pilot","next_action":"sell one warranty/field-service/QC workflow"},
+    {"offer":"P4 Lead Cleaner DFY","status":"READY_TO_SELL","price_hypothesis":"$499","next_action":"direct buyer outreach"},
+    {"offer":"Creator/video production pilot","status":"READY_TO_SELL","price_hypothesis":"$649 pilot; $1800/mo recurring","next_action":"creator/brand outreach"},
+    {"offer":"Lead/data packs","status":"READY_TO_SELL","price_hypothesis":"packaged fixed-price data product","next_action":"verify buyer demand and deliver"},
+    {"offer":"Construction BOQ/estimator intelligence","status":"PACKAGE_THIS_WEEK","price_hypothesis":"fixed implementation + support","next_action":"sell to contractors/material suppliers"},
+    {"offer":"OX-Alpha.1 data-integrity hardening","status":"READY_TO_SELL","price_hypothesis":"productized engineering service","next_action":"target teams with multi-writer/data-integrity risk"}
+  ],
+  "fresh_demand_signals": [
+    {"buyer":"Emerson Electric Co.","domain":"emerson.com","signal":"global technical support, industrial software, AI-enabled automation and field/service workflows","source":"Firecrawl live scrape 2026-09-18","verification":"https://www.emerson.com/en/corporate"},
+    {"buyer":"Amdocs Limited","domain":"amdocs.com","signal":"claims management, claims software, returns and aftersales intent match","source":"AI Vibe Prospecting enrichment 2026-09-18"},
+    {"buyer":"The Home Depot","domain":"888tuffshed.com","signal":"claims/service/maintenance intent match; record requires workflow verification","source":"AI Vibe Prospecting enrichment 2026-09-18"},
+    {"buyer":"Gensler","domain":"gensler.com","signal":"claims/warranty/defect-management intent match; record requires workflow verification","source":"AI Vibe Prospecting enrichment 2026-09-18"},
+    {"buyer":"Rudin","domain":"rudin.com","signal":"service management, warranty/aftersales and CMMS intent match; record requires workflow verification","source":"AI Vibe Prospecting enrichment 2026-09-18"}
+  ],
+  "outreach": [
+    {"buyer":"Emerson Electric Co.","channel":"Outlook","recipient":"contactus@emerson.com","status":"SENT","subject":"Photo-first visual triage pilot for service operations","note":"General business support address verified on Emerson contact page; no sale or reply claimed."}
+  ],
+  "publishing": {"status":"NO_NEW_PUBLICATION_CONFIRMED","note":"Existing Visual AI LinkedIn post remains previously scheduled; no new publication claimed in this run."},
+  "deployment": {"visual_ai_evidence_higgsfield":"https://visual-ai-evidence.higgsfield.app","status":"LIVE"},
+  "revenue_gate":"Prioritize payment and qualified replies over new engineering.",
+  "connector_rule":"Connector Set v1 remains locked until 1 paid pilot or 10 qualified replies."
+}
