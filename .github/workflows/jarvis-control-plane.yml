@@ -23,6 +23,6 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install test dependencies
-        run: python -m pip install --disable-pip-version-check pytest pydantic
+        run: python -m pip install --disable-pip-version-check pytest pydantic requests python-dotenv
       - name: Run JARVIS control-plane tests
         run: python -m pytest jarvis_control_plane/tests -q
