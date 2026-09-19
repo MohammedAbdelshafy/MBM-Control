@@ -22,6 +22,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional
 
+from .agent_identity import AgentIdentityRegistry, IdentityDenied, require_identity
+from .lifecycle import ExecutionReceipt, ToolLifecycleHooks
 from .policy import (
     DEFAULT_RETRY,
     DEFAULT_TIMEOUTS,
@@ -58,6 +60,8 @@ class MCPToolDefinition:
     action_class: Optional[ActionClass] = None
     # Free-text action used for the policy check. Defaults to name+description.
     action_text: str = ""
+    # Optional capability required from the invoking agent for side effects.
+    required_capability: Optional[str] = None
 
     @property
     def effective_class(self) -> ActionClass:
@@ -87,10 +91,23 @@ class MCPToolBus:
       to observe without touching this code).
     """
 
-    def __init__(self, sink: Optional[TelemetrySink] = None) -> None:
+    def __init__(
+        self,
+        sink: Optional[TelemetrySink] = None,
+        identity_registry: Optional[AgentIdentityRegistry] = None,
+        lifecycle: Optional[ToolLifecycleHooks] = None,
+        max_invocations: Optional[int] = None,
+    ) -> None:
+        if max_invocations is not None and max_invocations < 0:
+            raise ValueError("max_invocations must be non-negative")
         self._tools: Dict[str, MCPToolDefinition] = {}
         self.telemetry: List[Dict[str, Any]] = []
         self.sink: TelemetrySink = sink or NoOpSink()
+        self.identity_registry = identity_registry
+        self.lifecycle = lifecycle or ToolLifecycleHooks()
+        self.max_invocations = max_invocations
+        self._invocation_count = 0
+        self.receipts: List[ExecutionReceipt] = []
 
     def register(self, tool: MCPToolDefinition) -> None:
         self._tools[tool.name] = tool
@@ -113,30 +130,94 @@ class MCPToolBus:
         name: str,
         args: Optional[Dict[str, Any]] = None,
         approval: Optional[Dict[str, Any]] = None,
+        agent_id: Optional[str] = None,
     ) -> Any:
         args = dict(args or {})
         if name not in self._tools:
             raise KeyError(f"MCP tool not exposed: {name}")
         tool = self._tools[name]
         self._validate(tool, args)
-        # Permission boundary (single home for policy: policy.evaluate).
-        # A tool's declared action_class is the explicit permission grant;
-        # undeclared tools are classified fail-closed from name+description.
-        # Mirrors the handler convention (see capabilities.phound_dry_run_call):
-        # ALLOW runs; REQUIRE_APPROVAL runs only with an approval attached
-        # (the caller asserts planning/approval happened); DENY never runs.
+
+        if self.max_invocations is not None and self._invocation_count >= self.max_invocations:
+            raise RuntimeError("MCP invocation budget exhausted")
+        self._invocation_count += 1
+
         effective_approval = approval if approval is not None else args.get("approval")
+        trace_id = new_trace_id()
         decision = evaluate(
             tool.policy_action(),
             approval=effective_approval,
             action_class=tool.action_class,
         )
+
+        identity = None
+        requires_identity = decision.action_class in (
+            ActionClass.GATED_WRITE,
+            ActionClass.EXTERNAL_SIDE_EFFECT,
+        )
+        if requires_identity:
+            try:
+                required_id = require_identity(agent_id)
+                if self.identity_registry is None:
+                    raise IdentityDenied(
+                        "agent identity registry is required for gated/external MCP tools"
+                    )
+                if tool.required_capability:
+                    identity = self.identity_registry.require_capability(
+                        required_id, tool.required_capability
+                    )
+                else:
+                    identity = self.identity_registry.get(required_id)
+            except IdentityDenied as exc:
+                receipt = ExecutionReceipt.denied(
+                    trace_id=trace_id,
+                    agent_id=agent_id or "",
+                    tool=name,
+                    reason=str(exc),
+                    metadata={
+                        "policy_verdict": decision.verdict.value,
+                        "gates": list(decision.gates),
+                        "args": redact(args),
+                    },
+                )
+                self.receipts.append(receipt)
+                self.lifecycle.after(receipt)
+                self.sink.emit(TelemetryEvent(
+                    trace_id=trace_id,
+                    kind="policy_denial",
+                    tool=name,
+                    outcome="denied",
+                    policy_verdict=decision.verdict.value,
+                    payload={
+                        "reason": str(exc),
+                        "gates": list(decision.gates),
+                        "agent_id": agent_id or "",
+                        "args": redact(args),
+                    },
+                ))
+                raise MCPPermissionDenied(
+                    f"MCP tool '{name}': agent identity denied - {exc}"
+                ) from exc
+
         allowed = decision.verdict is PolicyVerdict.ALLOW or (
             decision.verdict is PolicyVerdict.REQUIRE_APPROVAL
             and isinstance(effective_approval, dict)
             and effective_approval.get("approved") is True
         )
         if not allowed:
+            receipt = ExecutionReceipt.denied(
+                trace_id=trace_id,
+                agent_id=agent_id or "",
+                tool=name,
+                reason=decision.reason,
+                metadata={
+                    "policy_verdict": decision.verdict.value,
+                    "gates": list(decision.gates),
+                    "args": redact(args),
+                },
+            )
+            self.receipts.append(receipt)
+            self.lifecycle.after(receipt)
             self.telemetry.append({
                 "tool": name,
                 "args": redact(args),
@@ -146,19 +227,47 @@ class MCPToolBus:
                 "reason": decision.reason,
             })
             self.sink.emit(TelemetryEvent(
-                trace_id=new_trace_id(),
+                trace_id=trace_id,
                 kind="policy_denial",
                 tool=name,
                 outcome="denied",
                 policy_verdict=decision.verdict.value,
-                payload={"reason": decision.reason,
-                         "gates": list(decision.gates),
-                         "args": redact(args)},
+                payload={
+                    "reason": decision.reason,
+                    "gates": list(decision.gates),
+                    "args": redact(args),
+                },
             ))
             raise MCPPermissionDenied(
-                f"MCP tool '{name}': {decision.verdict.value} — {decision.reason} "
+                f"MCP tool '{name}': {decision.verdict.value} - {decision.reason} "
                 f"(gates: {', '.join(decision.gates) or 'none'})"
             )
+
+        try:
+            self.lifecycle.before(
+                tool=name,
+                agent_id=agent_id or "",
+                args=redact(args),
+                approval=redact(effective_approval),
+                policy_decision=decision,
+                identity=identity,
+            )
+        except Exception as exc:
+            receipt = ExecutionReceipt.denied(
+                trace_id=trace_id,
+                agent_id=agent_id or "",
+                tool=name,
+                reason=f"before-hook denied execution: {exc}",
+                metadata={
+                    "policy_verdict": decision.verdict.value,
+                    "gates": list(decision.gates),
+                    "args": redact(args),
+                },
+            )
+            self.receipts.append(receipt)
+            self.lifecycle.after(receipt)
+            raise
+
         self.telemetry.append(
             {"tool": name, "args": redact(args), "at": datetime.now(timezone.utc).isoformat()}
         )
@@ -168,12 +277,24 @@ class MCPToolBus:
             attempts += 1
             try:
                 result = tool.handler(args)
-            except Exception as exc:  # noqa: BLE001 — classified below
+            except Exception as exc:
                 kind = getattr(exc, "error_kind", "unknown")
                 if kind in tool.retryable_errors and attempts < DEFAULT_RETRY["max_attempts"]:
                     continue
+                receipt = ExecutionReceipt.failed(
+                    trace_id=trace_id,
+                    agent_id=agent_id or "",
+                    tool=name,
+                    error=str(exc),
+                    metadata={
+                        "policy_verdict": decision.verdict.value,
+                        "attempts": attempts,
+                    },
+                )
+                self.receipts.append(receipt)
+                self.lifecycle.after(receipt)
                 self.sink.emit(TelemetryEvent(
-                    trace_id=new_trace_id(),
+                    trace_id=trace_id,
                     kind="tool_call",
                     tool=name,
                     latency_ms=round((time.perf_counter() - _start) * 1000, 2),
@@ -183,8 +304,21 @@ class MCPToolBus:
                     payload={"args": redact(args)},
                 ))
                 raise
+
+            receipt = ExecutionReceipt.executed(
+                trace_id=trace_id,
+                agent_id=agent_id or "",
+                tool=name,
+                output=result,
+                metadata={
+                    "policy_verdict": decision.verdict.value,
+                    "attempts": attempts,
+                },
+            )
+            self.receipts.append(receipt)
+            self.lifecycle.after(receipt)
             self.sink.emit(TelemetryEvent(
-                trace_id=new_trace_id(),
+                trace_id=trace_id,
                 kind="tool_call",
                 tool=name,
                 latency_ms=round((time.perf_counter() - _start) * 1000, 2),
