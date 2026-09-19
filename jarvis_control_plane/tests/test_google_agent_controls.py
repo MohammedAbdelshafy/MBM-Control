@@ -54,12 +54,12 @@ def test_receipt_distinguishes_execution_from_business_success():
         trace_id="tr-test",
         agent_id="jarvis.test",
         tool="demo",
-        output={"status": "success", "business_result": "ignored", "token": "sk-test-secret"},
+        output={"status": "success", "business_result": "ignored", "token": "TEST_TOKEN_PLACEHOLDER"},
     )
     assert receipt.status is ExecutionStatus.EXECUTED
     assert receipt.business_outcome == "UNVERIFIED"
     assert receipt.tool == "demo"
-    assert "sk-test-secret" not in str(receipt.to_dict())
+    assert "TEST_TOKEN_PLACEHOLDER" not in str(receipt.to_dict())
 
 
 def test_denied_receipt_is_not_execution():
@@ -161,7 +161,7 @@ def test_mcp_records_execution_receipt_and_does_not_call_it_business_success():
             name="email_sender",
             description="send email",
             input_schema={"type": "object"},
-            handler=lambda args: {"status": "success", "token": "sk-test-secret"},
+            handler=lambda args: {"status": "success", "token": "TEST_TOKEN_PLACEHOLDER"},
             action_class=ActionClass.EXTERNAL_SIDE_EFFECT,
             required_capability="send_email",
         )
@@ -175,7 +175,7 @@ def test_mcp_records_execution_receipt_and_does_not_call_it_business_success():
     assert result["status"] == "success"
     assert bus.receipts[-1].status is ExecutionStatus.EXECUTED
     assert bus.receipts[-1].business_outcome == "UNVERIFIED"
-    assert "sk-test-secret" not in str(bus.receipts[-1].to_dict())
+    assert "TEST_TOKEN_PLACEHOLDER" not in str(bus.receipts[-1].to_dict())
 
 
 def test_mcp_denial_receipt_is_redacted():
@@ -192,9 +192,9 @@ def test_mcp_denial_receipt_is_redacted():
         )
     )
     with pytest.raises(PermissionError):
-        bus.call("unsafe", {"token": "sk-test-secret"})
+        bus.call("unsafe", {"token": "TEST_TOKEN_PLACEHOLDER"})
     assert bus.receipts[-1].status is ExecutionStatus.DENIED
-    assert "sk-test-secret" not in str(bus.receipts[-1].to_dict())
+    assert "TEST_TOKEN_PLACEHOLDER" not in str(bus.receipts[-1].to_dict())
 
 
 def test_mcp_after_hook_receives_execution_receipt():
