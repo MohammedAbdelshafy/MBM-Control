@@ -182,6 +182,15 @@ class MCPToolBus:
                 )
                 self.receipts.append(receipt)
                 self.lifecycle.after(receipt)
+                self.telemetry.append({
+                    "tool": name,
+                    "args": redact(args),
+                    "at": datetime.now(timezone.utc).isoformat(),
+                    "denied": True,
+                    "verdict": decision.verdict.value,
+                    "reason": str(exc),
+                    "identity_denied": True,
+                })
                 self.sink.emit(TelemetryEvent(
                     trace_id=trace_id,
                     kind="policy_denial",
