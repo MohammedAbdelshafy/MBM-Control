@@ -48,10 +48,12 @@ Professional contact data returned by Clay:
 These are public/professional contact records returned through the connected Clay workspace. No private personal contact list is being generated.
 
 ## Outreach
-Outlook draft created:
+Outlook email sent and verified in the mailbox:
 - To: Farah Mynaf <farah@linktr.ee>; Ashley Lindeman <ashley.l@linktr.ee>
 - Subject: Creator workflow pilot: turn content ops into a repeatable system
-- Status: DRAFT, NOT SENT
+- Send timestamp: 2026-09-19 21:43:30Z
+- Status: SENT, saved to Sent Items
+- Follow-up state: awaiting reply
 
 The message offers a fixed-scope creator-ops pilot around post-deal administration and requests a 15-minute workflow discussion.
 
@@ -70,16 +72,17 @@ Correction:
 - Keep individual creator outreach separate from B2B creator-platform outreach.
 
 ## Publication
-No external public publication was verified in this run.
+No external public marketing publication was verified in this run.
 Confluence publication was not available because the connected Confluence API returned 404 for space discovery.
+The GitHub run record is public in the MBM-Control repository.
 
 ## Revenue truth
 Sales: 0 verified
 Payments: $0 verified
 Replies: 0 verified
 Meetings: 0 verified
-Outreach sent: 0 verified
-Publications: 0 verified
+Outreach sent: 1 verified batch to 2 recipients
+Public social publications: 0 verified
 Paid creator pilots: 0 verified
 
 ## Next gate
