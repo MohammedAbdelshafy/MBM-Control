@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: jarvis-control-plane
+  group: jarvis-control-plane-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
