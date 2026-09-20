@@ -6,7 +6,30 @@ import argparse
 import json
 from pathlib import Path
 
+from .models import FactoryWasteQuota
 from .search_spec import build_search_spec
+
+
+def _load_quotas(path: Path) -> list[FactoryWasteQuota]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, list):
+        raise ValueError("quota JSON must contain a list of waste-stream objects")
+
+    quotas: list[FactoryWasteQuota] = []
+    for index, item in enumerate(payload):
+        if not isinstance(item, dict):
+            raise ValueError(f"quota entry {index} must be an object")
+        evidence = item.get("evidence", [])
+        if not isinstance(evidence, list):
+            raise ValueError(f"quota entry {index} evidence must be a list")
+        item = dict(item)
+        item["evidence"] = tuple(str(value) for value in evidence)
+        quota = FactoryWasteQuota(**item)
+        errors = quota.validate()
+        if errors:
+            raise ValueError(f"quota entry {index}: {'; '.join(errors)}")
+        quotas.append(quota)
+    return quotas
 
 
 def main() -> int:
@@ -15,8 +38,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
-    payload = json.loads(args.quota_json.read_text(encoding="utf-8"))
-    specs = [build_search_spec(item) for item in payload]
+    specs = [build_search_spec(quota) for quota in _load_quotas(args.quota_json)]
     rendered = json.dumps(specs, ensure_ascii=False, indent=2)
 
     if args.output:
