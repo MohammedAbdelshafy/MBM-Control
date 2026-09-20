@@ -1,0 +1,27 @@
+name: Waste Buyer OS
+
+on:
+  pull_request:
+    paths:
+      - "MBM/LeadEngine/waste_buyer_os/**"
+      - "Tests/test_waste_buyer_os.py"
+      - ".github/workflows/waste-buyer-os.yml"
+  push:
+    branches: [master]
+    paths:
+      - "MBM/LeadEngine/waste_buyer_os/**"
+      - "Tests/test_waste_buyer_os.py"
+      - ".github/workflows/waste-buyer-os.yml"
+
+jobs:
+  test-waste-buyer-os:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test runner
+        run: python -m pip install --upgrade pip pytest
+      - name: Run Waste Buyer OS tests
+        run: python -m pytest Tests/test_waste_buyer_os.py -q
