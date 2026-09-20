@@ -11,8 +11,8 @@ MATERIAL_ALIASES: dict[str, set[str]] = {
         "rubber", "rubber scrap", "rubber waste", "sole rubber", "tpr rubber",
     },
     "pvc_pu": {
-        "pvc", "pu", "polyurethane", "pvc scrap", "pu scrap", "synthetic pvc",
-        "synthetic leather",
+        "pvc", "pu", "pvc pu", "pvc/pu", "polyurethane", "pvc scrap", "pu scrap",
+        "synthetic pvc", "synthetic leather",
     },
     "textile_mesh": {
         "textile", "fabric", "mesh", "textile waste", "fabric scrap",
@@ -34,59 +34,60 @@ MATERIAL_ALIASES: dict[str, set[str]] = {
 
 BUYER_CATEGORIES: dict[str, tuple[str, ...]] = {
     "eva_foam": (
-        "EVA recycler",
-        "foam granulator",
-        "rubber/plastic compounder",
-        "recycled EVA manufacturer",
-        "industrial scrap trader",
+        "EVA recycler", "foam granulator", "rubber/plastic compounder",
+        "recycled EVA manufacturer", "industrial scrap trader",
     ),
     "rubber": (
-        "rubber recycler",
-        "crumb rubber processor",
-        "rubber compounder",
+        "rubber recycler", "crumb rubber processor", "rubber compounder",
         "industrial scrap trader",
     ),
     "pvc_pu": (
-        "PVC recycler",
-        "PU recycler",
-        "polymer compounder",
-        "synthetic leather recycler",
-        "industrial scrap trader",
+        "PVC recycler", "PU recycler", "polymer compounder",
+        "synthetic leather recycler", "industrial scrap trader",
     ),
     "textile_mesh": (
-        "textile recycler",
-        "fiber recycler",
-        "nonwoven manufacturer",
-        "polyester fiber processor",
-        "industrial textile waste trader",
+        "textile recycler", "fiber recycler", "nonwoven manufacturer",
+        "polyester fiber processor", "industrial textile waste trader",
     ),
     "sole_upper_mixed": (
-        "footwear component recycler",
-        "mixed-material recycler",
+        "footwear component recycler", "mixed-material recycler",
         "industrial scrap trader",
     ),
     "cardboard": (
-        "paper recycler",
-        "cardboard recycler",
-        "packaging waste trader",
+        "paper recycler", "cardboard recycler", "packaging waste trader",
     ),
     "plastic_film": (
-        "LDPE film recycler",
-        "plastic film recycler",
-        "plastic waste trader",
+        "LDPE film recycler", "plastic film recycler", "plastic waste trader",
     ),
     "finished_defect": (
-        "secondary footwear materials buyer",
-        "rework/parts buyer",
+        "secondary footwear materials buyer", "rework/parts buyer",
         "authorized destruction/recycling operator",
     ),
 }
 
 
 def normalize_material(value: str) -> str:
-    clean = " ".join(value.lower().replace("_", " ").replace("-", " ").split())
+    clean = (
+        " ".join(
+            value.lower()
+            .replace("_", " ")
+            .replace("-", " ")
+            .replace("/", " ")
+            .split()
+        )
+    )
     for canonical, aliases in MATERIAL_ALIASES.items():
-        if clean == canonical.replace("_", " ") or clean in aliases:
+        normalized_aliases = {
+            " ".join(
+                alias.lower()
+                .replace("_", " ")
+                .replace("-", " ")
+                .replace("/", " ")
+                .split()
+            )
+            for alias in aliases
+        }
+        if clean == canonical.replace("_", " ") or clean in normalized_aliases:
             return canonical
     return clean
 
