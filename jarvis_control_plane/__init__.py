@@ -9,6 +9,8 @@ It wraps existing systems (MBM/GLM/*, MBM/LeadEngine/*, server/dialer/*)
 and creates no competing sources of truth.
 """
 
+from .agent_identity import AgentIdentity, AgentIdentityRegistry, IdentityDenied, require_identity
+from .lifecycle import ExecutionReceipt, ExecutionStatus, ToolLifecycleHooks
 from .workflow import (
     WorkflowPhase,
     WorkflowRun,
@@ -43,6 +45,13 @@ from .capabilities import build_capability_bus
 __version__ = "0.1.0"
 
 __all__ = [
+    "AgentIdentity",
+    "AgentIdentityRegistry",
+    "IdentityDenied",
+    "require_identity",
+    "ExecutionReceipt",
+    "ExecutionStatus",
+    "ToolLifecycleHooks",
     "WorkflowPhase",
     "WorkflowRun",
     "InvalidWorkflowTransitionError",
