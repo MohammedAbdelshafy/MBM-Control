@@ -1,4 +1,5 @@
 """Tests for the Jarvis-managed multi-tool fabric."""
+from MBM.GLM.capability_router import jarvis_capability_snapshot, route_capabilities, route_for_intent
 from MBM.GLM.tool_fabric import (
     TOOL_FABRIC,
     provider_contract,
@@ -49,3 +50,22 @@ def test_provider_contract_rejects_unknown_provider():
 def test_outlook_is_approval_gated():
     contract = provider_contract("Microsoft_Outlook_Email")
     assert contract.requires_human_approval
+
+
+def test_jarvis_routes_seo_to_semrush_and_firecrawl():
+    route = route_for_intent("SEO")
+    assert route.providers == ("Semrush", "Firecrawl")
+    selected = route_capabilities("seo_market_intelligence")
+    assert selected[0]["provider"] == "Semrush"
+    assert selected[0]["allowed"] is True
+
+
+def test_mutation_is_not_allowed_on_semrush():
+    selected = route_capabilities("seo_market_intelligence", mutation=True)
+    assert selected[0]["allowed"] is False
+
+
+def test_snapshot_is_actionable():
+    snapshot = jarvis_capability_snapshot()
+    assert snapshot["controller"] == "Jarvis_GLM_orchestrator"
+    assert snapshot["route_count"] >= 8
