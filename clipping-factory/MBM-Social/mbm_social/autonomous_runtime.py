@@ -28,6 +28,9 @@ from . import model_registry as mr
 
 BACKEND = Path(__file__).resolve().parent.parent.parent / "backend"
 ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = ROOT.parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 
 def _ensure_backend_on_path():
