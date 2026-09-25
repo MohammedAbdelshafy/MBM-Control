@@ -32,7 +32,12 @@ async def crawl_markdown(url: str) -> CrawlOutput:
     async with AsyncWebCrawler() as crawler:
         result = await crawler.arun(url=safe_url)
 
-    markdown = getattr(result, "markdown", "") or ""
+    markdown_obj = getattr(result, "markdown", "")
+    if hasattr(markdown_obj, "fit_markdown"):
+        markdown = markdown_obj.fit_markdown or markdown_obj.raw_markdown or ""
+    else:
+        markdown = str(markdown_obj or "")
+
     return CrawlOutput(
         source_url=safe_url,
         markdown=wrap_untrusted_content(safe_url, markdown),
