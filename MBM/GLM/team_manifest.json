@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "team_name": "MBM GLM Intelligence Team",
+  "authority": "Jarvis_GL_M_orchestrator",
+  "operating_mode": "revenue_first_safe_parallel",
+  "rules": {
+    "authoritative_writes": false,
+    "jarvis_approval_required": true,
+    "single_writer_required_for_dialer": true,
+    "external_content_untrusted": true,
+    "browser_read_only_until_approval": true
+  },
+  "specialists": [
+    "GLM_ORCHESTRATOR",
+    "GLM_ARCHITECT",
+    "GLM_RESEARCH_AGENT",
+    "GLM_INTEGRATION_ENGINEER",
+    "GLM_GTM_ENGINEER",
+    "GLM_MONETIZATION_ENGINEER",
+    "GLM_DIALER_ENGINEER",
+    "GLM_SOCIAL_ENGINEER",
+    "GLM_DATA_ENGINEER",
+    "GLM_SECURITY_ENGINEER",
+    "GLM_RELIABILITY_ENGINEER",
+    "GLM_CODE_REVIEWER",
+    "GLM_TEST_ENGINEER",
+    "GLM_QA_AGENT"
+  ],
+  "github_memory": [
+    "langchain-ai/langgraph",
+    "google/adk-python",
+    "microsoft/playwright",
+    "unclecode/crawl4ai",
+    "triggerdotdev/trigger.dev",
+    "obra/superpowers",
+    "langchain-ai/open_deep_research",
+    "crewAIInc/crewAI",
+    "mastra-ai/mastra",
+    "browserbase/stagehand"
+  ],
+  "execution_loop": [
+    "discover",
+    "decompose",
+    "parallel_specialist_analysis",
+    "reconcile",
+    "security_and_integrity_gate",
+    "test",
+    "jarvis_approval",
+    "single_writer_commit",
+    "measure_revenue"
+  ]
+}
