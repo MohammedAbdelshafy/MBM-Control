@@ -81,7 +81,7 @@ def route_for_intent(intent: str) -> CapabilityRoute:
         "traffic": "seo_market_intelligence",
         "competitors": "seo_market_intelligence",
         "lead_gen": "prospecting",
-        "leads": "prospecting",
+        "leads": "prospecting",\n        "owners": "real_estate_owner_prospecting",\n        "decision_makers": "real_estate_owner_prospecting",\n        "real_estate": "real_estate_owner_prospecting",\n        "owner_prospecting": "real_estate_owner_prospecting",
         "research": "web_research",
         "web": "web_research",
         "code": "repository_engineering",
