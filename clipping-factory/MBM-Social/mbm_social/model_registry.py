@@ -153,7 +153,12 @@ def _gpt_oss_generate(
                if os.getenv("GPT_OSS_API_KEY") else {}),
         },
     )
-    with urllib.request.urlopendef generate(
+    with urllib.request.urlopen(req, timeout=180) as r:
+        data = json.load(r)
+    return (data.get("choices", [{}])[0].get("message", {}).get("content") or "").strip() or None
+
+
+def generate(
     prompt: str,
     task: str = "strategy",
     system: Optional[str] = None,

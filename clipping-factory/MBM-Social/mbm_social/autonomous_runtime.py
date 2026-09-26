@@ -28,6 +28,9 @@ from . import model_registry as mr
 
 BACKEND = Path(__file__).resolve().parent.parent.parent / "backend"
 ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = ROOT.parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 
 def _ensure_backend_on_path():
@@ -99,10 +102,32 @@ def stage_source_discovery(campaign_id: str, profile: dict, db, brand: Optional[
             brand_cfg = bc.load_brand("clippingfactorymbm")
 
     sources = brand_cfg.get("sources", {}).get("long_form_sources", [])
+
+    # Optional GitHub-adopted web intelligence. It is deliberately disabled by
+    # default and only returns untrusted metadata to the campaign planner.
+    web_intel = {"enabled": False}
+    if os.getenv("MBM_CRAWL4AI_ENABLED", "false").lower() == "true" and sources:
+        try:
+            import asyncio
+            from MBM.GLM.github_runtime_bridge import crawl_public_markdown
+
+            source_url = str(sources[0].get("value", "")) if isinstance(sources[0], dict) else str(sources[0])
+            if source_url.startswith(("http://", "https://")):
+                result = asyncio.run(crawl_public_markdown(source_url))
+                web_intel = {
+                    "enabled": True,
+                    "source_url": result.source_url,
+                    "content_chars": len(result.markdown),
+                    "trusted_instructions": result.trusted_instructions,
+                }
+        except Exception as exc:
+            web_intel = {"enabled": True, "error": str(exc)}
+
     return {
         "sources_found": len(sources),
         "sources": sources,
         "profile": profile.get("description", ""),
+        "web_intelligence": web_intel,
     }
 
 
