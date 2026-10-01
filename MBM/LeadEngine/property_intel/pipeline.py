@@ -29,6 +29,7 @@ from .county_registry import route_property
 from .normalize import dedupe_records, normalize_record
 from .ownership_verifier import apply_verification, verify_ownership
 from .scoring import score_callability, score_property
+from MBM.GLM.github_runtime_bridge import capability_status
 
 BASE = Path(__file__).resolve().parent
 ARTIFACTS = BASE / "artifacts"
@@ -125,6 +126,7 @@ def run_pipeline(source: Path, verify_live: bool = False, history: Optional[Path
 
     report = _report(steps, ranked, history_rows)
     report["inputs"] = {"source": str(source), "verify_live": verify_live, "limit": limit}
+    report["runtime_capabilities"] = capability_status()
 
     if apply:
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")

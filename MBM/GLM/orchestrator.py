@@ -36,6 +36,7 @@ from MBM.GLM.revenue_and_gtm_agents import (
 )
 from MBM.GLM.delivery_report import get_delivery_reporter
 from MBM.GLM.glm_integration_worker import get_glm_worker, GLMWorker, GLMRecommendation
+from MBM.GLM.github_runtime_bridge import capability_status, playwright_command
 
 import os as _os
 _TOP25_ROOT = Path(_os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
@@ -59,6 +60,14 @@ class GLMOrchestrator:
         self.dialer_agent = DialerEngineerAgent()
         self.monetization_agent = MonetizationEngineerAgent()
         self.revenue_analyst = RevenueAnalystAgent()
+
+    def github_runtime_status(self) -> Dict[str, Any]:
+        """Expose optional GitHub-adopted runtimes without granting write authority."""
+        return capability_status()
+
+    def github_browser_command(self) -> List[str]:
+        """Return the pinned Playwright MCP command for approved workers."""
+        return playwright_command()
 
     def classify_lead_niche(self, lead_data: Dict[str, Any]) -> GLMRecommendation:
         """Advisory classification of incoming lead into canonical 9-niche taxonomy."""
