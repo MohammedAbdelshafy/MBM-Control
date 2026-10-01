@@ -36,6 +36,9 @@ from MBM.GLM.revenue_and_gtm_agents import (
 )
 from MBM.GLM.delivery_report import get_delivery_reporter
 from MBM.GLM.glm_integration_worker import get_glm_worker, GLMWorker, GLMRecommendation
+from MBM.GLM.github_runtime_bridge import capability_status, playwright_command
+from MBM.GLM.intelligence_team import build_team_plan, rank_team_missions
+from MBM.GLM.github_repo_intelligence import repo_intelligence_snapshot
 
 import os as _os
 _TOP25_ROOT = Path(_os.getenv("MBM_ARTIFACTS_ROOT") or str(ROOT_DIR / "MBM" / "Artifacts"))
@@ -59,6 +62,26 @@ class GLMOrchestrator:
         self.dialer_agent = DialerEngineerAgent()
         self.monetization_agent = MonetizationEngineerAgent()
         self.revenue_analyst = RevenueAnalystAgent()
+
+    def github_runtime_status(self) -> Dict[str, Any]:
+        """Expose optional GitHub-adopted runtimes without granting write authority."""
+        return capability_status()
+
+    def github_browser_command(self) -> List[str]:
+        """Return the pinned Playwright MCP command for approved workers."""
+        return playwright_command()
+
+    def intelligence_team_plan(self, objective: str) -> Dict[str, Any]:
+        """Return the selected GLM specialist team and guarded runtime hints."""
+        return build_team_plan(objective).__dict__
+
+    def github_repo_intelligence(self) -> Dict[str, Any]:
+        """Return curated GitHub pattern memory used by the GLM team."""
+        return repo_intelligence_snapshot()
+
+    def rank_team_missions(self, missions: List[EngineeringMission]) -> List[EngineeringMission]:
+        """Rank missions using the canonical revenue-aware mission router."""
+        return rank_team_missions(missions)
 
     def classify_lead_niche(self, lead_data: Dict[str, Any]) -> GLMRecommendation:
         """Advisory classification of incoming lead into canonical 9-niche taxonomy."""
