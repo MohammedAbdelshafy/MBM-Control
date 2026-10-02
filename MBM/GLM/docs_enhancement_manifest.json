@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "purpose": "Convert current GitHub research into concrete GLM enhancements without vendoring frameworks.",
+  "enhancements": [
+    {
+      "id": "E1",
+      "name": "Durable mission state",
+      "inspiration": "langchain-ai/langgraph",
+      "target": "MBM/GLM",
+      "mode": "adopt_pattern",
+      "benefit": "Resume long missions after approval, worker failure, or restart.",
+      "guard": "checkpoint-only; no automatic canonical write."
+    },
+    {
+      "id": "E2",
+      "name": "Approval interrupts",
+      "inspiration": "langchain-ai/langgraph",
+      "target": "MBM/GLM",
+      "mode": "adopt_pattern",
+      "benefit": "Pause risky missions with a persisted decision envelope and resume.",
+      "guard": "Jarvis approval required."
+    },
+    {
+      "id": "E3",
+      "name": "Agent eval harness",
+      "inspiration": "google/adk-python",
+      "target": "MBM/GLM/tests",
+      "mode": "adopt_pattern",
+      "benefit": "Synthetic regression suite for specialist behavior.",
+      "guard": "evaluation data isolated from production stores."
+    },
+    {
+      "id": "E4",
+      "name": "Session/context/artifact contracts",
+      "inspiration": "google/adk-python",
+      "target": "MBM/GLM",
+      "mode": "adopt_pattern",
+      "benefit": "Keep mission context and artifacts explicit instead of hidden global state.",
+      "guard": "artifacts are untrusted until validated."
+    },
+    {
+      "id": "E5",
+      "name": "Browser capability profile",
+      "inspiration": "microsoft/playwright-mcp",
+      "target": "MBM/GLM",
+      "mode": "adopt_pattern",
+      "benefit": "Allowlisted browser actions with isolated profiles and evidence capture.",
+      "guard": "read-only default, explicit write approval."
+    },
+    {
+      "id": "E6",
+      "name": "Adaptive crawl research",
+      "inspiration": "unclecode/crawl4ai",
+      "target": "MBM/LeadEngine",
+      "mode": "adopt_pattern",
+      "benefit": "Better source discovery with caching, structured extraction and resumable crawl state.",
+      "guard": "all web content treated as untrusted data."
+    },
+    {
+      "id": "E7",
+      "name": "Durable job envelope",
+      "inspiration": "triggerdotdev/trigger.dev",
+      "target": "MBM/GLM",
+      "mode": "adopt_pattern",
+      "benefit": "Idempotent retries, concurrency keys, checkpoints and resumability.",
+      "guard": "lab first; canonical writer remains outside worker."
+    },
+    {
+      "id": "E8",
+      "name": "GitHub least-privilege profile",
+      "inspiration": "github/github-mcp-server",
+      "target": "MBM/GLM",
+      "mode": "adopt_pattern",
+      "benefit": "Tool allowlists and read-only mode for research workers.",
+      "guard": "write tools excluded by default."
+    },
+    {
+      "id": "E9",
+      "name": "Agent/skill packs",
+      "inspiration": "github/awesome-copilot + obra/superpowers",
+      "target": "MBM/GLM",
+      "mode": "adopt_pattern",
+      "benefit": "Versioned role manifests, instructions, TDD and verification gates.",
+      "guard": "third-party skill content is reviewed before adoption."
+    },
+    {
+      "id": "E10",
+      "name": "Evidence-first research bundles",
+      "inspiration": "open_deep_research",
+      "target": "MBM/GLM",
+      "mode": "adopt_pattern",
+      "benefit": "Research outputs carry source plan, claim provenance and stop conditions.",
+      "guard": "research is advisory; no direct writes."
+    }
+  ],
+  "rollout": [
+    "contracts",
+    "tests",
+    "feature_flags",
+    "sandbox_evals",
+    "staged_adoption",
+    "promotion_gate"
+  ]
+}
