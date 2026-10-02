@@ -1,0 +1,5 @@
+# CI-only dependencies for the JARVIS control-plane test suite.
+pytest>=8,<9
+pydantic>=2,<3
+requests>=2,<3
+python-dotenv>=1,<2

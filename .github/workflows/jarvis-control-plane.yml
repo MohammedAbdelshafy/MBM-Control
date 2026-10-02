@@ -1,0 +1,65 @@
+name: JARVIS Control Plane Python Tests
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'jarvis_control_plane/**'
+      - 'MBM/GLM/**'
+      - '.github/workflows/jarvis-control-plane.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jarvis-control-plane-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: jarvis_control_plane/requirements-ci.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r jarvis_control_plane/requirements-ci.txt
+
+      - name: Verify dependency consistency
+        run: python -m pip check
+
+      - name: Compile control-plane Python
+        run: python -m compileall -q jarvis_control_plane
+
+      - name: Run JARVIS control-plane tests
+        run: python -m pytest jarvis_control_plane/tests -q --junitxml=test-results/jarvis-control-plane.xml
+
+      - name: Publish test summary
+        if: always()
+        run: |
+          echo "## JARVIS Control Plane" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Python: 3.11" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Dependency check: completed" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Bytecode compile: completed" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Pytest result: ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jarvis-control-plane-test-results
+          path: test-results/jarvis-control-plane.xml
+          if-no-files-found: warn
