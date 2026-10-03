@@ -4,7 +4,7 @@
 - Google the address to see what it looks like
 - Know: appraised value, lien amount, equity, auction date
 - Have your buyer ready (AMBITION, ELLIS, All Wholesale, etc.)
-- Have the assignment contract ready (see template)
+- Have the assignment contract ready (see `../LeadEngine/contracts/` for the assignment agreement form)
 
 ---
 
