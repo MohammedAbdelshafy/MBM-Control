@@ -1,3 +1,7 @@
+# LEGACY NON-PRODUCTION — DO NOT USE FOR CANONICAL DATA (archived 2026-10-04)
+# pack_exporter — FABRICATION: invents $999 'Industrial Plastic Scrap' pack + pads missing fields with fictional defaults (555 numbers, fake emails/prices).
+# Quarantined: fabricates data in violation of the repo no-fabrication rule. Preserved for evidence.
+
 """
 MBM Lead Pack Exporter — Past Runs Monetization
 ================================================
