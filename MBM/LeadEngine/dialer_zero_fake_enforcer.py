@@ -10,7 +10,8 @@ Only leads with BOTH a name and phone survive.
 import json, re, sys
 from pathlib import Path
 
-DB = Path(r"C:\Users\omare\OneDrive\Desktop\AI\mbm-dialer\app\public\leads_database.json")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DB = REPO_ROOT / "mbm-dialer" / "app" / "public" / "leads_database.json"
 
 FAKE_NAME_MARKERS = [
     "Action_Required", "Skip_Trace", "Unknown", "N/A", "Distressed Seller",

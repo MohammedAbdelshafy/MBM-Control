@@ -72,7 +72,7 @@ def bridge_call(my_mobile_number, prospect_number, simulate=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bridge call to mobile phone")
     parser.add_argument("--my-phone", required=True, help="Your personal cell phone number e.g. +1234567890")
-    parser.add_argument("--prospect", default="+16025551312", help="Prospect phone number")
+    parser.add_argument("--prospect", required=True, help="Prospect phone number (no default — never dial a placeholder)")
     parser.add_argument("--simulate", action="store_true", help="Simulate call bridge workflow without placing live call")
     args = parser.parse_args()
 

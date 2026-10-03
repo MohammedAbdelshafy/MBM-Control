@@ -43,9 +43,20 @@ def blast_whatsapp_messages():
     print(f"[PHOUND BLASTER] PREPARING FROM MY NUMBER ({MY_PHONE_NUMBER})")
     print("============================================================")
 
+    # No-fabrication rule: 555 numbers are fictional placeholders, never real targets.
+    targets = []
+    for t in TARGET_NUMBERS:
+        if "555" in t["phone"]:
+            print(f"  [SKIP] {t['name']} ({t['phone']}) — 555 placeholder, not a real number")
+            continue
+        targets.append(t)
+    if not targets:
+        print("[ABORT] No real targets — replace the 555 placeholders in TARGET_NUMBERS first.")
+        return
+
     dispatched = []
 
-    for idx, target in enumerate(TARGET_NUMBERS, 1):
+    for idx, target in enumerate(targets, 1):
         if target["offer_type"] == "wholesale":
             msg_body = (
                 f"Hi {target['name']},\n\n"
@@ -66,7 +77,7 @@ def blast_whatsapp_messages():
             )
 
         prefill = f"https://web.phound.app/?phone={target['phone']}"
-        print(f"\n[{idx}/{len(TARGET_NUMBERS)}] Preparing Phound message for {target['name']} ({target['phone']})...")
+        print(f"\n[{idx}/{len(targets)}] Preparing Phound message for {target['name']} ({target['phone']})...")
 
         record = {
             "target": target["name"],

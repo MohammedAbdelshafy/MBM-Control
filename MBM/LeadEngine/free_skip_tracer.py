@@ -229,39 +229,6 @@ class FreeSkipTracer:
 
     # ─── SOURCE 4: OpenPeopleSearch ───
 
-    def _search_openpeoplesearch(self, name, address=None):
-        """Scrape OpenPeopleSearch.org for phone + email."""
-        results = []
-        try:
-            name_clean = clean_name(name)
-            query = urllib.parse.quote_plus(name_clean)
-            url = f"https://openpeoplesearch.org/search?name={query}"
-
-            resp = self.session.get(url, timeout=10)
-            if resp.status_code == 200:
-                soup = BeautifulSoup(resp.text, 'html.parser')
-
-                for phone_el in soup.select('.phone, .result-phone, a[href^="tel:"]'):
-                    phone = phone_el.get_text(strip=True) or phone_el.get('href', '').replace('tel:', '')
-                    extracted = extract_phones(phone)
-                    results.extend([(p, "openpeoplesearch") for p in extracted])
-
-                for email_el in soup.select('.email, .result-email, a[href^="mailto:"]'):
-                    email = email_el.get_text(strip=True) or email_el.get('href', '').replace('mailto:', '').split('?')[0]
-                    extracted = extract_emails(email)
-                    results.extend([(e, "openpeoplesearch") for e in extracted])
-
-                full_text = soup.get_text()
-                for p in extract_phones(full_text):
-                    results.append((p, "openpeoplesearch"))
-                for e in extract_emails(full_text):
-                    results.append((e, "openpeoplesearch"))
-
-                log(f"OpenPeopleSearch: found {len(results)} items for '{name_clean}'")
-        except Exception as ex:
-            log(f"OpenPeopleSearch error: {ex}")
-        return results
-
     # ─── SOURCE 5: FastPeopleSearch (improved) ───
 
     def _search_fastpeoplesearch(self, name=None, address=None):
@@ -388,41 +355,6 @@ class FreeSkipTracer:
         return results
 
     # ─── SOURCE 7: USPhonebook ───
-
-    def _search_usphonebook(self, name=None, phone=None):
-        """Search USPhonebook.com for contact info."""
-        results = []
-        try:
-            if phone:
-                digits = re.sub(r'\D', '', phone)
-                if len(digits) >= 10:
-                    url = f"https://www.usphonebook.com/{digits[-10:]}"
-                    resp = self.session.get(url, timeout=10)
-                    if resp.status_code == 200:
-                        soup = BeautifulSoup(resp.text, 'html.parser')
-                        full_text = soup.get_text()
-                        for e in extract_emails(full_text):
-                            results.append((e, "usphonebook"))
-                        for p in extract_phones(full_text):
-                            results.append((p, "usphonebook"))
-
-            if name and not results:
-                name_clean = clean_name(name)
-                query = urllib.parse.quote_plus(name_clean)
-                url = f"https://www.usphonebook.com/search/?type=person&query={query}"
-                resp = self.session.get(url, timeout=10)
-                if resp.status_code == 200:
-                    soup = BeautifulSoup(resp.text, 'html.parser')
-                    full_text = soup.get_text()
-                    for p in extract_phones(full_text):
-                        results.append((p, "usphonebook"))
-                    for e in extract_emails(full_text):
-                        results.append((e, "usphonebook"))
-
-            log(f"USPhonebook: found {len(results)} items")
-        except Exception as ex:
-            log(f"USPhonebook error: {ex}")
-        return results
 
     # ─── PUBLIC API ───
 

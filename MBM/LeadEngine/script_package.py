@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-BASE_DIR = Path(r'C:\Users\omare\OneDrive\Desktop\AI\MBM')
+BASE_DIR = Path(__file__).resolve().parents[2] / "MBM"
 
 # ══════════════════════════════════════════════════════════════
 # COLD CALL SCRIPTS FOR PIPELINE DEALS
@@ -411,6 +411,9 @@ if __name__ == '__main__':
         f.write(html)
     print(f"Script package created: {html_file}")
     
-    # Open in browser
-    import subprocess
-    subprocess.Popen(['start', str(html_file)], shell=True)
+    # Open in browser (Windows only — 'start' does not exist on Linux/macOS)
+    import subprocess, sys
+    if sys.platform == "win32":
+        subprocess.Popen(['start', str(html_file)], shell=True)
+    else:
+        print(f"Open manually: {html_file}")

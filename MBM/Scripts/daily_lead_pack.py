@@ -13,9 +13,9 @@ import csv
 import json
 import urllib.request
 import urllib.parse
-import ssl
 import smtplib
 import sys
+import argparse
 from datetime import datetime, timedelta
 from pathlib import Path
 from email.mime.multipart import MIMEMultipart
@@ -23,17 +23,17 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-ssl._create_default_https_context = ssl._create_unverified_context
+# Repo-relative paths (was a hardcoded Windows OneDrive path).
+REPO_ROOT = Path(__file__).resolve().parents[2]
+MBM_ROOT = REPO_ROOT / "MBM"
+ARTIFACTS = MBM_ROOT / "Artifacts"
+PACKS_DIR = MBM_ROOT / "LeadPacks"
+LOGS_DIR = MBM_ROOT / "Logs"
+CONTACTS_DIR = MBM_ROOT / "Contacts"
 
-MBM_ROOT = r"C:\Users\omare\OneDrive\Desktop\AI\MBM"
-ARTIFACTS = os.path.join(MBM_ROOT, "Artifacts")
-PACKS_DIR = os.path.join(MBM_ROOT, "LeadPacks")
-LOGS_DIR = os.path.join(MBM_ROOT, "Logs")
-CONTACTS_DIR = os.path.join(MBM_ROOT, "Contacts")
-
-os.makedirs(PACKS_DIR, exist_ok=True)
-os.makedirs(LOGS_DIR, exist_ok=True)
-os.makedirs(CONTACTS_DIR, exist_ok=True)
+PACKS_DIR.mkdir(parents=True, exist_ok=True)
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+CONTACTS_DIR.mkdir(parents=True, exist_ok=True)
 
 TODAY = datetime.now().strftime('%Y-%m-%d')
 
@@ -41,7 +41,7 @@ TODAY = datetime.now().strftime('%Y-%m-%d')
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 EMAIL_ADDRESS = os.environ.get("SMTP_USER", "abdelshafyclapps@gmail.com")
-EMAIL_PASSWORD = os.environ.get("SMTP_PASS", "")
+EMAIL_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "")
 
 # Seller pack pricing
 PRICING = {
@@ -232,6 +232,9 @@ def pull_web_directory_leads():
 
 def send_seller_pack(distressed, contacts, pack_dir):
     """Send seller lead pack to wholesaler contacts."""
+    if not EMAIL_PASSWORD:
+        print("\n[EMAIL] SKIPPED — GMAIL_APP_PASSWORD is not set; pack built but not emailed.")
+        return 0
     print("\n[EMAIL] Sending seller packs to wholesalers...")
     
     if not distressed:
@@ -321,11 +324,17 @@ abdelshafyclapps@gmail.com
     print(f"  Sent {sent}/{len(contacts)} emails")
     return sent
 
-def generate_lead_pack():
-    """Generate today's lead pack."""
+def generate_lead_pack(send_email=False):
+    """Generate today's lead pack.
+
+    send_email=False (default): build the pack only, never email.
+    Pass send_email=True (CLI: --send) to email it to wholesaler contacts.
+    """
     print(f"{'='*60}")
     print(f"MBM DAILY LEAD PACK GENERATOR")
     print(f"Date: {TODAY}")
+    if not send_email:
+        print("Mode: BUILD ONLY (pass --send to email the pack)")
     print(f"{'='*60}")
     
     all_leads = []
@@ -438,19 +447,28 @@ def generate_lead_pack():
         manifest['files']['enhanced_report'] = ppt_report
         print(f"  - {os.path.basename(ppt_report)} (ENHANCED)")
     
-    send_seller_pack(distressed, contacts, pack_dir)
-    
+    if send_email:
+        send_seller_pack(distressed, contacts, pack_dir)
+    else:
+        print("\n[EMAIL] Not sent (build-only mode). Re-run with --send to email.")
+
     return pack_dir, manifest
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser(description="MBM Daily Lead Pack Generator")
+    ap.add_argument("--send", action="store_true",
+                    help="email the built pack to wholesaler contacts (default: build only)")
+    ap.add_argument("command", nargs="?", help="'add' to register a contact")
+    ap.add_argument("company", nargs="?")
+    ap.add_argument("email", nargs="?")
+    ap.add_argument("phone", nargs="?", default="")
+    args = ap.parse_args()
+
     # Check for add contact command
-    if len(sys.argv) > 1 and sys.argv[1] == "add":
-        if len(sys.argv) >= 4:
-            company = sys.argv[2]
-            email = sys.argv[3]
-            phone = sys.argv[4] if len(sys.argv) > 4 else ""
-            add_contact(company, email, phone)
+    if args.command == "add":
+        if args.company and args.email:
+            add_contact(args.company, args.email, args.phone)
         else:
             print("Usage: python daily_lead_pack.py add <company> <email> [phone]")
     else:
-        generate_lead_pack()
+        generate_lead_pack(send_email=args.send)

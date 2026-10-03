@@ -35,7 +35,8 @@ except Exception as e:
     print(f"[WARN] Single-writer gateway unavailable ({e}); using direct write fallback.")
     _writer = None
 
-DB_PATH = Path(r"C:\Users\omare\OneDrive\Desktop\AI\mbm-dialer\app\public\leads_database.json")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DB_PATH = REPO_ROOT / "mbm-dialer" / "app" / "public" / "leads_database.json"
 RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "").strip()
 SKIP_TRACE_URL = "https://skip-tracing-working-api.p.rapidapi.com/search"
 SKIP_TRACE_HEADERS = {
