@@ -1,0 +1,73 @@
+[
+  {
+    "material": "EVA foam",
+    "kg_per_month": 0,
+    "form": "offcuts",
+    "grade": "",
+    "contamination": "",
+    "geography": "Egypt",
+    "current_disposition": "",
+    "asking_price_egp_per_kg": null,
+    "available_from": null,
+    "evidence": []
+  },
+  {
+    "material": "rubber",
+    "kg_per_month": 0,
+    "form": "scrap",
+    "grade": "",
+    "contamination": "",
+    "geography": "Egypt",
+    "current_disposition": "",
+    "asking_price_egp_per_kg": null,
+    "available_from": null,
+    "evidence": []
+  },
+  {
+    "material": "PVC/PU",
+    "kg_per_month": 0,
+    "form": "scrap",
+    "grade": "",
+    "contamination": "",
+    "geography": "Egypt",
+    "current_disposition": "",
+    "asking_price_egp_per_kg": null,
+    "evidence": []
+  },
+  {
+    "material": "textile/mesh",
+    "kg_per_month": 0,
+    "form": "offcuts",
+    "grade": "",
+    "contamination": "",
+    "geography": "Egypt",
+    "current_disposition": "",
+    "asking_price_egp_per_kg": null,
+    "available_from": null,
+    "evidence": []
+  },
+  {
+    "material": "cardboard",
+    "kg_per_month": 0,
+    "form": "baled",
+    "grade": "",
+    "contamination": "",
+    "geography": "Egypt",
+    "current_disposition": "",
+    "asking_price_egp_per_kg": null,
+    "available_from": null,
+    "evidence": []
+  },
+  {
+    "material": "plastic film",
+    "kg_per_month": 0,
+    "form": "baled",
+    "grade": "",
+    "contamination": "",
+    "geography": "Egypt",
+    "current_disposition": "",
+    "asking_price_egp_per_kg": null,
+    "available_from": null,
+    "evidence": []
+  }
+]
