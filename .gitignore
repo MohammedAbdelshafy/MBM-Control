@@ -164,6 +164,9 @@ MBM/LeadEngine/logs/*.csv
 MBM/LeadEngine/tonight_real_estate_call_queue.json
 MBM/LeadEngine/tonight_real_estate_call_queue.csv
 MBM/LeadEngine/tonight_real_estate_call_queue.md
+# Generated SMS cockpit — embeds live lead PII; regenerates on every blaster run
+MBM/Phound/phound_sms_cockpit.html
+MBM/Phound/campaigns/
 MBM/LeadEngine/cold_calling_queue.json
 MBM/LeadEngine/us_re_dialer_queue.json
 MBM/LeadEngine/enriched_global_leads.json
