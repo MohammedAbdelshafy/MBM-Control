@@ -1,0 +1,246 @@
+{
+  "name": "WhatsApp AI Front Desk",
+  "nodes": [
+    {
+      "id": "a1",
+      "name": "WhatsApp Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "httpMethod": "GET,POST",
+        "path": "whatsapp-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "b1",
+      "name": "Is Verify Challenge?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.query['hub.mode'] }}",
+              "operation": "equal",
+              "value2": "subscribe"
+            },
+            {
+              "value1": "={{ $json.query['hub.verify_token'] }}",
+              "operation": "equal",
+              "value2": "={{ $env.VERIFY_TOKEN }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "c1",
+      "name": "Echo Challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        680,
+        200
+      ],
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "name": "Extract Sender + Text",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        680,
+        420
+      ],
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "sender",
+              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].from }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].text.body }}"
+            },
+            {
+              "name": "message_id",
+              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].id }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "d1",
+      "name": "Front Desk Brain",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        900,
+        420
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are the AI front desk for a services business. Qualify the visitor: collect name, service needed, urgency. Answer simple FAQs (hours, pricing ranges, location). If the user asks for a human, says 'call me', or you cannot understand them twice, reply with exactly: ESCALATE:<reason>. Keep replies under 40 words, friendly tone."
+            },
+            {
+              "role": "user",
+              "content": "={{ $('Extract Sender + Text').item.json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e1",
+      "name": "Reply via WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        420
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $env.PHONE_NUMBER_ID }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.WHATSAPP_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"messaging_product\":\"whatsapp\",\"to\":\"{{ $('Extract Sender + Text').item.json.sender }}\",\"type\":\"text\",\"text\":{\"body\":\"{{ $json.choices[0].message.content }}\"}}",
+        "options": {}
+      }
+    },
+    {
+      "id": "f1",
+      "name": "Ack 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        420
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"ok\": true}",
+        "options": {}
+      }
+    },
+    {
+      "id": "s1",
+      "name": "Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        80
+      ],
+      "parameters": {
+        "content": "## WhatsApp AI Front Desk (n8n)\n1. **WhatsApp Webhook** \u2014 Meta calls GET (verify) and POST (messages).\n2. **Is Verify Challenge?** \u2014 hub.mode=subscribe + verify token match -> Echo Challenge (returns hub.challenge verbatim).\n3. **Extract Sender + Text** \u2014 pulls from/text/id from entry[0].changes[0].value.messages[0].\n4. **Front Desk Brain** \u2014 OpenAI chat with the front-desk system prompt.\n5. **Reply via WhatsApp** \u2014 HTTP POST to graph.facebook.com/v21.0/<phone_number_id>/messages.\n\n### Credentials plug-in (env vars, never in the workflow)\n- VERIFY_TOKEN -> env on the n8n host (compared in the IF node).\n- WHATSAPP_TOKEN -> n8n HTTP Header Auth: Authorization: Bearer <token>.\n- PHONE_NUMBER_ID -> env var used in the Reply URL.\n- OpenAI -> the n8n OpenAI credential on the Front Desk Brain node.\nKeep the workflow in Test mode while trialling; activate for production."
+      }
+    }
+  ],
+  "connections": {
+    "WhatsApp Webhook": {
+      "main": [
+        [
+          {
+            "node": "Is Verify Challenge?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Verify Challenge?": {
+      "main": [
+        [
+          {
+            "node": "Echo Challenge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract Sender + Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Sender + Text": {
+      "main": [
+        [
+          {
+            "node": "Front Desk Brain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Front Desk Brain": {
+      "main": [
+        [
+          {
+            "node": "Reply via WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply via WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Ack 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

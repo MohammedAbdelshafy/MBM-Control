@@ -1,0 +1,18 @@
+# swarm.models.yaml — example routing table: task_type -> NVIDIA NIM model id
+# Drop into the MBM-Control swarm config. Every id below was verified present
+# in the live GET /v1/models response saved 2026-10-04 (81 models).
+provider:
+  name: nvidia-nim
+  base_url: https://integrate.api.nvidia.com/v1
+  api_key_env: NVIDIA_API_KEY
+  protocol: openai-compatible
+routing:
+  coding: mistralai/codestral-22b-instruct-v0.1
+  chat: mistralai/mistral-large-2-instruct
+  vision: meta/llama-3.2-11b-vision-instruct
+  reasoning: nvidia/nemotron-3-nano-omni-30b-a3b-reasoning
+  # embeddings: not routed on the free tier in this build
+defaults:
+  task_type: chat
+  temperature: 0.7
+  max_tokens: 1024
