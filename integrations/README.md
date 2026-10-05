@@ -8,5 +8,6 @@ Branch: `night-shift/vibefounder-powers` (never merged to master without founder
 | NVIDIA NIM free-tier routing (81 models, one key) | `integrations/nvidia-nim/` | Built + tested keyless; live chat needs `NVIDIA_API_KEY` from build.nvidia.com |
 | Kapso CLI WhatsApp agent (AI Front Desk channel) | `integrations/kapso-whatsapp/` | CLI verified (v0.19.0), doctor green; number provisioning needs founder `kapso setup` |
 | WhatsApp support agent on n8n stack (AI Front Desk ref impl) | `integrations/whatsapp-n8n-frontdesk/` | 28/28 harness tests pass (dry-run); go-live needs Meta app tokens |
+| Higgsfield unified video/image API (ClipOps motion stage + FanForge video lane) | `integrations/higgsfield-video/` | 22/22 hermetic tests pass (dry-run); live generation BLOCKED_ON_KEY (HF_API_KEY_ID/SECRET from console.higgsfield.ai) |
 
 Full build logs, skills and test evidence live under `~/workspace/night-shift/<power>/`.
