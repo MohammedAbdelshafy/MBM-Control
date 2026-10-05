@@ -16,6 +16,7 @@
 !/.gitignore
 !/.hintrc
 !/.npmrc
+!/.gitleaks.toml
 !/README.md
 !/AGENTS.md
 !/docs/
