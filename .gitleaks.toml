@@ -1,6 +1,6 @@
 # Gitleaks config for MBM-Control
 # The Security workflow (.github/workflows/security.yml) runs `gitleaks detect`
-# with fetch-depth: 0, i.e. a FULL-history scan. These allowlist entries cover
+# with fetch-depth: 0, i.e. a FULL-history scan. This allowlist covers
 # categories reviewed on 2026-10-05 (321 findings, zero live production
 # secrets found) so the scan catches NEW real leaks instead of re-failing on
 # fixtures, examples, and generated artifacts forever.
@@ -15,31 +15,23 @@
 #   patterns (18 findings).
 # - .env.example files: placeholders by design (6 findings).
 # - Committed .next/ build output: generated files (6 findings).
+#
+# NOTE: gitleaks allows only ONE top-level [allowlist] table, so all paths
+# live in the single list below.
 
 title = "MBM-Control gitleaks config"
 
 [allowlist]
-description = "Test fixtures use dummy tokens that match secret patterns"
+description = "Known-benign: test fixtures, .env.example placeholders, generated GTM artifacts, .next build output"
 paths = [
+  # test fixtures with dummy tokens
   '''.*/tests?/.*''',
   '''.*\.test\.[jt]sx?''',
   '''.*/test_[^/]*\.py''',
-]
-
-[allowlist]
-description = ".env.example files are placeholders by design"
-paths = [
+  # .env.example placeholders
   '''.*\.env\.example$''',
-]
-
-[allowlist]
-description = "Generated GTM notification artifacts carry internal delivery_key UUIDs, not credentials"
-paths = [
+  # generated GTM notification artifacts (delivery_key UUIDs, not credentials)
   '''MBM/Artifacts/GTM/.*''',
-]
-
-[allowlist]
-description = "Committed build output (.next) is generated, not source"
-paths = [
+  # committed build output
   '''.*/\.next/.*''',
 ]
