@@ -1,0 +1,6 @@
+source: https://github.com/affaan-m/ECC
+pinned_commit: 5cc14d7c3155c7dcd4059c94b89df4b6303b7cd6
+audited: 2026-10-10
+license: MIT (Copyright (c) 2026 Affaan Mustafa)
+note: vendored picks/ are a read-only snapshot at the pinned commit; they do
+      not track upstream. Re-audit before refreshing.
