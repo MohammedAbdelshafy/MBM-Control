@@ -39,7 +39,6 @@ except Exception:
 
 
 os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 BASE_DIR = Path(__file__).parent.resolve()
 MBM_SOCIAL_DIR = BASE_DIR / "MBM-Social"
@@ -158,6 +157,8 @@ def auth_one_brand(slug: str, force: bool = False, code: str | None = None, debu
         print(f"[DEBUG] Brand           : {slug}")
         print(f"[DEBUG] Client ID Suffix: ...{CLIENT_ID[-15:]}")
         print(f"[DEBUG] Scopes          : {SCOPES}")
+
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
     from google_auth_oauthlib.flow import InstalledAppFlow
 
