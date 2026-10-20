@@ -1,0 +1,25 @@
+{
+  "schema_version": "2026-10-03",
+  "publisher": "MBM",
+  "primary_offer": {
+    "id": "dataclean-ai",
+    "name": "DataClean AI",
+    "currency": "USD",
+    "starting_price": 299,
+    "price_type": "indicative fixed-scope founding pilot; quote confirmed before work",
+    "checkout_enabled": false
+  },
+  "products": [
+    "dataclean-ai",
+    "ai-front-desk",
+    "contentops-ai",
+    "webintel-ai",
+    "revenue-recovery-ai",
+    "ai-sales-os",
+    "real-estate-deal-packet",
+    "tender-intelligence",
+    "seo-revenue-auditor",
+    "marketplace-packager"
+  ],
+  "note": "Listing these products is not a claim that all are production hosted or marketplace approved."
+}
