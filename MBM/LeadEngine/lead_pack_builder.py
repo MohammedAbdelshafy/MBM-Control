@@ -108,6 +108,12 @@ def _valid_phone(v) -> str:
     s = str(v or "").strip()
     digits = re.sub(r"\D", "", s)
     if len(digits) >= 10 and len(digits) <= 15:
+        # Reject fictional exchanges (555/000) — mirrors
+        # dialer_verification_gate.BAD_EXCHANGES so 555 numbers can never
+        # pass the pack gate.
+        d10 = digits[-10:]
+        if d10[3:6] in ("555", "000"):
+            return ""
         return s
     return ""
 
@@ -388,7 +394,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             "inputs": {"source": str(source)},
             "outputs": {},
             "errors": [f"source not found: {source}"],
-            "next_action": "provide a valid source path",
+            "next_action": "provide a valid source path — e.g. run MBM/LeadEngine/npi_verified_callsheet.py or MBM/LeadEngine/seller_skip_tracer.py --apply first, then pass its output via --source",
             "owner": "human",
             "timestamp": _iso_now(),
         }, indent=2))

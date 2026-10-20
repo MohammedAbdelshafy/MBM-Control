@@ -41,6 +41,7 @@ import json
 import csv
 import time
 import argparse
+import urllib.parse
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -149,7 +150,10 @@ def normalize_e164(value):
         return ""
     if digits.startswith("1") and len(digits) == 11:
         return f"+{digits}"
-    return f"+1{digits.lstrip('1')}" if not digits.startswith("1") else f"+{digits}"
+    if not digits.startswith("1") and len(digits) == 10:
+        return f"+1{digits}"
+    # Anything else (wrong length, non-NANP) is not a callable number — reject.
+    return ""
 
 
 def build_message(offer, lead):
@@ -279,7 +283,7 @@ def main():
             "price": offer["price"],
             "segments": max(1, (len(message) + SMS_LIMIT - 1) // SMS_LIMIT),
             "chars": len(message),
-            "phound_prefill": f"https://web.phound.app/?phone={phone}",
+            "phound_prefill": f"https://web.phound.app/?phone={phone}&message={urllib.parse.quote(message)}",
         }
         if args.apply and args.mode == "api":
             run["send_status"] = dispatch_api(run)
