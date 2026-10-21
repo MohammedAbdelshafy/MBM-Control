@@ -301,3 +301,12 @@ clipping-factory/artifacts/clipping_factory/scene_cuts/
 
 # P0 ingestion purge backups (lead PII — keep local only)
 MBM/Artifacts/*.bak_p0
+
+# YouTube/brand token + registry backups (embed OAuth refresh tokens)
+clipping-factory/MBM-Social/youtube_tokens.json.bak*
+clipping-factory/MBM-Social/BrandRegistry.json.bak_*
+clipping-factory/MBM-Social/ChannelRegistry.json.bak_*
+
+# Dialer single-writer temp DB swap + runtime healthcheck output (regenerated)
+mbm-dialer/app/public/.leads_db_*.tmp
+mbm-dialer/app/public/provider_health.json
