@@ -258,3 +258,19 @@ if __name__ == "__main__":
         print(f"  rejected_suppressed={res['rejected_suppressed']}")
         print(f"  rejected_bad_phone={res['rejected_bad_phone']}")
         print(f"  suppression_index_size={res['suppression_index_size']}")
+
+    if args.dry_commit is not None:
+        src = Path(args.dry_commit) if args.dry_commit else DIALER_DB_PATH
+        data = json.loads(src.read_text(encoding="utf-8"))
+        rows = data if isinstance(data, list) else data.get("leads", [])
+        res = validate_records(rows)
+        print(f"dry-commit source={src} (no write performed)")
+        print(f"  rows={len(rows)}")
+        print(f"  would_commit={len(res['clean'])}")
+        print(f"  rejected_synthetic={res['rejected_synthetic']}")
+        print(f"  rejected_suppressed={res['rejected_suppressed']}")
+        print(f"  rejected_bad_phone={res['rejected_bad_phone']}")
+        print(f"  suppression_index_size={res['suppression_index_size']}")
+
+    if not args.audit and args.dry_commit is None:
+        parser.print_help()

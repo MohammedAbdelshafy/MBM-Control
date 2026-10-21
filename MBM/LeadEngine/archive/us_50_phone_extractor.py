@@ -1,3 +1,7 @@
+# LEGACY NON-PRODUCTION — DO NOT USE FOR CANONICAL DATA (archived 2026-10-04)
+# US 50 Phone Extractor — GENERATES 50 random-name/555-number rows labeled 'Verified'.
+# Quarantined: fabricates data in violation of the repo no-fabrication rule. Preserved for evidence.
+
 """
 US 50 Phone Extractor & Cold Calling Sheet Generator
 =====================================================

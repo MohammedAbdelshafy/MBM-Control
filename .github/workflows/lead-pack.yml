@@ -5,19 +5,10 @@ on:
     - cron: '0 4 1 * *'   # 04:00 UTC on the 1st of every month
   workflow_dispatch:
     inputs:
-      month:
-        description: 'Pack month (YYYY-MM). Defaults to current.'
+      source:
+        description: 'Lead source file path (relative to repo root). Omit to use the builder default.'
         type: string
         required: false
-      source:
-        description: 'Lead source (real_estate | outreach | lead engine | all)'
-        type: choice
-        default: real_estate
-        options:
-          - real_estate
-          - outreach
-          - lead engine
-          - all
 
 permissions:
   contents: read
@@ -34,12 +25,13 @@ jobs:
       - name: Build monthly lead pack
         id: build
         env:
-          MONTH: ${{ github.event.inputs.month || '' }}
-          SOURCE: ${{ github.event.inputs.source || 'real_estate' }}
+          SOURCE: ${{ github.event.inputs.source || '' }}
         run: |
-          python MBM/LeadEngine/lead_pack_builder.py \
-            $(if [ -n "$MONTH" ]; then echo "--month $MONTH"; fi) \
-            --source "$SOURCE" \
+          ARGS=""
+          if [ -n "$SOURCE" ]; then ARGS="--source $SOURCE"; fi
+          # NOTE: lead_pack_builder.py has no --month flag; it stamps its own output.
+          # Omit --source to use the builder default (fails cleanly if the file is absent).
+          python MBM/LeadEngine/lead_pack_builder.py $ARGS \
             > lead_pack_result.json
           cat lead_pack_result.json
 
@@ -57,8 +49,8 @@ jobs:
         with:
           name: lead-pack-2026-deliverable
           path: |
-            MBM/LeadEngine/lead_packs/*.csv
-            MBM/LeadEngine/lead_packs/*.json
+            MBM/LeadEngine/artifacts/lead_packs/*.csv
+            MBM/LeadEngine/artifacts/lead_packs/*.json
           if-no-files-found: warn
 
   notify-failure:

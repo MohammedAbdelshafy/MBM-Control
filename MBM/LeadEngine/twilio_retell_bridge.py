@@ -40,6 +40,7 @@ LOGS_DIR.mkdir(parents=True, exist_ok=True)
 TWILIO_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_FROM = os.getenv("TWILIO_PHONE_NUMBER")
+TWILIO_STATUS_CALLBACK = os.getenv("TWILIO_STATUS_CALLBACK", "")
 
 # Retell credentials
 RETELL_API_KEY = os.getenv("RETELL_API_KEY")
@@ -127,8 +128,9 @@ def call_lead(phone, agent_type="seller", lead_info=None):
             timeout=30,
             record=True,
             machine_detection="Enable",
-            status_callback="https://webhook.site/unique-url",
-            status_callback_event=["initiated", "ringing", "answered", "completed"],
+            **({"status_callback": TWILIO_STATUS_CALLBACK,
+                "status_callback_event": ["initiated", "ringing", "answered", "completed"]}
+               if TWILIO_STATUS_CALLBACK else {}),
         )
 
         result = {
@@ -153,7 +155,11 @@ def call_lead(phone, agent_type="seller", lead_info=None):
         return None
 
 
-def call_all_leads(agent_type=None):
+def call_all_leads(agent_type=None, apply=False):
+    """Call all leads in the pipeline.
+
+    apply=False (default): dry-run — list only, place no calls.
+    """
     """Call all leads in the pipeline"""
     if not PIPELINE.exists():
         print(f"[!] Pipeline file not found: {PIPELINE}")
@@ -199,9 +205,12 @@ def call_all_leads(agent_type=None):
         print(f"  Phone: {lead['phone']}")
         print(f"  Agent: {auto_agent}")
 
-        result = call_lead(lead["phone"], auto_agent, lead)
-        if result:
-            results.append(result)
+        if apply:
+            result = call_lead(lead["phone"], auto_agent, lead)
+            if result:
+                results.append(result)
+        else:
+            print("  [dry-run] would call — re-run with --apply to place")
         print()
 
         # Rate limit - 1 call per 2 seconds
@@ -223,14 +232,16 @@ def main():
     parser = argparse.ArgumentParser(description="Twilio + Retell Bridge")
     parser.add_argument("--call", "-c", help="Phone number to call")
     parser.add_argument("--agent", "-a", default="seller", choices=list(AGENTS.keys()))
-    parser.add_argument("--call-all", action="store_true", help="Call all pipeline leads")
+    parser.add_argument("--call-all", action="store_true", help="List/call all pipeline leads")
+    parser.add_argument("--apply", action="store_true",
+                        help="actually place calls (default: dry-run list only)")
     parser.add_argument("--status", action="store_true", help="Check Twilio balance")
     args = parser.parse_args()
 
     if args.status:
         check_balance()
     elif args.call_all:
-        call_all_leads(args.agent)
+        call_all_leads(args.agent, apply=args.apply)
     elif args.call:
         result = call_lead(args.call, args.agent)
         if result:
