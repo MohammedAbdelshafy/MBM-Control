@@ -15,7 +15,7 @@ permissions:
   security-events: write
 
 concurrency:
-  group: security-scan
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
