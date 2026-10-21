@@ -18,7 +18,12 @@ def _save(verified_db, compact=False):
     from MBM.LeadEngine.dialer_gateway import commit_dialer_db
     commit_dialer_db(verified_db, reason="apply_real_skiptrace", allow_shrink=True, author="APPLY_REAL_SKIPTRACE")
 
-def run_ensurement():
+def run_ensurement(apply=False):
+    """Skip-trace seller leads.
+
+    apply=False (default): dry-run — traces and reports, writes nothing.
+    apply=True (--apply): writes results through the dialer gateway.
+    """
     if not os.path.exists(DB_PATH):
         print(f"Error: {DB_PATH} not found.")
         return
@@ -82,13 +87,21 @@ def run_ensurement():
             print("  FAILED to find real number. Dropping lead from active dialer.")
             
         # Save incrementally every 10 leads to not lose data
-        if i % 10 == 0:
+        if i % 10 == 0 and apply:
             _save(verified_db)
 
     # Final save
-    _save(verified_db)
+    if apply:
+        _save(verified_db)
+    else:
+        print(f"\nDRY-RUN: would keep {len(verified_db)} of {len(db)} leads. Re-run with --apply to write.")
         
     print(f"\nEnsurement Complete. Kept {len(verified_db)} verified leads with real numbers.")
 
 if __name__ == "__main__":
-    run_ensurement()
+    import argparse
+    ap = argparse.ArgumentParser(description="Skip-trace seller leads (dry-run by default)")
+    ap.add_argument("--apply", action="store_true",
+                    help="actually write results via the dialer gateway (default: dry-run)")
+    args = ap.parse_args()
+    run_ensurement(apply=args.apply)

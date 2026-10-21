@@ -1,0 +1,18 @@
+# MBM/LeadEngine — Python dependencies
+# Install: pip install -r requirements.txt
+# (Several scripts previously did os.system("pip install ...") inline;
+# use this file instead.)
+
+requests>=2.31
+beautifulsoup4>=4.12
+python-dotenv>=1.0
+twilio>=9.0
+google-genai>=1.0
+dnspython>=2.4
+phound>=0.1.13,<0.2
+pydantic>=2.0
+fastapi>=0.110
+psutil>=5.9
+
+# Tests only
+pytest>=8.0

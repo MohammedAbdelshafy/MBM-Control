@@ -157,7 +157,7 @@ def _queue_email(to_email: str, subject: str, body: str) -> bool:
     return True
 
 
-def run_lifecycle_engage() -> dict:
+def run_lifecycle_engage(aggressive: bool = False) -> dict:
     """Read whop_memberships.json ledger and execute lifecycle actions."""
     print("=== EXECUTING WHOP LIFECYCLE ENGAGE & CHURN DEFENSE ===")
     
@@ -190,9 +190,9 @@ def run_lifecycle_engage() -> dict:
         stage = rec.get("stage", "stable")
         user_email = rec.get("email") or "customer@contecai.com"
 
-        # Cooldown: 14 days between emails for the same user
+        # Cooldown: 14 days between emails for the same user (skipped in aggressive mode)
         last_time = last_emailed.get(user_email, 0)
-        in_cooldown = (now_ts - last_time) < (14 * 86400)
+        in_cooldown = not aggressive and (now_ts - last_time) < (14 * 86400)
 
         if mid in already_processed or in_cooldown:
             continue
@@ -284,6 +284,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Whop lifecycle engagement & churn defense")
     parser.add_argument("--dry-run", action="store_true", help="Print actions without queueing emails or sending Telegram")
+    parser.add_argument("--aggressive", action="store_true", help="Bypass the 14-day email cooldown for aggressive campaigns")
     args = parser.parse_args()
     DRY_RUN = args.dry_run
-    run_lifecycle_engage()
+    run_lifecycle_engage(aggressive=args.aggressive)

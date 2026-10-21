@@ -155,7 +155,10 @@ def _gpt_oss_generate(
     )
     with urllib.request.urlopen(req, timeout=180) as r:
         data = json.load(r)
-    return (data.get("choices", [{}])[0].get("message", {}).get("content") or "").strip() or None
+    choices = data.get("choices", [])
+    if choices:
+        return (choices[0].get("message", {}).get("content") or "").strip() or None
+    return None
 
 
 def generate(

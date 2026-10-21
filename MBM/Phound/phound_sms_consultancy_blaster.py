@@ -42,7 +42,8 @@ TOUCH_1_TEMPLATE = (
     "Hi {first_name}, Omar here from ConTech AI. We built an autonomous CAD-to-BOQ "
     "pipeline for civil & structural engineering firms that cuts 3-week manual takeoffs down "
     "to 10 mins with zero math errors. We are doing 3 complimentary benchmark audits for "
-    "contractors in {city} this month. Open to seeing a 60-sec demo on 1 sample drawing?"
+    "contractors in {city} this month. Open to seeing a 60-sec demo on 1 sample drawing? "
+    "Reply STOP to opt out."
 )
 
 TOUCH_2_TEMPLATE = (
@@ -94,6 +95,9 @@ def load_prospects() -> list[dict]:
             with open(leads_db, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 for item in data:
+                    # Skip opted-out / STOP'd numbers (same rule as phound_wave_campaign.py)
+                    if str(item.get("sms_opted_out", "")).strip().lower() in ("1", "true", "yes", "stop"):
+                        continue
                     phone = _clean_phone(item.get("phone"))
                     if not phone or "555" in phone or len(re.sub(r"\D", "", phone)) < 10:
                         continue

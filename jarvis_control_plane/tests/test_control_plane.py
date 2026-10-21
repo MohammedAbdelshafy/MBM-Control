@@ -124,16 +124,16 @@ def test_policy_unknown_mutation_fails_closed():
 
 def test_policy_redaction_removes_secrets_and_phones():
     dirty = {
-        "api_key": "sk-live-abc123",
-        "auth": {"token": "xoxb-12345"},
+        "api_key": "sk-REDACTED",
+        "auth": {"token": "xoxb-REDACTED"},
         "phone": "+1 (555) 123-4567",
         "note": "call PHOUND_TOKEN=uid.secretkey now",
         "safe": "hello world",
     }
     clean = P.redact(dirty)
     blob = json.dumps(clean)
-    assert "sk-live-abc123" not in blob
-    assert "xoxb-12345" not in blob
+    assert "sk-REDACTED" not in blob
+    assert "xoxb-REDACTED" not in blob
     assert "555" not in blob or "[REDACTED]" in blob
     assert "secretkey" not in blob
     assert clean["safe"] == "hello world"
@@ -168,10 +168,10 @@ def test_registry_capability_discovery_and_routing():
 def test_recorder_redacts_secrets(tmp_path):
     rec = RR.RunRecorder(tmp_path / "runs.jsonl")
     rec.record(RR.RunEvent(run_id="r1", tool_called="send email",
-                           tool_arguments_redacted={"token": "ghp_abcdef1234567890"},
+                           tool_arguments_redacted={"token": "ghp_REDACTED01"},
                            output={"phone": "+15551234567"}))
     blob = (tmp_path / "runs.jsonl").read_text(encoding="utf-8")
-    assert "ghp_abcdef" not in blob and "5551234567" not in blob
+    assert "ghp_REDACTED" not in blob and "5551234567" not in blob
     assert "[REDACTED]" in blob
 
 
