@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 
 from jarvis_control_plane import mcp_a2a as M
 from jarvis_control_plane import policy as P
+from jarvis_control_plane.agent_identity import AgentIdentity, AgentIdentityRegistry
 
 
 def _tool(name, description, action_class=None):
@@ -26,6 +27,12 @@ def _tool(name, description, action_class=None):
         handler=lambda a: {"ok": True, "tool": name},
         action_class=action_class,
     )
+
+
+def _identity_bus(*capabilities):
+    registry = AgentIdentityRegistry()
+    registry.register(AgentIdentity(agent_id="jarvis.test", capabilities=list(capabilities)))
+    return M.MCPToolBus(identity_registry=registry)
 
 
 def test_undeclared_read_only_tool_runs_without_approval():
@@ -52,20 +59,25 @@ def test_undeclared_mutation_fails_closed_without_approval():
         bus.call("update_lead_record", {})
 
 
-def test_gated_write_proceeds_with_approval():
-    bus = M.MCPToolBus()
+def test_gated_write_proceeds_with_approval_and_identity():
+    bus = _identity_bus("write_canonical_leads")
     bus.register(_tool(
         "update_lead_record",
         "Update the canonical lead store record for a lead.",
     ))
     approval = {"approved": True, "approver": "test-harness"}
-    assert bus.call("update_lead_record", {}, approval=approval)["ok"] is True
-    # approval may also travel inside args (capability-handler convention)
-    assert bus.call("update_lead_record", {"approval": approval})["ok"] is True
+    assert bus.call(
+        "update_lead_record",
+        {},
+        approval=approval,
+        agent_id="jarvis.test",
+    )["ok"] is True
+    with pytest.raises(M.MCPPermissionDenied):
+        bus.call("update_lead_record", {"approval": approval})
 
 
 def test_destructive_action_denied_and_logged():
-    bus = M.MCPToolBus()
+    bus = _identity_bus("destructive_action")
     bus.register(_tool(
         "purge_database",
         "Delete production dialer database infra now.",
@@ -78,20 +90,37 @@ def test_destructive_action_denied_and_logged():
     assert denials[0]["tool"] == "purge_database"
     assert denials[0]["verdict"] == P.PolicyVerdict.DENY.value
     # Explicit approval satisfies the hard gate (policy.evaluate semantics).
-    out = bus.call("purge_database", {}, approval={"approved": True, "approver": "human-owner"})
+    out = bus.call(
+        "purge_database",
+        {},
+        approval={"approved": True, "approver": "human-owner"},
+        agent_id="jarvis.test",
+    )
     assert out["ok"] is True
 
 
 def test_external_side_effect_requires_approval():
-    bus = M.MCPToolBus()
+    bus = _identity_bus("send_sms")
     bus.register(_tool(
         "send_launch_sms",
         "Send SMS blast to launch list.",
         action_class=P.ActionClass.EXTERNAL_SIDE_EFFECT,
-    ))
+        )
+    )
     with pytest.raises(M.MCPPermissionDenied):
         bus.call("send_launch_sms", {})
-    out = bus.call("send_launch_sms", {}, approval={"approved": True, "approver": "owner"})
+    with pytest.raises(M.MCPPermissionDenied):
+        bus.call(
+            "send_launch_sms",
+            {},
+            approval={"approved": True, "approver": "owner"},
+        )
+    out = bus.call(
+        "send_launch_sms",
+        {},
+        approval={"approved": True, "approver": "owner"},
+        agent_id="jarvis.test",
+    )
     assert out["ok"] is True
 
 
@@ -105,7 +134,9 @@ def test_expose_specialist_defaults_to_read_and_accepts_override():
         spec, lambda a: {"decision": "ALLOW"}, action_class=P.ActionClass.GATED_WRITE
     )
     assert gated_tool.effective_class is P.ActionClass.GATED_WRITE
-    bus = M.MCPToolBus()
+    bus = M.MCPToolBus(
+        identity_registry=AgentIdentityRegistry()
+    )
     bus.register(gated_tool)
     required = {k: "probe" for k in gated_tool.input_schema["required"]}
     with pytest.raises(M.MCPPermissionDenied):
@@ -128,21 +159,29 @@ def test_denied_call_never_runs_handler():
 
 
 def test_invalid_approval_shapes_do_not_unblock():
-    bus = M.MCPToolBus()
+    bus = _identity_bus()
     bus.register(_tool("update_lead_record", "Update the canonical lead store record."))
     for bad in (None, True, "approved", {"approved": False}, {"approved": "yes"},
                 {"approved": 1}, {"approver": "owner"}):
         with pytest.raises(M.MCPPermissionDenied):
-            bus.call("update_lead_record", {}, approval=bad)
+            bus.call(
+                "update_lead_record",
+                {},
+                approval=bad,
+                agent_id="jarvis.test",
+            )
 
 
 def test_explicit_param_approval_beats_args_approval():
-    bus = M.MCPToolBus()
+    bus = _identity_bus()
     bus.register(_tool("update_lead_record", "Update the canonical lead store record."))
     with pytest.raises(M.MCPPermissionDenied):
-        bus.call("update_lead_record",
-                 {"approval": {"approved": True, "approver": "smuggled"}},
-                 approval={"approved": False})
+        bus.call(
+            "update_lead_record",
+            {"approval": {"approved": True, "approver": "smuggled"}},
+            approval={"approved": False},
+            agent_id="jarvis.test",
+        )
 
 
 def test_empty_or_malformed_metadata_fails_closed():
