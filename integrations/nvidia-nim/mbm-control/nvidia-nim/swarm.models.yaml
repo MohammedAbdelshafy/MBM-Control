@@ -1,0 +1,43 @@
+# swarm.models.yaml — example routing table: task_type -> NVIDIA NIM model id
+# Drop into the MBM-Control swarm config. Every id below was verified present
+# in the live GET /v1/models response saved 2026-10-04 (81 models).
+provider:
+  name: nvidia-nim
+  base_url: https://integrate.api.nvidia.com/v1
+  api_key_env: NVIDIA_API_KEY
+  protocol: openai-compatible
+routing:
+  coding: deepseek-ai/deepseek-v4.1-flash # 2026-10-21: Oct 17 1017 checkpoint
+    # (Terminal-Bench 4.0 42.3, DeepSWE 77.0 per DeepSeek); $0 on free tier,
+    # $0.30/$1.20 peak ($0.15/$0.60 off-peak) direct. Verified live 2026-10-21.
+  chat: mistralai/mistral-large-2-instruct
+  vision: meta/llama-3.2-11b-vision-instruct
+  reasoning: nvidia/nemotron-3-nano-omni-30b-a3b-reasoning
+  # embeddings: not routed on the free tier in this build
+# --- BLOCKED_ON_KEY: direct DeepSeek API slot (no DEEPSEEK_API_KEY in env) ---
+# Flip on when a DeepSeek key exists. OpenAI-compatible; the 1017 checkpoint
+# keeps the API model name `deepseek-flash`, so no code change is needed.
+# deepseek_direct:
+#   provider: deepseek
+#   base_url: https://api.deepseek.com/v1
+#   api_key_env: DEEPSEEK_API_KEY
+#   model: deepseek-flash          # tracks latest V4.1-Flash checkpoint
+#   pricing_per_mtok: {in: 0.30, out: 1.20}   # peak; 0.15/0.60 off-peak
+# --- BLOCKED_ON_KEY: direct MiniMax API slot (no MINIMAX_API_KEY in env) ---
+# M3.1 Flash released 2026-10-19: 1M context, image input, MiniMax's own
+# reported coding/agent gains over M2.7; list price $0.15/$0.60 per M tokens
+# ($0.015 cached input) — half of M2.7, and below DeepSeek peak ($0.30/$1.20).
+# Free-launch windows end 2026-10-22 (Ollama Cloud 23:59 UTC; OpenRouter :free
+# 12:00 UTC) — after that, direct key only. Anthropic-compatible endpoint, so
+# flip on with a key and route night-shift coding overflow here when the
+# NVIDIA free tier rate-limits.
+# minimax_direct:
+#   provider: minimax
+#   base_url: https://api.minimax.io/v1   # Anthropic-compatible per MiniMax docs
+#   api_key_env: MINIMAX_API_KEY
+#   model: MiniMax-M3.1-Flash
+#   pricing_per_mtok: {in: 0.15, out: 0.60, cached_in: 0.015}
+defaults:
+  task_type: chat
+  temperature: 0.7
+  max_tokens: 1024

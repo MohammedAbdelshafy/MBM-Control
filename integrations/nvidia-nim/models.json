@@ -1,0 +1,179 @@
+[
+  {
+    "id": "mistralai/codestral-22b-instruct-v0.1",
+    "role": "coding",
+    "free_tier": true
+  },
+  {
+    "id": "deepseek-ai/deepseek-coder-6.7b-instruct",
+    "role": "coding",
+    "free_tier": true
+  },
+  {
+    "id": "deepseek-ai/deepseek-v4.1-flash",
+    "role": "coding",
+    "free_tier": true,
+    "notes": "2026-10-17 checkpoint 1017 (DeepSeek-reported: Terminal-Bench 4.0 42.3, DeepSWE 77.0, shorter/faster outputs). Direct API $0.30/$1.20 peak, $0.15/$0.60 off-peak per M tokens, model name deepseek-flash; MIT weights on HF. Live in NVIDIA catalog 2026-10-21."
+  },
+  {
+    "id": "ibm/granite-34b-code-instruct",
+    "role": "coding",
+    "free_tier": true
+  },
+  {
+    "id": "ibm/granite-8b-code-instruct",
+    "role": "coding",
+    "free_tier": true
+  },
+  {
+    "id": "meta/codellama-70b",
+    "role": "coding",
+    "free_tier": true
+  },
+  {
+    "id": "bigcode/starcoder2-15b",
+    "role": "coding",
+    "free_tier": true
+  },
+  {
+    "id": "google/codegemma-1.1-7b",
+    "role": "coding",
+    "free_tier": true
+  },
+  {
+    "id": "moonshotai/kimi-k2.6",
+    "role": "coding",
+    "free_tier": true,
+    "notes": "moonshotai/kimi-k3 was in the 2026-10-04 catalog but returns 410 on the live endpoint as of 2026-10-23 (free-tier churn) — removed."
+  },
+  {
+    "id": "mistralai/mistral-large-2-instruct",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "mistralai/mistral-large",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "mistralai/mixtral-8x22b-v0.1",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "mistralai/mistral-7b-instruct-v0.3",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "nv-mistralai/mistral-nemo-12b-instruct",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "nvidia/mistral-nemo-minitron-8b-8k-instruct",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "nvidia/llama-3.1-nemotron-70b-instruct",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "nvidia/llama-3.1-nemotron-51b-instruct",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "nvidia/nemotron-3-super-120b-a12b",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "nvidia/nemotron-4-340b-instruct",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "z-ai/glm-5.3",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "z-ai/glm-5.3-flash",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "openai/gpt-oss-20b",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "01-ai/yi-large",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "google/gemma-3-12b-it",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "databricks/dbrx-instruct",
+    "role": "chat",
+    "free_tier": true
+  },
+  {
+    "id": "meta/llama-3.2-11b-vision-instruct",
+    "role": "vision",
+    "free_tier": true
+  },
+  {
+    "id": "meta/llama-3.2-90b-vision-instruct",
+    "role": "vision",
+    "free_tier": true
+  },
+  {
+    "id": "microsoft/phi-3-vision-128k-instruct",
+    "role": "vision",
+    "free_tier": true
+  },
+  {
+    "id": "nvidia/vila",
+    "role": "vision",
+    "free_tier": true
+  },
+  {
+    "id": "adept/fuyu-8b",
+    "role": "vision",
+    "free_tier": true
+  },
+  {
+    "id": "microsoft/kosmos-2",
+    "role": "vision",
+    "free_tier": true
+  },
+  {
+    "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+    "role": "reasoning",
+    "free_tier": true
+  },
+  {
+    "id": "nvidia/cosmos-reason2-8b",
+    "role": "reasoning",
+    "free_tier": true
+  },
+  {
+    "id": "nvidia/nemotron-3-ultra-550b-a55b",
+    "role": "reasoning",
+    "free_tier": true
+  }
+]
