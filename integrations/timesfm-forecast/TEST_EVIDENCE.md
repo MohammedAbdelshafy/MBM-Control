@@ -84,3 +84,54 @@ What the tests actually prove:
 - Every forecast result carries the business-context caveat in its
   `caveat` field and in `summarize()` output.
 - No API keys, no network calls, no charges anywhere in this build.
+
+## 5. Activation attempt 2026-10-24 — torch+timesfm installed, API fixed, checkpoint download pending approval
+
+- **Install: SUCCESS.** This VM's system Python is PEP 668
+  externally-managed (`pip install --user` is blocked too), so the live
+  backend now lives in a venv: `~/workspace/tools/timesfm-venv`
+  (`python3 -m venv`, then `pip install timesfm torch
+  --extra-index-url https://download.pytorch.org/whl/cpu` — plain
+  `--index-url` on the torch wheel index fails because `timesfm` is only
+  on PyPI). Installed: **torch 2.14.1+cpu**, timesfm 3.0.x,
+  huggingface_hub (ships with timesfm). `backend_status()` now reports
+  `timesfm: true` — "real backend available (TimesFM_2p5_200M_torch)".
+- **Real API mismatch found and fixed.** The 2026-10-16 code was written
+  against an assumed API that does not exist in timesfm 3.0.x:
+  `load_from_checkpoint(repo_id=...)` → real method is
+  `load_checkpoint(path)` (local dir containing `model.safetensors`, or a
+  file); `model.forecast(inputs, [horizon])` → real signature is
+  `forecast(horizon, inputs)` with `inputs` a list of arrays; and
+  `forecast()` raises `RuntimeError` unless `compile(cfg)` is called
+  first. `timesfm_forecast._timesfm_forecast` was rewritten against the
+  real signatures (verified by introspecting the installed package:
+  `inspect.signature` on `load_checkpoint`, `compile`, `forecast`;
+  native quantile levels `[0.1..0.9]` from
+  `TimesFM_2p5_200M_Definition.quantiles`; `WEIGHTS_FILENAME =
+  "model.safetensors"`). `max_context` is rounded to a multiple of the
+  input patch length (32); checkpoint resolves via
+  `huggingface_hub.snapshot_download` into `~/.cache/timesfm/` (once,
+  then offline), or an existing local path via `TIMESFM_CHECKPOINT`.
+- **Partially verified tonight (no checkpoint needed):**
+  - 18/18 hermetic smoke tests still pass on system python3 (unchanged
+    hermetic surface).
+  - With `TIMESFM_CHECKPOINT=/tmp/empty-ckpt` (existing dir, no weights)
+    under the venv python, `forecast(..., backend="timesfm")` now raises
+    `FileNotFoundError: model.safetensors not found in directory
+    /tmp/empty-ckpt` — i.e. the fixed `load_checkpoint` path validates
+    correctly (previously this raised `AttributeError` on the
+    nonexistent method).
+  - New `test_live.py` added: end-to-end real-inference check
+    (sentinel rising series, asserts real checkpoint id, point length,
+    0.1/0.9 bands) — **not yet runnable**: see blocker.
+- **Blocker: checkpoint download needs a one-time approval.** The first
+  real `forecast()` downloads `google/timesfm-2.5-200m-pytorch` (~800MB)
+  from huggingface.co. That read raised a schedule-scoped approval card
+  ("Read huggingface.co on future runs of Vibefounder Night Shift",
+  requested 2026-10-23 23:49 UTC), which cannot be approved on a detached
+  run. The download was NOT attempted via any alternate route (no
+  safeguard bypass). **What the founder must do:** approve that card once
+  — it is schedule-scoped, so it covers all future night-shift runs.
+  Next run after approval: `~/workspace/tools/timesfm-venv/bin/python
+  test_live.py` downloads the checkpoint once and proves real inference;
+  power #11 then moves to ACTIVATED.

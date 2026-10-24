@@ -50,6 +50,13 @@ CAVEAT = ("TimesFM sees numbers, not business context: it does not know "
           "about launches, promotions, or regime changes. Treat every "
           "forecast as a baseline, not a guarantee.")
 
+# Native quantile levels of the TimesFM-2.5 200M torch checkpoint
+# (timesfm.timesfm_2p5.timesfm_2p5_base.TimesFM_2p5_200M_Definition.quantiles).
+NATIVE_QUANTILES = (0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)
+# Input patch length of TimesFM 2.5 — max_context must be a multiple of it.
+TIMESFM_PATCH_LEN = 32
+DEFAULT_CHECKPOINT_REPO = "google/timesfm-2.5-200m-pytorch"
+
 
 class ForecastError(ValueError):
     """Raised for invalid input or unavailable backend."""
@@ -178,8 +185,30 @@ def _normal_ppf(p):
            (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1)
 
 
+def _resolve_checkpoint(repo_or_path):
+    """Return a local checkpoint path for an HF repo id or an existing path.
+
+    HF repos are downloaded once via huggingface_hub.snapshot_download into
+    ~/.cache/timesfm/<repo__name> and reused on later runs (fully offline
+    after the first download). Existing local paths are used as-is.
+    """
+    p = os.path.expanduser(repo_or_path)
+    if os.path.exists(p):
+        return p
+    from huggingface_hub import snapshot_download
+    cache = os.path.join(os.path.expanduser("~"), ".cache", "timesfm",
+                         repo_or_path.replace("/", "__"))
+    return snapshot_download(repo_id=repo_or_path, local_dir=cache)
+
+
 def _timesfm_forecast(values, horizon, quantiles):
-    """Real inference through the installed timesfm pip package (torch backend)."""
+    """Real inference through the installed timesfm pip package (torch backend).
+
+    Verified against timesfm 3.0.x: TimesFM_2p5_200M_torch takes a
+    ForecastConfig, loads weights from a local path via load_checkpoint(),
+    must be compile()d before forecast(), and forecast(horizon, [inputs])
+    returns (point [n, H], quantiles [n, H, 9]) with native levels 0.1..0.9.
+    """
     st = backend_status()
     if not st["timesfm"]:
         raise BackendNotInstalled(
@@ -190,31 +219,32 @@ def _timesfm_forecast(values, horizon, quantiles):
     import timesfm
     from timesfm import ForecastConfig
 
-    max_context = min(512, len(values))
+    # max_context must be a multiple of the model's input patch length (32);
+    # compile() rounds up, but rounding here keeps the intent explicit.
+    raw_context = min(512, len(values))
+    max_context = max(TIMESFM_PATCH_LEN,
+                      (raw_context // TIMESFM_PATCH_LEN) * TIMESFM_PATCH_LEN)
     cfg = ForecastConfig(max_context=max_context, max_horizon=horizon,
                          normalize_inputs=True, infer_is_positive=False)
     model = timesfm.TimesFM_2p5_200M_torch(cfg)
-    checkpoint = os.environ.get(
-        "TIMESFM_CHECKPOINT",
-        "google/timesfm-2.5-200m-pytorch")  # HF repo, downloaded once, then cached
-    model.load_from_checkpoint(repo_id=checkpoint)
+    checkpoint = os.environ.get("TIMESFM_CHECKPOINT", DEFAULT_CHECKPOINT_REPO)
+    local = _resolve_checkpoint(checkpoint)
+    model.load_checkpoint(local)
+    model.compile(cfg)
     inputs = np.asarray(values, dtype=np.float32)[-max_context:]
     t0 = time.time()
-    point, quantiles_out = model.forecast(inputs, [horizon])
+    point, quantiles_out = model.forecast(horizon, [inputs])
     elapsed = time.time() - t0
     point = [float(x) for x in np.asarray(point).reshape(-1)[:horizon]]
-    # timesfm 2.5 returns (point, quantiles); quantiles_out indexed by quantile value.
     qmap = np.asarray(quantiles_out)
     bands = {}
-    try:
-        model_quantiles = model.quantiles  # e.g. [0.1,...,0.9]
+    if qmap.ndim == 3 and qmap.shape[2] == len(NATIVE_QUANTILES):
         for q in quantiles:
-            # nearest model quantile band
-            idx = min(range(len(model_quantiles)),
-                      key=lambda i: abs(float(model_quantiles[i]) - q))
-            bands[str(q)] = [float(x) for x in qmap[:, idx].reshape(-1)[:horizon]]
-    except Exception:
-        bands = {}  # caller falls back to point-only; bands recomputed from point
+            idx = min(range(len(NATIVE_QUANTILES)),
+                      key=lambda i: abs(NATIVE_QUANTILES[i] - q))
+            bands[str(q)] = [float(x) for x in qmap[0, :horizon, idx].reshape(-1)]
+    # If the checkpoint's quantile head differs, bands stay empty and the
+    # caller reports point-only — never silently wrong bands.
     return point, bands, {
         "checkpoint": checkpoint,
         "inference_seconds": round(elapsed, 2),

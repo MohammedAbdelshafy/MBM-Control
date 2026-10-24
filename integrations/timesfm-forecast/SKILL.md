@@ -55,10 +55,20 @@ python3 /home/hatch/workspace/night-shift/timesfm-forecast/mcp_server.py
 ## Activation (one-time, ~1 GB)
 
 ```bash
-pip install timesfm torch   # CPU torch is fine
+python3 -m venv ~/workspace/tools/timesfm-venv
+~/workspace/tools/timesfm-venv/bin/pip install timesfm torch \
+    --extra-index-url https://download.pytorch.org/whl/cpu   # CPU torch
 # first forecast() downloads the checkpoint from HuggingFace (~800MB),
 # then runs fully offline. No key, no account, no per-call cost.
+# Run forecasts with the venv python so `timesfm`/`torch` import.
 ```
+
+**Status 2026-10-24:** venv installed (torch 2.14.1+cpu) and the adapter's
+real-API calls fixed for timesfm 3.0.x (`load_checkpoint` → `compile` →
+`forecast(horizon, [inputs])`). The one-time HuggingFace checkpoint
+download needs the founder's approval of the pending "read huggingface.co"
+card (schedule-scoped, covers future runs) — until then, `test_live.py`
+waits and `backend="timesfm"` works up to the checkpoint step.
 
 ## Rules
 

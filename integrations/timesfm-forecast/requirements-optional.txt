@@ -1,2 +1,3 @@
 timesfm
 torch
+huggingface_hub  # checkpoint download via snapshot_download (ships with timesfm)

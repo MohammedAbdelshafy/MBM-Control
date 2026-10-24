@@ -25,15 +25,28 @@ changes. Every forecast carries that caveat. Baselines, not guarantees.
 
 Hermetic parts (validation, MCP server, tests) need **only stdlib Python 3**.
 
-For real inference (one-time, ~1 GB total):
+For real inference (one-time, ~1 GB total). This VM's system Python is
+PEP 668 externally-managed, so the install lives in a venv:
 
 ```bash
-pip install timesfm torch          # CPU torch is fine
+python3 -m venv ~/workspace/tools/timesfm-venv
+~/workspace/tools/timesfm-venv/bin/pip install timesfm torch \
+    --extra-index-url https://download.pytorch.org/whl/cpu   # CPU torch
 # first forecast() call downloads the checkpoint from HuggingFace once (~800MB),
-# then runs fully offline. Override with TIMESFM_CHECKPOINT=<hf-repo-id>.
+# then runs fully offline. Override with TIMESFM_CHECKPOINT=<hf-repo-id-or-local-path>.
+~/workspace/tools/timesfm-venv/bin/python test_live.py   # live activation test
 ```
 
 No API key. No account. No cost per forecast.
+
+**API note (verified 2026-10-24 against installed timesfm 3.0.x):** the real
+call sequence is `TimesFM_2p5_200M_torch(ForecastConfig(...))` →
+`load_checkpoint(local_dir_or_file)` → `compile(cfg)` →
+`forecast(horizon, [inputs])` returning `(point [n,H], quantiles [n,H,9])`
+with native levels 0.1–0.9. `max_context` is rounded to a multiple of the
+input patch length (32) in the adapter. Checkpoints resolve via
+`huggingface_hub.snapshot_download` into `~/.cache/timesfm/` (once, then
+offline); `TIMESFM_CHECKPOINT` also accepts an existing local path.
 
 ## Use
 
