@@ -383,12 +383,12 @@ export default function DemoLandingPage() {
     setLoading(true);
     const emailBody = `Hi${name ? ' ' + name : ' there'},
 
-Thanks for your interest in Contech AI Automation${company ? ', ' + company : ''}!
+Thanks for contacting MBM Business Tools${company ? ', ' + company : ''}!
 
 Here's what you get:
-- Personalized demo walkthrough video
-- Custom ROI analysis for your business
-- Free 30-day trial of your chosen AI solution
+- A reply about the workflow you want to improve
+- Clarification on what can be delivered and what information is needed
+- A proposed next step, scope and timing if there is a fit
 
 Book your onboarding call:
 ${CONTACT.calendly}
@@ -400,7 +400,7 @@ ${CONTACT.email}`;
     let failed = false;
     try {
       const { error: queueError } = await supabase.functions.invoke('add-to-email-queue', {
-        body: { recipient_email: email, subject: `Welcome to Contech AI â€” Your demo is ready`, body: emailBody },
+        body: { recipient_email: email, subject: `Thanks for your request â€” next steps`, body: emailBody },
       });
       if (queueError) failed = Boolean(queueError);
     } catch (err) {
