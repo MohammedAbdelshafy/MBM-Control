@@ -247,5 +247,5 @@ timestamp: ISO8601
 
 ## ICM navigation
 
-Read [CONTEXT.md](CONTEXT.md) for the project's job, boundaries and checks. Use the plain-language display name **Sales & Calling Workspace** in customer-facing copy; keep the repository, CLI, API and module names stable. See the portfolio-wide language rules in [Jarvis ICM](https://github.com/MohammedAbdelshafy/jarvis-mbm/blob/feature/icm-portfolio-map/ICM/_shared/customer-language.md).
+Read [CONTEXT.md](CONTEXT.md) for the project boundaries and checks. Use **MBM-Control** as the repository/project name. Describe the specific customer outcome in plain language, and keep Mia Voice as a separate voice product line. Preserve repository, CLI, API and module names. See the portfolio-wide language rules in [Jarvis ICM](https://github.com/MohammedAbdelshafy/jarvis-mbm/blob/feature/icm-portfolio-map/ICM/_shared/customer-language.md).
 
