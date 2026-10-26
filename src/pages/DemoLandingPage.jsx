@@ -196,9 +196,9 @@ const PRODUCTS = [
 
 const WORKFLOW = [
   { step: '01', title: 'Book a quick call', desc: '15 minutes. We map your exact process and pain points.' },
-  { step: '02', title: 'We build your demo', desc: 'A live, working instance of your AI system â€” not slideware. Ready in 48 hours.' },
-  { step: '03', title: '7-day free pilot', desc: 'Run it on real work for a week. No card, no long-term contract.' },
-  { step: '04', title: 'You keep what works', desc: 'Go monthly or enterprise. Cancel anytime. 30-day money-back guarantee.' },
+  { step: '02', title: 'Review a walkthrough', desc: 'We show the proposed workflow and confirm which parts are already available and which would need setup.' }, 
+  { step: '03', title: 'Agree a small test', desc: 'If a suitable setup is available, agree the test data, permissions, success check and any fees before using it.' }, 
+  { step: '04', title: 'Review the result', desc: 'Compare the output with the agreed check, then decide whether further work makes sense.' }, 
 ];
 
 const FAQS = [
