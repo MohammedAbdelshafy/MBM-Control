@@ -1,4 +1,4 @@
-# AGENTS.md — Sales & Calling Workspace
+# AGENTS.md — MBM-Control
 
 ## Project Context
 
