@@ -207,7 +207,7 @@ const FAQS = [
   { q: 'Do you offer a trial?', a: 'Trial and refund terms depend on the selected offer. Check the current checkout details and written terms before ordering.' },
   { q: 'Can I pay monthly?', a: 'Billing terms depend on the selected plan. Confirm the payment method, renewal schedule and cancellation terms before ordering.' },
   { q: 'How do I pay?', a: 'Payment options vary by offer. Review the checkout page or contact us to confirm the current method and terms.' },
-  { q: 'Can you work with my existing tools?', a: 'We integrate with virtually any CRM, email provider, and platform you already use.' },
+  { q: 'Can you work with my existing tools?', a: 'We check support for each system before agreeing to an integration.' },
 ];
 
 const HERO_DEMO = '/demos/demo_intro.mp4';
