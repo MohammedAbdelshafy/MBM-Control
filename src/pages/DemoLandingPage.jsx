@@ -667,7 +667,7 @@ ${CONTACT.email}`;
                       : 'border border-white/10 hover:border-white/20 text-gray-300'
                   } disabled:opacity-50`}
                 >
-                  {buying === plan.id ? 'Processing...' : plan.id === 'ai_enterprise' ? 'Request Enterprise' : 'Start Free Trial'}
+                  {buying === plan.id ? 'Processing...' : plan.id === 'ai_enterprise' ? 'Discuss custom plan' : 'Request details'}
                 </button>
               </motion.div>
             );
@@ -676,7 +676,7 @@ ${CONTACT.email}`;
 
         <div className="text-center mt-6">
           <p className="text-[10px] text-gray-600">
-            7-day free pilot Â· 30-day money-back guarantee Â· Cancel anytime Â· Secure Neteller checkout
+            Trial, refund, renewal and payment terms vary by offer. Confirm the current terms before payment.
           </p>
           <p className="text-[10px] text-gray-600 mt-1">
             Need a custom plan?
@@ -718,7 +718,7 @@ ${CONTACT.email}`;
           {subscribed ? (
             <div>
               <CheckCircle size={40} className="text-green-400 mx-auto mb-3" />
-              <h3 className="text-lg font-bold mb-2">You're In!</h3>
+              <h3 className="text-lg font-bold mb-2">Thanks, request received</h3>
               <p className="text-sm text-gray-400 mb-4">
                 Check your inbox for your personalized demo link and ROI analysis.
                 We'll be in touch within 24 hours.
