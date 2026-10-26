@@ -436,7 +436,7 @@ ${CONTACT.email}`;
             className="bg-green-600/20 border-b border-green-500/30 text-center px-4 py-3"
           >
             <p className="text-sm text-green-300 font-medium">
-              <CheckCircle size={14} className="inline mr-1" /> Payment received for {paidPlan.replace(/_/g, ' ')}! We'll onboard you now â€”
+              <CheckCircle size={14} className="inline mr-1" /> Request received for {paidPlan.replace(/_/g, ' ')}. If you completed checkout, keep your receipt. Access is confirmed after the order is verified. 
               <a href={CONTACT.calendly} target="_blank" rel="noreferrer" className="underline ml-1">book your onboarding call</a>.
             </p>
           </motion.div>
@@ -498,32 +498,32 @@ ${CONTACT.email}`;
             <div className="text-center md:text-left">
               <div className="inline-flex items-center gap-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full px-3 py-1 mb-6">
                 <Star size={10} className="text-purple-400" />
-                <span className="text-[10px] text-purple-300 font-medium">Agentic AI Automation for Real Estate &amp; Ops</span>
+                <span className="text-[10px] text-purple-300 font-medium">Sales, lead and workflow support for business teams</span>
               </div>
               <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4">
-                Your operations,
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400"> on autopilot</span>
+                Your sales and operations,
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400"> with clearer next steps</span>
               </h1>
               <p className="text-sm md:text-base text-gray-400 max-w-md mx-auto mb-6 leading-relaxed">
-                Stop burning hours on manual data entry, follow-ups, and lead qualification.
-                We build you a working AI system â€” email, leads, CRM, chatbot, content.
-                Live demo in 48 hours. First week free.
+                We help organize repetitive work such as lead review, follow-up and reporting.
+                Start by reviewing a proposed workflow and its requirements. Any live setup,
+                timing, price and trial terms are agreed only after the scope is checked.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <button
                   onClick={bookCall}
                   className="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all inline-flex items-center gap-2"
                 >
-                  <Play size={14} /> See the Demo <ChevronRight size={16} />
+                  <Play size={14} /> Book a short call <ChevronRight size={16} />
                 </button>
                 <a href="#how" className="border border-white/10 hover:border-white/20 text-gray-300 px-6 py-2.5 rounded-xl text-sm font-medium transition-all">
                   How it works
                 </a>
               </div>
               <div className="flex items-center justify-center gap-6 mt-8 text-xs text-gray-500">
-                <span className="flex items-center gap-1"><CheckCircle size={12} className="text-green-400" /> 48hr Setup</span>
-                <span className="flex items-center gap-1"><CheckCircle size={12} className="text-green-400" /> 7-Day Free Pilot</span>
-                <span className="flex items-center gap-1"><CheckCircle size={12} className="text-green-400" /> 30-Day Guarantee</span>
+                <span className="flex items-center gap-1"><CheckCircle size={12} className="text-green-400" /> Scope first</span>
+                <span className="flex items-center gap-1"><CheckCircle size={12} className="text-green-400" /> Test before launch</span>
+                <span className="flex items-center gap-1"><CheckCircle size={12} className="text-green-400" /> Terms in writing</span>
               </div>
             </div>
             <div className="space-y-2">
