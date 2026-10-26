@@ -205,7 +205,7 @@ const FAQS = [
   { q: 'How fast can I get started?', a: 'Timing depends on the requested workflow, account access and integrations. We confirm a realistic schedule before work starts.' },
   { q: 'Do I need technical skills?', a: 'No coding is needed for the review. If you commission a setup, we agree which configuration and ongoing tasks are included.' },
   { q: 'Do you offer a trial?', a: 'Trial and refund terms depend on the selected offer. Check the current checkout details and written terms before ordering.' },
-  { q: 'Can I pay monthly?', a: 'Yes â€” all plans are monthly. No long-term contracts. Cancel anytime. Pay securely via 1-click Neteller checkout.' },
+  { q: 'Can I pay monthly?', a: 'Billing terms depend on the selected plan. Confirm the payment method, renewal schedule and cancellation terms before ordering.' },
   { q: 'How do I pay?', a: 'Payments are processed through your Neteller wallet with a 1-click checkout link. Bank transfer available on Enterprise.' },
   { q: 'Can you work with my existing tools?', a: 'We integrate with virtually any CRM, email provider, and platform you already use.' },
 ];
