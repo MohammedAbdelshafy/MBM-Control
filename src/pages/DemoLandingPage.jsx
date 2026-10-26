@@ -728,7 +728,7 @@ ${CONTACT.email}`;
             </div>
           ) : (
             <>
-              <h2 className="text-xl md:text-2xl font-bold mb-2">See a Working Version Built For You</h2>
+              <h2 className="text-xl md:text-2xl font-bold mb-2">Tell us what you need help with</h2>
               <p className="text-sm text-gray-400 mb-6 max-w-md mx-auto">
                 We hand-tailor this to your exact business. Free, no obligation. Live in 48 hours.
               </p>
