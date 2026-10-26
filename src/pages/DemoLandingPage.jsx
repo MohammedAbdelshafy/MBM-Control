@@ -720,8 +720,7 @@ ${CONTACT.email}`;
               <CheckCircle size={40} className="text-green-400 mx-auto mb-3" />
               <h3 className="text-lg font-bold mb-2">Thanks, request received</h3>
               <p className="text-sm text-gray-400 mb-4">
-                Check your inbox for your personalized demo link and ROI analysis.
-                We'll be in touch within 24 hours.
+                We've recorded your request. The team will review it and reply about suitable next steps. A demo or trial is arranged separately if it fits the agreed scope.
               </p>
               <button onClick={bookCall} className="inline-flex items-center gap-1.5 text-purple-400 text-sm hover:text-purple-300">
                 Book a call now <ArrowRight size={14} />
