@@ -556,9 +556,9 @@ ${CONTACT.email}`;
       {/* Products */}
       <section id="products" className="max-w-5xl mx-auto px-4 py-16">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
-          <h2 className="text-xl md:text-3xl font-bold mb-3">Everything You Need to Scale</h2>
+          <h2 className="text-xl md:text-3xl font-bold mb-3">Tools for everyday sales and operations</h2>
           <p className="text-sm text-gray-400 max-w-xl mx-auto">
-            Six integrated AI systems that work together to automate your entire operations.
+            Choose a starting point. We confirm which tools are available and how they can connect for your specific workflow.
           </p>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -572,8 +572,8 @@ ${CONTACT.email}`;
       <section id="demo" className="bg-[#111125]/50 border-y border-white/5 py-16">
         <div className="max-w-5xl mx-auto px-4">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-8">
-            <h2 className="text-xl md:text-3xl font-bold mb-3">See It in Action</h2>
-            <p className="text-sm text-gray-400">Real screen recordings of each AI system</p>
+            <h2 className="text-xl md:text-3xl font-bold mb-3">Browse example walkthroughs</h2>
+            <p className="text-sm text-gray-400">Example videos showing selected screens and workflows</p>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {PRODUCTS.map((product) => (
