@@ -158,7 +158,7 @@ const PRODUCTS = [
   },
   {
     id: 'chatbot',
-    title: 'AI Customer Support Bot',
+    title: 'Website Inquiry Assistant',
     tagline: '24/7 answering, zero overhead',
     description: 'Website chatbot that answers questions, books showings, screens tenants, qualifies leads.',
     icon: Bot,
