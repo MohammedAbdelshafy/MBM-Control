@@ -755,7 +755,7 @@ ${CONTACT.email}`;
                   className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white rounded-xl px-4 py-2.5 text-sm font-medium transition-all inline-flex items-center justify-center gap-2"
                 >
                   {loading ? <Loader2 size={14} className="animate-spin" /> : null}
-                  Get My Free Demo
+                  Send enquiry
                 </button>
                 <p className="text-[10px] text-gray-600">No spam. Unsubscribe anytime. First week free.</p>
               </form>
