@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Automation Audit — Customer Intake</title>
+<title>Business Workflow Review | Intake</title>
 <style>
   :root { --bg:#0b0f14; --card:#121821; --line:#1f2937; --text:#e5e7eb; --mut:#9ca3af; --acc:#22d3ee; }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -26,8 +26,8 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>$149 AI Automation Audit — Intake</h1>
-  <p class="sub">Payment confirmed? Complete this 3-minute intake. Your audit work starts immediately and lands within 72 hours.</p>
+  <h1>Business Workflow Review</h1>
+  <p class="sub">Share a few details so we can understand your process. We’ll review the request and confirm the scope, price and timing. Submitting this form alone does not verify payment or start work automatically.</p>
 
   <form id="intake">
     <label for="business_name">Business name *</label>
@@ -59,21 +59,21 @@
     <label for="missed_share">Of those, best guess: how many get missed or answered late?</label>
     <input id="missed_share" placeholder="e.g. 10 after-hours, no callback process">
 
-    <label for="bottleneck">Where does follow-up break today? *</label>
+    <label for="bottleneck">Where does follow-up break down today? *</label>
     <textarea id="bottleneck" required placeholder="Who calls back, when, using what — and where do leads fall through?"></textarea>
 
-    <label for="whop_order">Whop order reference (from your receipt email)</label>
-    <input id="whop_order" placeholder="e.g. order_xxx / membership ref">
+    <label for="whop_order">Order reference (if you have one)</label>
+    <input id="whop_order" placeholder="Reference from your receipt, if available">
 
-    <button type="submit" id="submitBtn">Submit intake → start my audit</button>
+    <button type="submit" id="submitBtn">Send intake for review</button>
     <div class="err" id="err"></div>
   </form>
 
   <div class="ok" id="ok">
-    <h2>Intake received — audit in progress</h2>
+    <h2>Thanks. Your intake was received.</h2>
     <p>Audit ID: <strong id="auditId"></strong></p>
-    <p>You'll get: workflow map → automation opportunities → ROI estimate → prioritized 3-step plan → working demo of your top fix, within 72 hours.</p>
-    <p class="next">While you wait: see how <a href="/productized-service/ai-consultancy-sprint/landing.html#engines">Missed-Call Recovery works</a>. Audit clients who proceed to implementation credit the $149 against setup.</p>
+    <p>We’ll review the details and confirm the next step, deliverables and expected timing. Any estimate will be based on the information available and will be labelled with its assumptions.</p>
+    <p class="next">Please don’t include passwords, payment-card details, patient information or other sensitive records in this form. If an implementation is a fit, any setup fee or credit will be confirmed in writing before work begins.</p>
   </div>
 </div>
 
