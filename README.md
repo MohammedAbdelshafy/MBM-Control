@@ -1,8 +1,12 @@
-# Base44 Project
+# Sales & Calling Workspace
 
-Use this repository to run and edit the app locally, then publish changes back through Base44.
+This workspace brings the sales queue, calling tools, lead workflows and follow-up screens together. Use it to run the app locally and publish changes through Base44.
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+Changes pushed to this repository also appear in the connected Base44 Builder.
+
+## Calling workspace
+
+Keep the operator's work clear: which lead is next, why it is in the queue, what happened on the call, and what should happen next. Calling and outreach remain subject to the existing eligibility, suppression and human-approval rules.
 
 ## MBM Dialer
 

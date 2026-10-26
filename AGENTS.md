@@ -1,4 +1,4 @@
-# AGENTS.md — Base44 Control Plane
+# AGENTS.md — Sales & Calling Workspace
 
 ## Project Context
 
@@ -11,8 +11,7 @@ Monorepo with four subsystems:
 
 ## Monetization: Neteller (canonical rail)
 
-ALL checkout/payout surfaces route through the **Neteller** wallet
-(`abdelshafyclapps@gmail.com`, Account ID `4599228811`). Stripe was removed.
+Checkout and payout configuration must come from protected environment variables. Do not commit wallet email addresses, account identifiers or credentials. Stripe is not the configured payout path for this workspace.
 
 Canonical link builders (one source of truth, all three read `NETELLER_*` env):
 - Python: `MBM/Scripts/neteller_config.py` → `neteller_link(amount, item, currency="USD", **kw)`
@@ -244,4 +243,9 @@ next_action: string
 owner: "system" | "human"
 timestamp: ISO8601
 ```
+
+
+## ICM navigation
+
+Read [CONTEXT.md](CONTEXT.md) for the project's job, boundaries and checks. Use the plain-language display name **Sales & Calling Workspace** in customer-facing copy; keep the repository, CLI, API and module names stable. See the portfolio-wide language rules in [Jarvis ICM](https://github.com/MohammedAbdelshafy/jarvis-mbm/blob/feature/icm-portfolio-map/ICM/_shared/customer-language.md).
 
