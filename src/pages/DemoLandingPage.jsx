@@ -582,7 +582,7 @@ ${CONTACT.email}`;
                 <p className="text-xs text-gray-400 font-medium flex items-center justify-between">
                   {product.title}
                   <Link to={product.liveDemo} className="text-purple-400 hover:text-purple-300 text-[10px] underline">
-                    Open live â†’
+                    Open page â†’
                   </Link>
                 </p>
               </div>
@@ -590,7 +590,7 @@ ${CONTACT.email}`;
           </div>
           <div className="text-center mt-8">
             <button onClick={bookCall} className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 text-sm font-medium">
-              <Calendar size={14} /> Want this custom-built for your business? Book a live demo
+              <Calendar size={14} /> Want to discuss your workflow? Book a short call
             </button>
           </div>
         </div>
@@ -599,8 +599,8 @@ ${CONTACT.email}`;
       {/* How it works */}
       <section id="how" className="max-w-5xl mx-auto px-4 py-16">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
-          <h2 className="text-xl md:text-3xl font-bold mb-3">From Call to Live in 48 Hours</h2>
-          <p className="text-sm text-gray-400 max-w-xl mx-auto">We build and you pilot â€” no slideware.</p>
+          <h2 className="text-xl md:text-3xl font-bold mb-3">From first conversation to a clear plan</h2>
+          <p className="text-sm text-gray-400 max-w-xl mx-auto">We agree on scope, access, timing and a test before promising a live rollout.</p>
         </motion.div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {WORKFLOW.map((w, i) => (
