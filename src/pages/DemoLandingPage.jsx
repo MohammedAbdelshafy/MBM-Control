@@ -202,7 +202,7 @@ const WORKFLOW = [
 ];
 
 const FAQS = [
-  { q: 'How fast can I get started?', a: 'Most clients are up and running within 48 hours. We handle the setup, integration, and training to your business.' },
+  { q: 'How fast can I get started?', a: 'Timing depends on the requested workflow, account access and integrations. We confirm a realistic schedule before work starts.' },
   { q: 'Do I need technical skills?', a: 'Zero coding required. We build, deploy, and manage everything. You just use the results.' },
   { q: 'Do you offer a trial?', a: 'Yes. Every plan starts with a 7-day free pilot on live work, then a 30-day money-back guarantee. No risk.' },
   { q: 'Can I pay monthly?', a: 'Yes â€” all plans are monthly. No long-term contracts. Cancel anytime. Pay securely via 1-click Neteller checkout.' },
