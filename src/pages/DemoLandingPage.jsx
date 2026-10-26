@@ -616,9 +616,9 @@ ${CONTACT.email}`;
       {/* Pricing */}
       <section id="pricing" className="max-w-6xl mx-auto px-4 py-16">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
-          <h2 className="text-xl md:text-3xl font-bold mb-3">Simple, Transparent Pricing</h2>
+          <h2 className="text-xl md:text-3xl font-bold mb-3">Plans and starting prices</h2>
           <p className="text-sm text-gray-400 max-w-xl mx-auto">
-            Start with a 7-day free pilot. Upgrade when ready. No long-term contracts.
+            Plan features, payment method, billing term and any trial or refund are confirmed before an order is accepted.
           </p>
         </motion.div>
 
