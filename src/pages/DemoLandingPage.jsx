@@ -730,7 +730,7 @@ ${CONTACT.email}`;
             <>
               <h2 className="text-xl md:text-2xl font-bold mb-2">Tell us what you need help with</h2>
               <p className="text-sm text-gray-400 mb-6 max-w-md mx-auto">
-                We hand-tailor this to your exact business. Free, no obligation. Live in 48 hours.
+                Share your contact details so we can discuss your workflow. We confirm any demo, timing or trial after reviewing the request.
               </p>
               <form onSubmit={handleSubscribe} className="max-w-sm mx-auto space-y-3">
                 <input
