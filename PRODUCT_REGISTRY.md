@@ -114,10 +114,10 @@ A product is NOT customer ready unless ALL are true:
 | OWNER | system/founder |
 | BLOCKER | None — execution only (send outreach to batch 1) |
 
-### P5 — AI Appointment Setter
+### P5 — Mia Voice (AI Appointment Setter)
 | Field | Value |
 |---|---|
-| PRODUCT | AI Appointment Setter |
+| PRODUCT | Mia Voice |
 | CATEGORY | Operations / Voice |
 | STATUS | PROTOTYPE (Vapi backend + booking service exists; no frontend tenant flow) |
 | REPOSITORY | this repo — `voice-agent-saas/backend/` |
