@@ -769,7 +769,7 @@ ${CONTACT.email}`;
         <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Zap size={14} className="text-purple-400" />
-            <span className="text-xs text-gray-500">Contech AI â€” Agentic Solutions</span>
+            <span className="text-xs text-gray-500">MBM Business Tools</span>
           </div>
           <div className="flex items-center gap-4 text-[10px] text-gray-600">
             <a href={`mailto:${CONTACT.email}`} className="hover:text-gray-400">{CONTACT.email}</a>
