@@ -2,13 +2,13 @@
 type: repository
 status: active
 owner_repo: MohammedAbdelshafy/MBM-Control
-product_name: Sales & Calling Workspace
+product_name: MBM-Control
 source_of_truth: https://github.com/MohammedAbdelshafy/MBM-Control
 ---
 
-# Sales & Calling Workspace CONTEXT
+# MBM-Control CONTEXT
 
-One job: help a salesperson work the next eligible lead, record the outcome and keep the next action visible.
+One job: provide the operator workspace for sales queues, calling tools, lead workflows and follow-up. Mia Voice is a separate product line within this broader codebase.
 
 ## Inputs
 - App setup: [README](README.md)
