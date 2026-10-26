@@ -1,6 +1,6 @@
-# Sales & Calling Workspace
+# MBM-Control
 
-This workspace brings the sales queue, calling tools, lead workflows and follow-up screens together. Use it to run the app locally and publish changes through Base44.
+MBM-Control is the operator-facing workspace for the sales queue, calling tools, lead workflows and follow-up screens. Use it to run the app locally and publish changes through Base44.
 
 Changes pushed to this repository also appear in the connected Base44 Builder.
 
