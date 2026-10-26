@@ -20,10 +20,10 @@ const CONTACT = {
 const PRICING_PLANS = [
   {
     id: 'lead_pack_daily',
-    name: 'Lead Pack',
+    name: 'Daily Lead List',
     price: 18,
     unit: '/day',
-    desc: 'Daily distressed seller & wholesaler leads',
+    desc: 'A lead list for your agreed market and criteria',
     features: [
       '300-600 seller leads/day',
       '50-100 buyer leads/day',
