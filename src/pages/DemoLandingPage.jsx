@@ -539,10 +539,10 @@ ${CONTACT.email}`;
         <div className="max-w-5xl mx-auto px-4 py-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             {[
-              { value: '50+', label: 'Markets Scanned', color: 'text-green-400' },
-              { value: '3x', label: 'Lead Response', color: 'text-blue-400' },
-              { value: '40%', label: 'More Closed Deals', color: 'text-purple-400' },
-              { value: '48hr', label: 'Live Demo Turnaround', color: 'text-amber-400' },
+              { value: 'By scope', label: 'Market coverage', color: 'text-green-400' },
+              { value: 'Measured', label: 'Response time', color: 'text-blue-400' },
+              { value: 'Tracked', label: 'Conversion results', color: 'text-purple-400' },
+              { value: 'Agreed', label: 'Setup timing', color: 'text-amber-400' },
             ].map((stat, i) => (
               <div key={i}>
                 <p className={`text-xl md:text-2xl font-bold ${stat.color}`}>{stat.value}</p>
