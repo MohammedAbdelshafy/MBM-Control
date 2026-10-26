@@ -206,7 +206,7 @@ const FAQS = [
   { q: 'Do I need technical skills?', a: 'No coding is needed for the review. If you commission a setup, we agree which configuration and ongoing tasks are included.' },
   { q: 'Do you offer a trial?', a: 'Trial and refund terms depend on the selected offer. Check the current checkout details and written terms before ordering.' },
   { q: 'Can I pay monthly?', a: 'Billing terms depend on the selected plan. Confirm the payment method, renewal schedule and cancellation terms before ordering.' },
-  { q: 'How do I pay?', a: 'Payments are processed through your Neteller wallet with a 1-click checkout link. Bank transfer available on Enterprise.' },
+  { q: 'How do I pay?', a: 'Payment options vary by offer. Review the checkout page or contact us to confirm the current method and terms.' },
   { q: 'Can you work with my existing tools?', a: 'We integrate with virtually any CRM, email provider, and platform you already use.' },
 ];
 
