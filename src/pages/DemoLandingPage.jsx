@@ -147,7 +147,7 @@ const PRODUCTS = [
   {
     id: 'crm-automation',
     title: 'Sales Pipeline',
-    tagline: 'Never drop a deal again',
+    tagline: 'See each opportunity and its next step',
     description: 'Automated deal matching, pipeline tracking, predictive analytics. Sellers to buyers instantly.',
     icon: BarChart3,
     savings: '10+ hrs/week',
