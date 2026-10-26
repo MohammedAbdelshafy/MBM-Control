@@ -203,7 +203,7 @@ const WORKFLOW = [
 
 const FAQS = [
   { q: 'How fast can I get started?', a: 'Timing depends on the requested workflow, account access and integrations. We confirm a realistic schedule before work starts.' },
-  { q: 'Do I need technical skills?', a: 'Zero coding required. We build, deploy, and manage everything. You just use the results.' },
+  { q: 'Do I need technical skills?', a: 'No coding is needed for the review. If you commission a setup, we agree which configuration and ongoing tasks are included.' },
   { q: 'Do you offer a trial?', a: 'Yes. Every plan starts with a 7-day free pilot on live work, then a 30-day money-back guarantee. No risk.' },
   { q: 'Can I pay monthly?', a: 'Yes â€” all plans are monthly. No long-term contracts. Cancel anytime. Pay securely via 1-click Neteller checkout.' },
   { q: 'How do I pay?', a: 'Payments are processed through your Neteller wallet with a 1-click checkout link. Bank transfer available on Enterprise.' },
