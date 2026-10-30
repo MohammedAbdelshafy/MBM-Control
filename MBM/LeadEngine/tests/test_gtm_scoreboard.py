@@ -43,7 +43,7 @@ def test_sales_ledger_event_recording(tmp_path):
     assert event["prospect_id"] == "PROSPECT-001"
     assert event["new_state"] == "CONTACTING"
     assert event["offer_price"] == 297.00
-    assert "https://whop.com/checkout/plan_e3ibiYXeeAaZV" in event["checkout_url"]
+    assert event["checkout_url"] is None  # checkout requires an explicitly approved link
     assert ledger_path.exists()
 
 
@@ -296,3 +296,21 @@ def test_non_usd_payment_is_not_misreported_as_usd_revenue(tmp_path):
     assert metrics["funnel"]["revenue"] == 0.0
     assert metrics["acquisition_attribution"]["unpriced_verified_payments"] == 1
     assert metrics["acquisition_attribution"]["unsupported_currency_payments"] == 1
+
+
+
+def test_checkout_url_is_persisted_only_when_explicitly_supplied(tmp_path):
+    ledger = GtmSalesLedger(ledger_path=tmp_path / "checkout_gate.json")
+    event = ledger.record_event(
+        prospect_id="P-CHECKOUT",
+        agent="HUMAN_OPERATOR",
+        channel="EMAIL",
+        previous_state="QUALIFIED",
+        new_state="PROPOSAL",
+        action="PREPARE_PROPOSAL",
+        evidence={"quote_approved": True, "checkout_link_approved": True},
+        next_action="AWAIT_BUYER",
+        offer="AUDIT",
+        checkout_url="https://payments.example/approved-checkout",
+    )
+    assert event["checkout_url"] == "https://payments.example/approved-checkout"
