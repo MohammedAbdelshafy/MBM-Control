@@ -14,7 +14,7 @@ def candidate(provider, *, capabilities=("people_search",), priority=100,
               credits=0, cost=0, available=True, approved=False,
               approval_reference=None, approved_cap=None,
               contact_access=False, contact_approved=False,
-              balance_verified=True):
+              balance_verified=True, balance_observed_at=None):
     return ProviderCandidate(
         provider=provider,
         capabilities=frozenset(capabilities),
@@ -28,6 +28,11 @@ def candidate(provider, *, capabilities=("people_search",), priority=100,
         personal_contact_access=contact_access,
         contact_data_approved=contact_approved,
         balance_verified=balance_verified,
+        balance_observed_at=(
+            balance_observed_at
+            if balance_observed_at is not None
+            else (datetime.now(timezone.utc) if balance_verified else None)
+        ),
     )
 
 
