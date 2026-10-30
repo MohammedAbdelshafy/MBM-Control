@@ -194,3 +194,43 @@ def test_agent_quality_budget_blocks_spend_above_daily_limit():
             daily_budget_limit=5,
             credits_spent_today=1,
         )
+
+
+def test_agent_quality_mode_requires_contact_scope_and_lawful_basis_for_contact_data():
+    from MBM.LeadEngine.connectors.agent_quality import assess_agent_operation
+
+    checks = {
+        "capability_match": True,
+        "evidence_provenance": True,
+        "identity_confidence": True,
+        "duplicate_check": True,
+        "suppression_check": True,
+        "privacy_scope_check": True,
+        "contact_scope_check": True,
+        "lawful_basis_check": True,
+        "business_channel_verification": False,
+    }
+    result = assess_agent_operation(checks, require_contact_scope=True)
+
+    assert result.passed is False
+    assert "business_channel_verification" in result.failed_checks
+
+
+def test_agent_paid_operation_fails_closed_without_daily_budget_policy():
+    quality_checks = {
+        "capability_match": True,
+        "evidence_provenance": True,
+        "identity_confidence": True,
+        "duplicate_check": True,
+        "suppression_check": True,
+        "privacy_scope_check": True,
+    }
+    with pytest.raises(ProviderBudgetDenied, match="daily budget limit"):
+        authorize_provider_usage(
+            provider="APOLLO",
+            operation="COMPANY_ENRICHMENT",
+            estimated_credits=1,
+            credits_available=20,
+            quality_checks=quality_checks,
+            agent_policy_id="mbm-customer-acquisition-v1",
+        )
