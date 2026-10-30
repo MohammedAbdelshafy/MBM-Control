@@ -7,6 +7,10 @@ import { defineConfig } from 'vitest/config';
  * frontend-only plugins. The LeadEngine package is a Node/Vitest workspace.
  */
 export default defineConfig({
+  css: {
+    // Do not inherit the monorepo web app's PostCSS/Tailwind pipeline.
+    postcss: { plugins: [] },
+  },
   test: {
     environment: 'node',
     include: ['tests/**/*.test.ts'],
