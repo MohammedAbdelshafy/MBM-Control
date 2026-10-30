@@ -215,6 +215,7 @@ def test_checkout_requires_explicit_quote_and_payment_approval(monkeypatch):
         "https://approved.example/pay?amount=500.0&item=AI-ASSISTANT-VIP-RETAINER"
     )
     assert approved["offer"]["approved_quote_usd"] == 500.0
+    assert approved["offer"]["price_status"] == "APPROVED"
     assert approved["offer"]["checkout_link_status"] == "APPROVED"
 
 
@@ -226,3 +227,16 @@ def test_invalid_intent_score_is_not_promoted_to_hot():
     })
     assert strategy["intent_mode"] == "UNKNOWN"
     assert strategy["next_best_action"]["action"] == "DRAFT_ONLY"
+
+
+
+def test_quantification_prompt_does_not_smuggle_playbook_roi_assumptions_into_customer_copy():
+    strategy = OfferArchitect().build_sales_strategy_for_lead({
+        "company": "Example HVAC",
+        "industry": "HVAC & Mechanical Contractors",
+    })
+    prompt = strategy["conversation_script"]["quantification_question"]
+    assert "1,200" not in prompt
+    assert "two missed" not in prompt.lower()
+    assert "7,200" not in prompt
+    assert "How does your team currently track this workflow" in prompt
