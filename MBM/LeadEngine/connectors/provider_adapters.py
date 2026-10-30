@@ -11,9 +11,13 @@ import os
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Callable, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Callable, Mapping, Optional, Sequence
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+
+
+if TYPE_CHECKING:
+    from MBM.LeadEngine.connectors.provider_router import ProviderCandidate
 
 
 APOLLO_CREDIT_POOLS = frozenset({
@@ -393,7 +397,7 @@ def read_provider_balance(
 
 
 def apply_provider_balance(
-    candidate: Any,
+    candidate: "ProviderCandidate",
     snapshot: ProviderBalanceSnapshot,
     *,
     now: Optional[datetime] = None,
@@ -430,7 +434,7 @@ def apply_provider_balance(
 
 
 def refresh_provider_candidates(
-    candidates: Any,
+    candidates: Sequence["ProviderCandidate"],
     *,
     required_capability: str,
     api_keys: Optional[Mapping[str, str]] = None,
@@ -438,7 +442,7 @@ def refresh_provider_candidates(
     opener: Callable[..., Any] = urlopen,
     timeout: int = DEFAULT_TIMEOUT_SECONDS,
     max_age_seconds: int = 120,
-) -> list[Any]:
+) -> list["ProviderCandidate"]:
     """Attach a fresh vendor meter to paid/unknown-cost routing candidates.
 
     Zero-credit operations are left untouched because their documented
