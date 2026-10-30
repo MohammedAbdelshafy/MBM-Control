@@ -128,3 +128,69 @@ def test_zero_cost_does_not_override_approval_for_contact_data_access():
         approval_reference="FOUNDER-CONTACT-APPROVAL-01",
     )
     assert result.authorized is True
+
+
+def test_agent_quality_assessment_requires_all_mandatory_checks():
+    from MBM.LeadEngine.connectors.agent_quality import assess_agent_operation
+
+    result = assess_agent_operation({
+        "capability_match": True,
+        "evidence_provenance": True,
+        "identity_confidence": True,
+        "duplicate_check": True,
+        "suppression_check": True,
+        "privacy_scope_check": True,
+        "contact_scope_check": False,
+    }, require_contact_scope=True)
+
+    assert result.passed is False
+    assert result.score < 1.0
+    assert "contact_scope_check" in result.failed_checks
+
+
+def test_agent_quality_can_authorize_paid_work_within_daily_cap_without_human_approval():
+    quality_checks = {
+        "capability_match": True,
+        "evidence_provenance": True,
+        "identity_confidence": True,
+        "duplicate_check": True,
+        "suppression_check": True,
+        "privacy_scope_check": True,
+    }
+    result = authorize_provider_usage(
+        provider="APOLLO",
+        operation="COMPANY_ENRICHMENT",
+        estimated_credits=2,
+        credits_available=8,
+        quality_checks=quality_checks,
+        agent_policy_id="mbm-customer-acquisition-v1",
+        daily_budget_limit=5,
+        credits_spent_today=1,
+    )
+
+    assert result.authorized is True
+    assert result.credits_ceiling == 2
+    assert result.agent_policy_id == "mbm-customer-acquisition-v1"
+    assert result.quality_passed is True
+
+
+def test_agent_quality_budget_blocks_spend_above_daily_limit():
+    quality_checks = {
+        "capability_match": True,
+        "evidence_provenance": True,
+        "identity_confidence": True,
+        "duplicate_check": True,
+        "suppression_check": True,
+        "privacy_scope_check": True,
+    }
+    with pytest.raises(ProviderBudgetDenied, match="daily agent budget"):
+        authorize_provider_usage(
+            provider="APOLLO",
+            operation="COMPANY_ENRICHMENT",
+            estimated_credits=5,
+            credits_available=20,
+            quality_checks=quality_checks,
+            agent_policy_id="mbm-customer-acquisition-v1",
+            daily_budget_limit=5,
+            credits_spent_today=1,
+        )
