@@ -112,7 +112,7 @@ class AgencyProspector:
         else:
             proof_instruction = (
                 "No completed-work proof is present. Do not claim you already analyzed, watched, "
-                "edited, captioned or created anything for this prospect. Do not claim an artifact "
+                "edited, captioned or created anything for this prospect. Do not claim an attached clip or artifact "
                 "is attached. Ask whether they would like MBM to prepare a sample after approval."
             )
 
