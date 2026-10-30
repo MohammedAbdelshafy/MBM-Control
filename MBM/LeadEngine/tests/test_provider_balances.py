@@ -266,3 +266,29 @@ def test_refresh_provider_candidates_attaches_current_authoritative_meter_before
     assert refreshed[0].credits_available == 50
     assert refreshed[0].balance_source == "APOLLO"
     assert refreshed[0].balance_observed_at == now
+
+
+def test_apollo_inconsistent_pool_totals_never_become_a_verified_balance():
+    now = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
+    result = read_apollo_balance(
+        "secret-token",
+        credit_pool="direct_dial_credit",
+        now=now,
+        opener=lambda request, timeout: FakeResponse({
+            "credit_usage_stats": {
+                "direct_dial_credit": {
+                    "limit": 160,
+                    "consumed": 0,
+                    "left_over": 80,
+                }
+            },
+            "current_credit_cycle": {
+                "start_date": "2026-10-30T00:00:00Z",
+                "end_date": "2026-11-30T00:00:00Z",
+            },
+        }),
+    )
+
+    assert result.status is BalanceStatus.UNKNOWN
+    assert result.credits_remaining is None
+    assert not result.is_authoritative_for_paid_work(now=now)
