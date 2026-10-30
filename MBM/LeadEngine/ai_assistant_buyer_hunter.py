@@ -817,6 +817,7 @@ class SignalHarvester:
 
     def __init__(self):
         self.npi_path = ARTIFACTS_DIR / "npi_verified_callsheet.json"
+        self._npi_observed_at: Optional[str] = None
 
     def harvest_all_sources(self) -> List[Dict[str, Any]]:
         """Harvests candidates across all 5 discovery layers."""
@@ -867,16 +868,23 @@ class SignalHarvester:
                 continue
             # Registry-backed candidates are REAL businesses; strip any fabricated
             # contact email/website and attach a full, honest provenance block.
-            if "NPI" in str(cand.get("source", "")):
-                cand["email"] = ""
-                cand.update(
-                    build_provenance_fields(
-                        source="CMS NPI Registry API v2.1",
-                        source_reference="NPI-REGISTRY",
-                        source_type="government_registry",
-                        verification_method="npi_registry_api",
-                    )
+            if "NPI" in str(cand.get("source", "")).upper():
+                # Preserve the exact registry record identity. A generic
+                # "NPI-REGISTRY" label is not a record-level source reference.
+                source_reference = str(cand.get("source_reference") or "").strip()
+                observed_at = str(cand.get("observed_at") or self._npi_observed_at or "").strip()
+                verified_at = str(cand.get("verified_at") or observed_at).strip()
+                if not source_reference or not observed_at or not verified_at:
+                    continue
+                provenance = build_provenance_fields(
+                    source=str(cand["source"]),
+                    source_reference=source_reference,
+                    source_type="government_registry",
+                    verification_method="npi_registry_api",
+                    observed_at=observed_at,
                 )
+                provenance["verified_at"] = verified_at
+                cand.update(provenance)
             if gate.evaluate(cand)["ok"]:
                 kept.append(cand)
         return kept
@@ -1199,81 +1207,105 @@ class SignalHarvester:
         ]
 
     def _harvest_clinic_registry_signals(self) -> List[Dict[str, Any]]:
-        """Harvests verified healthcare practices from NPI registry / Google verified directories."""
-        registry_leads = []
-        if self.npi_path.exists():
-            try:
-                raw_json = json.loads(self.npi_path.read_text(encoding="utf-8"))
-                leads_list = raw_json.get("leads", raw_json) if isinstance(raw_json, dict) else raw_json
-                
-                for idx, row in enumerate(leads_list[:250], 1):
-                    phone = row.get("authorized_official_phone") or row.get("phone") or ""
-                    comp = row.get("company_name") or row.get("company") or "Private Medical Practice"
-                    contact = row.get("authorized_official_name") or row.get("contact") or "Practice Owner & Physician"
-                    role = row.get("authorized_official_title") or row.get("title") or "Managing Partner & Practice Owner"
-                    city = row.get("city") or "Dallas"
-                    state = row.get("state") or "TX"
-                    taxonomy = row.get("taxonomy") or row.get("vertical") or "Medical Practices & Specialty Clinics"
+        """Map only facts present in the verified NPI source; NPI is not buying intent."""
+        if not self.npi_path.exists():
+            return []
 
-                    # Normalize role & vertical
-                    if "dent" in taxonomy.lower():
-                        vert = "Dental Clinics & Orthodontics"
-                    elif "chiro" in taxonomy.lower():
-                        vert = "Chiropractic & Physical Therapy"
-                    else:
-                        vert = "Medical Practices & Specialty Clinics"
+        try:
+            raw_json = json.loads(self.npi_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"[WARN] Unable to read NPI source: {exc}")
+            return []
 
-                    norm_p = normalize_phone(phone)
-                    if len(norm_p) == 10 and not is_placeholder_identity({"contact": contact, "company": comp}):
-                        slug = re.sub(r'[^a-zA-Z0-9]', '', comp.lower())[:15]
-                        registry_leads.append({
-                            "company": comp,
-                            "decision_maker": contact,
-                            "role": role,
-                            "industry": vert,
-                            "website": f"https://www.{slug}.com",
-                            "location": f"{city}, {state}",
-                            "phone": format_e164(phone),
-                            "email": f"contact@{slug}.com",
-                            "source": "US CMS NPI Healthcare Registry",
-                            "source_url": "https://npiregistry.cms.hhs.gov/",
-                            "source_date": "2026-08-15",
-                            "source_class": "AUTHORITATIVE_REGISTRY",
-                            "signal_age_days": 1,
-                            "post_content": f"Active clinical practice operations at {comp} handling high daily patient intake, multi-line front-desk calls, and hygiene/wellness appointment recalls.",
-                            "pain_description": "Front-desk phone overload during peak hours, lost after-hours appointment booking, and uncalled patient recall lists.",
-                            "intent_signal": "Practice operations requiring automated 24/7 front-desk overflow and patient recall recovery.",
-                            "hiring_title": "Medical Receptionist / Patient Care Coordinator",
-                            "tech_stack": "Dentrix / AdvancedMD / Epic EHR",
-                            "locations_count": 1,
-                            "engagement_context": "Authoritative registry verified operational clinical facility with active NPI license."
-                        })
-            except Exception as e:
-                print(f"[WARN] Error loading NPI registry signals: {e}")
+        if isinstance(raw_json, dict):
+            leads_list = raw_json.get("leads", [])
+            self._npi_observed_at = (
+                raw_json.get("generated_at")
+                or raw_json.get("observed_at")
+                or raw_json.get("retrieved_at")
+            )
+        elif isinstance(raw_json, list):
+            leads_list = raw_json
+            self._npi_observed_at = None
+        else:
+            return []
 
-        # If NPI file not present, add fallback verified clinic leads
-        if not registry_leads:
-            registry_leads.append({
-                "company": "Premier Smile Partners Dental Group",
-                "decision_maker": "Dr. Sarah Lin",
-                "role": "Managing Partner & Practice Owner",
-                "industry": "Dental Clinics & Orthodontics",
-                "website": "https://premiersmilepartners.com",
-                "location": "Plano, TX",
-                "phone": "+19726658140",
-                "email": "drlin@premiersmilepartners.com",
-                "source": "US CMS NPI Healthcare Registry",
-                "source_url": "https://npiregistry.cms.hhs.gov/",
-                "source_date": "2026-08-14",
-                "signal_age_days": 2,
-                "post_content": "Front desk spends 4 hours daily dialing 1,200 overdue hygiene patients. Seeking Dentrix-compatible AI recall assistant.",
-                "pain_description": "1,200 overdue hygiene patients uncalled due to 4+ hours daily front-desk phone bottleneck.",
-                "intent_signal": "Searching for HIPAA-compliant AI recall and front-desk phone overflow assistant.",
-                "hiring_title": "Patient Care Coordinator",
-                "tech_stack": "Dentrix Ascend",
-                "locations_count": 3,
-                "engagement_context": "Practice owner seeking Dentrix-compatible AI recall assistant."
-            })
+        registry_leads: List[Dict[str, Any]] = []
+        for row in leads_list[:250]:
+            if not isinstance(row, dict):
+                continue
+
+            npi = str(row.get("npi") or row.get("NPI") or row.get("number") or "").strip()
+            company = str(row.get("company_name") or row.get("company") or "").strip()
+            phone = row.get("authorized_official_phone") or row.get("phone") or ""
+            source = str(row.get("source") or "").strip()
+            taxonomy = str(row.get("taxonomy") or row.get("vertical") or "").strip()
+            official_name = str(
+                row.get("authorized_official_name") or row.get("contact") or ""
+            ).strip()
+            official_title = str(
+                row.get("authorized_official_title") or row.get("title") or ""
+            ).strip()
+            observed_at = str(
+                row.get("observed_at")
+                or row.get("retrieved_at")
+                or self._npi_observed_at
+                or ""
+            ).strip()
+            verified_at = str(
+                row.get("verified_at")
+                or row.get("retrieved_at")
+                or self._npi_observed_at
+                or ""
+            ).strip()
+
+            # A usable registry candidate requires an exact record key, named
+            # organization, real source label, source timestamp and source phone.
+            # Missing evidence stays missing; it is never filled with a template.
+            if (
+                not npi
+                or not company
+                or "NPI" not in source.upper()
+                or not observed_at
+                or not verified_at
+                or not phone
+            ):
+                continue
+
+            norm_phone = normalize_phone(phone)
+            if len(norm_phone) != 10 or is_placeholder_identity(
+                {"contact": official_name, "company": company, "phone": phone}
+            ):
+                continue
+
+            source_reference = f"NPI-{npi}"
+            record: Dict[str, Any] = {
+                "id": source_reference,
+                "company": company,
+                "industry": taxonomy or None,
+                "phone": format_e164(phone),
+                "source": source,
+                "source_reference": source_reference,
+                "source_url": (
+                    "https://npiregistry.cms.hhs.gov/api/"
+                    f"?number={npi}&version=2.1"
+                ),
+                "observed_at": observed_at,
+                "verified_at": verified_at,
+                "verification_method": "npi_registry_api",
+            }
+
+            # The NPI authorized official is not automatically the owner or buyer.
+            if official_name:
+                record["authorized_official_name"] = official_name
+            if official_title:
+                record["authorized_official_title"] = official_title
+            city = str(row.get("city") or "").strip()
+            state = str(row.get("state") or "").strip()
+            if city or state:
+                record["location"] = ", ".join(part for part in (city, state) if part)
+
+            registry_leads.append(record)
 
         return registry_leads
 
