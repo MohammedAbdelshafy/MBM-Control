@@ -25,6 +25,11 @@ on:
       - 'MBM/LeadEngine/vitest.config.ts'
       - 'MBM/LeadEngine/agency_prospector.py'
       - 'MBM/LeadEngine/tests/test_agency_prospector.py'
+      - 'MBM/LeadEngine/ai_assistant_buyer_hunter.py'
+      - 'MBM/LeadEngine/gtm/adapters.py'
+      - 'MBM/LeadEngine/gtm/action_ranker.py'
+      - 'MBM/LeadEngine/tests/test_honest_discovery_inputs.py'
+      - 'MBM/LeadEngine/tests/test_gtm_action_ranker.py'
       - 'MBM/LeadEngine/offer_architect.py'
       - 'MBM/LeadEngine/tests/test_offer_architect.py'
       - 'MBM/LeadEngine/agency_prospector.py'
@@ -73,7 +78,7 @@ jobs:
       - name: Install focused test runner
         run: python -m pip install pytest
       - name: Run GTM acquisition and payment contracts
-        run: python -m pytest MBM/LeadEngine/tests/test_gtm_scoreboard.py MBM/LeadEngine/tests/test_offer_architect.py MBM/LeadEngine/tests/test_agency_prospector.py MBM/LeadEngine/tests/test_provider_ingestion.py MBM/LeadEngine/tests/test_provider_usage_gate.py MBM/LeadEngine/tests/test_provider_gateway.py MBM/LeadEngine/tests/test_provider_router.py MBM/LeadEngine/tests/test_provider_fallback_execution.py MBM/LeadEngine/tests/test_neteller_config.py -q
+        run: python -m pytest MBM/LeadEngine/tests/test_gtm_scoreboard.py MBM/LeadEngine/tests/test_offer_architect.py MBM/LeadEngine/tests/test_agency_prospector.py MBM/LeadEngine/tests/test_provider_ingestion.py MBM/LeadEngine/tests/test_provider_usage_gate.py MBM/LeadEngine/tests/test_provider_gateway.py MBM/LeadEngine/tests/test_provider_router.py MBM/LeadEngine/tests/test_provider_fallback_execution.py MBM/LeadEngine/tests/test_neteller_config.py MBM/LeadEngine/tests/test_honest_discovery_inputs.py MBM/LeadEngine/tests/test_gtm_action_ranker.py -q
 
   vertical-source-contracts:
     runs-on: ubuntu-latest
