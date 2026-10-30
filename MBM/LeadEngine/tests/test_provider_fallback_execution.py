@@ -158,3 +158,67 @@ def test_missing_provider_adapter_is_skipped_without_network_call():
 
     assert result.provider == "VIBE_PROSPECTING"
     assert result.attempts[0].outcome == "ADAPTER_NOT_CONFIGURED"
+
+
+def test_agent_quality_and_daily_budget_replace_per_call_human_approval():
+    checks = {
+        "capability_match": True,
+        "evidence_provenance": True,
+        "identity_confidence": True,
+        "duplicate_check": True,
+        "suppression_check": True,
+        "privacy_scope_check": True,
+    }
+    result = execute_with_provider_fallback(
+        required_capability="people_search",
+        candidates=[
+            ProviderCandidate(
+                provider="APOLLO",
+                capabilities=frozenset({"people_search"}),
+                priority=1,
+                credits_available=8,
+                estimated_credits=2,
+                quality_checks=checks,
+                agent_policy_id="mbm-customer-acquisition-v1",
+                daily_budget_limit=5,
+                credits_spent_today=1,
+            )
+        ],
+        operations={"APOLLO": lambda: {"matches": 4}},
+    )
+
+    assert result.status is ProviderRouteStatus.READY
+    assert result.provider == "APOLLO"
+    assert result.result == {"matches": 4}
+    assert result.attempts[0].outcome == "SUCCESS"
+
+
+def test_agent_quality_failure_does_not_call_provider():
+    checks = {
+        "capability_match": True,
+        "evidence_provenance": True,
+        "identity_confidence": True,
+        "duplicate_check": True,
+        "suppression_check": False,
+        "privacy_scope_check": True,
+    }
+    calls = []
+    result = execute_with_provider_fallback(
+        required_capability="people_search",
+        candidates=[
+            ProviderCandidate(
+                provider="APOLLO",
+                capabilities=frozenset({"people_search"}),
+                priority=1,
+                credits_available=8,
+                estimated_credits=0,
+                quality_checks=checks,
+                agent_policy_id="mbm-customer-acquisition-v1",
+                daily_budget_limit=0,
+            )
+        ],
+        operations={"APOLLO": lambda: calls.append("called")},
+    )
+
+    assert result.status is ProviderRouteStatus.NO_PROVIDER_AVAILABLE
+    assert calls == []
