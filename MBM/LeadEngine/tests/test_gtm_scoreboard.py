@@ -268,7 +268,7 @@ def test_verified_payment_needs_explicit_usd_amount_and_transaction_id(tmp_path)
         previous_state="CHECKOUT_SENT", new_state="PURCHASED",
         action="VERIFY_PAYMENT",
         evidence={"transaction_id": "tx-unpriced", "verified_payment": True},
-        next_action="DELIVER", payment_transaction_id="tx-unpriced",
+        next_action="DELIVER",
         payment_currency="USD",
     )
 
