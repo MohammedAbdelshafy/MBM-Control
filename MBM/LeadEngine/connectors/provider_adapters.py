@@ -408,3 +408,63 @@ def apply_provider_balance(
         balance_source=snapshot.provider,
         balance_detail=snapshot.detail or "Provider balance is not verified.",
     )
+
+
+def refresh_provider_candidates(
+    candidates: Any,
+    *,
+    required_capability: str,
+    api_keys: Optional[Mapping[str, str]] = None,
+    now: Optional[datetime] = None,
+    opener: Callable[..., Any] = urlopen,
+    timeout: int = DEFAULT_TIMEOUT_SECONDS,
+    max_age_seconds: int = 120,
+) -> list[Any]:
+    """Attach a fresh vendor meter to paid/unknown-cost routing candidates.
+
+    Zero-credit operations are left untouched because their documented
+    operation cost, not a guessed vendor balance, is the spend control. Paid
+    and unknown-cost operations get a just-in-time balance read; any missing,
+    stale, malformed, or unavailable meter makes the candidate non-routable.
+    """
+    capability = str(required_capability or "").strip().lower()
+    if not capability:
+        raise ValueError("required_capability is required")
+
+    keys = {
+        str(name).strip().upper(): str(value).strip()
+        for name, value in (api_keys or {}).items()
+        if value is not None and str(value).strip()
+    }
+    direct_dial_capabilities = {
+        "direct_dial_enrichment",
+        "phone_enrichment",
+        "mobile_enrichment",
+    }
+    credit_pool = (
+        "direct_dial_credit"
+        if capability in direct_dial_capabilities
+        else "lead_credit"
+    )
+    refreshed = []
+    for candidate in candidates:
+        if candidate.estimated_credits == 0:
+            refreshed.append(candidate)
+            continue
+
+        provider = str(candidate.provider or "").strip().upper()
+        snapshot = read_provider_balance(
+            provider,
+            api_key=keys.get(provider),
+            credit_pool=credit_pool,
+            now=now,
+            opener=opener,
+            timeout=timeout,
+        )
+        refreshed.append(apply_provider_balance(
+            candidate,
+            snapshot,
+            now=now,
+            max_age_seconds=max_age_seconds,
+        ))
+    return refreshed
