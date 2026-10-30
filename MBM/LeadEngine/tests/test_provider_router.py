@@ -40,7 +40,7 @@ def test_exhausted_primary_provider_falls_back_to_next_zero_cost_compatible_prov
 
     assert decision.status is ProviderRouteStatus.READY
     assert decision.selected.provider == "VIBE_PROSPECTING"
-    assert [item.provider for item in decision.skipped] == ["APOLLO", "CLAY"]
+    assert [item.provider for item in decision.skipped] == ["APOLLO"]
 
 
 def test_fallback_does_not_spend_second_provider_credits_without_prior_approval():
