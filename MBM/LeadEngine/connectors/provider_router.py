@@ -8,6 +8,7 @@ execute through provider_gateway immediately before the real provider request.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from datetime import datetime
 from enum import Enum
 from typing import Any, Callable, Mapping, Optional, Sequence
 
@@ -71,7 +72,7 @@ class ProviderCandidate:
     daily_budget_limit: Optional[int] = None
     credits_spent_today: int = 0
     balance_verified: bool = False
-    balance_observed_at: Optional[Any] = None
+    balance_observed_at: Optional[datetime] = None
     balance_source: Optional[str] = None
     balance_detail: Optional[str] = None
 
