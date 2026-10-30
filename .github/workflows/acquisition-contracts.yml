@@ -13,6 +13,8 @@ on:
       - 'MBM/LeadEngine/tests/test_provider_ingestion.py'
       - 'MBM/LeadEngine/connectors/usage_gate.py'
       - 'MBM/LeadEngine/tests/test_provider_usage_gate.py'
+      - 'MBM/LeadEngine/connectors/provider_gateway.py'
+      - 'MBM/LeadEngine/tests/test_provider_gateway.py'
       - 'MBM/LeadEngine/src/verticals/ai-vibe.ts'
       - 'MBM/LeadEngine/src/verticals/types.ts'
       - 'MBM/LeadEngine/src/verticals/registry.ts'
@@ -39,6 +41,8 @@ on:
       - 'MBM/LeadEngine/tests/test_provider_ingestion.py'
       - 'MBM/LeadEngine/connectors/usage_gate.py'
       - 'MBM/LeadEngine/tests/test_provider_usage_gate.py'
+      - 'MBM/LeadEngine/connectors/provider_gateway.py'
+      - 'MBM/LeadEngine/tests/test_provider_gateway.py'
       - 'MBM/LeadEngine/src/verticals/ai-vibe.ts'
       - 'MBM/LeadEngine/src/verticals/types.ts'
       - 'MBM/LeadEngine/src/verticals/registry.ts'
@@ -63,7 +67,7 @@ jobs:
       - name: Install focused test runner
         run: python -m pip install pytest
       - name: Run GTM acquisition and payment contracts
-        run: python -m pytest MBM/LeadEngine/tests/test_gtm_scoreboard.py MBM/LeadEngine/tests/test_offer_architect.py MBM/LeadEngine/tests/test_agency_prospector.py MBM/LeadEngine/tests/test_provider_ingestion.py MBM/LeadEngine/tests/test_provider_usage_gate.py MBM/LeadEngine/tests/test_neteller_config.py -q
+        run: python -m pytest MBM/LeadEngine/tests/test_gtm_scoreboard.py MBM/LeadEngine/tests/test_offer_architect.py MBM/LeadEngine/tests/test_agency_prospector.py MBM/LeadEngine/tests/test_provider_ingestion.py MBM/LeadEngine/tests/test_provider_usage_gate.py MBM/LeadEngine/tests/test_provider_gateway.py MBM/LeadEngine/tests/test_neteller_config.py -q
 
   vertical-source-contracts:
     runs-on: ubuntu-latest
