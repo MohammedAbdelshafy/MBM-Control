@@ -8,8 +8,10 @@ persist customer data or reserve vendor credits.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Callable, Generic, Mapping, Optional, TypeVar
 
+from MBM.LeadEngine.connectors.provider_adapters import is_provider_balance_fresh
 from MBM.LeadEngine.connectors.usage_gate import (
     ProviderBudgetAuthorization,
     ProviderBudgetDenied,
@@ -42,6 +44,8 @@ def execute_provider_operation(
     daily_budget_limit: Optional[int] = None,
     credits_spent_today: int = 0,
     balance_verified: bool = False,
+    balance_observed_at: Optional[datetime] = None,
+    balance_max_age_seconds: int = 120,
 ) -> ProviderOperationResult[T]:
     """Authorize then execute exactly once; propagate provider exceptions."""
     authorization = authorize_provider_usage(
@@ -59,7 +63,13 @@ def execute_provider_operation(
         daily_budget_limit=daily_budget_limit,
         credits_spent_today=credits_spent_today,
     )
-    if authorization.credits_ceiling > 0 and not balance_verified:
+    if authorization.credits_ceiling > 0 and (
+        not balance_verified
+        or not is_provider_balance_fresh(
+            balance_observed_at,
+            max_age_seconds=balance_max_age_seconds,
+        )
+    ):
         raise ProviderBudgetDenied(
             "a fresh authoritative provider balance is required before paid work"
         )
