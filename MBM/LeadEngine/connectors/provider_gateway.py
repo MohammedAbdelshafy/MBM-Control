@@ -63,7 +63,7 @@ def execute_provider_operation(
         daily_budget_limit=daily_budget_limit,
         credits_spent_today=credits_spent_today,
     )
-    if authorization.credits_ceiling > 0 and (
+    if (authorization.estimated_credits is None or authorization.estimated_credits > 0) and (
         not balance_verified
         or not is_provider_balance_fresh(
             balance_observed_at,
