@@ -93,11 +93,17 @@ def _validate_filters(filters: object) -> dict[str, Any]:
     return validated
 
 
-def _validate_paging(page: int, page_size: int, *, max_page_size: int) -> None:
+def _validate_paging(
+    page: int,
+    page_size: int,
+    *,
+    max_page_size: int,
+    size_label: str = "page_size",
+) -> None:
     if type(page) is not int or page < 1:
         raise ValueError("page must be a positive integer")
     if type(page_size) is not int or not 1 <= page_size <= max_page_size:
-        raise ValueError(f"page_size must be between 1 and {max_page_size}")
+        raise ValueError(f"{size_label} must be between 1 and {max_page_size}")
 
 
 def _read_json(
@@ -247,7 +253,7 @@ def search_apollo_organizations(
 ) -> ProviderSearchResult:
     """Search Apollo organizations. The documented price is one credit/page."""
     normalized_filters = _validate_filters(filters)
-    _validate_paging(page, per_page, max_page_size=100)
+    _validate_paging(page, per_page, max_page_size=100, size_label="per_page")
     token = str(api_key or "").strip()
     if not token:
         raise ProviderBudgetDenied("Apollo API key is not configured.")
