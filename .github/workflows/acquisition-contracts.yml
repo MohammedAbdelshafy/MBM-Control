@@ -1,0 +1,32 @@
+name: Acquisition Contract Tests
+
+on:
+  pull_request:
+    paths:
+      - 'MBM/LeadEngine/gtm/scoreboard.py'
+      - 'MBM/LeadEngine/tests/test_gtm_scoreboard.py'
+      - '.github/workflows/acquisition-contracts.yml'
+  push:
+    branches:
+      - 'feat/acquisition-attribution-money-model-2026-10-30'
+    paths:
+      - 'MBM/LeadEngine/gtm/scoreboard.py'
+      - 'MBM/LeadEngine/tests/test_gtm_scoreboard.py'
+      - '.github/workflows/acquisition-contracts.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  acquisition-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install focused test runner
+        run: python -m pip install pytest
+      - name: Run GTM acquisition and payment contracts
+        run: python -m pytest MBM/LeadEngine/tests/test_gtm_scoreboard.py -q
