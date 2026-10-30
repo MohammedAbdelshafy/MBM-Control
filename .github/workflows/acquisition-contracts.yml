@@ -16,6 +16,8 @@ on:
       - 'MBM/LeadEngine/connectors/provider_gateway.py'
       - 'MBM/LeadEngine/tests/test_provider_gateway.py'
       - 'MBM/LeadEngine/connectors/provider_router.py'
+      - 'MBM/LeadEngine/connectors/provider_adapters.py'
+      - 'MBM/LeadEngine/tests/test_provider_balances.py'
       - 'MBM/LeadEngine/tests/test_provider_router.py'
       - 'MBM/LeadEngine/tests/test_provider_fallback_execution.py'
       - 'MBM/LeadEngine/src/verticals/ai-vibe.ts'
@@ -83,7 +85,7 @@ jobs:
       - name: Install focused test runner
         run: python -m pip install pytest
       - name: Run GTM acquisition and payment contracts
-        run: python -m pytest MBM/LeadEngine/tests/test_gtm_scoreboard.py MBM/LeadEngine/tests/test_offer_architect.py MBM/LeadEngine/tests/test_agency_prospector.py MBM/LeadEngine/tests/test_provider_ingestion.py MBM/LeadEngine/tests/test_provider_usage_gate.py MBM/LeadEngine/tests/test_provider_gateway.py MBM/LeadEngine/tests/test_provider_router.py MBM/LeadEngine/tests/test_provider_fallback_execution.py MBM/LeadEngine/tests/test_neteller_config.py MBM/LeadEngine/tests/test_honest_discovery_inputs.py MBM/LeadEngine/tests/test_gtm_action_ranker.py -q
+        run: python -m pytest MBM/LeadEngine/tests/test_gtm_scoreboard.py MBM/LeadEngine/tests/test_offer_architect.py MBM/LeadEngine/tests/test_agency_prospector.py MBM/LeadEngine/tests/test_provider_ingestion.py MBM/LeadEngine/tests/test_provider_usage_gate.py MBM/LeadEngine/tests/test_provider_gateway.py MBM/LeadEngine/tests/test_provider_router.py MBM/LeadEngine/tests/test_provider_balances.py MBM/LeadEngine/tests/test_provider_fallback_execution.py MBM/LeadEngine/tests/test_neteller_config.py MBM/LeadEngine/tests/test_honest_discovery_inputs.py MBM/LeadEngine/tests/test_gtm_action_ranker.py -q
 
   vertical-source-contracts:
     runs-on: ubuntu-latest
