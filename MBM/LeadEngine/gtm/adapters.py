@@ -84,7 +84,11 @@ class BuyerHunterAdapter:
         revenue remain missing/zero. A package's list price is kept separate
         from expected revenue and cannot qualify a prospect by itself.
         """
-        assistant = card.get("recommended_ai_assistant") or {}
+        assistant = (
+            card.get("recommended_ai_assistant")
+            or card.get("recommended_assistant")
+            or {}
+        )
         if isinstance(assistant, dict):
             sku = assistant.get("sku") or assistant.get("assistant_name")
             raw_offer_price = assistant.get("monthly_retainer")
