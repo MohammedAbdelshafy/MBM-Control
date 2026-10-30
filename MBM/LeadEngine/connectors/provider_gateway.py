@@ -40,6 +40,7 @@ def execute_provider_operation(
     agent_policy_id: Optional[str] = None,
     daily_budget_limit: Optional[int] = None,
     credits_spent_today: int = 0,
+    balance_verified: bool = False,
 ) -> ProviderOperationResult[T]:
     """Authorize then execute exactly once; propagate provider exceptions."""
     authorization = authorize_provider_usage(
@@ -57,6 +58,12 @@ def execute_provider_operation(
         daily_budget_limit=daily_budget_limit,
         credits_spent_today=credits_spent_today,
     )
+    if authorization.credits_ceiling > 0 and not balance_verified:
+        from MBM.LeadEngine.connectors.usage_gate import ProviderBudgetDenied
+
+        raise ProviderBudgetDenied(
+            "a fresh authoritative provider balance is required before paid work"
+        )
     result = operation_callback()
     return ProviderOperationResult(
         authorization=authorization,
