@@ -56,3 +56,24 @@ agent policy remain independent gates.
 Do not persist these snapshots as permanent credit grants. Re-read immediately
 before execution. They are observations, not reservations, and vendor balances
 can change concurrently.
+
+
+## Search adapters
+
+The guarded search clients are exported from `MBM.LeadEngine.connectors`:
+
+- `search_apollo_organizations`: `POST /api/v1/mixed_companies/search`, exactly one Apollo credit per page; the adapter limits pages to 100 records and requires an approval reference plus fresh lead-credit balance.
+- `search_apollo_people`: `POST /api/v1/mixed_people/api_search`, zero credits; Apollo says this endpoint does not return phone or email. It still requires separate contact-data approval and an approval reference because the returned people records identify individuals.
+- `fetch_explorium_businesses`: `POST /v1/businesses`, variable cost; each call requires a fresh shared Explorium balance and a positive, caller-approved maximum credit ceiling.
+- `fetch_explorium_prospects`: `POST /v1/prospects`, variable cost; same meter and ceiling, plus separate contact-data approval before even reading the meter.
+
+All four accept caller-supplied, JSON-compatible filters and preserve the provider records, endpoint, retrieval timestamp, page details, and provider request/correlation reference. Empty filters and unbounded paging are rejected. Results are returned to the caller only; no records are written into Dialer or the canonical lead store.
+
+Official API references:
+
+- Apollo organization search: https://docs.apollo.io/reference/organization-search
+- Apollo people search: https://docs.apollo.io/reference/people-api-search
+- Apollo pricing and credit usage: https://docs.apollo.io/docs/api-pricing
+- Explorium fetch businesses: https://explorium-api.readme.io/reference/fetch_businesses
+- Explorium fetch prospects: https://explorium-api.readme.io/reference/fetch_prospects
+- Explorium active credit summary: https://explorium-api.readme.io/reference/get_active_credits_summary
