@@ -90,7 +90,7 @@ def test_apollo_organization_search_rejects_more_than_one_page_or_unapproved_spe
 
     with pytest.raises(ValueError, match="per_page"):
         search_apollo_organizations(
-            filters={},
+            filters={"q_organization_name": "dental"},
             per_page=101,
             api_key="apollo-secret",
             approved=True,
@@ -103,7 +103,7 @@ def test_apollo_organization_search_rejects_more_than_one_page_or_unapproved_spe
     calls = []
     with pytest.raises(ProviderBudgetDenied, match="explicit approval"):
         search_apollo_organizations(
-            filters={},
+            filters={"q_organization_name": "dental"},
             api_key="apollo-secret",
             approved=False,
             approval_reference=None,
@@ -225,7 +225,7 @@ def test_explorium_fetch_rejects_unbounded_or_invalid_page_sizes_without_network
 
     with pytest.raises(ValueError, match="page_size"):
         fetch_explorium_prospects(
-            filters={},
+            filters={"company_country_code": {"values": ["us"]}},
             size=10,
             page_size=101,
             api_key="explorium-secret",
