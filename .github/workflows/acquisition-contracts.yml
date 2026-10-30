@@ -5,6 +5,8 @@ on:
     paths:
       - 'MBM/LeadEngine/gtm/scoreboard.py'
       - 'MBM/LeadEngine/tests/test_gtm_scoreboard.py'
+      - 'MBM/LeadEngine/offer_architect.py'
+      - 'MBM/LeadEngine/tests/test_offer_architect.py'
       - '.github/workflows/acquisition-contracts.yml'
   push:
     branches:
@@ -29,4 +31,4 @@ jobs:
       - name: Install focused test runner
         run: python -m pip install pytest
       - name: Run GTM acquisition and payment contracts
-        run: python -m pytest MBM/LeadEngine/tests/test_gtm_scoreboard.py -q
+        run: python -m pytest MBM/LeadEngine/tests/test_gtm_scoreboard.py MBM/LeadEngine/tests/test_offer_architect.py -q
