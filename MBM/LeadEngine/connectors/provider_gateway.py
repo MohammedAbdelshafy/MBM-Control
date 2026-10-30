@@ -12,6 +12,7 @@ from typing import Any, Callable, Generic, Mapping, Optional, TypeVar
 
 from MBM.LeadEngine.connectors.usage_gate import (
     ProviderBudgetAuthorization,
+    ProviderBudgetDenied,
     authorize_provider_usage,
 )
 
@@ -59,8 +60,6 @@ def execute_provider_operation(
         credits_spent_today=credits_spent_today,
     )
     if authorization.credits_ceiling > 0 and not balance_verified:
-        from MBM.LeadEngine.connectors.usage_gate import ProviderBudgetDenied
-
         raise ProviderBudgetDenied(
             "a fresh authoritative provider balance is required before paid work"
         )
