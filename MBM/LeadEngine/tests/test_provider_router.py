@@ -12,7 +12,8 @@ from MBM.LeadEngine.connectors.provider_router import (
 def candidate(provider, *, capabilities=("people_search",), priority=100,
               credits=0, cost=0, available=True, approved=False,
               approval_reference=None, approved_cap=None,
-              contact_access=False, contact_approved=False):
+              contact_access=False, contact_approved=False,
+              balance_verified=True):
     return ProviderCandidate(
         provider=provider,
         capabilities=frozenset(capabilities),
@@ -25,6 +26,7 @@ def candidate(provider, *, capabilities=("people_search",), priority=100,
         approved_max_credits=approved_cap,
         personal_contact_access=contact_access,
         contact_data_approved=contact_approved,
+        balance_verified=balance_verified,
     )
 
 
@@ -148,3 +150,33 @@ def test_router_rejects_unreviewed_provider_instead_of_trying_it():
                 candidate("UNKNOWN_SCRAPER", capabilities=("company_search",)),
             ],
         )
+
+
+def test_paid_operation_is_blocked_when_provider_balance_is_unverified_even_with_approval():
+    decision = route_provider(
+        required_capability="company_search",
+        candidates=[
+            candidate(
+                "APOLLO", capabilities=("company_search",), priority=1,
+                credits=100, cost=2, approved=True,
+                approval_reference="APPROVED-SEARCH", approved_cap=5,
+                balance_verified=False,
+            )
+        ],
+    )
+
+    assert decision.status is ProviderRouteStatus.NO_PROVIDER_AVAILABLE
+    assert decision.selected is None
+    assert decision.skipped[0].reason == "BALANCE_UNVERIFIED"
+
+
+def test_zero_credit_operation_remains_available_without_a_meter():
+    decision = route_provider(
+        required_capability="people_search",
+        candidates=[candidate(
+            "CLAY", credits=0, cost=0, balance_verified=False,
+        )],
+    )
+
+    assert decision.status is ProviderRouteStatus.READY
+    assert decision.selected.provider == "CLAY"
