@@ -9,6 +9,7 @@ from MBM.LeadEngine.connectors.provider_adapters import (
     read_apollo_balance,
     read_explorium_balance,
     read_provider_balance,
+    refresh_provider_candidates,
 )
 from MBM.LeadEngine.connectors.provider_router import (
     ProviderCandidate,
@@ -228,3 +229,40 @@ def test_zero_credit_operation_can_use_meterless_provider_but_contact_gate_remai
     assert decision.status is ProviderRouteStatus.READY
     assert decision.selected.provider == "CLAY"
 
+
+
+def test_refresh_provider_candidates_attaches_current_authoritative_meter_before_routing():
+    now = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
+    candidate = ProviderCandidate(
+        provider="APOLLO",
+        capabilities=frozenset({"company_search"}),
+        priority=1,
+        credits_available=0,
+        estimated_credits=2,
+        approved=True,
+        approval_reference="APPROVAL-COMPANY-SEARCH",
+        approved_max_credits=2,
+    )
+    payload = {
+        "credit_usage_stats": {
+            "lead_credit": {"limit": 80, "consumed": 30, "left_over": 50}
+        },
+        "current_credit_cycle": {
+            "start_date": "2026-10-30T00:00:00Z",
+            "end_date": "2026-11-30T00:00:00Z",
+        },
+    }
+
+    refreshed = refresh_provider_candidates(
+        [candidate],
+        required_capability="company_search",
+        api_keys={"APOLLO": "secret-token"},
+        now=now,
+        opener=lambda request, timeout: FakeResponse(payload),
+    )
+
+    assert len(refreshed) == 1
+    assert refreshed[0].balance_verified is True
+    assert refreshed[0].credits_available == 50
+    assert refreshed[0].balance_source == "APOLLO"
+    assert refreshed[0].balance_observed_at == now
