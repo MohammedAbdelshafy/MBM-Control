@@ -1,6 +1,7 @@
 """Runtime provider fallback contracts."""
 
 import pytest
+from datetime import datetime, timezone
 
 from MBM.LeadEngine.connectors.provider_router import (
     ProviderCandidate,
@@ -24,6 +25,7 @@ def candidate(provider, *, priority, credits=0, cost=0, approved=False,
         approval_reference=approval_reference,
         approved_max_credits=approved_cap,
         balance_verified=balance_verified,
+        balance_observed_at=datetime.now(timezone.utc) if balance_verified else None,
     )
 
 
@@ -185,6 +187,7 @@ def test_agent_quality_and_daily_budget_replace_per_call_human_approval():
                 daily_budget_limit=5,
                 credits_spent_today=1,
                 balance_verified=True,
+                balance_observed_at=datetime.now(timezone.utc),
             )
         ],
         operations={"APOLLO": lambda: {"matches": 4}},
