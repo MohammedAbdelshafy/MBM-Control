@@ -104,3 +104,19 @@ def test_gateway_rejects_expired_meter_even_when_verified_flag_is_true():
             operation_callback=lambda: calls.append("called"),
         )
     assert calls == []
+
+
+def test_unknown_cost_with_zero_approved_cap_still_requires_meter():
+    calls = []
+    with pytest.raises(ProviderBudgetDenied, match="authoritative provider balance"):
+        execute_provider_operation(
+            provider="APOLLO",
+            operation="PEOPLE_ENRICHMENT",
+            estimated_credits=None,
+            credits_available=80,
+            approved=True,
+            approval_reference="APPROVED-UNKNOWN-COST",
+            approved_max_credits=0,
+            operation_callback=lambda: calls.append("called"),
+        )
+    assert calls == []
