@@ -66,6 +66,10 @@ class ProviderCandidate:
     approved_max_credits: Optional[int] = None
     personal_contact_access: bool = False
     contact_data_approved: bool = False
+    quality_checks: Optional[Mapping[str, bool]] = None
+    agent_policy_id: Optional[str] = None
+    daily_budget_limit: Optional[int] = None
+    credits_spent_today: int = 0
 
 
 @dataclass(frozen=True)
@@ -157,6 +161,10 @@ def route_provider(
                 approved_max_credits=candidate.approved_max_credits,
                 personal_contact_access=candidate.personal_contact_access,
                 contact_data_approved=candidate.contact_data_approved,
+                quality_checks=candidate.quality_checks,
+                agent_policy_id=candidate.agent_policy_id,
+                daily_budget_limit=candidate.daily_budget_limit,
+                credits_spent_today=candidate.credits_spent_today,
             )
         except ProviderBudgetDenied as exc:
             detail = str(exc)
@@ -271,6 +279,10 @@ def execute_with_provider_fallback(
                 approved_max_credits=selected.approved_max_credits,
                 personal_contact_access=selected.personal_contact_access,
                 contact_data_approved=selected.contact_data_approved,
+                quality_checks=selected.quality_checks,
+                agent_policy_id=selected.agent_policy_id,
+                daily_budget_limit=selected.daily_budget_limit,
+                credits_spent_today=selected.credits_spent_today,
             )
         except ProviderCreditsExhausted as exc:
             attempts.append(ProviderAttempt(
