@@ -311,6 +311,7 @@ def execute_with_provider_fallback(
                 daily_budget_limit=selected.daily_budget_limit,
                 credits_spent_today=selected.credits_spent_today,
                 balance_verified=selected.balance_verified,
+                balance_observed_at=selected.balance_observed_at,
             )
         except ProviderCreditsExhausted as exc:
             attempts.append(ProviderAttempt(
