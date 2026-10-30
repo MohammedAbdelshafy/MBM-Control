@@ -69,12 +69,12 @@ class ProviderBalanceSnapshot:
         if (
             self.status is not BalanceStatus.VERIFIED
             or self.credits_remaining is None
-            or observed is None
-            or max_age_seconds < 0
+            or not is_provider_balance_fresh(
+                observed,
+                now=current,
+                max_age_seconds=max_age_seconds,
+            )
         ):
-            return False
-        age_seconds = (current - observed).total_seconds()
-        if age_seconds < 0 or age_seconds > max_age_seconds:
             return False
         if self.cycle_start is not None and current < _utc(self.cycle_start):
             return False
@@ -106,6 +106,25 @@ def _parse_datetime(value: object) -> Optional[datetime]:
 
 def _non_negative_int(value: object) -> bool:
     return type(value) is int and value >= 0
+
+
+
+def is_provider_balance_fresh(
+    observed_at: Optional[datetime],
+    *,
+    now: Optional[datetime] = None,
+    max_age_seconds: int = 120,
+) -> bool:
+    """Validate the age of a previously fetched provider balance snapshot."""
+    if observed_at is None or max_age_seconds < 0:
+        return False
+    try:
+        observed = _utc(observed_at)
+        current = _utc(now or _utc_now())
+    except (AttributeError, TypeError, ValueError):
+        return False
+    age_seconds = (current - observed).total_seconds()
+    return 0 <= age_seconds <= max_age_seconds
 
 
 def _unknown(
