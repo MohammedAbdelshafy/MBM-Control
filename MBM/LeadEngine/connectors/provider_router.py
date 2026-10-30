@@ -70,6 +70,10 @@ class ProviderCandidate:
     agent_policy_id: Optional[str] = None
     daily_budget_limit: Optional[int] = None
     credits_spent_today: int = 0
+    balance_verified: bool = False
+    balance_observed_at: Optional[Any] = None
+    balance_source: Optional[str] = None
+    balance_detail: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -133,6 +137,17 @@ def route_provider(
                 provider=provider,
                 reason="UNAVAILABLE",
                 detail="Provider is disabled, unavailable or in a cooldown window.",
+            ))
+            continue
+
+        if not candidate.balance_verified and candidate.estimated_credits != 0:
+            skipped.append(ProviderSkip(
+                provider=provider,
+                reason="BALANCE_UNVERIFIED",
+                detail=(
+                    candidate.balance_detail
+                    or "A fresh authoritative provider balance is required for paid or unknown-cost work."
+                ),
             ))
             continue
 
@@ -283,6 +298,7 @@ def execute_with_provider_fallback(
                 agent_policy_id=selected.agent_policy_id,
                 daily_budget_limit=selected.daily_budget_limit,
                 credits_spent_today=selected.credits_spent_today,
+                balance_verified=selected.balance_verified,
             )
         except ProviderCreditsExhausted as exc:
             attempts.append(ProviderAttempt(
