@@ -51,3 +51,36 @@ def test_provider_errors_propagate_after_successful_preflight():
             credits_available=80,
             operation_callback=fail,
         )
+
+
+def test_approved_paid_operation_still_requires_verified_provider_balance():
+    calls = []
+    with pytest.raises(ProviderBudgetDenied, match="authoritative provider balance"):
+        execute_provider_operation(
+            provider="APOLLO",
+            operation="PEOPLE_ENRICHMENT",
+            estimated_credits=2,
+            credits_available=80,
+            approved=True,
+            approval_reference="APPROVED-ENRICHMENT",
+            approved_max_credits=2,
+            operation_callback=lambda: calls.append("called"),
+        )
+    assert calls == []
+
+
+def test_approved_paid_operation_runs_only_after_fresh_balance_verification():
+    calls = []
+    result = execute_provider_operation(
+        provider="APOLLO",
+        operation="PEOPLE_ENRICHMENT",
+        estimated_credits=2,
+        credits_available=80,
+        approved=True,
+        approval_reference="APPROVED-ENRICHMENT",
+        approved_max_credits=2,
+        balance_verified=True,
+        operation_callback=lambda: calls.append("called") or {"enriched": 1},
+    )
+    assert calls == ["called"]
+    assert result.result == {"enriched": 1}
