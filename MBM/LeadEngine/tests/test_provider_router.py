@@ -1,6 +1,7 @@
 """Provider fallback router contracts."""
 
 import pytest
+from datetime import datetime, timedelta, timezone
 
 from MBM.LeadEngine.connectors.provider_router import (
     ProviderCandidate,
@@ -180,3 +181,21 @@ def test_zero_credit_operation_remains_available_without_a_meter():
 
     assert decision.status is ProviderRouteStatus.READY
     assert decision.selected.provider == "CLAY"
+
+
+def test_paid_operation_rejects_a_previously_verified_but_expired_snapshot():
+    now = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
+    decision = route_provider(
+        required_capability="company_search",
+        candidates=[candidate(
+            "APOLLO", capabilities=("company_search",), priority=1,
+            credits=100, cost=2, approved=True,
+            approval_reference="APPROVED-STALE", approved_cap=2,
+            balance_verified=True,
+            balance_observed_at=now - timedelta(minutes=5),
+        )],
+        now=now,
+    )
+
+    assert decision.status is ProviderRouteStatus.NO_PROVIDER_AVAILABLE
+    assert decision.skipped[0].reason == "BALANCE_STALE"
