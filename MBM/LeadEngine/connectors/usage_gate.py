@@ -87,12 +87,11 @@ def authorize_provider_usage(
         )
 
     credit_consuming = estimate is None or estimate > 0
-    needs_approval = credit_consuming or personal_contact_access
-    if needs_approval and not approved:
+    if credit_consuming and not approved:
         raise ProviderBudgetDenied(
-            "credit-consuming or contact-data operation requires explicit approval"
+            "credit-consuming operation requires explicit approval"
         )
-    if needs_approval and not reference:
+    if (credit_consuming or personal_contact_access) and not reference:
         raise ProviderBudgetDenied(
             "an approval reference is required for this operation"
         )
