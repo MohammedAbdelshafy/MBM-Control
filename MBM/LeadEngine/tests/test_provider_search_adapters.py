@@ -41,7 +41,7 @@ def apollo_meter_payload():
 
 
 def test_apollo_organization_search_spends_one_approved_credit_per_page():
-    now = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
+    now = datetime.now(timezone.utc)
     seen = []
 
     def opener(request, timeout):
@@ -140,6 +140,7 @@ def test_apollo_people_search_is_zero_credit_but_requires_contact_data_approval(
         filters={"person_titles": ["owner"], "organization_locations": ["texas"]},
         api_key="apollo-secret",
         contact_data_approved=True,
+        approval_reference="APPROVED-APOLLO-PEOPLE-SEARCH",
         opener=opener,
     )
     assert result.estimated_credits == 0
