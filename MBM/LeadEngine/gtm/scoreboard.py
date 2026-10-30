@@ -14,6 +14,8 @@ Rules:
 """
 
 import json
+import math
+from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timezone
@@ -48,6 +50,226 @@ SPRINT_OFFERS = {
 
 LANDING_URL = "https://mbm-dialer-app.vercel.app/sprint/"
 
+ACQUISITION_CHANNELS = {
+    "WARM_OUTREACH", "COLD_OUTREACH", "ORGANIC_CONTENT", "PAID_ADS",
+    "REFERRAL", "PARTNERSHIP", "AFFILIATE", "INBOUND", "OTHER",
+}
+OFFER_TYPES = {"ATTRACTION", "CORE", "UPSELL", "DOWNSELL", "CONTINUITY"}
+PAYMENT_STATES = {
+    "PURCHASED", "WON", "DEAL_WON", "REVENUE_RECEIVED",
+    "RENEWAL_PAID", "UPSELL_PAID", "EXPANSION_PAID",
+}
+
+
+def _clean_attribution_value(value: Any) -> str:
+    return str(value).strip() if value is not None and str(value).strip() else "UNKNOWN"
+
+
+def _event_stage_flags(event: Dict[str, Any]) -> Dict[str, bool]:
+    action = str(event.get("action") or "").upper()
+    state = str(event.get("new_state") or "").upper()
+    evidence = event.get("evidence") or {}
+    status = str(evidence.get("status") or "").upper()
+
+    is_attempt = (
+        "CALLBACK" not in action
+        and (
+            "ATTEMPT" in action
+            or "OUTREACH" in action
+            or "CALL" in action
+            or ("CASCADE" in action and status == "SENT")
+            or state in {"WHATSAPP_SENT", "EMAIL_SENT", "SMS_SENT"}
+        )
+    )
+    return {
+        "outreach_attempts": is_attempt,
+        "contacts": ("CONTACT" in action or state in {"CONTACTED", "ENGAGED", "CONVERSATION"}),
+        "conversations": state in {"ENGAGED", "CONVERSATION", "QUALIFYING", "DISCOVERY_COMPLETE"},
+        "qualified": state in {"QUALIFIED", "AUDIT_OFFERED"},
+        "appointments_booked": state in {
+            "MEETING_BOOKED", "MEETING_COMPLETED", "APPOINTMENT",
+            "APPOINTMENT_BOOKED", "APPOINTMENT_SCHEDULED",
+        },
+        "proposals_sent": state in {"PROPOSAL", "OFFER_SENT", "CHECKOUT_SENT"} or "CHECKOUT" in action,
+        "delivery_accepted": state in {"DELIVERY_ACCEPTED", "ACCEPTED"},
+        "renewed": state in {"RENEWED", "RENEWAL_PAID"},
+        "referrals": state in {"REFERRED", "REFERRAL_CREATED"},
+        "expanded": state in {"EXPANDED", "UPSELL_ACCEPTED", "EXPANSION_PAID"},
+    }
+
+
+def _verified_payment(event: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    evidence = event.get("evidence") or {}
+    state = str(event.get("new_state") or "").upper()
+    transaction_id = _clean_attribution_value(
+        event.get("payment_transaction_id") or evidence.get("transaction_id")
+    )
+    if state not in PAYMENT_STATES or transaction_id == "UNKNOWN" or evidence.get("verified_payment") is not True:
+        return None
+
+    currency = str(event.get("payment_currency") or "UNKNOWN").strip().upper()
+    amount_raw = event.get("payment_amount_usd")
+    amount_usd = None
+    if currency == "USD" and amount_raw is not None:
+        try:
+            amount_usd = float(amount_raw)
+        except (TypeError, ValueError):
+            amount_usd = None
+        if amount_usd is not None and (not math.isfinite(amount_usd) or amount_usd < 0):
+            amount_usd = None
+    return {
+        "transaction_id": transaction_id,
+        "prospect_id": _clean_attribution_value(event.get("prospect_id")),
+        "currency": currency,
+        "amount_usd": amount_usd,
+    }
+
+
+def _new_attribution_bucket() -> Dict[str, Any]:
+    return {
+        "prospects_sourced": 0,
+        "outreach_attempts": 0,
+        "contacts": 0,
+        "conversations": 0,
+        "qualified": 0,
+        "appointments_booked": 0,
+        "proposals_sent": 0,
+        "verified_customers": 0,
+        "verified_payment_count": 0,
+        "realized_revenue_usd": 0.0,
+        "unpriced_verified_payments": 0,
+        "unsupported_currency_payments": 0,
+        "delivery_accepted": 0,
+        "renewed": 0,
+        "referrals": 0,
+        "expanded": 0,
+    }
+
+
+def _aggregate_attribution_group(prospect_events: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
+    result = _new_attribution_bucket()
+    result["prospects_sourced"] = len(prospect_events)
+    seen_transactions = set()
+
+    for prospect_id, events_for_prospect in prospect_events.items():
+        flags = {key: False for key in (
+            "outreach_attempts", "contacts", "conversations", "qualified",
+            "appointments_booked", "proposals_sent", "delivery_accepted",
+            "renewed", "referrals", "expanded",
+        )}
+        prospect_paid = False
+        for event in events_for_prospect:
+            for key, value in _event_stage_flags(event).items():
+                flags[key] = flags[key] or value
+
+            payment = _verified_payment(event)
+            if not payment:
+                continue
+            transaction_id = payment["transaction_id"]
+            if transaction_id in seen_transactions:
+                continue
+            seen_transactions.add(transaction_id)
+            prospect_paid = True
+            result["verified_payment_count"] += 1
+            if payment["currency"] != "USD":
+                result["unsupported_currency_payments"] += 1
+                result["unpriced_verified_payments"] += 1
+            elif payment["amount_usd"] is None:
+                result["unpriced_verified_payments"] += 1
+            else:
+                result["realized_revenue_usd"] += payment["amount_usd"]
+
+        for key, value in flags.items():
+            if value:
+                result[key] += 1
+        if prospect_paid:
+            result["verified_customers"] += 1
+
+    result["realized_revenue_usd"] = round(result["realized_revenue_usd"], 2)
+    return result
+
+
+def _derive_acquisition_attribution(events: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Build first-touch channel/source/vertical/campaign and explicit offer-role funnels."""
+    ordered = sorted(
+        enumerate(events),
+        key=lambda item: (str(item[1].get("timestamp") or ""), item[0]),
+    )
+    fields = (
+        "acquisition_channel", "vertical_id", "campaign_id", "source_id",
+    )
+    first_touch: Dict[str, Dict[str, str]] = {}
+    by_prospect: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+    offer_events: Dict[str, Dict[str, List[Dict[str, Any]]]] = defaultdict(lambda: defaultdict(list))
+    all_payments: Dict[str, Dict[str, Any]] = {}
+
+    for _, event in ordered:
+        prospect_id = _clean_attribution_value(event.get("prospect_id"))
+        if prospect_id == "UNKNOWN":
+            continue
+        by_prospect[prospect_id].append(event)
+        attribution = first_touch.setdefault(prospect_id, {field: "UNKNOWN" for field in fields})
+        for field in fields:
+            value = _clean_attribution_value(event.get(field))
+            if attribution[field] == "UNKNOWN" and value != "UNKNOWN":
+                if field == "acquisition_channel" and value.upper() not in ACQUISITION_CHANNELS:
+                    continue
+                attribution[field] = value.upper() if field in {"acquisition_channel", "vertical_id"} else value
+
+        offer_type = _clean_attribution_value(event.get("offer_type")).upper()
+        if offer_type in OFFER_TYPES:
+            offer_events[offer_type][prospect_id].append(event)
+
+        payment = _verified_payment(event)
+        if payment:
+            all_payments.setdefault(payment["transaction_id"], payment)
+
+    first_touch_dimensions = {
+        "by_acquisition_channel": "acquisition_channel",
+        "by_vertical": "vertical_id",
+        "by_campaign": "campaign_id",
+        "by_source": "source_id",
+    }
+    grouped = {}
+    for output_key, field in first_touch_dimensions.items():
+        groups: Dict[str, Dict[str, List[Dict[str, Any]]]] = defaultdict(lambda: defaultdict(list))
+        for prospect_id, prospect_event_rows in by_prospect.items():
+            key = first_touch[prospect_id].get(field) or "UNKNOWN"
+            groups[key][prospect_id] = prospect_event_rows
+        grouped[output_key] = {
+            key: _aggregate_attribution_group(rows)
+            for key, rows in sorted(groups.items())
+        }
+
+    grouped["by_offer_role"] = {
+        role: _aggregate_attribution_group(rows)
+        for role, rows in sorted(offer_events.items())
+    }
+
+    overall = _aggregate_attribution_group(by_prospect)
+    duplicate_payment_events = 0
+    seen = set()
+    for _, event in ordered:
+        payment = _verified_payment(event)
+        if not payment:
+            continue
+        if payment["transaction_id"] in seen:
+            duplicate_payment_events += 1
+        else:
+            seen.add(payment["transaction_id"])
+
+    return {
+        "attribution_model": "FIRST_TOUCH",
+        "currency": "USD",
+        **grouped,
+        "verified_payment_count": len(all_payments),
+        "verified_customers": overall["verified_customers"],
+        "realized_revenue_usd": overall["realized_revenue_usd"],
+        "unpriced_verified_payments": overall["unpriced_verified_payments"],
+        "unsupported_currency_payments": overall["unsupported_currency_payments"],
+        "duplicate_payment_events_ignored": duplicate_payment_events,
+    }
+
 
 class GtmSalesLedger:
     """Atomic, append-only sales event ledger ensuring auditability."""
@@ -79,10 +301,36 @@ class GtmSalesLedger:
         offer: str = "AUDIT",
         checkout_url: Optional[str] = None,
         notes: str = "",
+        acquisition_channel: str = "UNKNOWN",
+        vertical_id: str = "UNKNOWN",
+        campaign_id: str = "UNKNOWN",
+        source_id: str = "UNKNOWN",
+        offer_id: str = "UNKNOWN",
+        offer_type: str = "UNKNOWN",
+        payment_amount_usd: Optional[float] = None,
+        payment_currency: str = "UNKNOWN",
+        payment_transaction_id: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """Record an atomic state transition and persist to ledger."""
+        """Record an atomic state transition and persist explicit attribution metadata."""
         offer_info = SPRINT_OFFERS.get(offer.upper(), SPRINT_OFFERS["AUDIT"])
         url = checkout_url or offer_info["checkout_url"]
+
+        channel_attribution = str(acquisition_channel or "UNKNOWN").strip().upper()
+        if channel_attribution not in ACQUISITION_CHANNELS:
+            channel_attribution = "UNKNOWN"
+        normalized_offer_type = str(offer_type or "UNKNOWN").strip().upper()
+        if normalized_offer_type not in OFFER_TYPES:
+            normalized_offer_type = "UNKNOWN"
+        try:
+            normalized_payment_amount = (
+                None if payment_amount_usd is None else float(payment_amount_usd)
+            )
+        except (TypeError, ValueError) as exc:
+            raise ValueError("payment_amount_usd must be a non-negative number") from exc
+        if normalized_payment_amount is not None and (
+            not math.isfinite(normalized_payment_amount) or normalized_payment_amount < 0
+        ):
+            raise ValueError("payment_amount_usd must be a non-negative finite number")
 
         event = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -98,6 +346,15 @@ class GtmSalesLedger:
             "evidence": evidence,
             "next_action": next_action,
             "notes": notes,
+            "acquisition_channel": channel_attribution,
+            "vertical_id": _clean_attribution_value(vertical_id).upper(),
+            "campaign_id": _clean_attribution_value(campaign_id),
+            "source_id": _clean_attribution_value(source_id),
+            "offer_id": _clean_attribution_value(offer_id),
+            "offer_type": normalized_offer_type,
+            "payment_amount_usd": normalized_payment_amount,
+            "payment_currency": str(payment_currency or "UNKNOWN").strip().upper(),
+            "payment_transaction_id": _clean_attribution_value(payment_transaction_id),
         }
         self._events.append(event)
         self.persist()
@@ -120,6 +377,15 @@ class GtmSalesLedger:
         checkout_url: Optional[str] = None,
         notes: str = "",
         lane: Optional[str] = None,
+        acquisition_channel: str = "UNKNOWN",
+        vertical_id: str = "UNKNOWN",
+        campaign_id: str = "UNKNOWN",
+        source_id: str = "UNKNOWN",
+        offer_id: str = "UNKNOWN",
+        offer_type: str = "UNKNOWN",
+        payment_amount_usd: Optional[float] = None,
+        payment_currency: str = "UNKNOWN",
+        payment_transaction_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Record a lifecycle transition (Terminal 1 disposition contract).
 
@@ -138,6 +404,15 @@ class GtmSalesLedger:
             offer=offer,
             checkout_url=checkout_url,
             notes=notes,
+            acquisition_channel=acquisition_channel,
+            vertical_id=vertical_id,
+            campaign_id=campaign_id,
+            source_id=source_id,
+            offer_id=offer_id,
+            offer_type=offer_type,
+            payment_amount_usd=payment_amount_usd,
+            payment_currency=payment_currency,
+            payment_transaction_id=payment_transaction_id,
         )
         if lane:
             event["lane"] = str(lane).upper()
@@ -173,6 +448,8 @@ class GtmRevenueScoreboard:
         checkout_sent = 0
         purchased = 0
         realized_revenue = 0.0
+        verified_transactions = set()
+        paid_prospects = set()
 
         # Real Estate specific tracking
         seller_prospects: set = set()
@@ -184,6 +461,7 @@ class GtmRevenueScoreboard:
         seller_offers = 0
         seller_deals = 0
         seller_revenue = 0.0
+        seller_paid_prospects = set()
 
         # Best-performing source / segment aggregation (recorded evidence only)
         source_stats: Dict[str, Dict[str, float]] = {}
@@ -262,15 +540,25 @@ class GtmRevenueScoreboard:
             if state in {"OFFER_MADE", "OFFER_SENT"}:
                 if is_re:
                     seller_offers += 1
-            if state in {"WON", "PURCHASED", "REVENUE_RECEIVED", "DEAL_WON"}:
-                # Strict verification: must have transaction evidence
-                if ev.get("transaction_id") or ev.get("verified_payment"):
-                    purchased += 1
-                    amount = float(e.get("offer_price", 297.00))
-                    realized_revenue += amount
+            payment = _verified_payment(e)
+            if payment:
+                transaction_id = payment["transaction_id"]
+                if transaction_id not in verified_transactions:
+                    verified_transactions.add(transaction_id)
+                    paid_prospects.add(payment["prospect_id"])
+                    amount = payment["amount_usd"] if payment["currency"] == "USD" else None
+                    if amount is not None:
+                        realized_revenue += amount
                     if is_re:
-                        seller_deals += 1
-                        seller_revenue += amount
+                        seller_paid_prospects.add(payment["prospect_id"])
+                        if amount is not None:
+                            seller_revenue += amount
+
+        purchased = len(paid_prospects)
+        seller_deals = len(seller_paid_prospects)
+        acquisition_attribution = _derive_acquisition_attribution(events)
+        realized_revenue = acquisition_attribution["realized_revenue_usd"]
+        seller_revenue = round(seller_revenue, 2)
 
         # Rates (safeguarded against division by zero)
         contact_rate = round((contacts / outreach_attempts * 100.0) if outreach_attempts else 0.0, 2)
@@ -325,6 +613,7 @@ class GtmRevenueScoreboard:
 
         metrics = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
+            "acquisition_attribution": acquisition_attribution,
             "funnel": {
                 "prospects": prospects_count,
                 "outreach_attempts": outreach_attempts,
