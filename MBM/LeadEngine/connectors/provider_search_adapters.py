@@ -171,6 +171,8 @@ def _require_records(
     total = payload.get("total_entries")
     if type(total) is not int or total < 0:
         total = payload.get("total_count")
+    if (type(total) is not int or total < 0) and isinstance(payload.get("pagination"), Mapping):
+        total = payload["pagination"].get("total_entries")
     if type(total) is not int or total < 0:
         total = None
 
@@ -249,9 +251,15 @@ def search_apollo_organizations(
     token = str(api_key or "").strip()
     if not token:
         raise ProviderBudgetDenied("Apollo API key is not configured.")
+    if not approved:
+        raise ProviderBudgetDenied("credit-consuming operation requires explicit approval")
+    if not str(approval_reference or "").strip():
+        raise ProviderBudgetDenied("an approval reference is required for this operation")
     if approved_max_credits is not None and (
         type(approved_max_credits) is not int or approved_max_credits < 1
     ):
+        raise ValueError("approved_max_credits must be at least one for organization search")
+    if approved_max_credits is not None and approved_max_credits < 1:
         raise ValueError("approved_max_credits must be at least one for organization search")
 
     observed_at = _utc(now)
@@ -420,6 +428,10 @@ def _fetch_explorium(
         raise ProviderBudgetDenied("Explorium API key is not configured.")
     if type(approved_max_credits) is not int or approved_max_credits < 1:
         raise ValueError("approved_max_credits must be a positive integer for Explorium fetch")
+    if not approved:
+        raise ProviderBudgetDenied("credit-consuming operation requires explicit approval")
+    if not str(approval_reference or "").strip():
+        raise ProviderBudgetDenied("an approval reference is required for this operation")
 
     if collection_key == "prospects" and not contact_data_approved:
         raise ProviderBudgetDenied(
