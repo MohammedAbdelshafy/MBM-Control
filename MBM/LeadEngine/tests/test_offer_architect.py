@@ -12,6 +12,7 @@ Comprehensive tests verifying:
 =============================================================================
 """
 
+import json
 import sys
 import pytest
 from pathlib import Path
