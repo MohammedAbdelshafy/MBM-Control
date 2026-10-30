@@ -347,7 +347,7 @@ class GtmSalesLedger:
             "next_action": next_action,
             "notes": notes,
             "acquisition_channel": channel_attribution,
-            "vertical_id": _clean_attribution_value(vertical_id).upper(),
+            "vertical_id": _clean_attribution_value(vertical_id).lower(),
             "campaign_id": _clean_attribution_value(campaign_id),
             "source_id": _clean_attribution_value(source_id),
             "offer_id": _clean_attribution_value(offer_id),
