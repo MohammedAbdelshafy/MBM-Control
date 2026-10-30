@@ -13,6 +13,7 @@ from enum import Enum
 from typing import Any, Callable, Mapping, Optional, Sequence
 
 from MBM.LeadEngine.connectors.provider_gateway import execute_provider_operation
+from MBM.LeadEngine.connectors.provider_adapters import is_provider_balance_fresh
 
 from MBM.LeadEngine.connectors.usage_gate import (
     SUPPORTED_PROVIDERS,
@@ -98,6 +99,8 @@ def route_provider(
     *,
     required_capability: str,
     candidates: Sequence[ProviderCandidate],
+    now: Optional[datetime] = None,
+    balance_max_age_seconds: int = 120,
 ) -> ProviderRouteDecision:
     """Choose the highest-priority viable provider for a required capability.
 
@@ -141,10 +144,18 @@ def route_provider(
             ))
             continue
 
-        if not candidate.balance_verified and candidate.estimated_credits != 0:
+        if candidate.estimated_credits != 0 and (
+            not candidate.balance_verified
+            or not is_provider_balance_fresh(
+                candidate.balance_observed_at,
+                now=now,
+                max_age_seconds=balance_max_age_seconds,
+            )
+        ):
+            stale = candidate.balance_verified and candidate.balance_observed_at is not None
             skipped.append(ProviderSkip(
                 provider=provider,
-                reason="BALANCE_UNVERIFIED",
+                reason="BALANCE_STALE" if stale else "BALANCE_UNVERIFIED",
                 detail=(
                     candidate.balance_detail
                     or "A fresh authoritative provider balance is required for paid or unknown-cost work."
