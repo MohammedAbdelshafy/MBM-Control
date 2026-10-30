@@ -313,7 +313,7 @@ class GtmSalesLedger:
     ) -> Dict[str, Any]:
         """Record an atomic state transition and persist explicit attribution metadata."""
         offer_info = SPRINT_OFFERS.get(offer.upper(), SPRINT_OFFERS["AUDIT"])
-        url = checkout_url or offer_info["checkout_url"]
+        url = checkout_url  # no implicit checkout link; caller must supply an approved URL
 
         channel_attribution = str(acquisition_channel or "UNKNOWN").strip().upper()
         if channel_attribution not in ACQUISITION_CHANNELS:
