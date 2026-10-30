@@ -86,7 +86,7 @@ def test_apollo_organization_search_spends_one_approved_credit_per_page():
 
 
 def test_apollo_organization_search_rejects_more_than_one_page_or_unapproved_spend():
-    now = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
+    now = datetime.now(timezone.utc)
 
     with pytest.raises(ValueError, match="per_page"):
         search_apollo_organizations(
@@ -117,7 +117,7 @@ def test_apollo_organization_search_rejects_more_than_one_page_or_unapproved_spe
 
 
 def test_apollo_people_search_is_zero_credit_but_requires_contact_data_approval():
-    now = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
+    now = datetime.now(timezone.utc)
     seen = []
 
     def opener(request, timeout):
@@ -149,7 +149,7 @@ def test_apollo_people_search_is_zero_credit_but_requires_contact_data_approval(
 
 
 def test_explorium_business_fetch_requires_live_meter_and_fixed_approved_ceiling():
-    now = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
+    now = datetime.now(timezone.utc)
     seen = []
 
     def opener(request, timeout):
@@ -189,7 +189,7 @@ def test_explorium_business_fetch_requires_live_meter_and_fixed_approved_ceiling
 
 
 def test_explorium_prospect_fetch_requires_contact_data_approval_before_fetch():
-    now = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
+    now = datetime.now(timezone.utc)
     calls = []
 
     with pytest.raises(ProviderBudgetDenied, match="contact-data approval"):
