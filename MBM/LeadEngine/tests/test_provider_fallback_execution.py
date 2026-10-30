@@ -12,7 +12,8 @@ from MBM.LeadEngine.connectors.provider_router import (
 
 
 def candidate(provider, *, priority, credits=0, cost=0, approved=False,
-              approval_reference=None, approved_cap=None):
+              approval_reference=None, approved_cap=None,
+              balance_verified=True):
     return ProviderCandidate(
         provider=provider,
         capabilities=frozenset({"people_search"}),
@@ -22,6 +23,7 @@ def candidate(provider, *, priority, credits=0, cost=0, approved=False,
         approved=approved,
         approval_reference=approval_reference,
         approved_max_credits=approved_cap,
+        balance_verified=balance_verified,
     )
 
 
@@ -182,6 +184,7 @@ def test_agent_quality_and_daily_budget_replace_per_call_human_approval():
                 agent_policy_id="mbm-customer-acquisition-v1",
                 daily_budget_limit=5,
                 credits_spent_today=1,
+                balance_verified=True,
             )
         ],
         operations={"APOLLO": lambda: {"matches": 4}},
