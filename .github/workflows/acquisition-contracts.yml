@@ -34,6 +34,11 @@ on:
       - 'MBM/LeadEngine/tests/test_offer_architect.py'
       - 'MBM/LeadEngine/agency_prospector.py'
       - 'MBM/LeadEngine/tests/test_agency_prospector.py'
+      - 'MBM/LeadEngine/ai_assistant_buyer_hunter.py'
+      - 'MBM/LeadEngine/gtm/adapters.py'
+      - 'MBM/LeadEngine/gtm/action_ranker.py'
+      - 'MBM/LeadEngine/tests/test_honest_discovery_inputs.py'
+      - 'MBM/LeadEngine/tests/test_gtm_action_ranker.py'
       - '.github/workflows/acquisition-contracts.yml'
   push:
     branches:
