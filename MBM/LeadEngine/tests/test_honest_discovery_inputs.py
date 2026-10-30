@@ -113,3 +113,13 @@ def test_offer_price_is_not_misrepresented_as_expected_revenue() -> None:
     assert normalized["expected_revenue"] is None
     assert normalized["qualification_status"] == "INCOMPLETE_EVIDENCE"
     assert normalized["action_eligible"] is False
+
+
+def test_legacy_static_social_and_hiring_examples_never_enter_discovery(tmp_path: Path) -> None:
+    harvester = SignalHarvester()
+    harvester.npi_path = tmp_path / "missing_npi_verified_callsheet.json"
+
+    # Social, hiring, contractor and niche helper lists still contain old
+    # examples for historical/unit-test purposes. They carry no source record
+    # proof and must never be promoted into the live discovery result.
+    assert harvester.harvest_all_sources() == []
