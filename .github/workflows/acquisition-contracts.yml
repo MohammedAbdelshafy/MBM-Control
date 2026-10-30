@@ -75,4 +75,4 @@ jobs:
       - name: Install LeadEngine dependencies
         run: npm ci
       - name: Verify Vibe source mapping and suppression contracts
-        run: npm run test -- tests/verticals-ai-vibe.test.ts
+        run: npm run test -- --config vitest.config.ts tests/verticals-ai-vibe.test.ts
