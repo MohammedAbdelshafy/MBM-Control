@@ -322,6 +322,7 @@ def search_apollo_people(
     page: int = 1,
     per_page: int = 25,
     contact_data_approved: bool = False,
+    approval_reference: Optional[str] = None,
     now: Optional[datetime] = None,
     opener: Callable[..., Any] = urlopen,
     timeout: int = DEFAULT_TIMEOUT_SECONDS,
@@ -367,6 +368,7 @@ def search_apollo_people(
         operation_callback=execute,
         personal_contact_access=True,
         contact_data_approved=contact_data_approved,
+        approval_reference=approval_reference,
     )
     records, total, reference = _require_records(
         receipt.result,
@@ -419,6 +421,10 @@ def _fetch_explorium(
     if type(approved_max_credits) is not int or approved_max_credits < 1:
         raise ValueError("approved_max_credits must be a positive integer for Explorium fetch")
 
+    if collection_key == "prospects" and not contact_data_approved:
+        raise ProviderBudgetDenied(
+            "personal contact access requires separate contact-data approval"
+        )
     observed_at = _utc(now)
     balance = _read_explorium_meter(
         token,
