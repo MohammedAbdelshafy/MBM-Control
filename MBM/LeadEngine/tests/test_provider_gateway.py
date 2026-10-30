@@ -1,6 +1,7 @@
 """Provider gateway must preflight before executing external operations."""
 
 import pytest
+from datetime import datetime, timezone, timedelta
 
 from MBM.LeadEngine.connectors.provider_gateway import (
     execute_provider_operation,
@@ -80,7 +81,26 @@ def test_approved_paid_operation_runs_only_after_fresh_balance_verification():
         approval_reference="APPROVED-ENRICHMENT",
         approved_max_credits=2,
         balance_verified=True,
+        balance_observed_at=datetime.now(timezone.utc),
         operation_callback=lambda: calls.append("called") or {"enriched": 1},
     )
     assert calls == ["called"]
     assert result.result == {"enriched": 1}
+
+
+def test_gateway_rejects_expired_meter_even_when_verified_flag_is_true():
+    calls = []
+    with pytest.raises(ProviderBudgetDenied, match="authoritative provider balance"):
+        execute_provider_operation(
+            provider="APOLLO",
+            operation="PEOPLE_ENRICHMENT",
+            estimated_credits=2,
+            credits_available=80,
+            approved=True,
+            approval_reference="APPROVED-STALE-ENRICHMENT",
+            approved_max_credits=2,
+            balance_verified=True,
+            balance_observed_at=datetime.now(timezone.utc) - timedelta(minutes=5),
+            operation_callback=lambda: calls.append("called"),
+        )
+    assert calls == []
