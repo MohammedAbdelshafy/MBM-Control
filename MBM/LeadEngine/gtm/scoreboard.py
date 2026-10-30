@@ -354,7 +354,7 @@ class GtmSalesLedger:
             "offer_type": normalized_offer_type,
             "payment_amount_usd": normalized_payment_amount,
             "payment_currency": str(payment_currency or "UNKNOWN").strip().upper(),
-            "payment_transaction_id": _clean_attribution_value(payment_transaction_id),
+            "payment_transaction_id": (str(payment_transaction_id).strip() if payment_transaction_id is not None and str(payment_transaction_id).strip() else None),
         }
         self._events.append(event)
         self.persist()
