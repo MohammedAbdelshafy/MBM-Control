@@ -113,8 +113,7 @@ def test_apollo_organization_search_rejects_more_than_one_page_or_unapproved_spe
                 apollo_meter_payload()
             ),
         )
-    assert len(calls) == 1
-    assert calls[0].endswith("/usage_stats/credit_usage_stats")
+    assert calls == []
 
 
 def test_apollo_people_search_is_zero_credit_but_requires_contact_data_approval():
@@ -213,7 +212,7 @@ def test_explorium_prospect_fetch_requires_contact_data_approval_before_fetch():
 def test_explorium_fetch_rejects_unbounded_or_invalid_page_sizes_without_network():
     with pytest.raises(ValueError, match="size"):
         fetch_explorium_businesses(
-            filters={},
+            filters={"country_code": {"values": ["us"]}},
             size=10001,
             page_size=100,
             api_key="explorium-secret",
