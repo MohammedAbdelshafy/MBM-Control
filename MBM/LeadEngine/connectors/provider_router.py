@@ -7,9 +7,11 @@ execute through provider_gateway immediately before the real provider request.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum
-from typing import Optional, Sequence
+from typing import Any, Callable, Mapping, Optional, Sequence
+
+from MBM.LeadEngine.connectors.provider_gateway import execute_provider_operation
 
 from MBM.LeadEngine.connectors.usage_gate import (
     SUPPORTED_PROVIDERS,
@@ -17,6 +19,31 @@ from MBM.LeadEngine.connectors.usage_gate import (
     ProviderBudgetDenied,
     authorize_provider_usage,
 )
+
+
+class ProviderCreditsExhausted(RuntimeError):
+    """The provider definitively rejected the request because its quota is exhausted."""
+
+
+class ProviderTemporarilyUnavailable(RuntimeError):
+    """The provider confirms the request did not execute and may be retried elsewhere."""
+
+
+@dataclass(frozen=True)
+class ProviderAttempt:
+    provider: str
+    outcome: str
+    detail: str
+
+
+@dataclass(frozen=True)
+class ProviderFallbackExecutionResult:
+    status: "ProviderRouteStatus"
+    provider: Optional[str]
+    result: Any
+    attempts: tuple[ProviderAttempt, ...]
+    approval_required: Optional["ProviderCandidate"] = None
+    approval_reason: Optional[str] = None
 
 
 class ProviderRouteStatus(str, Enum):
@@ -182,3 +209,100 @@ def route_provider(
         authorization=None,
         skipped=tuple(skipped),
     )
+
+
+
+def execute_with_provider_fallback(
+    *,
+    required_capability: str,
+    candidates: Sequence[ProviderCandidate],
+    operations: Mapping[str, Callable[[], Any]],
+) -> ProviderFallbackExecutionResult:
+    """Execute the selected provider and retry only definitive safe failures.
+
+    Provider adapters must translate a vendor response into
+    ProviderCreditsExhausted only when the vendor explicitly confirms the
+    operation was rejected for lack of credits. ProviderTemporarilyUnavailable
+    is reserved for failures known to occur before execution. Generic timeout,
+    connection-loss and ambiguous responses propagate without retry.
+    """
+    remaining = list(candidates)
+    attempts: list[ProviderAttempt] = []
+
+    while True:
+        decision = route_provider(
+            required_capability=required_capability,
+            candidates=remaining,
+        )
+        if decision.status is not ProviderRouteStatus.READY or decision.selected is None:
+            return ProviderFallbackExecutionResult(
+                status=decision.status,
+                provider=None,
+                result=None,
+                attempts=tuple(attempts),
+                approval_required=decision.approval_required,
+                approval_reason=decision.approval_reason,
+            )
+
+        selected = decision.selected
+        provider = str(selected.provider).strip().upper()
+        callback = operations.get(provider)
+        if callback is None:
+            attempts.append(ProviderAttempt(
+                provider=provider,
+                outcome="ADAPTER_NOT_CONFIGURED",
+                detail="No operation callback is registered for this provider.",
+            ))
+            remaining = [
+                replace(item, available=False) if item is selected else item
+                for item in remaining
+            ]
+            continue
+
+        try:
+            operation_result = execute_provider_operation(
+                provider=provider,
+                operation=required_capability,
+                estimated_credits=selected.estimated_credits,
+                credits_available=selected.credits_available,
+                operation_callback=callback,
+                approved=selected.approved,
+                approval_reference=selected.approval_reference,
+                approved_max_credits=selected.approved_max_credits,
+                personal_contact_access=selected.personal_contact_access,
+                contact_data_approved=selected.contact_data_approved,
+            )
+        except ProviderCreditsExhausted as exc:
+            attempts.append(ProviderAttempt(
+                provider=provider,
+                outcome="CREDITS_EXHAUSTED",
+                detail=str(exc),
+            ))
+            remaining = [
+                replace(item, available=False) if item is selected else item
+                for item in remaining
+            ]
+            continue
+        except ProviderTemporarilyUnavailable as exc:
+            attempts.append(ProviderAttempt(
+                provider=provider,
+                outcome="TEMPORARILY_UNAVAILABLE",
+                detail=str(exc),
+            ))
+            remaining = [
+                replace(item, available=False) if item is selected else item
+                for item in remaining
+            ]
+            continue
+
+        attempts.append(ProviderAttempt(
+            provider=provider,
+            outcome="SUCCESS",
+            detail="Provider returned a result after preflight authorization.",
+        ))
+        return ProviderFallbackExecutionResult(
+            status=ProviderRouteStatus.READY,
+            provider=provider,
+            result=operation_result.result,
+            attempts=tuple(attempts),
+        )
