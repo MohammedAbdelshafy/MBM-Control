@@ -507,7 +507,7 @@ class OfferArchitect:
                 "pricing_model": "MONTHLY_RETAINER",
                 "setup_fee_usd": setup_fee_hypothesis,
                 "monthly_fee_usd": monthly_fee_hypothesis,
-                "price_status": "HYPOTHESIS",
+                "price_status": "APPROVED" if approved_price is not None else "HYPOTHESIS",
                 "approved_quote_usd": approved_price,
                 "performance_fee": offer_tmpl.get("performance_fee", ""),
                 "neteller_checkout_link": checkout_link,
@@ -522,9 +522,9 @@ class OfferArchitect:
                 "opening": opening,
                 "first_question": first_question,
                 "discovery_questions": questions,
-                "quantification_question": offer_tmpl.get(
-                    "quantification_question",
-                    "What would a measurable improvement in this workflow be worth to your team?",
+                "quantification_question": (
+                    "How does your team currently track this workflow, and what measurable "
+                    "outcome would you most like to improve?"
                 ),
                 "reflection_script": (
                     "After the prospect describes the process, summarize only the pain and impact "
