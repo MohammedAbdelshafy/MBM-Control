@@ -8,7 +8,9 @@ the provider's authoritative usage meter.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Mapping, Optional, Sequence
+
+from MBM.LeadEngine.connectors.agent_quality import assess_agent_operation
 
 
 SUPPORTED_PROVIDERS = frozenset({
@@ -37,6 +39,11 @@ class ProviderBudgetAuthorization:
     credits_ceiling: int
     approval_reference: Optional[str]
     personal_contact_access: bool
+    agent_policy_id: Optional[str] = None
+    quality_passed: bool = False
+    quality_score: Optional[float] = None
+    daily_budget_limit: Optional[int] = None
+    credits_spent_today: int = 0
 
 
 def _non_negative_int(value: object, field: str, *, allow_none: bool = False) -> Optional[int]:
@@ -58,6 +65,10 @@ def authorize_provider_usage(
     approved_max_credits: Optional[int] = None,
     personal_contact_access: bool = False,
     contact_data_approved: bool = False,
+    quality_checks: Optional[Mapping[str, bool]] = None,
+    agent_policy_id: Optional[str] = None,
+    daily_budget_limit: Optional[int] = None,
+    credits_spent_today: int = 0,
 ) -> ProviderBudgetAuthorization:
     """Authorize one provider operation against a visible approval and cap.
 
@@ -80,6 +91,61 @@ def authorize_provider_usage(
         approved_max_credits, "approved_max_credits", allow_none=True
     )
     reference = str(approval_reference or "").strip() or None
+    policy_id = str(agent_policy_id or "").strip() or None
+    agent_mode = quality_checks is not None or policy_id is not None or daily_budget_limit is not None
+
+    if agent_mode:
+        if quality_checks is None or not policy_id:
+            raise ProviderBudgetDenied(
+                "agent operations require a quality report and a named agent policy"
+            )
+        daily_limit = _non_negative_int(
+            daily_budget_limit, "daily_budget_limit", allow_none=True
+        )
+        spent_today = _non_negative_int(credits_spent_today, "credits_spent_today")
+        if daily_limit is None:
+            raise ProviderBudgetDenied(
+                "agent operations require a configured daily budget limit"
+            )
+        assessment = assess_agent_operation(
+            quality_checks,
+            require_contact_scope=personal_contact_access,
+        )
+        if not assessment.passed:
+            failed = ", ".join((*assessment.missing_checks, *assessment.failed_checks))
+            raise ProviderBudgetDenied(
+                f"agent quality check failed: {failed}"
+            )
+        if estimate is None:
+            raise ProviderBudgetDenied(
+                "unknown-cost provider operations are blocked until a deterministic cost ceiling exists"
+            )
+        ceiling = estimate
+        remaining_today = max(0, daily_limit - spent_today)
+        if spent_today + ceiling > daily_limit:
+            raise ProviderBudgetDenied(
+                "provider operation exceeds the daily agent budget"
+            )
+        if ceiling > available:
+            raise ProviderBudgetDenied(
+                "provider credit ceiling exceeds currently available credits"
+            )
+        return ProviderBudgetAuthorization(
+            provider=provider_name,
+            operation=operation_name,
+            authorized=True,
+            estimated_credits=estimate,
+            approved_max_credits=None,
+            credits_available=available,
+            credits_ceiling=ceiling,
+            approval_reference=None,
+            personal_contact_access=personal_contact_access,
+            agent_policy_id=policy_id,
+            quality_passed=True,
+            quality_score=assessment.score,
+            daily_budget_limit=daily_limit,
+            credits_spent_today=spent_today,
+        )
 
     if personal_contact_access and not contact_data_approved:
         raise ProviderBudgetDenied(
