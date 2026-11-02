@@ -179,3 +179,19 @@ def test_channel_router_smallest_useful_action():
     ch, act = ChannelRouter.route(_base_opp(state="NURTURE"))
     assert ch == ChannelType.NURTURE
     assert act == ActionType.NURTURE
+
+def test_incomplete_evidence_is_zero_priority_and_never_queued():
+    ranker = ActionRanker()
+    incomplete = _base_opp(
+        action_eligible=False,
+        expected_revenue=None,
+        signal_age_days=None,
+        intent_score=0.0,
+        confidence=0.0,
+    )
+
+    assert ranker.calculate_priority_score(incomplete) == 0.0
+    assert ranker.rank_opportunities([incomplete]) == []
+    channel, action = ChannelRouter.route(incomplete)
+    assert channel == ChannelType.HUMAN_REVIEW
+    assert action == ActionType.HUMAN_REVIEW

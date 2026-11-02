@@ -1,0 +1,108 @@
+name: Acquisition Contract Tests
+
+on:
+  pull_request:
+    paths:
+      - 'MBM/LeadEngine/gtm/scoreboard.py'
+      - 'MBM/LeadEngine/tests/test_gtm_scoreboard.py'
+      - 'MBM/LeadEngine/offer_architect.py'
+      - 'MBM/LeadEngine/tests/test_offer_architect.py'
+      - 'MBM/Scripts/neteller_config.py'
+      - 'MBM/LeadEngine/tests/test_neteller_config.py'
+      - 'MBM/LeadEngine/connectors/providers.py'
+      - 'MBM/LeadEngine/tests/test_provider_ingestion.py'
+      - 'MBM/LeadEngine/connectors/usage_gate.py'
+      - 'MBM/LeadEngine/tests/test_provider_usage_gate.py'
+      - 'MBM/LeadEngine/connectors/provider_gateway.py'
+      - 'MBM/LeadEngine/tests/test_provider_gateway.py'
+      - 'MBM/LeadEngine/connectors/provider_router.py'
+      - 'MBM/LeadEngine/connectors/provider_adapters.py'
+      - 'MBM/LeadEngine/connectors/provider_search_adapters.py'
+      - 'MBM/LeadEngine/tests/test_provider_search_adapters.py'
+      - 'MBM/LeadEngine/tests/test_provider_balances.py'
+      - 'MBM/LeadEngine/tests/test_provider_router.py'
+      - 'MBM/LeadEngine/tests/test_provider_fallback_execution.py'
+      - 'MBM/LeadEngine/src/verticals/ai-vibe.ts'
+      - 'MBM/LeadEngine/src/verticals/types.ts'
+      - 'MBM/LeadEngine/src/verticals/registry.ts'
+      - 'MBM/LeadEngine/tests/verticals-ai-vibe.test.ts'
+      - 'MBM/LeadEngine/vitest.config.ts'
+      - 'MBM/LeadEngine/agency_prospector.py'
+      - 'MBM/LeadEngine/tests/test_agency_prospector.py'
+      - 'MBM/LeadEngine/ai_assistant_buyer_hunter.py'
+      - 'MBM/LeadEngine/gtm/adapters.py'
+      - 'MBM/LeadEngine/gtm/action_ranker.py'
+      - 'MBM/LeadEngine/tests/test_honest_discovery_inputs.py'
+      - 'MBM/LeadEngine/tests/test_gtm_action_ranker.py'
+      - 'MBM/LeadEngine/offer_architect.py'
+      - 'MBM/LeadEngine/tests/test_offer_architect.py'
+      - 'MBM/LeadEngine/agency_prospector.py'
+      - 'MBM/LeadEngine/tests/test_agency_prospector.py'
+      - 'MBM/LeadEngine/ai_assistant_buyer_hunter.py'
+      - 'MBM/LeadEngine/gtm/adapters.py'
+      - 'MBM/LeadEngine/gtm/action_ranker.py'
+      - 'MBM/LeadEngine/tests/test_honest_discovery_inputs.py'
+      - 'MBM/LeadEngine/tests/test_gtm_action_ranker.py'
+      - '.github/workflows/acquisition-contracts.yml'
+  push:
+    branches:
+      - 'feat/acquisition-attribution-money-model-2026-10-30'
+    paths:
+      - 'MBM/LeadEngine/gtm/scoreboard.py'
+      - 'MBM/LeadEngine/tests/test_gtm_scoreboard.py'
+      - 'MBM/LeadEngine/offer_architect.py'
+      - 'MBM/LeadEngine/tests/test_offer_architect.py'
+      - 'MBM/Scripts/neteller_config.py'
+      - 'MBM/LeadEngine/tests/test_neteller_config.py'
+      - 'MBM/LeadEngine/connectors/providers.py'
+      - 'MBM/LeadEngine/tests/test_provider_ingestion.py'
+      - 'MBM/LeadEngine/connectors/usage_gate.py'
+      - 'MBM/LeadEngine/tests/test_provider_usage_gate.py'
+      - 'MBM/LeadEngine/connectors/provider_gateway.py'
+      - 'MBM/LeadEngine/tests/test_provider_gateway.py'
+      - 'MBM/LeadEngine/connectors/provider_router.py'
+      - 'MBM/LeadEngine/tests/test_provider_router.py'
+      - 'MBM/LeadEngine/tests/test_provider_fallback_execution.py'
+      - 'MBM/LeadEngine/src/verticals/ai-vibe.ts'
+      - 'MBM/LeadEngine/src/verticals/types.ts'
+      - 'MBM/LeadEngine/src/verticals/registry.ts'
+      - 'MBM/LeadEngine/tests/verticals-ai-vibe.test.ts'
+      - 'MBM/LeadEngine/vitest.config.ts'
+      - 'MBM/LeadEngine/agency_prospector.py'
+      - 'MBM/LeadEngine/tests/test_agency_prospector.py'
+      - '.github/workflows/acquisition-contracts.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  acquisition-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install focused test runner
+        run: python -m pip install pytest
+      - name: Run GTM acquisition and payment contracts
+        run: python -m pytest MBM/LeadEngine/tests/test_gtm_scoreboard.py MBM/LeadEngine/tests/test_offer_architect.py MBM/LeadEngine/tests/test_agency_prospector.py MBM/LeadEngine/tests/test_provider_ingestion.py MBM/LeadEngine/tests/test_provider_usage_gate.py MBM/LeadEngine/tests/test_provider_gateway.py MBM/LeadEngine/tests/test_provider_router.py MBM/LeadEngine/tests/test_provider_balances.py MBM/LeadEngine/tests/test_provider_search_adapters.py MBM/LeadEngine/tests/test_provider_fallback_execution.py MBM/LeadEngine/tests/test_neteller_config.py MBM/LeadEngine/tests/test_honest_discovery_inputs.py MBM/LeadEngine/tests/test_gtm_action_ranker.py -q
+
+  vertical-source-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: MBM/LeadEngine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: MBM/LeadEngine/package-lock.json
+      - name: Install LeadEngine dependencies
+        run: npm ci
+      - name: Verify Vibe source mapping and suppression contracts
+        run: npm run test -- --config vitest.config.ts tests/verticals-ai-vibe.test.ts

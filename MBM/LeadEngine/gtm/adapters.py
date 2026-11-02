@@ -78,52 +78,112 @@ class BuyerHunterAdapter:
 
     def normalize_prospect(self, card: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Normalize a Buyer Hunter evidence card into a canonical GTM opportunity.
+        Normalize a Buyer Hunter card without manufacturing qualification facts.
 
-        Expected input fields (see ai_assistant_buyer_hunter.EvidenceCard.to_dict):
-          company, decision_maker, role, industry, phone, email, pain_signal,
-          intent_signal, intent_score, intent_tier, why_this_company, why_now,
-          recommended_ai_assistant (dict), source, source_url, source_date,
-          signal_age_days, confidence_score, outreach_phone_angle / email_angle
+        Missing pain, intent, authority, provenance, freshness, confidence and
+        revenue remain missing/zero. A package's list price is kept separate
+        from expected revenue and cannot qualify a prospect by itself.
         """
-        assistant = card.get("recommended_ai_assistant") or {}
+        assistant = (
+            card.get("recommended_ai_assistant")
+            or card.get("recommended_assistant")
+            or {}
+        )
         if isinstance(assistant, dict):
-            sku = assistant.get("sku") or assistant.get("assistant_name") or "AI Automation Retainer"
-            monthly_retainer = float(assistant.get("monthly_retainer") or 0.0)
+            sku = assistant.get("sku") or assistant.get("assistant_name")
+            raw_offer_price = assistant.get("monthly_retainer")
         else:
-            sku = str(assistant)
-            monthly_retainer = float(card.get("monthly_retainer_fee") or 0.0)
+            sku = str(assistant).strip() or None
+            raw_offer_price = card.get("monthly_retainer_fee")
 
-        confidence = float(card.get("confidence_score") or 0.0) / 100.0
-        if confidence <= 0.0 or confidence > 1.0:
-            confidence = 0.85
+        def optional_number(value: Any) -> Optional[float]:
+            if value is None or value == "":
+                return None
+            try:
+                number = float(value)
+            except (TypeError, ValueError):
+                return None
+            if number != number or number in (float("inf"), float("-inf")):
+                return None
+            return number
+
+        raw_confidence = optional_number(card.get("confidence_score"))
+        if raw_confidence is None:
+            confidence = 0.0
+        elif raw_confidence > 1.0:
+            confidence = raw_confidence / 100.0
+        else:
+            confidence = raw_confidence
+        if confidence < 0.0 or confidence > 1.0:
+            confidence = 0.0
+
+        intent_score = optional_number(card.get("intent_score"))
+        signal_age_days = optional_number(card.get("signal_age_days"))
+        expected_revenue = optional_number(card.get("expected_revenue"))
+        offer_price_monthly = optional_number(raw_offer_price)
+
+        company = card.get("company") or None
+        decision_maker = card.get("decision_maker") or None
+        role = card.get("role") or None
+        pain_point = card.get("pain_signal") or card.get("pain_description") or None
+        intent_signal = card.get("intent_signal") or None
+        source = card.get("source") or None
+        source_reference = card.get("source_url") or card.get("source_reference") or None
+        source_date = card.get("source_date") or None
+
+        # A provider record is not an actionable buying signal unless the
+        # operational pain, explicit intent, decision authority, contact path,
+        # source reference, source date and confidence are all present.
+        action_eligible = bool(
+            company
+            and pain_point
+            and intent_signal
+            and decision_maker
+            and role
+            and (card.get("phone") or card.get("email"))
+            and source
+            and source_reference
+            and source_date
+            and confidence >= 0.70
+        )
+
+        qualification_status = (
+            "EVIDENCE_COMPLETE" if action_eligible else "INCOMPLETE_EVIDENCE"
+        )
 
         return {
-            "id": card.get("id") or card.get("company", "UNKNOWN"),
-            "company": card.get("company", "Target Enterprise"),
-            "decision_maker": card.get("decision_maker") or card.get("role") or "Authorized Executive",
-            "role": card.get("role", "Owner / Decision Maker"),
-            "industry": card.get("industry", "B2B Services"),
-            "phone": card.get("phone", ""),
-            "email": card.get("email", ""),
-            "location": card.get("location", ""),
-            "pain_point": card.get("pain_signal") or card.get("pain_description") or "Operations bottleneck",
-            "intent_signal": card.get("intent_signal", "Automated workflow request"),
-            "intent_score": float(card.get("intent_score", 85.0)),
-            "tier": card.get("intent_tier", "HIGH INTENT"),
-            "why_this_company": card.get("why_this_company") or f"High pain and verified authority at {card.get('company')}.",
-            "why_now": card.get("why_now", "Active hiring urgency"),
+            "id": card.get("id") or company,
+            "company": company,
+            "decision_maker": decision_maker,
+            "role": role,
+            "industry": card.get("industry") or None,
+            "phone": card.get("phone") or "",
+            "email": card.get("email") or "",
+            "location": card.get("location") or "",
+            "pain_point": pain_point,
+            "intent_signal": intent_signal,
+            "intent_score": intent_score if intent_score is not None else 0.0,
+            "tier": card.get("intent_tier") or "UNQUALIFIED",
+            "why_this_company": card.get("why_this_company") or None,
+            "why_now": card.get("why_now") or None,
             "recommended_assistant_sku": sku,
-            "expected_revenue": monthly_retainer or float(card.get("expected_revenue", 2000.0)),
+            "offer_price_monthly": offer_price_monthly,
+            "expected_revenue": expected_revenue,
             "confidence": confidence,
-            "signal_age_days": float(card.get("signal_age_days") or 2.0),
-            "source": card.get("source", "SignalHarvester"),
-            "outreach_angle": card.get("outreach_phone_angle") or card.get("outreach_email_angle") or "",
+            "signal_age_days": signal_age_days,
+            "source": source,
+            "qualification_status": qualification_status,
+            "action_eligible": action_eligible,
+            "outreach_angle": (
+                card.get("outreach_phone_angle")
+                or card.get("outreach_email_angle")
+                or ""
+            ),
             "evidence": {
-                "claim": card.get("why_this_company") or card.get("pain_signal") or "UNKNOWN",
-                "source": card.get("source") or "UNKNOWN",
-                "source_reference": card.get("source_url") or card.get("source") or "UNKNOWN",
-                "source_date": card.get("source_date") or "UNKNOWN",
+                "claim": card.get("why_this_company") or pain_point,
+                "source": source,
+                "source_reference": source_reference,
+                "source_date": source_date,
                 "confidence": confidence,
                 "agent": "INTENT_HUNTER",
             },
