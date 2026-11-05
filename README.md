@@ -10,9 +10,9 @@ Keep the operator's work clear: which lead is next, why it is in the queue, what
 
 ## MBM Dialer
 
-Canonical live deployment: https://mbm-dialer.higgsfield.app/
+Canonical live deployment: https://mbm-dialer.higgsfield.app/ (requires sign-in)
 
-Mobile dialer route: https://mbm-dialer.higgsfield.app/dialer/mobile
+Mobile dialer route: https://mbm-dialer.higgsfield.app/dialer/mobile (requires sign-in)
 
 The mobile workflow is designed around Phound as the calling app: copy a lead's normalized number or hand off to Phound, then return to MBM for scripts, dispositions, notes, and follow-up.
 
