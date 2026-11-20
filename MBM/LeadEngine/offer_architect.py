@@ -15,6 +15,7 @@ Guarantees:
 
 import sys
 import json
+import math
 import re
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
@@ -25,12 +26,10 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 try:
-    from MBM.Scripts.neteller_config import neteller_link, NETELLER_EMAIL, NETELLER_ACCOUNT_ID
-except Exception:
+    from MBM.Scripts.neteller_config import neteller_link
+except ImportError:
     def neteller_link(amount: float | str, item: str, currency: str = "USD", **kw) -> str:
-        import urllib.parse
-        clean_amt = f"{float(amount):.2f}" if amount else "0.00"
-        return f"https://member.neteller.com/pay?email=abdelshafyclapps%40gmail.com&account=4599228811&amount={clean_amt}&currency={currency}&item={urllib.parse.quote_plus(str(item))}"
+        raise RuntimeError("Canonical Neteller payment configuration is unavailable")
 
 
 # ---------------------------------------------------------------------------
@@ -302,111 +301,187 @@ DEFAULT_OFFER_CONFIG = {
 
 class OfferArchitect:
     """
-    Constructs lead-specific offer packaging, dynamic conversation scripts,
-    objection playbooks, email angles, and Neteller rails for every verified lead.
+    Builds discovery-first sales preparation from a vertical playbook.
+
+    Catalog prices, pain descriptions, capabilities and ROI are hypotheses.
+    They are never promoted to prospect facts or approved customer promises.
+    The builder creates drafts only; it never dials, sends or books.
     """
 
     def __init__(self):
         pass
 
+    @staticmethod
+    def _approved_price(lead: Dict[str, Any]) -> Optional[float]:
+        if lead.get("quote_approved") is not True:
+            return None
+        raw = lead.get("approved_price_usd")
+        try:
+            amount = float(raw)
+        except (TypeError, ValueError):
+            return None
+        if not math.isfinite(amount) or amount < 0:
+            return None
+        return amount
+
     def build_sales_strategy_for_lead(self, lead: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Build full, end-to-end sales strategy for a single verified lead.
-        """
-        industry = lead.get("industry") or lead.get("vertical") or "General Services"
-        company = lead.get("company") or "Target Business"
-        dm = lead.get("decision_maker") or lead.get("contact") or "Decision Maker"
-        role = lead.get("role") or lead.get("title") or "Owner"
+        """Build a reviewable draft without inventing prospect facts or approvals."""
+        industry = str(lead.get("industry") or lead.get("vertical") or "UNKNOWN")
+        company = str(lead.get("company") or "your business")
+        dm = str(lead.get("decision_maker") or lead.get("contact") or "there")
+        role = str(lead.get("role") or lead.get("title") or "UNKNOWN")
         phone = lead.get("phone") or ""
         email = lead.get("email") or ""
-        city = lead.get("city") or "Dallas"
-        state = lead.get("state") or "TX"
-        intent_score = float(lead.get("intent_score") or lead.get("deal_score") or 80.0)
+        city = str(lead.get("city")).strip() if lead.get("city") else None
+        state = str(lead.get("state")).strip() if lead.get("state") else None
+        location = {"city": city, "state": state}
 
-        # 1. Determine Mode based on Intent Score
-        if intent_score >= 90.0:
+        raw_score = lead.get("intent_score")
+        if raw_score is None:
+            raw_score = lead.get("deal_score")
+        try:
+            intent_score = float(raw_score) if raw_score is not None else None
+        except (TypeError, ValueError):
+            intent_score = None
+        if intent_score is not None and (
+            not math.isfinite(intent_score) or intent_score < 0 or intent_score > 100
+        ):
+            intent_score = None
+
+        if intent_score is None:
+            mode = "UNKNOWN"
+            priority_rank = 4
+        elif intent_score >= 90.0:
             mode = "HOT"
-            cta_type = "HIGH_INTENT"
+            priority_rank = 1
         elif intent_score >= 80.0:
             mode = "WARM"
-            cta_type = "MEDIUM_INTENT"
+            priority_rank = 2
         else:
             mode = "COLD"
-            cta_type = "LOW_INTENT"
+            priority_rank = 3
 
-        # 2. Lookup or Customize Offer Catalog
         offer_tmpl = VERTICAL_OFFER_CATALOG.get(industry, DEFAULT_OFFER_CONFIG)
         sku = offer_tmpl["sku"]
-        monthly_fee = float(offer_tmpl.get("monthly_fee", 2000.0))
-        setup_fee = float(offer_tmpl.get("setup_fee", 1000.0))
-        n_link = neteller_link(amount=monthly_fee, item=sku)
+        monthly_fee_hypothesis = float(offer_tmpl.get("monthly_fee", 2000.0))
+        setup_fee_hypothesis = float(offer_tmpl.get("setup_fee", 1000.0))
 
-        # 3. Build Dynamic Phone Conversation Script
-        if mode == "HOT":
-            opening = (
-                f"Hi {dm}, Omar with TranchAI. Calling directly regarding {company}'s active operations in {city}—"
-                f"saw you're expanding and wanted to ask: who currently handles your after-hours and overflow call intake?"
-            )
-            ai_transition = (
-                f"That's exactly why we built the {offer_tmpl['offer_name']}. It integrates with your current schedule, "
-                f"answers on the 1st ring, qualifies the job specifications, and books the appointment directly."
-            )
-            cta = f"Let's do a 15-minute diagnostic on Google Meet this Thursday at 10 AM to test the live voice agent against your current workflow. Does that time work for you?"
-        elif mode == "WARM":
-            opening = (
-                f"Hey {dm}, Omar here. I know I caught you out of the blue. "
-                f"Saw {company}'s recent operations in {city} and had a quick 20-second question on how your team manages front-office intake spikes?"
-            )
-            ai_transition = (
-                f"We deploy custom AI voice assistants that automate that exact bottleneck so zero inquiries slip through to voicemail. "
-                f"Would you be open to a 2-minute audio simulation showing how it handles a live scenario?"
-            )
-            cta = f"Would it be helpful if I sent over a 1-page architecture tear-down and audio benchmark to {email or 'your email'}?"
-        else:  # COLD
-            opening = (
-                f"Hi {dm}, Omar with TranchAI. I know I caught you in the middle of your day. "
-                f"Give me 20 seconds and you can tell me if I'm wasting your time?"
-            )
-            ai_transition = (
-                f"We built an autonomous intake agent that eliminates 85% of missed call revenue loss for commercial operators in {state}."
-            )
-            cta = f"Would it be completely unreasonable to send you a 60-second Loom showing how similar firms in {state} automate this?"
+        approved_price = self._approved_price(lead)
+        checkout_approved = lead.get("checkout_link_approved") is True
+        checkout_link = None
+        checkout_link_status = "NOT_APPROVED"
+        if approved_price is not None and checkout_approved:
+            try:
+                checkout_link = neteller_link(amount=approved_price, item=sku)
+                checkout_link_status = "APPROVED"
+            except Exception:
+                checkout_link_status = "CONFIGURATION_UNAVAILABLE"
 
-        fallback_cta = f"No problem at all {dm}. What's the best email address to send our 1-page operational benchmark report to?"
+        questions = offer_tmpl.get("discovery_questions") or [
+            "How does your team currently handle new customer inquiries and follow-up?"
+        ]
+        first_question = questions[0]
+        workflow_label = first_question[0].lower() + first_question[1:] if first_question else "your current workflow"
 
-        # 4. Multi-Category Objection Playbook (12 Categories)
+        opening = (
+            f"Hi {dm}, I'm calling from MBM. I had a question about how {company} "
+            f"currently handles {workflow_label.rstrip('?')}. Is that something you oversee?"
+        )
+        ai_transition = (
+            f"Depending on what we learn, MBM can scope a {offer_tmpl['offer_name']} "
+            "around your actual workflow. We would confirm technical feasibility, integrations, "
+            "data boundaries, delivery capacity and acceptance criteria before proposing implementation."
+        )
+        cta = (
+            "Would a short diagnostic conversation be useful? We can map the current process, "
+            "agree on one KPI and decide whether a small, fixed-scope pilot is appropriate."
+        )
+        fallback_cta = (
+            "No problem. Would you prefer a short written overview, or should I leave it here?"
+        )
+
         objection_playbook = {
-            "PRICE": f"I completely understand. Our retainer is ${monthly_fee:,.2f}/mo with a 30-day performance SLA — recovering just two missed jobs pays for 100% of the cost. If it doesn't, you cancel immediately.",
-            "TIMING": "Totally respect that you're busy right now. When is a better 5-minute window tomorrow morning to reconnect?",
-            "TRUST": f"Fair point — we don't ask for any trust upfront. We run a 5-minute live diagnostic simulation with your actual test scenarios so you hear it work before deciding.",
-            "AI_SKEPTICISM": "I hear that a lot because most AI chatbots sound robotic. Ours uses sub-second neural voice trained specifically on your industry's exact terminology and workflow.",
-            "ALREADY_HAVE_SOLUTION": "That's great you have a system in place. Most operators we work with use this as a 24/7 backup overflow failover so zero calls drop when your team is occupied.",
-            "DO_IT_INTERNALLY": f"Your team's time is best spent closing deals and serving clients, not playing phone tag. The AI handles the repetitive triage at a fraction of human staffing cost.",
-            "NO_NEED": "Understood. If you ever experience missed calls during peak season, keep us in mind.",
-            "NO_BUDGET": f"If budget is tight, that's even more reason to stop leaking high-value leads. We can start with our diagnostic audit at zero upfront commitment.",
-            "AUTHORITY": f"Got it. Who on your management team handles operational technology and intake software so I can include them?",
-            "SECURITY": "All our pipelines are SOC-2 and HIPAA compliant with end-to-end encryption. Your client data never trains public models.",
-            "INTEGRATION": "We connect directly via webhooks to your existing CRM and calendar (ServiceTitan, Clio, Dentrix, Procore, HubSpot) with zero migration hassle.",
-            "STAFF": "This doesn't replace your staff — it empowers them by handling repetitive triage and 2 AM emergencies so they arrive to work with organized, booked appointments.",
+            "PRICE": (
+                "We would confirm the problem, delivery scope and acceptance criteria before preparing "
+                "a written quote. Catalog figures are planning hypotheses, not an approved price."
+            ),
+            "TIMING": (
+                "Understood. Is there a better time for you to discuss the workflow, or would you prefer "
+                "that I close the loop and not follow up?"
+            ),
+            "TRUST": (
+                "That is fair. We can first show the proposed workflow, the evidence behind it, "
+                "the limits, and the acceptance checks before you decide whether to proceed."
+            ),
+            "AI_SKEPTICISM": (
+                "You do not need to buy AI. We should first identify whether a specific workflow "
+                "is slow, repetitive or difficult to measure, then assess the simplest suitable fix."
+            ),
+            "ALREADY_HAVE_SOLUTION": (
+                "Good. We would not replace a working system by default. Is there a particular handoff "
+                "or exception that your current setup does not handle well?"
+            ),
+            "DO_IT_INTERNALLY": (
+                "That may be the right choice. Which part of the process still consumes the most "
+                "staff time, and would a small comparison be useful before changing anything?"
+            ),
+            "NO_NEED": (
+                "Understood. I do not want to invent a problem where there is none. I appreciate "
+                "you clarifying that the workflow is not a priority."
+            ),
+            "NO_BUDGET": (
+                "Understood. We should not recommend spending until the business case and delivery "
+                "scope are clear. We can stop here or revisit only when it becomes a priority."
+            ),
+            "AUTHORITY": (
+                "Thanks. Who normally evaluates changes to this workflow? I can prepare a short "
+                "brief for the appropriate person, subject to your preference."
+            ),
+            "SECURITY": (
+                "We can document proposed data flows, access controls, retention and vendor roles. "
+                "Regulated or sensitive data stays out of scope until the required reviews and agreements pass."
+            ),
+            "INTEGRATION": (
+                "We would map your current tools and confirm each integration path before committing. "
+                "No connector or deployment capability is assumed from a catalog description."
+            ),
+            "STAFF": (
+                "The goal would be to support your team, not remove people by default. We would agree "
+                "on the handoff, escalation rules and staff acceptance criteria before a pilot."
+            ),
         }
 
-        # 5. Evidence-Based Email Version
+        observed_signal = ""
+        if lead.get("observed_signal") and lead.get("signal_source") and lead.get("signal_observed_at"):
+            observed_signal = str(lead["observed_signal"])
+
         email_pitch = {
-            "subject": f"Quick question regarding {company}'s front-office intake in {city}",
+            "subject": f"Question about {company}'s customer intake workflow",
             "opening": f"Hi {dm},",
-            "observed_signal": f"Noticed {company}'s commercial operations in {city}, {state}.",
-            "pain": f"Many operators in your sector lose 15-25% of inbound inquiries when front-office staff are on other calls or after hours.",
-            "offer": f"We deployed a custom {offer_tmpl['offer_name']} that answers on the 1st ring, qualifies the inquiry, and books directly into your calendar.",
-            "roi_angle": f"Recovering just 2 missed inquiries per month delivers 3x+ ROI against our monthly retainer.",
-            "cta": f"Open to a 5-minute live audio demo this week? Let me know what day works best.",
-            "followup": f"Hi {dm}, following up on this — should I send over the 1-page architecture breakdown for {company}?"
+            "observed_signal": observed_signal,
+            "pain": (
+                "I do not know whether this is a bottleneck for your team, so I wanted to ask "
+                "how you currently handle inquiries, qualification and follow-up."
+            ),
+            "offer": (
+                f"MBM can assess whether a scoped {offer_tmpl['offer_name']} is a fit. "
+                "Any implementation would be defined only after workflow and technical review."
+            ),
+            "roi_angle": (
+                "We would baseline the current process and measure an agreed operational KPI during "
+                "a pilot. No revenue uplift or ROI is assumed in advance."
+            ),
+            "cta": cta,
+            "followup": (
+                f"Hi {dm}, checking whether this workflow is worth a short review for {company}. "
+                "No problem if it is not a current priority."
+            ),
         }
 
-        # 6. LinkedIn Conversation Starter
         linkedin_starter = (
-            f"Hi {dm} — saw your leadership at {company} in {city}. "
-            f"Quick question: how is your team currently handling after-hours call overflow and speed-to-lead during peak volume? "
-            f"We built an autonomous intake agent for commercial operators in {state} and would love to share our benchmark data."
+            f"Hi {dm}, I'm researching how {industry.lower()} businesses handle inquiry intake "
+            f"and follow-up. Is that an area you oversee at {company}? MBM is assessing a few "
+            "bounded workflow pilots and I would value your view."
         )
 
         return {
@@ -415,31 +490,46 @@ class OfferArchitect:
             "decision_maker": dm,
             "role": role,
             "industry": industry,
+            "location": location,
             "phone": phone,
             "email": email,
             "intent_mode": mode,
+            "intent_score": intent_score,
             "offer": {
                 "sku": sku,
                 "offer_name": offer_tmpl["offer_name"],
                 "problem_solved": offer_tmpl["problem_solved"],
+                "problem_statement_status": "PLAYBOOK_HYPOTHESIS",
                 "core_workflow": offer_tmpl["core_workflow"],
+                "capability_status": "REQUIRES_IMPLEMENTATION_REVIEW",
                 "implementation_scope": offer_tmpl["implementation_scope"],
+                "integration_status": "UNVERIFIED_REQUIRES_TECHNICAL_REVIEW",
                 "pricing_model": "MONTHLY_RETAINER",
-                "setup_fee_usd": setup_fee,
-                "monthly_fee_usd": monthly_fee,
+                "setup_fee_usd": setup_fee_hypothesis,
+                "monthly_fee_usd": monthly_fee_hypothesis,
+                "price_status": "APPROVED" if approved_price is not None else "HYPOTHESIS",
+                "approved_quote_usd": approved_price,
                 "performance_fee": offer_tmpl.get("performance_fee", ""),
-                "neteller_checkout_link": n_link,
+                "neteller_checkout_link": checkout_link,
+                "checkout_link_status": checkout_link_status,
                 "entry_diagnostic": offer_tmpl.get("entry_diagnostic", "Workflow Audit"),
                 "expansion_paths": offer_tmpl.get("expansion_paths", []),
                 "roi_hypothesis": offer_tmpl.get("roi_model", {}),
+                "roi_hypothesis_status": "UNVERIFIED_HYPOTHESIS",
             },
             "conversation_script": {
                 "mode": mode,
                 "opening": opening,
-                "first_question": offer_tmpl["discovery_questions"][0] if offer_tmpl.get("discovery_questions") else "How are after-hours inquiries handled today?",
-                "discovery_questions": offer_tmpl.get("discovery_questions", []),
-                "quantification_question": offer_tmpl.get("quantification_question", "What is one missed client worth to your bottom line?"),
-                "reflection_script": f"So if I understand correctly, the issue isn't lead volume — it's that high-value opportunities slip through when your team is occupied. Is that fair?",
+                "first_question": first_question,
+                "discovery_questions": questions,
+                "quantification_question": (
+                    "How does your team currently track this workflow, and what measurable "
+                    "outcome would you most like to improve?"
+                ),
+                "reflection_script": (
+                    "After the prospect describes the process, summarize only the pain and impact "
+                    "they confirmed; ask them to correct anything inaccurate."
+                ),
                 "ai_fit_transition": ai_transition,
                 "objection_playbook": objection_playbook,
                 "primary_cta": cta,
@@ -451,13 +541,12 @@ class OfferArchitect:
                 "linkedin": linkedin_starter,
             },
             "next_best_action": {
-                "channel": "PHONE",
-                "action": "DIAL_WITH_DYNAMIC_HUD",
-                "priority_rank": 1 if mode == "HOT" else (2 if mode == "WARM" else 3),
-                "scheduled_for": "IMMEDIATE",
-            }
+                "channel": "PHONE" if phone else "MANUAL_REVIEW",
+                "action": "DRAFT_ONLY",
+                "priority_rank": priority_rank,
+                "scheduled_for": "AWAIT_HUMAN_APPROVAL",
+            },
         }
-
 
 def get_offer_architect() -> OfferArchitect:
     return OfferArchitect()

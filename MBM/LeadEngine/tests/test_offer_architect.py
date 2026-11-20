@@ -12,6 +12,7 @@ Comprehensive tests verifying:
 =============================================================================
 """
 
+import json
 import sys
 import pytest
 from pathlib import Path
@@ -47,7 +48,9 @@ def test_offer_architect_vertical_matching():
     assert strat_hvac["offer"]["sku"] == "AI-ASSISTANT-HVAC-DISPATCH"
     assert strat_hvac["offer"]["monthly_fee_usd"] == 2500.0
     assert "24/7 AI Emergency Call" in strat_hvac["offer"]["offer_name"]
-    assert "https://member.neteller.com/pay?" in strat_hvac["offer"]["neteller_checkout_link"]
+    assert strat_hvac["offer"]["neteller_checkout_link"] is None
+    assert strat_hvac["offer"]["checkout_link_status"] == "NOT_APPROVED"
+    assert strat_hvac["offer"]["price_status"] == "HYPOTHESIS"
 
 
 def test_offer_architect_civil_construction():
@@ -149,3 +152,91 @@ def test_offer_architect_multi_channel_angles():
     assert "roi_angle" in channels["email"]
     assert "linkedin" in channels
     assert "Sterling & Vance" in channels["linkedin"]
+
+
+def test_missing_intent_and_location_stay_unknown():
+    strategy = OfferArchitect().build_sales_strategy_for_lead({
+        "id": "PROSPECT-UNKNOWN",
+        "company": "Example Services LLC",
+        "industry": "General Services",
+    })
+
+    assert strategy["intent_mode"] == "UNKNOWN"
+    assert strategy["location"] == {"city": None, "state": None}
+    assert "Dallas" not in json.dumps(strategy)
+    assert '"TX"' not in json.dumps(strategy)
+
+
+def test_default_script_does_not_claim_unobserved_work_or_compliance():
+    strategy = OfferArchitect().build_sales_strategy_for_lead({
+        "id": "PROSPECT-SAFE",
+        "company": "Example Services LLC",
+        "industry": "General Services",
+    })
+    customer_copy = json.dumps({
+        "script": strategy["conversation_script"],
+        "channels": strategy["multi_channel_angles"],
+        "objections": strategy["conversation_script"]["objection_playbook"],
+    }).lower()
+
+    for unsupported_claim in (
+        "we deployed", "we built", "we ran", "85%", "soc-2", "soc 2",
+        "hipaa compliant", "zero hold times", "thursday at 10 am",
+    ):
+        assert unsupported_claim not in customer_copy
+
+
+def test_checkout_requires_explicit_quote_and_payment_approval(monkeypatch):
+    import MBM.LeadEngine.offer_architect as offer_architect_module
+
+    monkeypatch.setattr(
+        offer_architect_module,
+        "neteller_link",
+        lambda amount, item: f"https://approved.example/pay?amount={amount}&item={item}",
+    )
+    architect = OfferArchitect()
+
+    not_approved = architect.build_sales_strategy_for_lead({
+        "company": "Example Services LLC",
+        "industry": "General Services",
+        "approved_price_usd": 500,
+        "quote_approved": True,
+    })
+    assert not_approved["offer"]["neteller_checkout_link"] is None
+
+    approved = architect.build_sales_strategy_for_lead({
+        "company": "Example Services LLC",
+        "industry": "General Services",
+        "approved_price_usd": 500,
+        "quote_approved": True,
+        "checkout_link_approved": True,
+    })
+    assert approved["offer"]["neteller_checkout_link"] == (
+        "https://approved.example/pay?amount=500.0&item=AI-ASSISTANT-VIP-RETAINER"
+    )
+    assert approved["offer"]["approved_quote_usd"] == 500.0
+    assert approved["offer"]["price_status"] == "APPROVED"
+    assert approved["offer"]["checkout_link_status"] == "APPROVED"
+
+
+def test_invalid_intent_score_is_not_promoted_to_hot():
+    strategy = OfferArchitect().build_sales_strategy_for_lead({
+        "company": "Example Services LLC",
+        "industry": "General Services",
+        "intent_score": 140,
+    })
+    assert strategy["intent_mode"] == "UNKNOWN"
+    assert strategy["next_best_action"]["action"] == "DRAFT_ONLY"
+
+
+
+def test_quantification_prompt_does_not_smuggle_playbook_roi_assumptions_into_customer_copy():
+    strategy = OfferArchitect().build_sales_strategy_for_lead({
+        "company": "Example HVAC",
+        "industry": "HVAC & Mechanical Contractors",
+    })
+    prompt = strategy["conversation_script"]["quantification_question"]
+    assert "1,200" not in prompt
+    assert "two missed" not in prompt.lower()
+    assert "7,200" not in prompt
+    assert "How does your team currently track this workflow" in prompt

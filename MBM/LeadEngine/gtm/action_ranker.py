@@ -151,6 +151,8 @@ class ChannelRouter:
             return ChannelType.NONE, ActionType.NURTURE
         if identity_state in cls.SUPPRESSIVE_IDENTITY:
             return ChannelType.HUMAN_REVIEW, ActionType.SUPPRESS_LEAD
+        if opportunity.get("action_eligible") is False:
+            return ChannelType.HUMAN_REVIEW, ActionType.HUMAN_REVIEW
 
         # Identity-unconfirmed high-intent deals still move to qualification review.
         if state in {"DISCOVERED", "QUALIFYING"}:
@@ -190,20 +192,30 @@ class ActionRanker:
         # If suppressed, priority is hard zero
         if opportunity.get("is_suppressed") or opportunity.get("state") == "SUPPRESSED":
             return 0.0
+        # Explicitly incomplete discovery evidence must never earn queue priority.
+        if opportunity.get("action_eligible") is False:
+            return 0.0
 
         # Suppressive identity states are hard zero (garbage is never recycled).
         identity_state = str(opportunity.get("identity_state", "")).upper()
         if identity_state in ChannelRouter.SUPPRESSIVE_IDENTITY:
             return 0.0
 
-        # Base components
-        expected_revenue = float(opportunity.get("expected_revenue", 2000.0))
-        rev_factor = max(1.0, min(10.0, expected_revenue / 1000.0))  # Scale $1k-$10k to 1.0-10.0
+        # Unknown commercial values remain unknown/zero; do not replace them
+        # with generic revenue, intent, urgency, confidence or progress guesses.
+        raw_revenue = opportunity.get("expected_revenue")
+        try:
+            expected_revenue = float(raw_revenue) if raw_revenue is not None else 0.0
+        except (TypeError, ValueError):
+            expected_revenue = 0.0
+        if expected_revenue != expected_revenue or expected_revenue in (float("inf"), float("-inf")):
+            expected_revenue = 0.0
+        rev_factor = max(0.0, min(10.0, expected_revenue / 1000.0))
 
-        intent_score = float(opportunity.get("intent_score", 50.0)) / 100.0  # 0.0 - 1.0
-        prob_progress = float(opportunity.get("probability_of_progress", intent_score or 0.6))
-        urgency = float(opportunity.get("urgency", 0.8))
-        confidence = float(opportunity.get("confidence", 0.85))
+        intent_score = float(opportunity.get("intent_score") or 0.0) / 100.0
+        prob_progress = float(opportunity.get("probability_of_progress") or intent_score)
+        urgency = float(opportunity.get("urgency") or 0.0)
+        confidence = float(opportunity.get("confidence") or 0.0)
 
         # Base score (0 to 100 scale)
         base_score = rev_factor * prob_progress * urgency * confidence * 15.0
@@ -221,12 +233,20 @@ class ActionRanker:
         # Penalties
         penalties = 0.0
 
-        # Staleness penalty (>14 days old = 20% penalty, >30 days = 50% penalty)
-        age_days = float(opportunity.get("signal_age_days", 2.0))
-        if age_days > 30:
-            penalties += base_score * 0.50
-        elif age_days > 14:
+        # Staleness penalty (>14 days old = 20% penalty, >30 days = 50% penalty).
+        # Unknown freshness receives a conservative penalty rather than a fake age.
+        raw_age_days = opportunity.get("signal_age_days")
+        if raw_age_days is None:
             penalties += base_score * 0.20
+        else:
+            try:
+                age_days = float(raw_age_days)
+            except (TypeError, ValueError):
+                age_days = float("inf")
+            if age_days > 30:
+                penalties += base_score * 0.50
+            elif age_days > 14:
+                penalties += base_score * 0.20
 
         # Low confidence penalty (<0.70 confidence = 30% penalty)
         if confidence < 0.70:
@@ -263,6 +283,8 @@ class ActionRanker:
         ranked_actions = []
 
         for opp in opportunities:
+            if opp.get("action_eligible") is False:
+                continue
             priority = self.calculate_priority_score(opp)
             if priority <= 0.0 and opp.get("is_suppressed"):
                 continue
@@ -276,7 +298,7 @@ class ActionRanker:
             why_now = opp.get("why_now") or ""
             evidence = opp.get("evidence")
             confidence = float(opp.get("confidence", 0.85))
-            expected_rev = float(opp.get("expected_revenue", 2000.0))
+            expected_rev = float(opp.get("expected_revenue") or 0.0)
 
             # Channel determination via the Channel Router decision layer
             rec_channel, act_type = ChannelRouter.route(opp)

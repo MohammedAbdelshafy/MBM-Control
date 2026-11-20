@@ -1,35 +1,21 @@
-"""
-neteller_config.py — Canonical Neteller payout configuration & pay-link builder
-===============================================================================
-Single source of truth for every Neteller monetization surface in the repo.
+"""Environment-backed Neteller checkout-link construction.
 
-The Neteller "member pay" URL lets a buyer pay directly into the wallet without
-a storefront. Every checkout, blaster, hub, landing page, and payout endpoint
-must build links through ``neteller_link()`` so wallet details live in exactly
-one place.
-
-Defaults (owned account):
-    email      = abdelshafyclapps@gmail.com
-    account_id = 4599228811
-
-Overridable via env:
-    NETELLER_EMAIL
-    NETELLER_ACCOUNT_ID
-    NETELLER_PAY_BASE
-
-Import as:
-
-    from MBM.Scripts.neteller_config import NETELLER_EMAIL, neteller_link
-    url = neteller_link(amount=997.00, item="50_US_Lead_Pack")
+Wallet identity is deliberately never committed to source control. Runtime
+payment links require explicit NETELLER_EMAIL and NETELLER_ACCOUNT_ID values.
 """
 
+import math
 import os
+import re
 from typing import Optional
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 
-NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "abdelshafyclapps@gmail.com")
-NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "4599228811")
-NETELLER_PAY_BASE = os.getenv("NETELLER_PAY_BASE", "https://member.neteller.com/pay")
+NETELLER_EMAIL = os.getenv("NETELLER_EMAIL", "").strip()
+NETELLER_ACCOUNT_ID = os.getenv("NETELLER_ACCOUNT_ID", "").strip()
+NETELLER_PAY_BASE = os.getenv(
+    "NETELLER_PAY_BASE",
+    "https://member.neteller.com/pay",
+).strip()
 
 
 def neteller_link(
@@ -40,39 +26,59 @@ def neteller_link(
     account: Optional[str] = None,
     base: Optional[str] = None,
 ) -> str:
-    """Build a 1-click Neteller member-pay URL.
+    """Build a Neteller member-pay URL using explicit or environment settings.
 
-    Args:
-        amount:   Decimal amount to charge (e.g. 997.00).
-        item:     URL-safe item/sku label shown to the buyer.
-        currency: ISO 4217 currency code. Default "USD".
-        email:    Override wallet email. Defaults to canonical NETELLER_EMAIL.
-        account:  Override wallet account id. Defaults to canonical NETELLER_ACCOUNT_ID.
-        base:     Override pay endpoint. Defaults to canonical NETELLER_PAY_BASE.
-
-    Returns:
-        Fully-formed Neteller checkout URL.
+    The function does not infer a wallet identity. Applications should only
+    call it after their own quote and checkout approval gates have passed.
     """
-    email = email or NETELLER_EMAIL
-    account = account or NETELLER_ACCOUNT_ID
-    base = base or NETELLER_PAY_BASE
+    try:
+        normalized_amount = float(amount)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("amount must be a finite non-negative number") from exc
+    if not math.isfinite(normalized_amount) or normalized_amount < 0:
+        raise ValueError("amount must be a finite non-negative number")
+
+    normalized_item = str(item or "").strip()
+    if not normalized_item:
+        raise ValueError("item is required")
+
+    normalized_currency = str(currency or "").strip().upper()
+    if not re.fullmatch(r"[A-Z]{3}", normalized_currency):
+        raise ValueError("currency must be a three-letter ISO 4217 code")
+
+    resolved_email = str(email or NETELLER_EMAIL).strip()
+    resolved_account = str(account or NETELLER_ACCOUNT_ID).strip()
+    if not resolved_email or not resolved_account:
+        raise RuntimeError(
+            "NETELLER_EMAIL and NETELLER_ACCOUNT_ID must be explicitly configured"
+        )
+    if "@" not in resolved_email or any(char.isspace() for char in resolved_email):
+        raise ValueError("NETELLER_EMAIL must be a valid email address")
+
+    resolved_base = str(base or NETELLER_PAY_BASE).strip()
+    parsed_base = urlparse(resolved_base)
+    if parsed_base.scheme != "https" or not parsed_base.netloc:
+        raise ValueError("NETELLER_PAY_BASE must be an HTTPS URL")
+
     params = urlencode(
         {
-            "email": email,
-            "account": account,
-            "amount": f"{float(amount):.2f}",
-            "currency": currency,
-            "item": item,
+            "email": resolved_email,
+            "account": resolved_account,
+            "amount": f"{normalized_amount:.2f}",
+            "currency": normalized_currency,
+            "item": normalized_item,
         }
     )
-    return f"{base}?{params}"
+    separator = "&" if parsed_base.query else "?"
+    return f"{resolved_base}{separator}{params}"
 
 
 def neteller_wallet_label() -> str:
-    """Human-readable wallet label, e.g. 'abdelshafyclapps@gmail.com (Account: 4599228811)'."""
-    return f"{NETELLER_EMAIL} (Account: {NETELLER_ACCOUNT_ID})"
+    """Return a safe status label without exposing wallet details."""
+    if not NETELLER_EMAIL or not NETELLER_ACCOUNT_ID:
+        return "Neteller wallet not configured"
+    return "Neteller wallet configured"
 
 
 if __name__ == "__main__":
     print(neteller_wallet_label())
-    print(neteller_link(amount=997.00, item="50_US_Lead_Pack"))

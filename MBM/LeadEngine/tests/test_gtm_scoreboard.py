@@ -43,7 +43,7 @@ def test_sales_ledger_event_recording(tmp_path):
     assert event["prospect_id"] == "PROSPECT-001"
     assert event["new_state"] == "CONTACTING"
     assert event["offer_price"] == 297.00
-    assert "https://whop.com/checkout/plan_e3ibiYXeeAaZV" in event["checkout_url"]
+    assert event["checkout_url"] is None  # checkout requires an explicitly approved link
     assert ledger_path.exists()
 
 
@@ -131,6 +131,9 @@ def test_revenue_scoreboard_metrics_and_zero_fabrication(tmp_path):
         evidence={"transaction_id": "tx_whop_real_123", "verified_payment": True},
         next_action="ONBOARDING_KICKOFF",
         offer="AUDIT",
+        payment_transaction_id="tx_whop_real_123",
+        payment_amount_usd=297.00,
+        payment_currency="USD",
     )
 
     metrics2 = scoreboard.compute_metrics(prospects_count=1)
@@ -151,3 +154,163 @@ def test_gtm_commander_scoreboard_export(tmp_path):
     assert "GTM REVENUE SCOREBOARD" in content
     assert "AI Sprint Audit" in content
     assert "https://mbm-dialer-app.vercel.app/sprint/" in content
+
+
+
+def test_ledger_persists_acquisition_and_payment_attribution(tmp_path):
+    ledger_path = tmp_path / "attribution_ledger.json"
+    ledger = GtmSalesLedger(ledger_path=ledger_path)
+    event = ledger.record_transition(
+        prospect_id="P-ATTR-1",
+        agent="HUMAN_OPERATOR",
+        channel="PHONE",
+        previous_state="DISCOVERED",
+        new_state="QUALIFIED",
+        action="QUALIFY_FIT",
+        evidence={"source": "partner referral"},
+        next_action="PREPARE_PROPOSAL",
+        lane="HVAC",
+        acquisition_channel="PARTNERSHIP",
+        vertical_id="hvac",
+        campaign_id="fall-hvac-01",
+        source_id="partner-west",
+        offer_id="hvac-recovery-core",
+        offer_type="CORE",
+    )
+
+    assert event["channel"] == "PHONE"
+    assert event["acquisition_channel"] == "PARTNERSHIP"
+    assert event["vertical_id"] == "hvac"
+    assert event["campaign_id"] == "fall-hvac-01"
+    assert event["source_id"] == "partner-west"
+    assert event["offer_id"] == "hvac-recovery-core"
+    assert event["offer_type"] == "CORE"
+
+    stored = GtmSalesLedger(ledger_path=ledger_path).get_events()[0]
+    assert stored["acquisition_channel"] == "PARTNERSHIP"
+    assert stored["offer_type"] == "CORE"
+
+
+def test_first_touch_attribution_counts_distinct_prospects_and_separates_medium(tmp_path):
+    ledger = GtmSalesLedger(ledger_path=tmp_path / "first_touch.json")
+
+    ledger.record_event(
+        prospect_id="P1", agent="SOURCE", channel="PHONE",
+        previous_state="NEW", new_state="DISCOVERED", action="SOURCE_VERIFIED",
+        evidence={"source": "partner"},
+        next_action="OUTREACH",
+        acquisition_channel="REFERRAL", vertical_id="hvac",
+        campaign_id="campaign-referral", source_id="partner-1",
+        offer_id="hvac-core", offer_type="CORE",
+    )
+    ledger.record_event(
+        prospect_id="P1", agent="OUTREACH", channel="PHONE",
+        previous_state="DISCOVERED", new_state="CONTACTING", action="CALL_ATTEMPT",
+        evidence={"call_id": "call-1"}, next_action="QUALIFY",
+        acquisition_channel="COLD_OUTREACH",
+    )
+    ledger.record_event(
+        prospect_id="P1", agent="HUMAN", channel="PHONE",
+        previous_state="CONTACTING", new_state="ENGAGED", action="CONTACT_CONNECTED",
+        evidence={"call_id": "call-1"}, next_action="QUALIFY",
+    )
+    ledger.record_event(
+        prospect_id="P1", agent="HUMAN", channel="PHONE",
+        previous_state="ENGAGED", new_state="QUALIFIED", action="QUALIFY_FIT",
+        evidence={"pain_confirmed": True}, next_action="BOOK",
+    )
+    ledger.record_event(
+        prospect_id="P1", agent="HUMAN", channel="PHONE",
+        previous_state="QUALIFIED", new_state="APPOINTMENT_BOOKED", action="BOOK_APPOINTMENT",
+        evidence={"calendar_event_id": "evt-1"}, next_action="DISCOVERY",
+    )
+
+    ledger.record_event(
+        prospect_id="P2", agent="SOURCE", channel="EMAIL",
+        previous_state="NEW", new_state="DISCOVERED", action="SOURCE_VERIFIED",
+        evidence={"source": "public directory"}, next_action="OUTREACH",
+    )
+    ledger.record_event(
+        prospect_id="P2", agent="OUTREACH", channel="EMAIL",
+        previous_state="DISCOVERED", new_state="EMAIL_SENT", action="OUTREACH_EMAIL_SENT",
+        evidence={"message_id": "msg-2", "status": "SENT"}, next_action="AWAIT_REPLY",
+    )
+
+    attribution = GtmRevenueScoreboard(ledger=ledger).compute_metrics()["acquisition_attribution"]
+    referral = attribution["by_acquisition_channel"]["REFERRAL"]
+    unknown = attribution["by_acquisition_channel"]["UNKNOWN"]
+
+    assert referral["prospects_sourced"] == 1
+    assert referral["outreach_attempts"] == 1
+    assert referral["contacts"] == 1
+    assert referral["qualified"] == 1
+    assert referral["appointments_booked"] == 1
+    assert unknown["prospects_sourced"] == 1
+    assert unknown["outreach_attempts"] == 1
+    assert attribution["attribution_model"] == "FIRST_TOUCH"
+    assert attribution["by_vertical"]["HVAC"]["prospects_sourced"] == 1
+
+
+def test_verified_payment_needs_explicit_usd_amount_and_transaction_id(tmp_path):
+    ledger = GtmSalesLedger(ledger_path=tmp_path / "payment_proof.json")
+
+    paid = dict(
+        prospect_id="P-PAID", agent="PAYMENT_WEBHOOK", channel="WEB",
+        previous_state="CHECKOUT_SENT", new_state="PURCHASED",
+        action="VERIFY_PAYMENT", evidence={"transaction_id": "tx-paid", "verified_payment": True},
+        next_action="DELIVER", payment_transaction_id="tx-paid",
+        payment_amount_usd=125.00, payment_currency="USD",
+    )
+    ledger.record_event(**paid)
+    ledger.record_event(**paid)  # provider webhook retry must be idempotent
+    ledger.record_event(
+        prospect_id="P-UNPRICED", agent="PAYMENT_WEBHOOK", channel="WEB",
+        previous_state="CHECKOUT_SENT", new_state="PURCHASED",
+        action="VERIFY_PAYMENT",
+        evidence={"transaction_id": "tx-unpriced", "verified_payment": True},
+        next_action="DELIVER",
+        payment_currency="USD",
+    )
+
+    metrics = GtmRevenueScoreboard(ledger=ledger).compute_metrics()
+    assert metrics["funnel"]["purchased"] == 2
+    assert metrics["funnel"]["revenue"] == 125.00
+    assert metrics["acquisition_attribution"]["verified_payment_count"] == 2
+    assert metrics["acquisition_attribution"]["unpriced_verified_payments"] == 1
+    assert metrics["acquisition_attribution"]["duplicate_payment_events_ignored"] == 1
+
+
+def test_non_usd_payment_is_not_misreported_as_usd_revenue(tmp_path):
+    ledger = GtmSalesLedger(ledger_path=tmp_path / "foreign_currency.json")
+    ledger.record_event(
+        prospect_id="P-EUR", agent="PAYMENT_WEBHOOK", channel="WEB",
+        previous_state="CHECKOUT_SENT", new_state="PURCHASED",
+        action="VERIFY_PAYMENT",
+        evidence={"transaction_id": "tx-eur", "verified_payment": True},
+        next_action="DELIVER", payment_transaction_id="tx-eur",
+        payment_currency="EUR",
+    )
+
+    metrics = GtmRevenueScoreboard(ledger=ledger).compute_metrics()
+    assert metrics["funnel"]["purchased"] == 1
+    assert metrics["funnel"]["revenue"] == 0.0
+    assert metrics["acquisition_attribution"]["unpriced_verified_payments"] == 1
+    assert metrics["acquisition_attribution"]["unsupported_currency_payments"] == 1
+
+
+
+def test_checkout_url_is_persisted_only_when_explicitly_supplied(tmp_path):
+    ledger = GtmSalesLedger(ledger_path=tmp_path / "checkout_gate.json")
+    event = ledger.record_event(
+        prospect_id="P-CHECKOUT",
+        agent="HUMAN_OPERATOR",
+        channel="EMAIL",
+        previous_state="QUALIFIED",
+        new_state="PROPOSAL",
+        action="PREPARE_PROPOSAL",
+        evidence={"quote_approved": True, "checkout_link_approved": True},
+        next_action="AWAIT_BUYER",
+        offer="AUDIT",
+        checkout_url="https://payments.example/approved-checkout",
+    )
+    assert event["checkout_url"] == "https://payments.example/approved-checkout"
