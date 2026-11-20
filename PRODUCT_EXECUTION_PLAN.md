@@ -1,3 +1,23 @@
+> **Current operating override — 2026-10-23**
+>
+> This document preserves historical implementation notes. Status statements below are not a live runtime attestation. In particular, older statements that a checkout or payment route is “live” must not be used to tell a buyer that payment is ready.
+>
+> - **Current mission authority:** [Jarvis issue #28](https://github.com/MohammedAbdelshafy/jarvis-mbm/issues/28): sell OX-Alpha.1 as a data-integrity hardening service. Engineering remains frozen until customer validation creates a concrete requirement.
+> - **Payment source of truth:** [MBM payment gate](https://github.com/MohammedAbdelshafy/jarvis-mbm/blob/claude/antigravity-bridge/Sales/PAYMENT_GATE_STATUS.md), last checked 2026-10-21, says **no live payment link/checkout has been verified**. Do not change that status until provider eligibility, a real end-to-end payment test, and the withdrawal/settlement path have been verified.
+> - **Conflict rule:** newer, dated, primary operational records override historical plan text. Verify the current runtime before acting.
+>
+> **Operational safety gates**
+>
+> - Founder approval is required for the exact audience, message, channel, and timing before outreach. Prepare drafts; do not auto-send.
+> - Do not place real calls, request payments, deploy, or write to canonical lead data without explicit approval. Preserve DialerSingleWriter as authoritative.
+> - Never use Contec email, expose secrets in chat, or commit secrets to the repository.
+> - Clinical product demonstrations use synthetic data. Real clinical workflows require qualified clinical review and production privacy/security controls.
+> - Label evidence as current/verified, historical, or unverified. Never claim tests, deployments, customers, or revenue without a current primary record.
+>
+> **Priority rule:** one primary mission at a time. Follow OX-Alpha.1 issue #28 unless that mission is explicitly changed. P4 lead cleaning remains a possible secondary service offer, not authority to displace the active mission or start new engineering before customer evidence.
+>
+> ---
+>
 # Revenue-First Execution Plan — First Paying Customer
 
 **Objective:** first paying customer this cycle. Not architecture polish. Sell the thing that already works.
